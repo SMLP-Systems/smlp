@@ -386,6 +386,7 @@ class ModelSklearn:
         hparam_dict_local = self._hparam_dict_global_to_local('poly', hparam_dict)
         hparam_dict_local.pop('degree', None)
         hparam_dict_local.pop('n_jobs', None)
+        hparam_dict_local.pop('fit_intercept', None)
 
         max_degree = 3
 
@@ -396,7 +397,7 @@ class ModelSklearn:
         mse_values = []
         degrees = range(1, max_degree + 1)
         for d in degrees:
-            poly = PolynomialFeatures(degree=d)
+            poly = PolynomialFeatures(degree=d, include_bias=True)
             X_poly_train = poly.fit_transform(X_train)
             model = LinearRegression(**hparam_dict_local).fit(X_poly_train, y_train)
             y_pred = model.predict(X_poly_train)
@@ -409,7 +410,7 @@ class ModelSklearn:
 
         if noise_level < 1e-10:
             print("\nNo noise in the data! Using Linear Regression")
-            lin_reg_final = LinearRegression(**hparam_dict_local).fit(poly_reg.fit_transform(X_train), y_train)
+            lin_reg_final = LinearRegression(**hparam_dict_local, fit_intercept=False).fit(poly_reg.fit_transform(X_train), y_train)
         else:
             alphas = np.logspace(-6, 1, 50)
             ridge_model = RidgeCV(alphas=alphas, store_cv_values=True, scoring='neg_mean_squared_error')
@@ -417,9 +418,7 @@ class ModelSklearn:
 
             best_alpha = ridge_model.alpha_
             print("\nBest alpha found:", best_alpha)
-            lin_reg_final = Ridge(alpha=best_alpha, **hparam_dict_local, solver='svd').fit(poly_reg.fit_transform(X_train), y_train)
-
-        lin_reg_final = Ridge(alpha=best_alpha, **hparam_dict_local, solver='svd').fit(poly_reg.fit_transform(X_train), y_train)
+            lin_reg_final = Ridge(alpha=best_alpha, **hparam_dict_local, solver='svd', fit_intercept=False).fit(poly_reg.fit_transform(X_train), y_train)
 
         return lin_reg_final, poly_reg
 
@@ -485,7 +484,7 @@ class ModelSklearn:
             seed, sample_weights_vect, model_per_response):
         # train a separate models for each response, pack into a dictionary with response names
         # as keys and the correponding models as values
-        print('sklearn_main: feat_names_dict', feat_names_dict, 'X_train cols', X_train.columns.tolist())
+        # print('sklearn_main: feat_names_dict', feat_names_dict, 'X_train cols', X_train.columns.tolist())
         if model_per_response:
             model = {}
             for rn in resp_names:
