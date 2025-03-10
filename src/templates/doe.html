@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Design of Experiments (DOE)</h2>
+<form method="POST" enctype="multipart/form-data" class="row g-3">
+  
+  <div class="col-md-6">
+    <label>DOE Spec File (CSV)</label>
+    <input type="file" name="doe_spec_file" class="form-control"/>
+  </div>
+
+  <div class="col-md-6">
+    <label>DOE Algorithm (-doe_algo)</label>
+    <input type="text" name="doe_algo" class="form-control" placeholder="full_factorial"/>
+  </div>
+
+  <div class="col-md-6">
+    <label>Number of Samples (-doe_num_samples)</label>
+    <input type="text" name="doe_num_samples" class="form-control" placeholder="e.g. 10"/>
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Generate DOE</button>
+  </div>
+</form>
+{% endblock %}

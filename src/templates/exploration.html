@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Explore SMLP</h2>
+<form method="POST" enctype="multipart/form-data" class="row g-3">
+
+  <div class="col-md-6">
+    <label class="form-label">Select Mode</label>
+    <select name="explore_mode" class="form-select">
+      {% for mode in modes %}
+      <option value="{{ mode }}" {% if mode == "optimize" %}selected{% endif %}>{{ mode }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Data File</label>
+    <input type="file" name="data_file" id="data_file" class="form-control"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Spec File</label>
+    <input type="file" name="spec_file" id="spec_file" class="form-control"/>
+  </div>
+
+  <hr class="my-4"/>
+
+  <div class="col-md-4">
+    <label class="form-label">Output Directory</label>
+    <input type="text" name="out_dir_val" class="form-control" value="./"/>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Prefix</label>
+    <input type="text" name="pref_val" class="form-control" value="Test113"/>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Pareto?</label>
+    <div class="btn-group w-100" role="group">
+      <input type="radio" class="btn-check" name="pareto" id="pareto_yes" value="1" checked>
+      <label class="btn btn-outline-primary" for="pareto_yes">Yes</label>
+
+      <input type="radio" class="btn-check" name="pareto" id="pareto_no" value="0">
+      <label class="btn btn-outline-secondary" for="pareto_no">No</label>
+    </div>
+  </div>
+
+  <hr class="my-4"/>
+
+  <div class="col-md-6">
+    <label class="form-label">Resp</label>
+    <input type="text" name="resp_expr" class="form-control" value="y1,y2"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Feat</label>
+    <input type="text" name="feat_expr" class="form-control" value="x1,x2,p1,p2"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Model</label>
+    <input type="text" name="model_expr" class="form-control" value="dt_sklearn"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">DT Max Depth</label>
+    <input type="number" name="dt_sklearn_max_depth" class="form-control" value="15"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Data Scaler</label>
+    <input type="text" name="data_scaler" class="form-control" value="min_max"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Beta</label>
+    <input type="text" name="beta_expr" class="form-control" value="y1>7 and y2>6"/>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Objv Names</label>
+    <input type="text" name="objv_names" class="form-control" value="obj1,obj2"/>
+  </div>
+
+  <div class="col-md-8">
+    <label class="form-label">Objv Exprs</label>
+    <input type="text" name="objv_exprs" class="form-control" value="(y1+y2)/2;y1/2-y2;y2"/>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Epsilon</label>
+    <input type="number" name="epsilon" class="form-control" value="0.05" step="0.01"/>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Delta Rel</label>
+    <input type="number" name="delta_rel" class="form-control" value="0.01" step="0.01"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">mrmr_pred</label>
+    <input type="number" name="mrmr_pred" class="form-control" value="0"/>
+  </div>
+
+
+  <div class="col-md-6">
+    <label class="form-label">Additional Command Input</label>
+    <textarea name="additional_command" class="form-control" rows="1" placeholder="Enter additional parameters here..."></textarea>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Save Model Config?</label>
+    <div class="btn-group w-100" role="group">
+      <input type="radio" class="btn-check" name="save_model_config" id="save_config_yes" value="1" checked>
+      <label class="btn btn-outline-primary" for="save_config_yes">Yes</label>
+
+      <input type="radio" class="btn-check" name="save_model_config" id="save_config_no" value="0">
+      <label class="btn btn-outline-secondary" for="save_config_no">No</label>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Enable Plots?</label>
+    <div class="btn-group w-100" role="group">
+      <input type="radio" class="btn-check" name="plots" id="plots_yes" value="1" checked>
+      <label class="btn btn-outline-primary" for="plots_yes">Yes</label>
+
+      <input type="radio" class="btn-check" name="plots" id="plots_no" value="0">
+      <label class="btn btn-outline-secondary" for="plots_no">No</label>
+    </div>
+
+
+
+  <div class="col-12 mt-4">
+    <button type="submit" class="btn btn-primary w-100">Run Exploration</button>
+  </div>
+</form>
+{% endblock %}

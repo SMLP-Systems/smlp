@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Train a Model</h2>
+<form method="POST" enctype="multipart/form-data" class="row g-3">
+
+  <div class="col-md-6">
+    <label for="data_file" class="form-label">Data File (CSV)</label>
+    <input type="file" name="data_file" id="data_file" class="form-control"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Model (-model)</label>
+    <input type="text" name="model" class="form-control" placeholder="e.g. dt_sklearn" />
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Responses (-resp)</label>
+    <input type="text" name="resp" class="form-control" placeholder="e.g. y1,y2"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Features (-feat)</label>
+    <input type="text" name="feat" class="form-control" placeholder="e.g. x1,x2,p1,p2"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Output Directory (-out_dir)</label>
+    <input type="text" name="out_dir_val" class="form-control" value="./"/>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Save Model?</label>
+    <div class="btn-group w-100" role="group">
+      <input type="radio" class="btn-check" name="save_model" id="save_model_yes" value="t">
+      <label class="btn btn-outline-primary" for="save_model_yes">Yes</label>
+
+      <input type="radio" class="btn-check" name="save_model" id="save_model_no" value="f" checked>
+      <label class="btn btn-outline-secondary" for="save_model_no">No</label>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Prefix (-pref)</label>
+    <input type="text" name="pref_val" class="form-control" value="TestTrain"/>
+  </div>
+
+
+  <div class="col-md-6">
+    <label class="form-label">mrmr_pred</label>
+    <input type="number" name="mrmr_pred" class="form-control" value="0"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Model Name (-model_name)</label>
+    <input type="text" name="model_name" class="form-control" value="my_model"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Feature Scaling (-scale_feat)</label>
+    <input type="text" name="scale_feat" class="form-control" placeholder="e.g. min_max"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Response Scaling (-scale_resp)</label>
+    <input type="text" name="scale_resp" class="form-control" placeholder="e.g. standard"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">DT Max Depth</label>
+    <input type="number" name="dt_sklearn_max_depth" class="form-control" value="15"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Training Split (-train_split)</label>
+    <input type="text" name="train_split" class="form-control" placeholder="e.g. 0.8"/>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Random Seed (-seed)</label>
+    <input type="text" name="seed_val" class="form-control" placeholder="e.g. 42"/>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Enable Plots?</label>
+    <div class="btn-group w-100" role="group">
+      <input type="radio" class="btn-check" name="plots" id="plots_yes" value="1" checked>
+      <label class="btn btn-outline-primary" for="plots_yes">Yes</label>
+
+      <input type="radio" class="btn-check" name="plots" id="plots_no" value="0">
+      <label class="btn btn-outline-secondary" for="plots_no">No</label>
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <label class="form-label">Additional Command Input</label>
+    <textarea name="additional_command" class="form-control" rows="1" placeholder="Enter additional parameters here..."></textarea>
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary w-100">Train</button>
+  </div>
+</form>
+{% endblock %}

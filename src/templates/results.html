@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow-sm bg-body-tertiary">
+    <div class="card-header bg-primary text-bg-primary">
+      <h2 class="card-title mb-0">Results</h2>
+    </div>
+    <div class="card-body">
+      <pre class="p-3 rounded bg-body-secondary" 
+           style="max-height: 500px; overflow-y: auto;">{{ output }}</pre>
+    </div>
+    <div class="card-footer text-end">
+      <a href="{{ url_for('home') }}" class="btn btn-secondary">Return Home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
