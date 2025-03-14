@@ -317,7 +317,7 @@ class ModelSklearn:
             X_train, X_test, y_train, y_test, seed, weights):
 
     	hparam_dict_local = self._hparam_dict_global_to_local(algo, hparam_dict)
-    	hparam_dict_local['random_state'] = seed  # Ensure reproducibility
+    	hparam_dict_local['random_state'] = seed
 
     	param_grid = {
         	'max_depth': [2, 3, 4, 5],
@@ -335,7 +335,8 @@ class ModelSklearn:
         	n_jobs=-1
     	)
 
-    	grid_search.fit(X_train, y_train, sample_weight=weights)
+    	sample_weights = weights if weights is not None else None
+    	grid_search.fit(X_train, y_train, sample_weight=sample_weights)
 
     	best_model = grid_search.best_estimator_
     	best_params = grid_search.best_params_
@@ -346,9 +347,6 @@ class ModelSklearn:
 
     	feature_importance_dict = dict(zip(feature_names, best_model.feature_importances_))
     	print(f"Feature Importance: {feature_importance_dict}")
-    
-    	#if dt_mae > baseline_mae:
-        	#print("\nWARNING: Decision Tree performs worse than a simple mean predictor! Consider adjusting parameters.")
 
     	return best_model
 
