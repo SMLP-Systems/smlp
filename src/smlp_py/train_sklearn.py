@@ -4,9 +4,13 @@
 # Fitting sklearn regression tree models
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier, export_text, plot_tree
 #from sklearn.tree import _tree
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
+from sklearn.feature_selection import SelectKBest, f_regression
 from sklearn import tree, ensemble
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.metrics import mean_absolute_error
 
 # Fitting sklearn polynomial regression model
 from sklearn.preprocessing import PolynomialFeatures
@@ -312,27 +316,25 @@ class ModelSklearn:
     def dt_regr_train(self, feature_names, resp_names, algo, hparam_dict,
             X_train, X_test, y_train, y_test, seed, weights):
 
-        # Convert global hyperparameters to local ones
+    	# Convert global hyperparameters to local ones
     	hparam_dict_local = self._hparam_dict_global_to_local(algo, hparam_dict)
     	hparam_dict_local['random_state'] = seed  # Ensure reproducibility
 
-    	hparam_dict_local.pop('degree', None)
-    	hparam_dict_local.pop('n_jobs', None)
-
     	# Define hyperparameter grid for tuning
     	param_grid = {
-        	'max_depth': [3],  
-        	'min_samples_split': [2, 5],
-        	'min_samples_leaf': [1, 2]
+        	'max_depth': [2, 3, 4, 5, 6, None],  
+        	'min_samples_split': [2, 5, 10],
+        	'min_samples_leaf': [1, 2, 5],
+        	'ccp_alpha': np.logspace(-4, -1, 10)  # Cost Complexity Pruning
     	}
 
     	# Perform hyperparameter tuning using GridSearchCV
     	grid_search = GridSearchCV(
         	DecisionTreeRegressor(**hparam_dict_local),
         	param_grid,
-		cv=5,
-		scoring='neg_mean_squared_error',
-		n_jobs=-1
+        	cv=5,
+        	scoring='neg_mean_absolute_error',
+        	n_jobs=-1
     	)
 
     	# Train model with cross-validation and sample weights
@@ -351,14 +353,17 @@ class ModelSklearn:
     	feature_importance_dict = dict(zip(feature_names, best_model.feature_importances_))
     	print(f"Feature Importance: {feature_importance_dict}")
 
-    	# Visualisation
-    	#plt.figure(figsize=(12, 8))
-    	#plot_tree(best_model, feature_names=feature_names, filled=True)
-    	#plt.show()
+    	# Handle noisy data: Compare MAE with a simple mean-predictor model
+    	mean_pred = np.full_like(y_test, np.mean(y_train))
+    	baseline_mae = mean_absolute_error(y_test, mean_pred)
+    	dt_mae = mean_absolute_error(y_test, best_model.predict(X_test))
+
+    	print(f"Baseline MAE: {baseline_mae:.4f}, Decision Tree MAE: {dt_mae:.4f}")
+    
+    	if dt_mae > baseline_mae:
+        	print("\nWARNING: Decision Tree performs worse than a simple mean predictor! Consider adjusting parameters.")
 
     	return best_model
-
-
 
     # train random forest regression model with sklearn
     def rf_regr_train(self, feature_names, resp_names, algo, hparam_dict,
@@ -371,10 +376,10 @@ class ModelSklearn:
     	# Define hyperparameter grid for tuning
     	param_grid = {
         	'n_estimators': [150, 200],            # Number of trees
-        	'max_depth': [None],           # Control overfitting
+        	'max_depth': [10, 15, None],           # Control overfitting
         	'min_samples_split': [2],       # Min samples to split a node
         	'min_samples_leaf': [1, 2],         # Min samples at leaf node
-        	'max_features': ['sqrt', None] # Features to consider at each split
+        	'max_features': ['sqrt', 'log2', None] # Features to consider at each split
     	}
 
     	# Grid Search with Cross-Validation
@@ -392,7 +397,7 @@ class ModelSklearn:
     	random_search = RandomizedSearchCV(
         	RandomForestRegressor(random_state=42),
         	param_distributions=param_grid,
-        	n_iter=10,  # Tries 10 different combinations
+        	n_iter=10,
         	scoring='neg_mean_squared_error',
         	cv=5,
         	n_jobs=-1
@@ -406,21 +411,6 @@ class ModelSklearn:
     	best_model = random_search.best_estimator_
     	best_params = random_search.best_params_
     	print(f"Best hyperparameters: {best_params}")
-
-    	# Evaluate performance
-    	#y_train_pred = best_model.predict(X_train)
-    	#y_test_pred = best_model.predict(X_test)
-
-    	# Training Metrics
-    	#train_mse = mean_squared_error(y_train, y_train_pred)
-    	#train_r2 = r2_score(y_train, y_train_pred)
-    	#print(f"Training - MSQE: {train_mse:.4f}, R²: {train_r2:.4f}")
-	
-    	# Testing Metrics
-    	#test_mse = mean_squared_error(y_test, y_test_pred)
-    	#test_r2 = r2_score(y_test, y_test_pred)
-    	#test_mae = mean_absolute_error(y_test, y_test_pred)
-    	#print(f"Test - MSQE: {test_mse:.4f}, R²: {test_r2:.4f}, MAE: {test_mae:.4f}")
 
     	# Feature Importance Plot
     	feature_importances = best_model.feature_importances_
