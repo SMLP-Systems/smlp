@@ -316,9 +316,11 @@ class ModelSklearn:
     def dt_regr_train(self, feature_names, resp_names, algo, hparam_dict,
             X_train, X_test, y_train, y_test, seed, weights):
 
+    	# Convert global hyperparameters to local hyperparameters
     	hparam_dict_local = self._hparam_dict_global_to_local(algo, hparam_dict)
     	hparam_dict_local['random_state'] = seed
 
+    	# Define hyperparameter grid for tuning
     	param_grid = {
         	'max_depth': [2, 3, 4, 5],
         	'min_samples_split': [2, 5, 10],
@@ -327,6 +329,7 @@ class ModelSklearn:
         	'max_features': ['sqrt', 'log2', None]
     	}
 
+    	# Tune hyperparameters with GridSearchCV
     	grid_search = GridSearchCV(
         	DecisionTreeRegressor(**hparam_dict_local),
         	param_grid,
@@ -335,16 +338,20 @@ class ModelSklearn:
         	n_jobs=-1
     	)
 
+    	# Train model
     	sample_weights = weights if weights is not None else None
     	grid_search.fit(X_train, y_train, sample_weight=sample_weights)
 
+    	# Get the best model and hyperparameters
     	best_model = grid_search.best_estimator_
     	best_params = grid_search.best_params_
     	print(f"Best hyperparameters: {best_params}")
 
+    	# Prints Decision tree structure
     	text_representation = export_text(best_model, feature_names=feature_names)
     	print("Decision Tree Structure:\n", text_representation)
 
+    	# Prints the importance of each feature
     	feature_importance_dict = dict(zip(feature_names, best_model.feature_importances_))
     	print(f"Feature Importance: {feature_importance_dict}")
 
@@ -354,9 +361,11 @@ class ModelSklearn:
     def rf_regr_train(self, feature_names, resp_names, algo, hparam_dict,
 		X_train, X_test, y_train, y_test, seed, weights):
 
+    	# Convert global hyperparameters to local hyperparameters
     	hparam_dict_local = self._hparam_dict_global_to_local(algo, hparam_dict)
     	hparam_dict_local['random_state'] = seed
 
+    	# Define hyperparameter grid for tuning
     	param_grid = {
         	'n_estimators': [150, 200],
         	'max_depth': [10, 15, None],
@@ -365,6 +374,7 @@ class ModelSklearn:
         	'max_features': ['sqrt', 'log2', None]
     	}
 
+    	# Tunes hyperparameters with RandomizedSearchCV
     	random_search = RandomizedSearchCV(
         	RandomForestRegressor(random_state=42),
         	param_distributions=param_grid,
@@ -374,13 +384,15 @@ class ModelSklearn:
         	n_jobs=-1
     	)
 
-
+    	# Train model
     	random_search.fit(X_train, y_train, sample_weight=weights)
 
+    	# Get the best model and hyperparameters
     	best_model = random_search.best_estimator_
     	best_params = random_search.best_params_
     	print(f"Best hyperparameters: {best_params}")
 
+    	# Prints the importance of each feature
     	feature_importances = best_model.feature_importances_
     	for name, importance in zip(feature_names, feature_importances):
         	print(f"Feature: {name}, Importance: {importance:.4f}")
