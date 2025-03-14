@@ -382,46 +382,92 @@ class ModelSklearn:
 
     def poly_train(self, input_names, resp_names, hparam_dict,
                X_train, X_test, y_train, y_test, weights):
+        """
+        Trains a polynomial regression model using dynamically selected polynomial degree.
+        If noise is negligible, a simple Linear Regression is used; otherwise, Ridge Regression 
+        with cross-validated alpha is applied.
 
+        Parameters:
+        ----------
+        self : object
+            Instance of the calling class.
+        input_names : list
+            Names of the input features.
+        resp_names : list
+            Names of the response variables.
+        hparam_dict : dict
+            Hyperparameter dictionary for model configuration.
+        X_train : ndarray or DataFrame
+            Training feature data.
+        X_test : ndarray or DataFrame
+            Testing feature data.
+        y_train : ndarray or Series
+            Target values for training.
+        y_test : ndarray or Series
+            Target values for testing.
+        weights : ndarray
+            Sample weights for weighted regression.
+
+        Returns:
+        -------
+        lin_reg_final : sklearn.linear_model
+            Trained regression model (either Linear Regression or Ridge Regression).
+        poly_reg : sklearn.preprocessing.PolynomialFeatures
+            Polynomial feature transformer with the selected degree.
+        """
+
+        # Extract hyperparameters and remove non-applicable ones
         hparam_dict_local = self._hparam_dict_global_to_local('poly', hparam_dict)
-        hparam_dict_local.pop('degree', None)
+        hparam_dict_local.pop('degree', None)  
         hparam_dict_local.pop('n_jobs', None)
         hparam_dict_local.pop('fit_intercept', None)
 
-        max_degree = 3
+        max_degree = 3  # Maximum polynomial degree considered
 
+        # Fit initial Linear Regression model to estimate noise level
         lin_reg = LinearRegression().fit(X_train, y_train)
         residuals = np.array(y_train - lin_reg.predict(X_train)).flatten()
-        noise_level = np.std(residuals).item()
+        noise_level = np.std(residuals)  # Measure standard deviation of residuals
 
+        # List to store mean absolute error (MAE) values for different polynomial degrees
         mae_values = []
         degrees = range(1, max_degree + 1)
+
+        # Iterate over polynomial degrees and compute MAE
         for d in degrees:
-            poly = PolynomialFeatures(degree=d, include_bias=True)
-            X_poly_train = poly.fit_transform(X_train)
-            model = LinearRegression(**hparam_dict_local).fit(X_poly_train, y_train, sample_weight=weights)
-            y_pred = model.predict(X_poly_train)
-            mae = mean_absolute_error(y_train, y_pred)
-            mae_values.append(mae)
+            poly = PolynomialFeatures(degree=d, include_bias=True)  # Generate polynomial features
+            X_poly_train = poly.fit_transform(X_train)  # Transform training data
+            model = LinearRegression(**hparam_dict_local).fit(X_poly_train, y_train, sample_weight=weights)  # Train model
+            y_pred = model.predict(X_poly_train)  # Make predictions
+            mae = mean_absolute_error(y_train, y_pred)  # Compute MAE
+            mae_values.append(mae)  # Store MAE for current degree
 
+        # Select the polynomial degree with the lowest MAE
         best_degree = degrees[np.argmin(mae_values)]
-
         poly_reg = PolynomialFeatures(degree=best_degree)
 
+        # If noise level is extremely low, use standard Linear Regression
         if noise_level < 1e-10:
             print("\nNo noise in the data! Using Linear Regression")
-            lin_reg_final = LinearRegression(**hparam_dict_local, fit_intercept=False).fit(poly_reg.fit_transform(X_train), y_train, sample_weight=weights)
+            lin_reg_final = LinearRegression(**hparam_dict_local, fit_intercept=False).fit(
+                poly_reg.fit_transform(X_train), y_train, sample_weight=weights
+            )
         else:
-            alphas = np.logspace(-6, 1, 50)
+            # Perform cross-validation to find the best Ridge regularization parameter (alpha)
+            alphas = np.logspace(-6, 1, 50)  # Range of alpha values for RidgeCV
             ridge_model = RidgeCV(alphas=alphas, store_cv_values=True, scoring='neg_mean_squared_error')
             ridge_model.fit(poly_reg.fit_transform(X_train), y_train)
 
+            # Extract the best alpha value
             best_alpha = ridge_model.alpha_
             print("\nBest alpha found:", best_alpha)
-            lin_reg_final = Ridge(alpha=best_alpha, **hparam_dict_local, solver='svd', fit_intercept=False).fit(poly_reg.fit_transform(X_train), y_train, sample_weight=weights)
+
+            # Train final Ridge Regression model with optimized alpha
+            lin_reg_final = Ridge(
+                alpha=best_alpha, **hparam_dict_local, solver='svd', fit_intercept=False
+            ).fit(poly_reg.fit_transform(X_train), y_train, sample_weight=weights)
 
         return lin_reg_final, poly_reg
-
         
     # model for sklearn poly model is in fact a pair (linear_model, poly_reg), where
     # poly_reg is transformer that creates polynomial terems (like x^2) from the original
