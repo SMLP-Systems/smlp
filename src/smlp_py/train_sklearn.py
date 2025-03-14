@@ -394,23 +394,23 @@ class ModelSklearn:
         residuals = y_train - lin_reg.predict(X_train)
         noise_level = np.std(residuals).item()
 
-        mse_values = []
+        mae_values = []
         degrees = range(1, max_degree + 1)
         for d in degrees:
             poly = PolynomialFeatures(degree=d, include_bias=True)
             X_poly_train = poly.fit_transform(X_train)
-            model = LinearRegression(**hparam_dict_local).fit(X_poly_train, y_train)
+            model = LinearRegression(**hparam_dict_local).fit(X_poly_train, y_train, sample_weight=weights)
             y_pred = model.predict(X_poly_train)
-            mse = mean_absolute_error(y_train, y_pred)
-            mse_values.append(mse)
+            mae = mean_absolute_error(y_train, y_pred)
+            mae_values.append(mae)
 
-        best_degree = degrees[np.argmin(mse_values)]
+        best_degree = degrees[np.argmin(mae_values)]
 
         poly_reg = PolynomialFeatures(degree=best_degree)
 
         if noise_level < 1e-10:
             print("\nNo noise in the data! Using Linear Regression")
-            lin_reg_final = LinearRegression(**hparam_dict_local, fit_intercept=False).fit(poly_reg.fit_transform(X_train), y_train)
+            lin_reg_final = LinearRegression(**hparam_dict_local, fit_intercept=False).fit(poly_reg.fit_transform(X_train), y_train, sample_weight=weights)
         else:
             alphas = np.logspace(-6, 1, 50)
             ridge_model = RidgeCV(alphas=alphas, store_cv_values=True, scoring='neg_mean_squared_error')
@@ -418,7 +418,7 @@ class ModelSklearn:
 
             best_alpha = ridge_model.alpha_
             print("\nBest alpha found:", best_alpha)
-            lin_reg_final = Ridge(alpha=best_alpha, **hparam_dict_local, solver='svd', fit_intercept=False).fit(poly_reg.fit_transform(X_train), y_train)
+            lin_reg_final = Ridge(alpha=best_alpha, **hparam_dict_local, solver='svd', fit_intercept=False).fit(poly_reg.fit_transform(X_train), y_train, sample_weight=weights)
 
         return lin_reg_final, poly_reg
 
