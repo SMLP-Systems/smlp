@@ -316,19 +316,17 @@ class ModelSklearn:
     def dt_regr_train(self, feature_names, resp_names, algo, hparam_dict,
             X_train, X_test, y_train, y_test, seed, weights):
 
-    	# Convert global hyperparameters to local ones
     	hparam_dict_local = self._hparam_dict_global_to_local(algo, hparam_dict)
     	hparam_dict_local['random_state'] = seed  # Ensure reproducibility
 
-    	# Define hyperparameter grid for tuning
     	param_grid = {
-        	'max_depth': [2, 3, 4, 5, 6, None],  
+        	'max_depth': [2, 3, 4, 5],
         	'min_samples_split': [2, 5, 10],
         	'min_samples_leaf': [1, 2, 5],
-        	'ccp_alpha': np.logspace(-4, -1, 10)  # Cost Complexity Pruning
+        	'ccp_alpha': np.logspace(-4, -1, 10),
+        	'max_features': ['sqrt', 'log2', None]
     	}
 
-    	# Perform hyperparameter tuning using GridSearchCV
     	grid_search = GridSearchCV(
         	DecisionTreeRegressor(**hparam_dict_local),
         	param_grid,
@@ -337,31 +335,20 @@ class ModelSklearn:
         	n_jobs=-1
     	)
 
-    	# Train model with cross-validation and sample weights
     	grid_search.fit(X_train, y_train, sample_weight=weights)
 
-    	# Get best model and hyperparameters
     	best_model = grid_search.best_estimator_
     	best_params = grid_search.best_params_
     	print(f"Best hyperparameters: {best_params}")
 
-    	# Print tree structure
     	text_representation = export_text(best_model, feature_names=feature_names)
     	print("Decision Tree Structure:\n", text_representation)
 
-    	# Feature Importance
     	feature_importance_dict = dict(zip(feature_names, best_model.feature_importances_))
     	print(f"Feature Importance: {feature_importance_dict}")
-
-    	# Handle noisy data: Compare MAE with a simple mean-predictor model
-    	mean_pred = np.full_like(y_test, np.mean(y_train))
-    	baseline_mae = mean_absolute_error(y_test, mean_pred)
-    	dt_mae = mean_absolute_error(y_test, best_model.predict(X_test))
-
-    	print(f"Baseline MAE: {baseline_mae:.4f}, Decision Tree MAE: {dt_mae:.4f}")
     
-    	if dt_mae > baseline_mae:
-        	print("\nWARNING: Decision Tree performs worse than a simple mean predictor! Consider adjusting parameters.")
+    	#if dt_mae > baseline_mae:
+        	#print("\nWARNING: Decision Tree performs worse than a simple mean predictor! Consider adjusting parameters.")
 
     	return best_model
 
@@ -369,30 +356,16 @@ class ModelSklearn:
     def rf_regr_train(self, feature_names, resp_names, algo, hparam_dict,
 		X_train, X_test, y_train, y_test, seed, weights):
 
-    	# Convert global hyperparameters to local ones
     	hparam_dict_local = self._hparam_dict_global_to_local(algo, hparam_dict)
-    	hparam_dict_local['random_state'] = seed  # Ensure reproducibility
+    	hparam_dict_local['random_state'] = seed
 
-    	# Define hyperparameter grid for tuning
     	param_grid = {
-        	'n_estimators': [150, 200],            # Number of trees
-        	'max_depth': [10, 15, None],           # Control overfitting
-        	'min_samples_split': [2],       # Min samples to split a node
-        	'min_samples_leaf': [1, 2],         # Min samples at leaf node
-        	'max_features': ['sqrt', 'log2', None] # Features to consider at each split
+        	'n_estimators': [150, 200],
+        	'max_depth': [10, 15, None],
+        	'min_samples_split': [2],
+        	'min_samples_leaf': [1, 2],
+        	'max_features': ['sqrt', 'log2', None]
     	}
-
-    	# Grid Search with Cross-Validation
-    	'''
-    	grid_search = GridSearchCV(
-        	RandomForestRegressor(**hparam_dict_local),
-        	param_grid,
-        	cv=5,                               # 5-fold cross-validation
-        	scoring='neg_mean_squared_error',   # Optimize for lower MSQE
-        	n_jobs=-1                           # Use all cores for faster computation
-    	)
-
-    	'''
 
     	random_search = RandomizedSearchCV(
         	RandomForestRegressor(random_state=42),
@@ -404,15 +377,12 @@ class ModelSklearn:
     	)
 
 
-    	# Fit model with sample weights
     	random_search.fit(X_train, y_train, sample_weight=weights)
 
-    	# Get best model and hyperparameters
     	best_model = random_search.best_estimator_
     	best_params = random_search.best_params_
     	print(f"Best hyperparameters: {best_params}")
 
-    	# Feature Importance Plot
     	feature_importances = best_model.feature_importances_
     	for name, importance in zip(feature_names, feature_importances):
         	print(f"Feature: {name}, Importance: {importance:.4f}")
