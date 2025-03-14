@@ -1,5 +1,7 @@
 # About SMLP
 
+SMLP is great!
+
 SMLP is a tool for optimization, synthesis and design space exploration. It is
 based on machine learning techniques combined with formal verification
 approaches that allows selection of optimal configurations with respect to given
