@@ -391,7 +391,7 @@ class ModelSklearn:
         max_degree = 3
 
         lin_reg = LinearRegression().fit(X_train, y_train)
-        residuals = y_train - lin_reg.predict(X_train)
+        residuals = np.array(y_train - lin_reg.predict(X_train)).flatten()
         noise_level = np.std(residuals).item()
 
         mae_values = []
