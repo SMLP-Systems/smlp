@@ -26,8 +26,8 @@ instruction for the installation on Ubuntu.
 	pip install --user meson
 
 	# obtain sources
-	git clone https://github.com/fbrausse/kay.git
-	git clone https://github.com/fbrausse/smlp.git
+	git clone https://github.com/smlp-systems/kay.git
+	git clone https://github.com/smlp-systems/smlp.git
 	cd smlp/utils/poly
 
 	# workaround <https://bugs.launchpad.net/ubuntu/+source/swig/+bug/1746755>
