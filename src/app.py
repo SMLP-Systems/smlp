@@ -1,20 +1,35 @@
 
 import subprocess
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
 import os
 import sys
 import uuid
 from flask_session import Session
+from visualize_h5 import h5_visualization_route
+from visualize_h5 import get_h5_plot  # Import the function
+import shutil
+import os
+
+
 
 # Flask App Setup
 app = Flask(__name__)
+
+
+
+
+SESSION_DIR = './flask_session' 
+if os.path.exists(SESSION_DIR):
+    shutil.rmtree(SESSION_DIR)
+    os.makedirs(SESSION_DIR)
 
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'dev_secret_key')  
 app.config['SESSION_TYPE'] = 'filesystem' 
 Session(app)
 
+app.register_blueprint(h5_visualization_route)
 
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+UPLOAD_FOLDER = os.path.join('../regr_smlp/code/uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -58,7 +73,7 @@ def train():
         dataset_path = None
         
         if data_file and data_file.filename:
-            dataset_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{uuid.uuid4()}_{data_file.filename}")
+            dataset_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_{data_file.filename}")
             data_file.save(dataset_path)
         
         def add_arg(flag, value):
@@ -92,7 +107,7 @@ def train():
         
         additional_command = request.form.get('additional_command')
         if additional_command:
-            arguments.append(additional_command)
+            arguments.extend(additional_command.split())
         
         # Debugging
         print("DEBUG: Final SMLP Command ->", " ".join(arguments))
@@ -107,49 +122,71 @@ def train():
 
 #  PREDICT
 
-
-# !!! To be done !!!
-
-
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     if request.method == 'POST':
         model_file = request.files.get('model_file')
         new_data_file = request.files.get('new_data_file')
-        save_model = request.form.get('save_model', 'f')
-        model_name = request.form.get('model_name', 'my_model')
 
         model_path = None
+        newdata_path = None
+
         if model_file and model_file.filename:
-            filename = f"{uuid.uuid4()}_{model_file.filename}"
-            model_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            model_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_{model_file.filename}")
             model_file.save(model_path)
 
-        newdata_path = None
         if new_data_file and new_data_file.filename:
-            filename = f"{uuid.uuid4()}_{new_data_file.filename}"
-            newdata_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            newdata_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_{new_data_file.filename}")
             new_data_file.save(newdata_path)
 
-        arguments = []
-        if model_path:
-            base_name, ext = os.path.splitext(model_path)
-            arguments += ["-use_model", "t", "-model_name", base_name]
+        def add_arg(flag, value):
+            if value is not None and value != "":
+                arguments.extend([flag, str(value)])
 
-        if newdata_path:
-            base_new_name, _ = os.path.splitext(newdata_path)
-            arguments += ["-new_data", base_new_name]
+        arguments = ['python3', os.path.abspath("../src/run_smlp.py")]
 
-        if save_model == 't':
-            arguments += ["-save_model", "t", "-model_name", model_name]
+        if not model_path or not newdata_path:
+            return "Error: Both model file and new data file are required", 400
 
-        output = call_smlp_api("predict", arguments)
+        # Required
+        add_arg("-mode", "predict")
+
+        # Process paths (remove file extension)
+        add_arg("-model_name", os.path.abspath(model_path))
+        add_arg("-new_data", os.path.abspath(newdata_path))
+
+        # Optional user inputs
+        add_arg("-out_dir", request.form.get('out_dir_val', './'))
+        add_arg("-pref", request.form.get('pref_val', 'PredictRun'))
+        add_arg("-log_time", request.form.get('log_time', 'f'))
+        add_arg("-plots", request.form.get('plots'))
+        add_arg("-save_model", request.form.get('save_model'))
+        add_arg("-model_name", request.form.get('model_name'))
+        add_arg("-seed", request.form.get('seed_val'))
+
+
+        additional_command = request.form.get('additional_command')
+        if additional_command:
+            arguments.extend(additional_command.split())
+
+        # Debug output
+        print("DEBUG: Final Predict SMLP Command ->", " ".join(arguments))
+
+        output = call_smlp_api(arguments)
         session['output'] = output
         return redirect(url_for('results'))
 
     return render_template('predict.html')
 
 
+
+def clear_old_plots():
+    """Remove all previous plots before running a new exploration."""
+    if os.path.exists(PLOT_SAVE_DIR):
+        for filename in os.listdir(PLOT_SAVE_DIR):
+            file_path = os.path.join(PLOT_SAVE_DIR, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
 
 
 #  EXPLORATION 
@@ -158,6 +195,7 @@ def explore():
     modes_list = ['certify', 'query', 'verify', 'synthesize', 'optimize', 'optsyn']
 
     if request.method == 'POST':
+        clear_old_plots() 
         chosen_mode = request.form.get('explore_mode', '')
 
         if chosen_mode not in modes_list:
@@ -170,11 +208,11 @@ def explore():
         spec_path = None
 
         if data_file and data_file.filename:
-            dataset_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{uuid.uuid4()}_{data_file.filename}")
+            dataset_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_{data_file.filename}")
             data_file.save(dataset_path)
 
         if spec_file and spec_file.filename:
-            spec_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{uuid.uuid4()}_{spec_file.filename}")
+            spec_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_{spec_file.filename}")
             spec_file.save(spec_path)
 
         if not dataset_path or not spec_path:
@@ -211,8 +249,11 @@ def explore():
 
         additional_command = request.form.get('additional_command')
         if additional_command:
-            arguments.append(additional_command)
-
+            arguments.extend(additional_command.split())
+        
+        # checks if there should be a 3d plot
+        session['use_h5'] = any('nn_keras' in arg for arg in arguments)
+        session.modified = True
         # Debugging
         print("DEBUG: Final SMLP Command ->", " ".join(arguments))
 
@@ -225,44 +266,72 @@ def explore():
 
 #  DOE
 
-#  !!! To be done !!!
-
 @app.route('/doe', methods=['GET', 'POST'])
 def doe():
-    """
-    Let the user pick DOE options and pass them to SMLP in 'doe' mode.
-    """
     if request.method == 'POST':
         doe_spec_file = request.files.get('doe_spec_file')
-        doe_algo = request.form.get('doe_algo')
-        doe_num_samples = request.form.get('doe_num_samples', '')
+        spec_path = None
 
-        arguments = []
         if doe_spec_file and doe_spec_file.filename:
-            specname = f"{uuid.uuid4()}_{doe_spec_file.filename}"
-            spec_path = os.path.join(app.config['UPLOAD_FOLDER'], specname)
+            spec_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4()}_{doe_spec_file.filename}")
             doe_spec_file.save(spec_path)
-            base_spec, _ = os.path.splitext(spec_path)
-            arguments += ["-doe_spec", base_spec]
 
-        if doe_algo:
-            arguments += ["-doe_algo", doe_algo]
-        if doe_num_samples:
-            arguments += ["-doe_num_samples", doe_num_samples]
+        def add_arg(flag, value):
+            if value is not None and value != "":
+                arguments.extend([flag, str(value)])
 
-        output = call_smlp_api("doe", arguments)
+        arguments = ['python3', os.path.abspath("../src/run_smlp.py")]
+
+        if not spec_path:
+            return "Error: Missing DOE spec file", 400
+
+        # Required DOE mode
+        add_arg("-doe_spec", os.path.abspath(spec_path))
+        add_arg("-out_dir", request.form.get('out_dir_val', './'))
+        add_arg("-pref", request.form.get('pref_val', 'TestDOE'))
+        add_arg("-mode", "doe")
+        add_arg("-doe_algo", request.form.get('doe_algo'))
+        add_arg("-log_time", request.form.get('log_time', 'f'))
+
+        additional_command = request.form.get('additional_command')
+        if additional_command:
+            arguments.extend(additional_command.split())
+
+        # Debugging
+        print("DEBUG: Final DOE SMLP Command ->", " ".join(arguments))
+
+        output = call_smlp_api(arguments)
         session['output'] = output
         return redirect(url_for('results'))
 
     return render_template('doe.html')
 
-#  RESULTS
+
+
+# results
+PLOT_SAVE_DIR = os.path.abspath("../regr_smlp/code/images/results")
+os.makedirs(PLOT_SAVE_DIR, exist_ok=True)  # Ensure the directory is created
+
 @app.route('/results')
 def results():
     output = session.get('output', 'No output available yet.')
     print("\n--- RESULTS ---")
     print(output)
-    return render_template('results.html', output=output)
+
+    # Get list of available plot files
+    plots = []
+    if os.path.exists(PLOT_SAVE_DIR):
+        plots = [f for f in os.listdir(PLOT_SAVE_DIR) if f.endswith(".png")]
+
+    use_h5 = session.get('use_h5', False)
+    h5_plot_html = get_h5_plot() if use_h5 else None
+
+    return render_template('results.html', output=output, plots=plots, h5_plot_html=h5_plot_html, use_h5=use_h5)
+
+# Route to serve images from the custom directory
+@app.route('/plots/<filename>')
+def serve_plot(filename):
+    return send_from_directory(PLOT_SAVE_DIR, filename)
 
 # MAIN
 if __name__ == '__main__':
