@@ -16,7 +16,7 @@ from threading import Timer
 # from difflib import ndiff, context_diff
 
 TUI_DIFF = 'diff'
-GUI_DIFF = 'tkdiff'
+GUI_DIFF = 'kdiff3' #'tkdiff'
 TREE_PATH = '../' # Path to regression location (where data, code, specs, master and model directories are located)
 SOLVERS_PATH = '../../../external' # Path to external solvers
     
@@ -170,6 +170,8 @@ def mode_identifier(switches):
             return 'datainfo'
         elif mode == 'n':
             return 'novelty'
+        elif mode == 'g':
+            return 'generate'
         else:
             return 'unknown'
     else:
@@ -529,7 +531,7 @@ def main():
             test_description = test[4]
             use_model = use_model_identifier(test_switches); #print('use_model', use_model)
             save_model = save_model_identifier(test_switches); #print('save_model', save_model)
-            test_type = mode_identifier(test_switches); #print('test_type', test_type)
+            test_type = mode_identifier(test_switches);print('test_type', test_type)
             model_algo = model_algo_identifier(test_switches); #print('model_algo', model_algo)
             
             if DEBUG:
@@ -618,8 +620,9 @@ def main():
                         print('test_data_path', test_data_path)
                         print('use_config_file', use_config_file )
                         print(test_new_data != "")
-                        
-                if test_type == 'prediction' or (test_new_data != ""): #use_config_file and
+                if test_type == 'generate': 
+                    pass
+                elif test_type == 'prediction' or (test_new_data != ""): #use_config_file and
                     if not test_new_data == '':
                         test_new_data_path = path.join(data_path, test_new_data).replace('\\', '/')
                         if path.exists(test_new_data_path):
@@ -1052,7 +1055,7 @@ def main():
                         write_to_log(test_error[1])
 
     if DEBUG:
-        print('9')
+        print('DEBUG 9')
         print('log and not args.diff', log and not args.diff)
         
     if log and not args.diff:
@@ -1102,6 +1105,8 @@ def main():
             rmtree(temp_code_dir)
         except:
             print("Can't delete " + temp_code_dir + " dir.")
+    if DEBUG:
+        print('DEBUG 10')
     
     # report tests that crashed -- based on TestXXX_error.txt files that do not exist in master
     if len(new_error_fns) > 0:

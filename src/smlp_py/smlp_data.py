@@ -36,6 +36,7 @@ class SmlpData:
         # along with instantiating DataCommon (and maybe ModelsCommon).
         self._mrmrInst = SmlpMrmr() 
         self._specInst = None # SmlpSpec()
+        self._textInst = None # SmlpText()
         
         # default values of parameters related to dataset; used to generate args.
         self._DEF_TRAIN_FIRST = 0 # subseting first_n rows from training data
@@ -254,11 +255,11 @@ class SmlpData:
                     'that has value 1 for each data sample (row) where resp1 is greater than 5 and value 0 '
                     'for the remaining samples [default: {}]'.format(str(self._RESPONSE_TO_BOOL))},
             'positive_value': {'abbr':'pos_val', 'default':self.SMLP_POSITIVE_VALUE, 'type':str,
-                'help':'Value that represents positive values in a binary categorical response ' +
+                'help':'Value that represents positive values in a binary categorical or numeric response ' +
                     'in the original input data (before any data processing has been applied) ' +
                     '[default: {}]'.format(str(self.SMLP_POSITIVE_VALUE))},
             'negative_value': {'abbr':'neg_val', 'default':self.SMLP_NEGATIVE_VALUE, 'type':str,
-                'help':'Value that represents negative values in a binary categorical response ' +
+                'help':'Value that represents negative values in a binary categorical or numeric response ' +
                     'in the original input data (before any data processing has been applied) ' +
                     '[default: {}]'.format(str(self.SMLP_NEGATIVE_VALUE))},
             'response_plots': {'abbr':'resp_plots', 'default': self._DEF_RESPONSE_PLOTS, 'type':str_to_bool,
@@ -285,6 +286,9 @@ class SmlpData:
     
     def set_spec_inst(self, spec_inst):
         self._specInst = spec_inst
+    
+    def set_text_inst(self, text_inst):
+        self._textInst = text_inst
     
     @property
     def unscaled_training_features(self):
@@ -603,16 +607,22 @@ class SmlpData:
             return json.load(f)
     
     # this function is intended to be applied on training data (features and responses) where
-    # all features are numeric; thie latter is required when training a model in SMLP model 
+    # all features are numeric; thie latter is required when training a model with SMLP in model 
     # exploration modes like optimization, etc.
+    # while df is expected to be pandas dataframe, the element can sometimes be of an np.array 
+    # element type such as 'int32', 'int64', 'float32' or 'float64' (these types are strings).  
+    # These numpy type values cannot be dumped using json.dump(), therefore we convert these
+    # values into correponding python types int and float, respectively, and this is done by 
+    # applying .item() to every element inserted as a value into the returned dictionary.
     def _data_bounds(self, df):
         assert all([pd_df_col_is_numeric(df, col) for col in df.columns])
-        return { col:{'min' : df[col].min(), 'max' : df[col].max() } for col in df.columns }
+        return { col:{'min' : df[col].min().item(), 'max' : df[col].max().item() } for col in df.columns }
     
     # saving the column min/max info into json file to be able to scale model prediction
     # results back to the original scale of the responses. The information in this file
     # is essetially the same as that avilable within mm_scaler but is easier to consume.
     def _save_data_bounds(self, df, feat_names, resp_names, data_bounds_file, mm_scaler_feat, mm_scaler_resp):
+        #print('mm_scaler_feat', mm_scaler_feat, 'mm_scaler_resp', mm_scaler_resp, type(df), df.shape)
         if mm_scaler_feat is None and mm_scaler_resp is None:
             data_bounds_dict = self._data_bounds(df)    
         else:
@@ -736,7 +746,7 @@ class SmlpData:
         # fill in the missing value row indices for each col that has a missing value
         for ind, col in zip(missing_vals_rows_array, missing_vals_cols_array):
             missing_vals_dict[col].append(ind)
-        #print('missing_values_dict', missing_vals_dict)
+        print('missing_values_dict', missing_vals_dict)
         
         # write out missing_vals_dict as json file
         with open(self.missing_values_fname, 'w') as f:
@@ -753,7 +763,7 @@ class SmlpData:
         self._data_logger.info('data summary\n' + str(data.describe()))
         #plot_data_columns(data)
         self._data_logger.info(data_version_str + ' data\n' + str(data))
-
+        
         # sanity-check the response names aginst input data
         is_training = data_version_str == 'training'
         new_labeled = self._sanity_check_responses(data, resp_names, is_training)
@@ -764,7 +774,7 @@ class SmlpData:
         # declared as variables in the specification, thus are part of domain, but do not occur
         # explicitly in alpha, eta and beta constraints, in assertions, queries, objectives....)
         keep_feat = list_unique_unordered(keep_feat + self._specInst.get_spec_constraint_vars())
-
+        
         # if feature names are not provided, we assume all features in the data besides
         # the responses should be used in the analysis as input features.
         if feat_names is None and is_training:
@@ -786,7 +796,7 @@ class SmlpData:
             data = data[feat_names + resp_names]
         else:
             data = data[feat_names]
-        #print('data 0\n', data)
+        #print('is_training', is_training); print('data 0\n', data)
         
         # in training data, drop all rows where at least one response has a missing value
         if is_training:
@@ -803,6 +813,21 @@ class SmlpData:
                         if fn not in feat_names:
                             feat_names_dict[rn].remove(fn)
             #print('feat_names_dict', feat_names_dict)
+
+        # text column processing
+        if self._textInst.text_colname is not None:
+            data, text_features = self._textInst.process_text(data, feat_names, resp_names)
+            #print('after text processing'); print('feat_names_dict', feat_names_dict); print(data); 
+            
+            # update feat_names_dict and feat_names after text preprocessing, as the features might have changed
+            for rn in feat_names_dict.keys():
+                assert (rn in resp_names)
+                if self._textInst.text_colname in feat_names_dict[rn]:
+                    feat_names_dict[rn].remove(self._textInst.text_colname)
+                    feat_names_dict[rn] = text_features + feat_names_dict[rn]
+                    feat_names.remove(self._textInst.text_colname)
+                    feat_names = text_features + feat_names
+                            
         # impute missing values; before doing that, save the missing values location information in 
         # self._missing_values_dict and write it out as json file.
         self._compute_missing_values_dict(data)
@@ -813,7 +838,7 @@ class SmlpData:
         # convert columns (feature and responses) of type bool, if any, to object/string type
         data = self._cast_boolean_features(data)
         
-        # seprate features and responses, process them separately
+        # separate features and responses, process them separately
         X, y = self._get_response_features(data, feat_names, resp_names, is_training, new_labeled)
         if is_training or new_labeled:
             y = self._preprocess_responses(y, pos_value, neg_value, resp_map, resp_to_bool, is_training)
@@ -1040,7 +1065,7 @@ class SmlpData:
             model_features_dict = self._load_model_features(self.model_features_dict_file)
             feat_names = lists_union_order_preserving_without_duplicates(list(model_features_dict.values()))
             #print('model_features_dict loaded', model_features_dict); print('feat_names loaded', feat_names)
-            X, y, X_train, y_train, X_test, y_test =  None, None, None, None, None, None 
+            X, y, X_train, y_train, X_test, y_test = None, None, None, None, None, None 
         
         if new_data_file is not None:
             X_new, y_new = self._prepare_data_for_modeling(

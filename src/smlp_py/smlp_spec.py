@@ -242,7 +242,7 @@ class SmlpSpec:
                 no_radii_defined = not self._SPEC_KNOBS_ABSOLUTE_RADIUS in var_spec and not self._SPEC_KNOBS_RELATIVE_RADIUS in var_spec
                 if both_radii_defined or no_radii_defined:
                     raise Exception('Either a relative or an absolute radius must be specified for each knop (but not both radii). ' + 
-                        'This fails for varaible {}.'.format(var_spec[self._SPEC_VARIABLE_LABEL]))
+                        'This fails for variable {}.'.format(var_spec[self._SPEC_VARIABLE_LABEL]))
         # sanity check witnesses: query names in witnesses specification must be among query names
         if self.get_spec_witn_dict is not None and self.get_spec_quer_exprs_dict is not None:
             witn_queries = set(self.get_spec_witn_dict.keys())
