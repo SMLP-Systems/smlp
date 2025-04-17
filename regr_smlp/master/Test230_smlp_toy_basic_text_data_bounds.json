@@ -1,0 +1,22 @@
+{
+	"ate": {
+		"min": 0,
+		"max": 1
+	},
+	"luki": {
+		"min": 0,
+		"max": 1
+	},
+	"pizza": {
+		"min": 0,
+		"max": 1
+	},
+	"thor": {
+		"min": 0,
+		"max": 1
+	},
+	"label": {
+		"min": 0,
+		"max": 1
+	}
+}
