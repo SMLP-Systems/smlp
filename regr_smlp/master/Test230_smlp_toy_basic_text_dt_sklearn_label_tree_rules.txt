@@ -1,0 +1,6 @@
+#Forest semantics: majority vote
+#Number of trees: 1
+
+#TREE 0
+if (thor > 0.5) then (label = 1.0) | based on 2 samples
+if (thor <= 0.5) then (label = 0.0) | based on 2 samples
