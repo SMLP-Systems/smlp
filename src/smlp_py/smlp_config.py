@@ -10,10 +10,12 @@ class SmlpConfig:
         self.report_file_prefix = None
         self.model_file_prefix = None
         self.model_rerun_config = None
+        self.wordvec_file_prefix = None
         self.config = None
         
         self._DEF_LABELED_DATA = None
         self._DEF_ANALYTICS_MODE = None #'train'
+        self._DEF_ANALYTICS_TASK = 'ml'
         self._DEF_SAVE_CONFIGURATION = False
         self._DEF_LOG_FILE_PREFIX = None
         self._DEF_OUTPUT_DIRECTORY = None
@@ -29,6 +31,9 @@ class SmlpConfig:
                 'help':'What kind of analysis should be performed; the supported modes are: '+
                     '"train", "predict", "subgroups", "doe", "discretize", "optimize", "verify", "query", "optsyn" ' +
                     '[default: {}]'.format(str(self._DEF_ANALYTICS_MODE))},
+            'analytics_task': {'abbr':'task', 'default':self._DEF_ANALYTICS_TASK, 'type':str, 
+                'help':'Specifies origin domain of data, to dustinguish ML tasks from NLP tasks. ' +
+                    'The option values are ml and nlp [default {}]'.format(str(self._DEF_ANALYTICS_TASK))},
             'interactive_plots': {'abbr':'plots', 'default':self._DEF_INTERACTIVE_PLOTS, 'type':str_to_bool, 
                 'help':'Should plots be displayed interactively (or only saved)?'+
                     '[default: {}]'.format(str(self._DEF_INTERACTIVE_PLOTS))},
@@ -53,8 +58,12 @@ class SmlpConfig:
     # Compute prefix report_name_prefix to be used in all report / log file names of an SMLP run; 
     # as well as prefix model_name_prefix to be used in the names of all output files that are required 
     # to save a trained model info and re-run the saved model on new data (without re-training).
+    # The argument model_name is used for loading a pre-trained model and saving a newly trained model.
+    # In the former use, full_path to the location of model files as well as the model name need to be
+    # passed to argument model_name, and in the latter case only the model name needs to be passed, and
+    # model files are saved in the output directory, along with all other logs / report files.
     def args_get_report_name_prefix(self, data_file_prefix:str, run_prefix:str, output_directory:str=None, 
-            new_data_file_prefix:str=None, model_name:str=None, doe_spec_file_prefix=None):
+            new_data_file_prefix:str=None, model_name:str=None, doe_spec_file_prefix=None, wordvec_model=None):
         
         if not data_file_prefix is None:
             data_dir, data_name_prefix = os.path.split(data_file_prefix)
@@ -119,8 +128,17 @@ class SmlpConfig:
             new_data_file_prefix = new_data_file_prefix.removesuffix('.csv')
             _, new_data_fname = os.path.split(new_data_file_prefix)
             report_name_prefix = report_name_prefix + '_' + new_data_fname
-        return report_name_prefix, model_name_prefix
+        
+        # name of word vector embedding model -- user-trained or pre-trained
+        if wordvec_model is None:
+            wordvec_name_prefix = None
+        else:
+            _, wordvec_name = os.path.split(wordvec_model)
+            wordvec_name_prefix = os.path.join(out_dir, wordvec_name)
+        
+        return report_name_prefix, model_name_prefix, wordvec_name_prefix
 
+        
     # args parser to which some of the arguments are added explicitly in a regular way
     # and in addition it adds additional arguments from args_dict defined elsewhere;
     # As of now args_dict includes model training hyperparameters from ML packages
@@ -150,8 +168,10 @@ class SmlpConfig:
         args = parser.parse_args()
 
         # compute and save report_file_prefix and model_file_prefix as part of self
-        self.report_file_prefix, self.model_file_prefix = self.args_get_report_name_prefix(args.labeled_data, 
-            args.log_files_prefix, args.output_directory, args.new_data, args.model_name, args.doe_spec_file) 
+        self.report_file_prefix, self.model_file_prefix, self.wordvec_file_prefix = self.args_get_report_name_prefix( \
+            args.labeled_data, args.log_files_prefix, args.output_directory, args.new_data, args.model_name, 
+            args.doe_spec_file, args.wordvec_model) 
+        #print(self.report_file_prefix, self.model_file_prefix, self.wordvec_file_prefix); assert False
         
         # Save tool configuration and model rerun configuration
         # Adapted code from https://micha-feigin.medium.com/on-using-config-files-with-pythons-argparse-8af09d0bdfb9

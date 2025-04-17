@@ -9,6 +9,8 @@ from smlp_py.smlp_data import SmlpData
 from smlp_py.smlp_subgroups import SubgroupDiscovery
 from smlp_py.smlp_config import SmlpConfig
 from smlp_py.smlp_doe import SmlpDoepy
+from smlp_py.smlp_nlp import SmlpNlp
+from smlp_py.smlp_text import SmlpText
 from smlp_py.smlp_discretize import SmlpDiscretize
 from smlp_py.smlp_terms import ModelTerms
 from smlp_py.smlp_spec import SmlpSpec
@@ -19,6 +21,8 @@ from smlp_py.smlp_query import SmlpQuery
 from smlp_py.smlp_optimize import SmlpOptimize
 from smlp_py.smlp_refine import SmlpRefine
 from smlp_py.smlp_correlations import SmlpCorrelations
+from smlp_py.smlp_generate import SmlpGenerate
+
 
 # Combining simulation results, optimization, uncertainty analysis, sequential experiments
 # https://foqus.readthedocs.io/en/3.1.0/chapt_intro/index.html
@@ -34,7 +38,9 @@ class SmlpFlows:
         self.loggerInst = SmlpLogger()
         self.tracerInst = SmlpTracer()
         self.configInst = SmlpConfig()
-        self.doeInst = SmlpDoepy();
+        self.doeInst = SmlpDoepy()
+        self.nlpInst = SmlpNlp()
+        self.textInst = SmlpText()
         self.discrInst = SmlpDiscretize()
         self.specInst = SmlpSpec()
         self.frontierInst = SmlpFrontier()
@@ -50,6 +56,7 @@ class SmlpFlows:
         self.optInst.set_smlp_query_inst(self.queryInst)
         self.refineInst = SmlpRefine()
         self.correlInst = SmlpCorrelations()
+        self.genInst = SmlpGenerate()
         
         # get args
         args_dict = self.modelInst.model_params_dict | \
@@ -57,6 +64,8 @@ class SmlpFlows:
                     self.configInst.config_params_dict | \
                     self.loggerInst.logger_params_dict | \
                     self.doeInst.doepy_params_dict | \
+                    self.nlpInst.nlp_params_dict | \
+                    self.textInst.text_params_dict | \
                     self.discrInst.discr_params_dict | \
                     self.correlInst.corr_params_dict | \
                     self.psgInst.get_subgroup_hparam_default_dict() | \
@@ -79,6 +88,8 @@ class SmlpFlows:
         self.modelInst.set_logger(self.logger)
         self.psgInst.set_logger(self.logger)
         self.doeInst.set_logger(self.logger)
+        self.nlpInst.set_logger(self.logger)
+        self.textInst.set_logger(self.logger)
         self.discrInst.set_logger(self.logger)
         self.specInst.set_logger(self.logger)
         self.frontierInst.set_logger(self.logger)
@@ -86,8 +97,9 @@ class SmlpFlows:
         self.queryInst.set_logger(self.logger)
         self.refineInst.set_logger(self.logger)
         self.correlInst.set_logger(self.logger)
+        self.genInst.set_logger(self.logger)
         
-        # set report and model files / file prefixes
+        # set report. model and wordvec files / file prefixes
         self.psgInst.set_report_file_prefix(self.configInst.report_file_prefix)
         self.dataInst.set_report_file_prefix(self.configInst.report_file_prefix)
         self.dataInst.set_model_file_prefix(self.configInst.model_file_prefix)
@@ -102,6 +114,8 @@ class SmlpFlows:
         self.queryInst.set_model_file_prefix(self.configInst.model_file_prefix)
         self.refineInst.set_report_file_prefix(self.configInst.report_file_prefix)
         self.correlInst.set_report_file_prefix(self.configInst.report_file_prefix)
+        self.textInst.set_report_file_prefix(self.configInst.report_file_prefix)
+        self.genInst.set_report_file_prefix(self.configInst.report_file_prefix)
         
         # set spec file / spec and term params
         self.modelTernaInst.set_spec_file(self.args.spec)
@@ -111,12 +125,25 @@ class SmlpFlows:
         self.modelTernaInst.set_nnet_encoding(self.args.nnet_encoding)
         #self.modelTernaInst.set_cache_terms(self.args.cache_terms)
         self.dataInst.set_spec_inst(self.specInst)
+        self.dataInst.set_text_inst(self.textInst)
+        
         self.specInst.set_radii(self.args.radius_absolute, self.args.radius_relative)
         self.specInst.set_deltas(self.args.delta_absolute, self.args.delta_relative)
         self.frontierInst.set_spec_inst(self.specInst)
         
         # set external solver to SMLP
         self.solverInst.set_solver_path(self.args.solver_path)
+        
+        # set NLP parameters and text processing parameters
+        self.nlpInst.set_nlp_params(self.args.nlp_blank, self.args.nlp_lemmatizer, self.args.nlp_tagger, 
+            self.args.nlp_ruler, self.args.nlp_senter, self.args.nlp_parser, self.args.nlp_tok2vec, 
+            self.args.nlp_ner, self.args.nlp_morphologizer, self.args.nlp_spacy_core)
+        self.textInst.set_nlp_inst(self.nlpInst)
+        self.genInst.set_nlp_inst(self.nlpInst)
+        self.textInst.set_text_params(self.args.text_colname, self.args.text_embedding, self.args.ngram_range,
+            self.args.wordvec_model, self.args.wordvec_dimension, self.configInst.wordvec_file_prefix,
+            self.args.use_wordvec, self.args.save_wordvec, self.args.fasttext_minn, self.args.fasttext_maxn, 
+            self.args.analytics_task)
         
         # ML model exploration modes. They require a spec file for model exploration.
         self.model_prediction_modes = ['train', 'predict']
@@ -247,7 +274,7 @@ class SmlpFlows:
                 new_file_path = self.configInst.report_file_prefix + '_doe_data.csv'
                 doe_out_df.to_csv(new_file_path, index=False)
                 self.data_fname = new_file_path; #print('self.data_fname 2', self.data_fname, self._data_fname)
-        
+      
         if args.analytics_mode == 'discretize':
             X, y, feat_names, resp_names, feat_names_dict = self.dataInst.preprocess_data(self.data_fname, 
                 feat_names, resp_names, None, args.keep_features, args.impute_responses, 'training', 
@@ -294,10 +321,15 @@ class SmlpFlows:
             self.logger.info('Executing run_smlp.py script: End')
             return None
         
+        if args.analytics_mode == 'generate':
+            self.genInst.smlp_generate(self.data_fname)
+            return None
+        
         # prepare data for model training
         if args.analytics_mode in self.model_prediction_modes + self.model_exploration_modes:
             #self.logger.info('Running SMLP in mode "{}": Start'.format(args.analytics_mode))
             self.logger.info('PREPARE DATA FOR MODELING')
+            #if args.analytics_task == 'ml':
             X, y, X_train, y_train, X_test, y_test, X_new, y_new, mm_scaler_feat, mm_scaler_resp, \
             levels_dict, model_features_dict, feat_names, resp_names = self.dataInst.process_data(
                 self.configInst.report_file_prefix, self.data_fname, self.new_data_fname, True, args.split_test, 
@@ -305,11 +337,27 @@ class SmlpFlows:
                 args.interactive_plots, args.response_plots, args.data_scaler,
                 args.scale_features, args.scale_responses, args.impute_responses, args.mrmr_feat_count_for_prediction, 
                 args.positive_value, args.negative_value, args.response_map, args.response_to_bool, args.save_model, args.use_model)
-
+            if False and args.analytics_task == 'nlp':
+                import pandas as pd
+                X, y, X_train, y_train, X_test, y_test, X_new, y_new, model_features_dict, feat_names, resp_names = \
+                self.textInst.process_text( \
+                    pd.concat([X, y], axis=1), resp_names[0], feat_names[0], args.mrmr_feat_count_for_prediction, \
+                    args.positive_value, args.negative_value, 'dt_sklearn', 'fasttext', \
+                    (1,2), args.nlp_blank, 'en_core_web_sm', args.nlp_lemmatizer, \
+                    args.nlp_tagger, args.nlp_ruler, args.nlp_senter, args.nlp_parser, args.nlp_tok2vec, \
+                    args.nlp_ner, args.nlp_morphologizer)
+                mm_scaler_feat, mm_scaler_resp, levels_dict = None, None, None
+            '''
+            (self, df, feat_names:list[str], resp_names:list[str], text_colname:str, vectorizer:str, 
+            ngram_range=(1,1), blank=False, spacy_core_web_name:str='en_core_web_sm', lemmatizer=True, 
+            tagger=True, ruler=True, senter=False, parser=False, tok2vec=False, ner=False, morphologizer=False)
+            '''
             # sanity check that the order of features in model_features_dict, feat_names, X_train, X_test, X is 
             # the same; this is mostly important for model exploration modes 
             self.modelInst.model_features_sanity_check(model_features_dict, feat_names, X_train, X_test, X)
-            
+            print(X_train.shape, type(X_train)); print(y_train.shape, type(y_train))
+            print(X.shape, type(X)); print(y.shape, type(y))
+            print('feat_names', feat_names); print(model_features_dict)
             # model training, validation, testing, prediction on training, labeled and new data (when available)
             if args.model == 'system':
                 model = syst_expr_dict
