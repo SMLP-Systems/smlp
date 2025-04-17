@@ -1,0 +1,6 @@
+#Forest semantics: majority vote
+#Number of trees: 1
+
+#TREE 0
+if (glove_7 > -0.7164006531238556) then (label = 0.0) | based on 2 samples
+if (glove_7 <= -0.7164006531238556) then (label = 1.0) | based on 2 samples
