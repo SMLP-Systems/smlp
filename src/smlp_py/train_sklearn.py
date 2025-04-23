@@ -33,11 +33,11 @@ class ModelSklearn:
         self._instTreeTerms = TreeTerms()
         self._instPolyTerms = PolyTerms()
         # trees (rf, dt, et) common
-        self._DEF_MIN_SAMPLES_SPLIT = 7 #2
-        self._DEF_MIN_SAMPLES_LEAF = 4 #1
+        self._DEF_MIN_SAMPLES_SPLIT = 4 #2
+        self._DEF_MIN_SAMPLES_LEAF = 3 #1
         self._DEF_MAX_DEPTH = 15 #None
         self._DEF_RAND_STATE = None
-        self._DEF_CRITERION = 'absolute_error' #'squared_error'
+        self._DEF_CRITERION = 'squared_error' #'squared_error','absolute_error'
         self._DEF_MAX_LEAF_NODES = None
         self._DEF_MIN_WEIGHT_FRACTION_LEAF = 0.0
         self._DEF_MIN_IMPURITY_DECREASE = 0.0

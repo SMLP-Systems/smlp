@@ -856,8 +856,8 @@ class SmlpOptimize:
             final_config_df = self.best_config_df.drop_duplicates(subset=self.feat_names, inplace=False, keep='last')
             final_config_df.to_csv(self.optimization_results_file+'.csv', index=False)            
             ic("changes here")
-            lower_bound = "Stable optimal lower bound: " + str(s_origin_dict['objective'])
-            plot_instance.save_to_txt(lower_bound)
+            lower_bound = str(s_origin_dict['objective'])
+            plot_instance.save_to_txt(lower_bound,key="Stable_optimal_lower_bound")
     
     
     def update_optimization_reports(self, stable_witness_terms, l, u, call_info, iter_count, scale_objectives, 

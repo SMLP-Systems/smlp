@@ -24,7 +24,7 @@ plot_instance = plot.plot_exp()
 def main(argv):
 
     plot_instance.copy_from()
-    plot_instance.save_to_txt(argv)
+    plot_instance.save_to_txt(argv, key="arguments")
     smlpInst = SmlpFlows(argv)
     smlpInst.smlp_flow()
 
@@ -35,4 +35,4 @@ if __name__ == "__main__":
 end_time = time.time()
 total_time = end_time-start_time
 plot_instance.witnesses()
-plot_instance.save_to_txt(total_time)
+plot_instance.save_to_txt(total_time, key="Total_time")

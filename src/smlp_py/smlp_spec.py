@@ -5,8 +5,10 @@ import os
 import json
 from fractions import Fraction
 import numpy as np
+from icecream import ic
 from smlp_py.smlp_utils import get_expression_variables, list_unique_unordered, np_JSONEncoder
 
+ic.configureOutput(prefix=f'Debug | ', includeContext=True)
 
 # spec file API; in addition, gives access to query constraints' expressions and expressions of assertions, queries,
 # optimization objectives specified through command line or through other files.

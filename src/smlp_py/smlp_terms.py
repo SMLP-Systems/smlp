@@ -23,7 +23,6 @@ ic.configureOutput(prefix=f'Debug | ', includeContext=True)
 ic("Changes here")
 from keras.models import Sequential
 import smlp
-ic(smlp.__file__)
 from smlp_py.smlp_utils import (np_JSONEncoder, lists_union_order_preserving_without_duplicates, 
     list_subtraction_set, get_expression_variables, str_to_bool)
 #from smlp_py.smlp_spec import SmlpSpec
@@ -559,8 +558,8 @@ class SmlpTerms:
     # Enhencement !!!: intend to extend to ground formulas as well. Currently an assertion prevents this usage:
     # assertion checks that the constant expression is rational Q or algebraic A (not a transcendental Real), and also
     # nothing else like Boolean/formula type
-    string = 'Precision used: 64'
-    plot_instance.save_to_txt(string)
+    string = '64'
+    plot_instance.save_to_txt(string,key="Precision_used")
     def ground_smlp_expr_to_value(self, ground_term:smlp.term2, approximate=False, precision=32):
         precision = 64
         ic("Change precision here")
@@ -1407,27 +1406,27 @@ class NNKerasTerms: #(SmlpTerms):
     def _nn_dense_layer_node_term(self, last_layer_terms, node_weights, node_bias):
         #print('node_weights', node_weights.shape, type(node_weights), '\n', node_weights)
         #print('node_bias', node_bias.shape, type(node_bias), '\n', node_bias);
-        ic("Before rounding up")
+        #ic("Before rounding up")
         #ic("After rounding up")
         layer_term = None
-        ic(last_layer_terms)
-        ic(node_weights)
-        ic(node_bias)
+        #ic(last_layer_terms)
+        #ic(node_weights)
+        #ic(node_bias)
         for i,t in enumerate(last_layer_terms):
             if i == 0:
                 layer_term = last_layer_terms[0] * smlp.Cnst(float(node_weights[0]))
                 #layer_term = last_layer_terms[0] * smlp.Cnst(float(np.round(node_weights[0], 4)))
             else:
-                ic(last_layer_terms[i])
-                ic(smlp.Cnst(float(node_weights[i])))
-                ic(type(smlp.Cnst(float(node_weights[i]))))
-                ic(layer_term)
+                #ic(last_layer_terms[i])
+                #ic(smlp.Cnst(float(node_weights[i])))
+                #ic(type(smlp.Cnst(float(node_weights[i]))))
+                #ic(layer_term)
                 layer_term = layer_term + last_layer_terms[i] * smlp.Cnst(float(node_weights[i]))
                 
                 #layer_term = layer_term + last_layer_terms[i] * smlp.Cnst(float(np.round(node_weights[i], 4)))
 
         layer_term = layer_term + smlp.Cnst(float(node_bias)) 
-        ic(layer_term)
+        #ic(layer_term)
         #layer_term = layer_term + smlp.Cnst(float(np.round(node_bias, 4))) 
 
         return layer_term

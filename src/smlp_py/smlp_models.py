@@ -307,10 +307,13 @@ class SmlpModels:
             msqe_vec = [mean_squared_error(orig_resp_df[resp_names[i]], orig_pred_df[pred_colnames[i]]) 
                 for i in range(len(resp_names))]
             precisions_df = pd.DataFrame(data={'response' : resp_names, 'msqe' : msqe_vec, 'r2_score' : r2_vec})
-            precisions = 'msqe: ' + str(msqe_vec[0]) + '\n' + 'r2_score: ' + str(r2_vec[0])
+            precision1 = str(msqe_vec[0])
+            precision2 = str(r2_vec[0])
+
             ic("Changes here ...")
             if data_version == 'test':
-                plot_instance.save_to_txt(precisions)
+                plot_instance.save_to_txt(precision1,key="msqe")
+                plot_instance.save_to_txt(precision2,key="r2_score")
 
             self._model_logger.info('Saving prediction precisions into file: \n' + \
                                     str(self.prediction_precisions_filename(data_version)))
@@ -337,7 +340,7 @@ class SmlpModels:
     # from args after it has been populated with command-line and default values.
     def get_hyperparams_dict(self, args, algo):
 
-        plot_instance.save_to_txt(algo)
+        plot_instance.save_to_txt(algo,key="Algo")
         #with open('default_params.json', 'r') as file:
             #default_dict = json.load(file)
 

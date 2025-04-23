@@ -1,13 +1,13 @@
 {
   "version": "1.2",
   "variables": [
-    {"label":"x", "interface":"knob", "type":"real", "range":[1.5,4.5], "rad-abs":0.01},
-	{"label":"y", "interface":"knob", "type":"real", "range":[2.5,4.5], "rad-abs":0.01},
+    {"label":"x", "interface":"knob", "type":"real", "range":[0.5,0.9], "rad-abs":0.01},
+	{"label":"y", "interface":"knob", "type":"real", "range":[0.1,1], "rad-abs":0.01},
     {"label":"z", "interface":"output", "type":"real"}
   ],
-  "alpha": "x>=2.5 and x<=3.5",
-  "beta": "z>=1.5",
-  "eta": "y<3.5",
+  "alpha": "x>=0.5 and x<=1",
+  "beta": "z>=0.3",
+  "eta": "y<1.5",
   "objectives": {
     "objective": "z"
   }

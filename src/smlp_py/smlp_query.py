@@ -176,6 +176,7 @@ class SmlpQuery:
         solver = self._modelTermsInst.create_model_exploration_instance_from_smlp_components(
             domain, model_full_term_dict, False, solver_logic)
         theta = self._modelTermsInst.compute_stability_formula_theta(cand, None, theta_radii_dict, universal) 
+        ic(theta_radii_dict)
         solver.add(theta); #print('adding theta', theta)
         solver.add(alpha); #print('adding alpha', alpha)
         solver.add(self._smlpTermsInst.smlp_not(query)); #print('adding negated quert', query)
@@ -328,6 +329,7 @@ class SmlpQuery:
             return
         
         knobs = list(theta_radii_dict.keys()); #print('knobs', knobs)
+        ic(theta_radii_dict)
         if witn_dict is None and len(knobs) == 0:
             witn_dict = dict(zip(quer_names, [{}]*len(quer_names)))
         #print('witn_dict 2', witn_dict)
