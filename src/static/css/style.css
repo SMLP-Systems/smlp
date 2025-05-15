@@ -1,0 +1,41 @@
+body {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  margin-bottom: 50px;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h2 {
+  margin-top: 1rem;
+  color: var(--bs-heading-color);
+}
+
+pre {
+  white-space: pre-wrap;
+  background-color: var(--bs-secondary-bg);
+  color: var(--bs-body-color);
+  padding: 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--bs-border-color);
+}
+
+.navbar-brand {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.navbar[data-bs-theme="dark"] {
+  --bs-navbar-color: rgba(255, 255, 255, 0.75);
+  --bs-navbar-hover-color: rgba(255, 255, 255, 0.9);
+  --bs-navbar-disabled-color: rgba(255, 255, 255, 0.25);
+  --bs-navbar-active-color: #fff;
+  --bs-navbar-brand-color: #fff;
+  --bs-navbar-brand-hover-color: #fff;
+  background-color: var(--bs-dark);
+}
+
+[data-bs-theme="dark"] .form-check-input {
+  background-color: var(--bs-secondary-bg);
+  border-color: var(--bs-border-color);
+}

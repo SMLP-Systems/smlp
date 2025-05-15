@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Predict with a Trained Model</h2>
+
+<form method="POST" enctype="multipart/form-data" class="row g-3">
+
+  <div class="col-md-6">
+    <label class="form-label">Saved Model File (.pkl, no suffix needed)</label>
+    <input type="file" name="model_file" class="form-control" required />
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">New Data File (.csv, omit suffix in final path)</label>
+    <input type="file" name="new_data_file" class="form-control" required />
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Save Model?</label>
+    <select name="save_model" class="form-select">
+      <option value="f" selected>No</option>
+      <option value="t">Yes</option>
+    </select>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Model Name (-model_name)</label>
+    <input type="text" name="model_name" class="form-control" value="my_model" />
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Output Directory (-out_dir)</label>
+    <input type="text" name="out_dir_val" class="form-control" placeholder="./" />
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Run Prefix (-pref)</label>
+    <input type="text" name="pref_val" class="form-control" placeholder="PredictRun" />
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Log Time (-log_time)</label>
+    <select name="log_time" class="form-select">
+      <option value="f" selected>No</option>
+      <option value="t">Yes</option>
+    </select>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Generate Plots (-plots)</label>
+    <select name="plots" class="form-select">
+      <option value="f" selected>No</option>
+      <option value="t">Yes</option>
+    </select>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Seed (-seed)</label>
+    <input type="text" name="seed_val" class="form-control" placeholder="e.g. 10" />
+  </div>
+
+  <div class="col-md-12">
+    <label class="form-label">Additional Command</label>
+    <input type="text" name="additional_command" class="form-control" placeholder="e.g. -something value" />
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Predict</button>
+  </div>
+
+</form>
+{% endblock %}
