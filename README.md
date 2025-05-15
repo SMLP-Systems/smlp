@@ -8,7 +8,7 @@ constraints on the inputs and outputs of the system under consideration.
 SMLP has been applied at Intel for hardware design optimization. It is a gneral
 purpose optimization and verification tool applicable to any domain where models
 can be trained on data. If you want to try out SMLP on your optimization problems
-and require support, please contact the developers through the [discussion page]().
+and require support, please contact the developers through the [discussion page](https://github.com/SMLP-Systems/smlp/discussions).
 
 When you use this tool, please cite our corresponding CAV 2024 tool paper,
 a pre-submission version of which is provided on arXiv:
