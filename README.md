@@ -5,10 +5,25 @@ based on machine learning techniques combined with formal verification
 approaches that allows selection of optimal configurations with respect to given
 constraints on the inputs and outputs of the system under consideration.
 
+SMLP has been applied at Intel for hardware design optimization. It is a gneral
+purpose optimization and verification tool applicable to any domain where models
+can be trained on data. If you want to try out SMLP on your optimization problems
+and require support, please contact the developers.
+
 When you use this tool, please cite our corresponding CAV 2024 tool paper,
 a pre-submission version of which is provided on arXiv:
 <https://arxiv.org/abs/2402.01415>
 
+Coming soon: support for NLP and LLMs in SMLP:
+
+NLP:
+-	NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
+-	NLP based root cause analysis: which words or collections of words are most correlative to classification decision (especially, for the positive class).
+
+LLMS:
+-	LLM training from scratch
+-	LLM finetuning
+-	RAG
 
 # Platform support
 
