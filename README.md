@@ -6,7 +6,7 @@ approaches that allows selection of optimal configurations with respect to given
 constraints on the inputs and outputs of the system under consideration.
 
 SMLP has been applied at Intel for hardware design optimization. It is a gneral
-purpose optimization and verification tool applicable to any domain where models
+purpose optimization and verification tool applicable to any domain where ML models
 can be trained on data. If you want to try out SMLP on your optimization problems
 and require support, please contact the developers through the [discussion page](https://github.com/SMLP-Systems/smlp/discussions).
 
