@@ -7,7 +7,7 @@ constraints on the inputs and outputs of the system under consideration.
 
 SMLP has been applied at Intel for hardware design optimization. It is a gneral
 purpose optimization and verification tool applicable to any domain where ML models
-can be trained on data. The supported modes in SMLP includes processing data and 
+can be trained on data. The supported modes in SMLP include processing data and 
 training models (NNs, tree-based, and polynomial models), querying data and models,
 certifying and verifying assertions, synthesis and pareto-optimization of configurations,
 design of experiments (to simulate systems and produce data), feature selection,
