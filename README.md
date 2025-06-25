@@ -1,13 +1,39 @@
 # About SMLP
 
 SMLP is a tool for optimization, synthesis and design space exploration. It is
-based on machine learning techniques combined with formal verification
+based on statistical and machine learning techniques combined with formal verification
 approaches that allows selection of optimal configurations with respect to given
-constraints on the inputs and outputs of the system under consideration.
+constraints on the inputs and outputs of the system under consideration.  
+
+SMLP has been applied at Intel for hardware design optimization. It is a gneral
+purpose optimization and verification tool applicable to any domain where ML models
+can be trained on data. The supported modes in SMLP include processing data and 
+training models (NNs, tree-based, and polynomial models), querying data and models,
+certifying and verifying assertions, synthesis and pareto-optimization of configurations,
+design of experiments (to simulate systems and produce data), feature selection,
+rule learning/subgroup discovery, root-cause analysis, and more.
+
+If you want to try out SMLP on your optimization problems
+and require support, please contact the developers through 
+the [discussion page](https://github.com/SMLP-Systems/smlp/discussions).
 
 When you use this tool, please cite our corresponding CAV 2024 tool paper,
 a pre-submission version of which is provided on arXiv:
 <https://arxiv.org/abs/2402.01415>
+
+Coming soon: Support for NLP and LLMs in SMLP:
+
+NLP:
+-	NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
+-	NLP based root cause analysis: which words or collections of words are most correlative to classification decision (especially, for the positive class).
+
+LLM:
+-	LLM training from scratch
+-	LLM finetuning
+-	RAG (with HuggingFace and with LangChain)
+
+Agentic:
+-	SMLP Agent
 
 
 # Platform support
@@ -26,8 +52,8 @@ instruction for the installation on Ubuntu.
 	pip install --user meson
 
 	# obtain sources
-	git clone https://github.com/fbrausse/kay.git
-	git clone https://github.com/fbrausse/smlp.git
+	git clone https://github.com/smlp-systems/kay.git
+	git clone https://github.com/smlp-systems/smlp.git
 	cd smlp/utils/poly
 
 	# workaround <https://bugs.launchpad.net/ubuntu/+source/swig/+bug/1746755>
