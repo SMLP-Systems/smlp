@@ -299,13 +299,14 @@ class SmlpFlows:
             #self.logger.info('Running SMLP in mode "{}": Start'.format(args.analytics_mode))
             self.logger.info('PREPARE DATA FOR MODELING')
             X, y, X_train, y_train, X_test, y_test, X_new, y_new, mm_scaler_feat, mm_scaler_resp, \
-            levels_dict, model_features_dict, feat_names, resp_names = self.dataInst.process_data(
-                self.configInst.report_file_prefix, self.data_fname, self.new_data_fname, True, args.split_test, 
+            levels_dict, pca_equations, model_features_dict, feat_names, resp_names = self.dataInst.process_data(
+                self.configInst.report_file_prefix, self.data_fname, self.new_data_fname, args.spec, True, args.split_test, 
                 feat_names, resp_names, args.keep_features, args.train_first_n, args.train_random_n, args.train_uniform_n, 
                 args.interactive_plots, args.response_plots, args.data_scaler,
-                args.scale_features, args.scale_responses, args.impute_responses, args.mrmr_feat_count_for_prediction, 
+                args.scale_features, args.scale_responses, args.impute_responses, args.feature_selection_model,
+                args.feature_selection_count, args.pca_feat_count_for_prediction,
                 args.positive_value, args.negative_value, args.response_map, args.response_to_bool, args.save_model, args.use_model)
-
+            
             # sanity check that the order of features in model_features_dict, feat_names, X_train, X_test, X is 
             # the same; this is mostly important for model exploration modes 
             self.modelInst.model_features_sanity_check(model_features_dict, feat_names, X_train, X_test, X)
@@ -388,7 +389,7 @@ class SmlpFlows:
             elif args.analytics_mode == 'optimize':
                 self.optInst.smlp_optimize(syst_expr_dict, args.model, model,
                     self.dataInst.unscaled_training_features, self.dataInst.unscaled_training_responses, 
-                    model_features_dict, feat_names, resp_names, objv_names, objv_exprs, args.optimize_pareto, 
+                    model_features_dict, pca_equations, feat_names, resp_names, objv_names, objv_exprs, args.optimize_pareto, 
                     args.optimization_strategy, quer_names, quer_exprs, 
                     delta_dict, args.epsilon, alpha_global_expr, beta_expr, args.eta, theta_radii_dict, 
                     args.solver_logic, args.vacuity_check, 
