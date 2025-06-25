@@ -30,7 +30,11 @@ NLP:
 LLM:
 -	LLM training from scratch
 -	LLM finetuning
--	RAG
+-	RAG (with HuggingFace and with LangChain)
+
+Agentic:
+-       SMLP Agent
+
 
 # Platform support
 
