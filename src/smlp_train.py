@@ -112,10 +112,10 @@ def main(argv):
     logger.info('PREPARE DATA FOR MODELING')    
     X, y, X_train, y_train, X_test, y_test, X_new, y_new, mm_scaler_feat, mm_scaler_resp, \
     levels_dict, model_features_dict = dataInst.process_data(
-        inst, inst.data_fname, inst.new_data_fname, True, args.split_test, feat_names, resp_names, 
+        inst, inst.data_fname, inst.new_data_fname, args.spec, True, args.split_test, feat_names, resp_names, 
         args.train_first_n, args.train_random_n, args.train_uniform_n, args.interactive_plots, 
-        args.data_scaler, args.mrmr_feat_count_for_prediction,
-        args.save_model, args.use_model)
+        args.data_scaler, args.feature_selection_model, args.feature_selection_count, 
+        args.pca_feat_count_for_prediction, args.save_model, args.use_model)
     
     # model training, validation, testing, prediction on training and labeled data as well as new data when available.    
     model = modelInst.build_models(inst, args.model, X, y, X_train, y_train, X_test, y_test, X_new, y_new,

@@ -1096,8 +1096,8 @@ class SmlpOptimize:
     #     function (and to smlp_optsyn() instead of passing X,y; The bounds on objectives are not strictly necessary,
     #     any approximation may be used, but accurate approximation might reduce iterations count needed for
     #     computing optimal confoguurations (in optimize and optsyn modes)
-    def smlp_optimize(self, syst_expr_dict:dict, algo:str, model:dict, X:pd.DataFrame, y:pd.DataFrame, model_features_dict:dict, 
-            feat_names:list[str], resp_names:list[str], 
+    def smlp_optimize(self, syst_expr_dict:dict, algo:str, model:dict, X:pd.DataFrame, y:pd.DataFrame, model_features_dict:dict,
+            pca_equations:dict, feat_names:list[str], resp_names:list[str], 
             objv_names:list[str], objv_exprs, pareto:bool, strategy:str, #asrt_names:list[str], asrt_exprs, 
             quer_names:list[str], quer_exprs, delta:float, epsilon:float, 
             alph_expr:str, beta_expr:str, eta_expr:str, theta_radii_dict:dict, solver_logic:str, vacuity:bool, 
@@ -1115,7 +1115,7 @@ class SmlpOptimize:
             
         domain, syst_term_dict, model_full_term_dict, eta, alpha, beta, interface_consistent, model_consistent = \
         self._modelTermsInst.create_model_exploration_base_components(
-            syst_expr_dict, algo, model, model_features_dict, feat_names, resp_names, 
+            syst_expr_dict, algo, model, model_features_dict, pca_equations, feat_names, resp_names, 
             #delta, epsilon, #objv_names, objv_exprs, None, None, None, None, 
             alph_expr, beta_expr, eta_expr, data_scaler, scale_feat, scale_resp, #scale_objv, 
             float_approx, float_precision, data_bounds_json_path)
