@@ -33,7 +33,7 @@ LLM:
 -	RAG (with HuggingFace and with LangChain)
 
 Agentic:
--       SMLP Agent
+-	SMLP Agent
 
 
 # Platform support
