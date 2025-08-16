@@ -1,0 +1,1 @@
+SMLP is a symbolic machine learning framework designed for RAG and finetuning via simple CLI interfaces.

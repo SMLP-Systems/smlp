@@ -9,6 +9,7 @@ import torch.nn as nn
 #import torch.optim as optim
 import torch.utils.data as data
 import math
+import torch.nn.functional as F
 
 class MultiHeadAttention(nn.Module):
     def __init__(self, d_model, num_heads):
@@ -28,7 +29,9 @@ class MultiHeadAttention(nn.Module):
     def scaled_dot_product_attention(self, Q, K, V, mask=None):
         attn_scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(self.d_k)
         if mask is not None:
-            attn_scores = attn_scores.masked_fill(mask==0, -1e9) # this constant is used to represent negative infinity
+            #  this constant is used to represent negative infinity; 
+            # better to use float('-inf') or torch.finfo().min
+            attn_scores = attn_scores.masked_fill(mask==0, -1e9)
         attn_probs = torch.softmax(attn_scores, dim=-1) 
         output = torch.matmul(attn_probs, V)
 
@@ -135,11 +138,11 @@ class Transformer(nn.Module):
         
         self.decoder_embedding = nn.Embedding(tgt_vocab_size, d_model)
         self.positional_encoding = PositionalEncoding(d_model, max_seq_length)
-        '''
-        print('self.decoder_embedding init', self.decoder_embedding)
-        inp1 = torch.LongTensor([1]); inp2 = torch.LongTensor([[1, 2, 4, 5], [4, 3, 2, 9]])
-        print(type(self.decoder_embedding), self.decoder_embedding(inp1).size(), self.decoder_embedding(inp1), self.decoder_embedding(inp2))
-        '''
+        
+        #print('self.decoder_embedding init', self.decoder_embedding)
+        #inp1 = torch.LongTensor([1]); inp2 = torch.LongTensor([[1, 2, 4, 5], [4, 3, 2, 9]])
+        #print(type(self.decoder_embedding), self.decoder_embedding(inp1).size(), self.decoder_embedding(inp1), self.decoder_embedding(inp2))
+        
         if not self.decoder_only:
             self.encoder_embedding = nn.Embedding(src_vocab_size, d_model)
             self.encoder_layers = nn.ModuleList([EncoderLayer(d_model, num_heads, d_ff, dropout) for i in range(num_layers)])
@@ -157,7 +160,7 @@ class Transformer(nn.Module):
         self._transformer_logger = logger 
         
     def generate_mask(self, src, tgt):
-        src_mask = (src != 0).unsqueeze(1).unsqueeze(2) # TODO : check out unsqueeze(2)
+        src_mask = (src != 0).unsqueeze(1).unsqueeze(2) # TODO  better to use unsqueeze(-2) instead of unsqueeze(2)
         tgt_mask = (tgt != 0).unsqueeze(1).unsqueeze(3)
         seq_length = tgt.size(1)
         nopeak_mask = (1 - torch.triu(torch.ones(1, seq_length, seq_length), diagonal=1)).bool()
@@ -165,45 +168,59 @@ class Transformer(nn.Module):
         
         return src_mask, tgt_mask
     
-    def forward(self, src, tgt):
-        src_mask, tgt_mask = self.generate_mask(src, tgt)
-        if not self.decoder_only:
+    def forward(self, src, tgt=None):
+        if self.decoder_only:
+            tgt = src  # Use src as tgt in decoder-only (causal) mode
+            src_mask, tgt_mask = self.generate_mask(tgt, tgt)
+
+            # FIX: replace -100 with 0 (safe default token)
+            if (tgt == -100).any():
+                self._transformer_logger.warning("Warning: -100 token(s) found in tgt; replaced with <pad> token (id=0)")
+                tgt = tgt.masked_fill(tgt == -100, 0)
+            tgt_embedded = self.dropout(self.positional_encoding(self.decoder_embedding(tgt)))
+
+            dec_output = tgt_embedded
+            for dec_layer in self.decoder_layers:
+                dec_output = dec_layer(dec_output, None, None, tgt_mask)  # No encoder input
+        else:
+            # Standard encoder-decoder mode
+            assert tgt is not None, "tgt must be provided in encoder-decoder mode"
+            src_mask, tgt_mask = self.generate_mask(src, tgt)
+
             src_embedded = self.dropout(self.positional_encoding(self.encoder_embedding(src)))
-        tgt_embedded = self.dropout(self.positional_encoding(self.decoder_embedding(tgt)))
-        
-        if not self.decoder_only:
+
+            # FIX: replace -100 with 0 (safe default token)
+            if (tgt == -100).any():
+                self._transformer_logger.warning("Warning: -100 token(s) found in tgt; replaced with <pad> token (id=0)")
+                tgt = tgt.masked_fill(tgt == -100, 0)
+            tgt_embedded = self.dropout(self.positional_encoding(self.decoder_embedding(tgt)))
+
             enc_output = src_embedded
             for enc_layer in self.encoder_layers:
                 enc_output = enc_layer(enc_output, src_mask)
-        else:
-            enc_output = None
-        
-        dec_output = tgt_embedded
-        for dec_layer in self.decoder_layers:
-            dec_output = dec_layer(dec_output, enc_output, src_mask, tgt_mask)
-            
+
+            dec_output = tgt_embedded
+            for dec_layer in self.decoder_layers:
+                dec_output = dec_layer(dec_output, enc_output, src_mask, tgt_mask)
+
         output = self.fc(dec_output)
-        
         return output
-    
+
     # d_model is size of numeric embeddings of words?
-    # max_seq_length s context size ????
-    # src_vocab_size = 500, tgt_vocab_size = 500, d_model = 512, num_heads = 8, num_layers = 6, d_ff = 2048,max_seq_length = 100, dropout = 0.1
+    # max_seq_length is context size ????
     def set_train_test_data(self):
         self.src_data = torch.randint(self.src_vocab_size, (64, self.max_seq_length)) # (batch_size, seq_length)
         self.tgt_data = torch.randint(self.tgt_vocab_size, (64, self.max_seq_length)) # (batch_size, seq_length)
         self.val_src_data = torch.randint(self.src_vocab_size, (64, self.max_seq_length)) # (batch_size, seq_length)
         self.val_tgt_data = torch.randint(self.tgt_vocab_size, (64, self.max_seq_length)) # (batch_size, seq_length)
-        #return src_data, tgt_data, val_src_data, val_tgt_data
     
     def train_transformer_model(self): 
-        print(self)
-        print('self.max_seq_length',self.max_seq_length)
+        #print('self.max_seq_length',self.max_seq_length)
         src_data, tgt_data, val_src_data, val_tgt_data = self.src_data, self.tgt_data, self.val_src_data, self.val_tgt_data
         # training
         #src_data = torch.randint(self.src_vocab_size, (64, self.max_seq_length)) # (batch_size, seq_length)
         #tgt_data = torch.randint(self.tgt_vocab_size, (64, self.max_seq_length)) # (batch_size, seq_length)
-        print('src_dara:', src_data)
+        #print('src_dara:', src_data)
         loss_func = nn.CrossEntropyLoss(ignore_index=0)
         optimizer = torch.optim.Adam(self.parameters(), lr=0.0001, betas=(0.9, 0.98), eps=1e-9)        
         self.train()
@@ -213,7 +230,7 @@ class Transformer(nn.Module):
             loss = loss_func(output.contiguous().view(-1, self.tgt_vocab_size), tgt_data[:, :-1].contiguous().view(-1))
             loss.backward()
             optimizer.step()
-            print(f"Epoch: {epoch+1} Loss: {loss.item()}")
+            self._transformer_logger(f"Epoch: {epoch+1} Loss: {loss.item()}")
             self.eval()
         
         
@@ -224,17 +241,57 @@ class Transformer(nn.Module):
         with torch.no_grad():
             val_output = self(val_src_data, val_tgt_data[:, :-1])
             val_loss = loss_func(val_output.contiguous().view(-1, self.tgt_vocab_size), val_tgt_data[:, :-1].contiguous().view(-1))
-            print(f"Validation loss: {val_loss.item()}")
+            self._transformer_logger(f"Validation loss: {val_loss.item()}")
             
-        print('self.decoder_embedding final', dir(self.decoder_embedding))
+        #print('self.decoder_embedding final', dir(self.decoder_embedding))
         inp1 = torch.LongTensor([1]); inp2 = torch.LongTensor([[1, 2, 4, 5], [4, 3, 2, 9]])
-        print(type(self.decoder_embedding), self.decoder_embedding(inp1).size(), self.decoder_embedding(inp1), self.decoder_embedding(inp2))
+        #print(type(self.decoder_embedding), self.decoder_embedding(inp1).size(), self.decoder_embedding(inp1), self.decoder_embedding(inp2))
+
+    # block_size is the maximum context length (in tokens) that your Transformer model can handle.
+    # -It defines the input sequence length for both training and generation.
+    # -The model is trained to predict the next token given up to block_size previous tokens.
+    # During training, block_size is used to split your training data into input chunks.
+    #   e.g. input_ids = [5, 10, 8, 22, 3, 9, 17, 25, ...]
+    #   If block_size=4, you train on chunks like:
+    #   [5,10,8,22] → target:  [10,8,22,3]
+    #   [3,9,17,25] → target:  [9,17,25, ...]
+    #   In most implementations, training dataset uses block_size to truncate input to the model.
+    #   Model itself needs to know block_size only if it uses it internally (e.g., for caching or enforcing max length).
+    # During generation, block_size ensures the model does not exceed the maximum context length it was trained with.
+    #   If you try to feed it more than block_size tokens, it will likely throw an error (or behave unexpectedly).    
+    def generate(self, idx, max_new_tokens, **kwargs):
+        """
+        idx: (B, T) array of indices in the current context
+        max_new_tokens: int, number of tokens to generate
+        kwargs: extra arguments to be ignored (e.g., token_type_ids)
+        """
+        for _ in range(max_new_tokens):
+            idx_cond = idx[:, -self.max_seq_length:]  # crop context
+            logits = self(idx_cond)               # (B, T, vocab_size)
+            logits = logits[:, -1, :]             # last token logits
+            probs = torch.softmax(logits, dim=-1) # convert to probs
+            next_token = torch.multinomial(probs, num_samples=1)  # sample
+            idx = torch.cat((idx, next_token), dim=1)  # append
+        return idx
+
+    # not used currently -- HF tokenizer.decode() is used instead in llmTrainer.
+    def decode(self, token_ids):
+        # Assuming you have a tokenizer with a decode method or a vocab dict
+        if hasattr(self, 'tokenizer') and callable(getattr(self.tokenizer, 'decode', None)):
+            return self.tokenizer.decode(token_ids)
+        elif hasattr(self, 'vocab') and isinstance(self.vocab, dict):
+            inv_vocab = {v: k for k, v in self.vocab.items()}
+            return ''.join([inv_vocab.get(id, '?') for id in token_ids])
+        else:
+            raise NotImplementedError("No decode method or vocab available.")
 
 # https://www.youtube.com/watch?v=kCc8FmEb1nY    
-from torch.nn import functional as F
 class BigramLanguageModel(nn.Module):
-    def __init__(self, vocab_size, block_size, n_embed, device):
+    def __init__(self, vocab_size, block_size=128, n_embed=128, device=None):
         super().__init__()
+        self.token_embedding_table = nn.Embedding(vocab_size, vocab_size)
+        self.block_size = block_size or 128  # for generate() to work
+        
         # each token directly reads off the logits for the next token from a lookup table
         #self.token_embedding_table = nn.Embedding(vocab_size, vocab_size) # TODO !!! why is the second dimention vocab_size????? 
         self.token_embedding_table = nn.Embedding(vocab_size, n_embed)
@@ -262,7 +319,7 @@ class BigramLanguageModel(nn.Module):
             loss = F.cross_entropy(logits, targets)
             
         return logits, loss
-    
+
     def generate(self, idx, max_new_tokens):
         # idx is (B, T) array of indices in the current context
         for _ in range(max_new_tokens):
@@ -280,7 +337,37 @@ class BigramLanguageModel(nn.Module):
             idx = torch.cat((idx, idx_next), dim=1) # (B, T+1)
             
         return idx
-    
+
+
+'''
+Main Roles
+-- A lightweight character-level model with support for:
+-- Bigram model or Transformer model (with token embedding and attention),
+-- Tokenization and encoding of input text,
+-- Training on character sequences using CrossEntropyLoss,
+-- Text generation based on trained model.
+
+Key Parameters
+-- Attribute: Description
+-- block_size: Max length of input context (e.g., 8 tokens).
+-- vocab_tokens: The list of tokens used for encoding/decoding.
+-- use_blm: If True, uses Bigram model instead of Transformer.
+-- max_iters: Number of training iterations (default: 30).
+
+
+Key Methods
+-- Method: Functionality
+-- set_vocab_tokens(): Sets token vocabulary from preprocessed input.
+-- read_text(path): Reads and tokenizes input text into encoded training and validation sets.
+-- get_batch(split): Prepares a batch of (X, Y) context-target pairs for training.
+-- estimate_loss(): Evaluates average training/validation loss over batches.
+-- flow(path): Complete training and generation pipeline: trains model and writes generated output to file.
+
+Output
+
+After training, the model generates a sequence of tokens, decodes them into characters, and saves the output 
+to a file using generated_text_filename().
+'''
 # https://www.youtube.com/watch?v=kCc8FmEb1nY    
 class LanguageModel:  
     def __init__(self):
@@ -327,16 +414,16 @@ class LanguageModel:
             text = f.read()
         
         if self.vocab_tokens is None:
-            chars = sorted(list(set(text))); print('chars', chars)
+            chars = sorted(list(set(text))); #print('chars', chars)
         else:
-            chars = self.vocab_tokens; print('vocab_tokens', chars)
+            chars = self.vocab_tokens; #print('vocab_tokens', chars)
         
-        self.vocab_size = len(chars); print('vocab_size', self.vocab_size)
+        self.vocab_size = len(chars); #print('vocab_size', self.vocab_size)
         '''
         TODO !!! check out other encodings of text to numbers / text tokenizers, e.g., Google's SentencePiece and OpenAI's tiktoken used in GPT
         import tiktoken
         enc = tiktoken.get_encoding('gpt2')
-        print(enc.n_vocap) # vocab size, 50257
+        #print(enc.n_vocap) # vocab size, 50257
         enc.encode('hii there') # produces [71, 4178, 612]
         enc.decode([71, 4178, 612]) # produces 'hii there'
         '''
@@ -349,13 +436,13 @@ class LanguageModel:
             data = torch.tensor(self.encode(text), dtype=torch.long)
         else:    
             data = torch.tensor(self.encode(self.text_tokens), dtype=torch.long)
-        print('data', data.shape, data.dtype, data[ : 1000])
+        #print('data', data.shape, data.dtype, data[ : 1000])
         #data = torch.tensor(self.encode(text), dtype=self.embed_type); print('data', data.shape, data.dtype, data[ : 1000])
-        n = int(0.9*len(data)); print('n', n)
-        train_data = data[ :n]; print('train data size', train_data.size())
-        val_data = data[ n: ]; print('val data size', val_data.size())
+        n = int(0.9*len(data)); #print('n', n)
+        train_data = data[ :n]; #print('train data size', train_data.size())
+        val_data = data[ n: ]; #print('val data size', val_data.size())
         
-        print(train_data[ :self.block_size+1])
+        #print(train_data[ :self.block_size+1])
         
         x = train_data[:self.block_size]
         y = train_data[1:self.block_size+1]
@@ -383,13 +470,13 @@ class LanguageModel:
             losses = torch.zeros(self.eval_iters)
             for k in range(self.eval_iters):
                 X, Y = self.get_batch(split, train_data, val_data)
-                print('applying the model -------------'); print(X.size(), type(X)); print(Y.size(), type(Y))
+                #print('applying the model -------------'); print(X.size(), type(X)); print(Y.size(), type(Y))
                 if self.use_blm:
                     logits, loss = model(X, Y)
                 else:
-                    pred = model(X, Y); print('pred', type(pred), pred.size())
+                    pred = model(X, Y); #print('pred', type(pred), pred.size())
                     #print('predictions', pred.contiguous().view(-1, self.vocab_size))
-                    loss = loss_func(pred.contiguous().view(-1, self.vocab_size), Y.contiguous().view(-1)); print('loss', loss)
+                    loss = loss_func(pred.contiguous().view(-1, self.vocab_size), Y.contiguous().view(-1)); #print('loss', loss)
                     #logits, loss = BigramLanguageModel(self.vocab_size, self.block_size, self.n_embed, self.device).forward(pred)
                     
                 losses[k] = loss.item()
@@ -402,7 +489,7 @@ class LanguageModel:
     def flow(self, path_to_file):
         train_data, val_data = self.read_text(path_to_file)
         xb, yb = self.get_batch('train', train_data, val_data)
-        print('xb', xb.shape, 'yb', yb.shape)
+        #print('xb', xb.shape, 'yb', yb.shape)
         
         if self.use_blm:
             model = BigramLanguageModel(self.vocab_size, self.block_size, self.n_embed, self.device)
@@ -448,8 +535,12 @@ class LanguageModel:
         context = torch.zeros((1, 1), dtype=torch.long, device=self.device)
         #context = torch.zeros((1, 1), dtype=self.embed_type, device=self.device)
         # TODO !!!!!!!!!!!!!!!!!! temp print(self.decode(blm.generate(context, max_new_tokens=500)[0].tolist()))
+        # TODO !!!!!!! here we use BigramLanguageModel model for genration, Transformer-trained models are not 
+        # supported for generation here. They are supported in smlp_llm module.
         gen_text = self.decode(BigramLanguageModel(self.vocab_size, self.block_size, self.n_embed, 
            self.device).generate(context, max_new_tokens=500)[0].tolist())
+        #gen_text = self.decode(blm.generate(context, max_new_tokens=500)[0].tolist())
+
         print(gen_text) 
         #assert False
         gen_file = self.generated_text_filename()
@@ -457,12 +548,7 @@ class LanguageModel:
         f = open(gen_file, "w")
         f.write(gen_text)
         f.close()
-                                
-        
     
-            
-        
-        
 '''
  tensor([[-0.6341, -1.5322,  1.4393,  0.9145, -0.3685,  0.4999,  0.7808, -0.2803,
           0.3839, -0.3487,  0.2024, -0.4766,  0.5524,  1.1519, -0.1288, -0.3035,

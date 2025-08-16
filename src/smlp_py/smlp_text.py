@@ -83,16 +83,12 @@ class SmlpText:
     def set_nlp_inst(self, nlp_inst):
         self._nlpInst = nlp_inst
     
-    # pre-trained or user-trained vector embegging model file name prefix
-    def set_wordvec_file_prefix(self, wordvec_file_prefix):
-        self.wordvec_file_prefix = wordvec_file_prefix
-    
     def set_report_file_prefix(self, report_file_prefix):
         self.report_file_prefix = report_file_prefix
         
     def set_text_params(self, text_colname:str, text_embedding:str, ngram_range:tuple, wordvec_model:str,
             wordvec_dimension:int, wordvec_file_prefix:str, use_wordvec:bool, save_wordvec:bool, 
-            fasttext_minn:int, fasttext_maxn:int, analytics_task:str=None):
+            fasttext_minn:int, fasttext_maxn:int):
         self.text_embedding = text_embedding
         self.text_colname = text_colname
         self.ngram_range = ngram_range
@@ -101,7 +97,6 @@ class SmlpText:
         self.wordvec_file_prefix = wordvec_file_prefix
         self.use_wordvec = use_wordvec
         self.save_wordvec = save_wordvec
-        self.analytics_task = analytics_task
         self.fasttext_minn = fasttext_minn
         self.fasttext_maxn = fasttext_maxn
         
@@ -193,7 +188,7 @@ class SmlpText:
     def text_embed(self, X_train:pd.DataFrame, X_test:pd.DataFrame, nlp, vectorizer:str, dim, minn, maxn):
         self._text_logger.info('Creating word embedding using method ' + str(self.text_embedding))
         
-        print('X_train before vectors\n', X_train)
+        #print('X_train before vectors\n', X_train)
         if self.text_embedding == 'word2vec':
             X_train_cv = X_train.apply(lambda x: nlp(x).vector)
             X_test_cv = X_test.apply(lambda x: nlp(x).vector)
@@ -207,9 +202,9 @@ class SmlpText:
             if self.use_wordvec:
                 vect = fasttext.load_model(self.wordvec_model)
             else:
-                X = pd.concat([X_train, X_test], axis=0); print(X_train, X_test, X)
+                X = pd.concat([X_train, X_test], axis=0); #print(X_train, X_test, X)
                 tmp_fasttext_data_file = self.report_file_prefix + '_wordvec_tmp.csv'
-                print('tmp_fasttext_data_file', tmp_fasttext_data_file)
+                #print('tmp_fasttext_data_file', tmp_fasttext_data_file)
                 X.to_csv(tmp_fasttext_data_file, columns=[X.name], header=None, index=False)
                 vect = fasttext.train_unsupervised(tmp_fasttext_data_file, self.text_embedding, minn=minn, maxn=maxn, dim=dim)
                 os.remove(tmp_fasttext_data_file)
@@ -226,11 +221,11 @@ class SmlpText:
         else:
             raise Exception('Unsupported vectorizer ' + str(self.text_embedding) + ' in function text_vectorize')
         
-        print('after embedding\nX_train_cv\n', X_train_cv, '\nX_test_cv\n', X_test_cv) 
-        print('X_train_cv', X_train_cv.shape, type(X_train_cv)); print(X_train_cv)
+        #print('after embedding\nX_train_cv\n', X_train_cv, '\nX_test_cv\n', X_test_cv) 
+        #print('X_train_cv', X_train_cv.shape, type(X_train_cv)); print(X_train_cv)
         X_train_cv = pd.DataFrame(np.stack(X_train_cv, axis=0))
         X_test_cv = pd.DataFrame(np.stack(X_test_cv, axis=0))
-        print('X_train_cv', X_train_cv.shape, type(X_train_cv)); print(X_train_cv)
+        #print('X_train_cv', X_train_cv.shape, type(X_train_cv)); print(X_train_cv)
         text_colnames = ['_'.join([self.text_embedding, str(i)]) for i in range(0, X_train_cv.shape[1])]
         
         feat_names_map = dict(zip(range(len(text_colnames)), text_colnames))
@@ -247,10 +242,10 @@ class SmlpText:
         
         nlp = self._nlpInst.create_nlp()
         
-        print('df in process_text (1) \n', df); print(type(df)); print(feat_names, resp_names)
+        #print('df in process_text (1) \n', df); print(type(df)); print(feat_names, resp_names)
         df[self.text_colname] = df[self.text_colname].apply(lambda t: self._nlpInst.nlp_preprocess(t, nlp))
-        print('df in process_text (2) \n', df); print(type(df)); print(df.columns.tolist())
-        print(df.head())
+        #print('df in process_text (2) \n', df); print(type(df)); print(df.columns.tolist())
+        #print(df.head())
         test_size = 0.1
         if (test_size > 0 and test_size < 1) or test_size > 1:
             # split can be performed
@@ -266,13 +261,13 @@ class SmlpText:
             X_test = pd.DataFrame(columns=[X_train.name])
             y_test = pd.DataFrame(columns=y_train.columns.tolist())
         
-        print('X train and test before vectorization -- shapes:', X_train.shape, X_test.shape); 
-        print('X train and test before vectorization -- types:', type(X_train), type(X_test)); 
-        print(X_train); 
+        #print('X train and test before vectorization -- shapes:', X_train.shape, X_test.shape); 
+        #print('X train and test before vectorization -- types:', type(X_train), type(X_test)); 
+        #print(X_train); 
         
-        print('y train and test before vectorization -- shapes', y_train.shape, y_test.shape)
-        print('y train and test before vectorization -- types', type(y_train), type(y_test))
-        print('y_train df\n', y_train); 
+        #print('y train and test before vectorization -- shapes', y_train.shape, y_test.shape)
+        #print('y train and test before vectorization -- types', type(y_train), type(y_test))
+        #print('y_train df\n', y_train); 
         
         if self.text_embedding in ['bow', 'tfidf']:
             X_train, X_test, new_feat_names = self.text_vectorize_sklearn(X_train, X_test, self.text_embedding)
@@ -285,24 +280,24 @@ class SmlpText:
         
         X_train = pd.DataFrame(X_train)
         X_test = pd.DataFrame(X_test)
-        print('after vectorization -- shapes:', X_train.shape, X_test.shape); 
-        print('after vectorization -- types:', type(X_train), type(X_test)); 
-        print(X_train)
-        print('new_feature names', new_feat_names)
+        #print('after vectorization -- shapes:', X_train.shape, X_test.shape); 
+        #print('after vectorization -- types:', type(X_train), type(X_test)); 
+        #print(X_train)
+        #print('new_feature names', new_feat_names)
         
         y_train = pd.DataFrame(y_train)
         y_test = pd.DataFrame(y_test)
-        print('y vectors after converting to df -- shapes', y_train.shape, y_test.shape)
-        print('y vectors after converting to df -- types', type(y_train), type(y_test))
-        print('y_train df\n', y_train); print('y_test df\n', y_test); 
+        #print('y vectors after converting to df -- shapes', y_train.shape, y_test.shape)
+        #print('y vectors after converting to df -- types', type(y_train), type(y_test))
+        #print('y_train df\n', y_train); print('y_test df\n', y_test); 
         
         X = pd.concat([X_train, X_test], axis=0)
         y = pd.concat([y_train, y_test], axis=0)
         #T = pd.concat([T_train, T_test], axis=0)
-        print('full X and y -- shapes:', X.shape, y.shape)
-        print('full X and y -- types:', type(X), type(y))
-        print('X\n', X); print('y\n', y)
-        print('concat\n', pd.concat([X, y], axis=1))
+        #print('full X and y -- shapes:', X.shape, y.shape)
+        #print('full X and y -- types:', type(X), type(y))
+        #print('X\n', X); print('y\n', y)
+        #print('concat\n', pd.concat([X, y], axis=1))
         
         self._text_logger.info('Processing test data: end')
         return pd.concat([X, y], axis=1), new_feat_names

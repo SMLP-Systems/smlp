@@ -1,0 +1,93 @@
+
+smlp_logger - INFO - Executing run_smlp.py script: Start
+
+smlp_logger - INFO - Running SMLP in mode "rag": Start
+
+smlp_logger - INFO - Running RAG with base model facebook/rag-token-base, using HuggingFace libs.
+
+smlp_logger - INFO - Starting RAG training
+
+smlp_logger - INFO - Loading dataset (text) ../texts/toy_smlp.json
+
+smlp_logger - INFO - Loading tokenizer and model facebook/rag-token-base
+
+smlp_logger - INFO - Training with: <class 'transformers.models.rag.modeling_rag.RagTokenForGeneration'>
+
+smlp_logger - INFO - Preparing passages and retriever for FAISS
+
+smlp_logger - INFO - Prepare and index passages for FAISS
+
+smlp_logger - INFO - Passages prepared and saved.
+
+smlp_logger - INFO - FAISS passages and retriever created
+
+smlp_logger - INFO - Loading retriever
+
+smlp_logger - INFO - Tokenizing datasets
+
+smlp_logger - INFO - Creating training_args
+
+smlp_logger - INFO - Creating trainer
+
+smlp_logger - INFO - Training starts
+
+smlp_logger - INFO - Computing loss: start
+
+smlp_logger - INFO - Computing loss: end
+
+smlp_logger - INFO - Computing loss: start
+
+smlp_logger - INFO - Computing loss: end
+
+smlp_logger - INFO - Computing loss: start
+
+smlp_logger - INFO - Computing loss: end
+
+smlp_logger - INFO - Computing loss: start
+
+smlp_logger - INFO - Computing loss: end
+
+smlp_logger - INFO - Training completed
+
+smlp_logger - INFO - Saving model, tokenizer, and retriever to ./test245_model
+
+smlp_logger - INFO - [FAISS] Saving model, tokenizer, and retriever
+
+smlp_logger - INFO - [FAISS] Model, tokenizer, and retriever saved to: ./test245_model
+
+smlp_logger - INFO - Model, tokenizer, and retriever saved to: ./test245_model
+
+smlp_logger - INFO - Starting RAG generation
+
+smlp_logger - INFO - Loading RAG trained model from: ./test245_model
+
+smlp_logger - INFO - rag_token loaded from config: True
+
+smlp_logger - INFO - Loading model and tokenizer from ./test245_model
+
+smlp_logger - INFO - Retriever index type: CustomHFIndex
+
+smlp_logger - INFO - Model, tokenizer, and retriever loaded successfully
+
+smlp_logger - INFO - Generating answers for 1 question(s)
+
+smlp_logger - INFO - Top Retrieved Documents:
+
+smlp_logger - INFO -   1. SMLP was developed by franz, zurab and konstantin.
+
+smlp_logger - INFO - Top Retrieved Passages:
+
+
+smlp_logger - INFO -   1. SMLP was developed by franz, zurab and konstantin.
+
+smlp_logger - INFO - Generated Answer(s):
+
+smlp_logger - INFO - 
+	Q: Who developed SMLP?
+	A: SMLP was developed by franz, zurab and konstantin.
+
+smlp_logger - INFO - Saving generated text into ./Test245_toy_smlp_rag_generated.txt
+
+smlp_logger - INFO - Running SMLP in mode "rag": End
+
+smlp_logger - INFO - Executing run_smlp.py script: End

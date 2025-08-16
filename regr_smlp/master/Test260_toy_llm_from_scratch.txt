@@ -1,0 +1,14 @@
+
+smlp_logger - INFO - Executing run_smlp.py script: Start
+
+smlp_logger - INFO - Running SMLP in mode "llm": Start
+
+smlp_logger - INFO - Generated text: Once upon a time, where was a kingdom where the knight thought Slot Slot Slot Slot Slot Slot Slot Slot Slot Slot Slot Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk thermal thermal brill Hex Contra tumultuous tumultuous tumultuous tumultuous tumultuous tumultuous
+
+smlp_logger - INFO - Saving generated text into ./Test260_toy_llm_from_scratch_llm_generated.txt
+
+smlp_logger - INFO - Generated: Once upon a time, where was a kingdom where the knight thought Slot Slot Slot Slot Slot Slot Slot Slot Slot Slot Slot Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk thermal thermal brill Hex Contra tumultuous tumultuous tumultuous tumultuous tumultuous tumultuous
+
+smlp_logger - INFO - Running SMLP in mode "llm": End
+
+smlp_logger - INFO - Executing run_smlp.py script: End

@@ -310,7 +310,7 @@ class ModelSklearn:
     def dt_regr_train(self, feature_names, resp_names, algo, hparam_dict,
             X_train, X_test, y_train, y_test, seed, weights):
         # Fit the regressor, set max_depth = 3
-        print(X_train, '\n', X_test, '\n', y_train, '\n', y_test)
+        #print(X_train, '\n', X_test, '\n', y_train, '\n', y_test)
         '''
         is_classification = True
         for resp_name in resp_names:

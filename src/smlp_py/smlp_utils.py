@@ -54,6 +54,9 @@ def str_to_str_list_list(value):
 def str_to_int_tuple(value):    
     return tuple([int(x) for x in value.split(',')])
 
+def str_to_str_list_pipe(value):
+    return value.split("|||")
+
 def timed(f, desc=None, log=lambda *args: print(*args, file=sys.stderr)):
     now = datetime.datetime.now()
     r = f()
