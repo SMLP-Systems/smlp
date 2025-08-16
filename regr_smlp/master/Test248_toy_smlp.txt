@@ -1,0 +1,35 @@
+
+smlp_logger - INFO - Executing run_smlp.py script: Start
+
+smlp_logger - INFO - Running SMLP in mode "rag": Start
+
+smlp_logger - INFO - Running RAG with base model facebook/rag-token-base, using HuggingFace libs.
+
+smlp_logger - INFO - Starting RAG generation
+
+smlp_logger - INFO - Loading RAG trained model from: ../rag_models/test247_model
+
+smlp_logger - INFO - rag_token loaded from config: True
+
+smlp_logger - INFO - Loading model and retriever for cosine similarity from: ../rag_models/test247_model
+
+smlp_logger - INFO - Model, retriever, and tokenizer loaded successfully (cosine)
+
+smlp_logger - INFO - Generating answers for 1 question(s)
+
+smlp_logger - INFO - Top Retrieved Passages:
+
+
+smlp_logger - INFO -   1. SMLP was developed by franz, zurab and konstantin.
+
+smlp_logger - INFO - Generated Answer(s):
+
+smlp_logger - INFO - 
+	Q: Who developed SMLP?
+	A: SMLP was developed by franz, zurab and konstantin
+
+smlp_logger - INFO - Saving generated text into ./Test248_toy_smlp_rag_generated.txt
+
+smlp_logger - INFO - Running SMLP in mode "rag": End
+
+smlp_logger - INFO - Executing run_smlp.py script: End

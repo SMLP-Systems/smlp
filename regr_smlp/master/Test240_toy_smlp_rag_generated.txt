@@ -1,0 +1,16 @@
+<think>
+Alright, let's tackle this question. The user is asking who developed SMLP. I remember that the user has provided a context where it says SMLP was developed by Franz, Zurab, and Konstantin. So, based on the information given in the context, the answer should be these three individuals.
+
+I don't need to look at any other parts of the context because the question is solely dependent on what's stated there. The tool paper and manual details might provide more context about SMLP but aren't necessary for answering who developed it. 
+
+So, putting it all together, I can confidently state that SMLP was developed by these three people.
+</think>
+
+The development of SMLP was created by Franz, Zurab, and Konstantin.
+
+Step-by-step explanation:
+1. The context states that SMLP was developed by these three individuals.
+2. No additional information is needed beyond this fact.
+3. The question only asks for the developers, not other details about the tool or its publications.
+
+Answer: Franz, Zurab, and Konstantin were the developers of SMLP.

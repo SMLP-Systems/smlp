@@ -1,0 +1,61 @@
+
+smlp_logger - INFO - Executing run_smlp.py script: Start
+
+smlp_logger - INFO - Running SMLP in mode "rag": Start
+
+smlp_logger - INFO - Running RAG with base model deepseek-r1:1.5b, using LangChain libs.
+
+smlp_logger - INFO - Starting RAG training
+
+smlp_logger - INFO - Computing passages from input text
+
+smlp_logger - INFO - Number of passages loaded: 1
+
+smlp_logger - INFO - Computing embedding and indexing
+
+smlp_logger - INFO - Creating RAG chain for training
+
+smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at rag_base_url http://localhost:11434
+
+smlp_logger - INFO - Saving RAG artifacts in directory: ./test239_model
+
+smlp_logger - INFO - Saving FAISS index into file ./test239_model/faiss_index
+
+smlp_logger - INFO - Saving model artifacts config into file ./test239_model/rag_config.json
+
+smlp_logger - INFO - {'rag_prompt_type': 'document_focused', 'rag_retriever_top_k': 3, 'rag_embedding_model': 'nomic-embed-text', 'rag_base_url': 'http://localhost:11434', 'rag_base_model_name': 'deepseek-r1:1.5b'}
+
+smlp_logger - INFO - Saved RAG artifacts to: ./test239_model
+
+smlp_logger - INFO - Creating RAG chain for answering question(s)
+
+smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at rag_base_url http://localhost:11434
+
+smlp_logger - INFO - Answering questions...
+
+
+smlp_logger - INFO - Q: Who developed SMLP?
+
+smlp_logger - INFO - Top 3 retrieved passages for this question
+
+smlp_logger - INFO - [1] SMLP was developed by Franz, Zurab and Konstantin.  
+SMLP tool paper is published in CAV 2025 conference.  
+SMLP manual is available at Git Hub.  
+-----
+
+smlp_logger - INFO - Answer: <think>
+Alright, so I need to figure out who developed SMLP based on the provided context. Let me read through the context carefully.
+
+The first sentence says, "SMLP was developed by Franz, Zurab and Konstantin." That seems straightforward—three people are mentioned as developers of the tool. Then there's information about a paper published in CAV 2025 and that the manual is available on Git Hub. But these seem like general details about SMLP, not its developer.
+
+The question is asking who developed SMLP specifically. Since the context only mentions three people as contributors but doesn't specify who developed the tool itself, I can't determine which of them was the original developer. The information provided isn't relevant to identifying the developers of SMLP.
+</think>
+
+Franz, Zurab, and Konstantin were the three developers of SMLP.
+
+
+smlp_logger - INFO - Saving generated text into ./Test239_toy_smlp_rag_generated.txt
+
+smlp_logger - INFO - Running SMLP in mode "rag": End
+
+smlp_logger - INFO - Executing run_smlp.py script: End

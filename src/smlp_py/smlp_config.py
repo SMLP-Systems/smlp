@@ -14,8 +14,8 @@ class SmlpConfig:
         self.config = None
         
         self._DEF_LABELED_DATA = None
+        self._DEF_TEXT_DATA = None
         self._DEF_ANALYTICS_MODE = None #'train'
-        self._DEF_ANALYTICS_TASK = 'ml'
         self._DEF_SAVE_CONFIGURATION = False
         self._DEF_LOG_FILE_PREFIX = None
         self._DEF_OUTPUT_DIRECTORY = None
@@ -27,13 +27,16 @@ class SmlpConfig:
             'labeled_data': {'abbr':'data', 'default':self._DEF_LABELED_DATA, 'type':str, 
                 'help':'Path, possibly excluding the .csv, or including gz or bz2 suffix, to input ' +
                     ' training data file containing labels [default {}]'.format(str(self._DEF_LABELED_DATA))},
+            'text_data': {'abbr':'text', 'default':self._DEF_TEXT_DATA, 'type':str, 
+                'help':'Path to input training text data file for finetune and RAG modes. ' +
+                    "In finetune mode, the expected structure varies by task: the text-generation task requires " +
+                    "and the BERT-style QA requires 'question', 'context', 'answer' fields. " +
+                    "In RAG mode: PDF for LangChain based RAG, and PDF/JSON/CSV for HuggingFace based RAG. " +
+                    '[default {}]'.format(str(self._DEF_TEXT_DATA))},
             'analytics_mode': {'abbr':'mode', 'default':self._DEF_ANALYTICS_MODE, 'type':str, 
                 'help':'What kind of analysis should be performed; the supported modes are: '+
                     '"train", "predict", "subgroups", "doe", "discretize", "optimize", "verify", "query", "optsyn" ' +
                     '[default: {}]'.format(str(self._DEF_ANALYTICS_MODE))},
-            'analytics_task': {'abbr':'task', 'default':self._DEF_ANALYTICS_TASK, 'type':str, 
-                'help':'Specifies origin domain of data, to dustinguish ML tasks from NLP tasks. ' +
-                    'The option values are ml and nlp [default {}]'.format(str(self._DEF_ANALYTICS_TASK))},
             'interactive_plots': {'abbr':'plots', 'default':self._DEF_INTERACTIVE_PLOTS, 'type':str_to_bool, 
                 'help':'Should plots be displayed interactively (or only saved)?'+
                     '[default: {}]'.format(str(self._DEF_INTERACTIVE_PLOTS))},
@@ -53,7 +56,7 @@ class SmlpConfig:
                     'Paramters specified through command line will override the correponding '
                     'config file values if they are specified there as well ' +
                     '[default: {}]'.format(str(self._DEF_LOAD_CONFIGURATION))}
-        }  # TODO !!!!!! check default of load_configuration; define and use DEF_VALUES in all options
+        }
     
     # Compute prefix report_name_prefix to be used in all report / log file names of an SMLP run; 
     # as well as prefix model_name_prefix to be used in the names of all output files that are required 
@@ -63,13 +66,13 @@ class SmlpConfig:
     # passed to argument model_name, and in the latter case only the model name needs to be passed, and
     # model files are saved in the output directory, along with all other logs / report files.
     def args_get_report_name_prefix(self, data_file_prefix:str, run_prefix:str, output_directory:str=None, 
-            new_data_file_prefix:str=None, model_name:str=None, doe_spec_file_prefix=None, wordvec_model=None):
-        
+            new_data_file_prefix:str=None, model_name:str=None, doe_spec_file_prefix=None, text_file_prefix=None, 
+            wordvec_model=None):
         if not data_file_prefix is None:
             data_dir, data_name_prefix = os.path.split(data_file_prefix)
         else:
             data_dir, data_name_prefix = None, None
-
+        
         # Define _model_dir and _model_name_prefix. 
         if not model_name is None:
             model_dir, model_name_prefix = os.path.split(model_name)
@@ -81,10 +84,17 @@ class SmlpConfig:
         else:
             doe_spec_dir, doe_spec_name_prefix = None, None
         
+        if not text_file_prefix is None:
+            text_dir, text_name_prefix = os.path.split(text_file_prefix)
+        else:
+            text_dir, text_name_prefix = None, None
+        
         out_dir = output_directory
         if out_dir is None:
             if not data_dir is None:
                 out_dir = data_dir
+            elif not text_dir is None:
+                out_dir = text_dir
             elif not model_dir is None:
                 out_dir = model_dir
             elif not doe_spec_dir is None:
@@ -96,6 +106,9 @@ class SmlpConfig:
             input_data_name_prefix = data_name_prefix.removesuffix('.bz2')
             input_data_name_prefix = input_data_name_prefix.removesuffix('.gz')
             input_data_name_prefix = input_data_name_prefix.removesuffix('.csv')
+        elif text_name_prefix is not None:
+            input_data_name_prefix = text_name_prefix.removesuffix('.json').\
+                removesuffix('.jsonl').removesuffix('.txt').removesuffix('.pdf').removesuffix('.csv')
         elif doe_spec_name_prefix is not None:
             input_data_name_prefix = doe_spec_name_prefix.removesuffix('.csv')
         else:
@@ -108,7 +121,7 @@ class SmlpConfig:
         # define model_name_prefix to be used as suffix in names of all files used to save the model related info
         #run_prefix = run_prefix
         if model_name is None:
-            assert not (data_name_prefix is None and doe_spec_dir is None)
+            assert not (data_name_prefix is None and doe_spec_dir is None and text_name_prefix is None)
             model_name_prefix = os.path.join(out_dir, run_prefix + '_' + input_data_name_prefix)
         else:
             model_name_prefix = os.path.join(out_dir, model_name)
@@ -145,67 +158,55 @@ class SmlpConfig:
     # sklearm caret, keras -- model_params_dict = keras_dict | sklearn_dict | caret_dict, 
     # as well as data and logger related parameters: data_params_dict and logger_params_dict
     def args_dict_parse(self, argv, args_dict):
-        #print('argv', argv)
+        if not argv:
+            argv = ["run_smlp.py"]
+
         parser = argparse.ArgumentParser(prog=argv[0])
-        #print('parser', parser)
-        
+
         for p, v in args_dict.items():
-            #print('p', p, 'v', v); print('type', v['type'])
             if 'default' in v:
                 parser.add_argument('-'+v['abbr'], '--'+p, default=v['default'], 
                                     type=v['type'], help=v['help'])
             else:
                 parser.add_argument('-'+v['abbr'], '--'+p, type=v['type'], help=v['help'])
 
+        # Initial parse
         args = parser.parse_args(argv[1:])
 
-        # support for loading parameters from configuration file
+        # Handle config loading
         if args.load_configuration is not None:
             with open(args.load_configuration, 'r') as f:
                 parser.set_defaults(**json.load(f))
+            args = parser.parse_args(argv[1:])  # RE-parse with same argv (not sys.argv)
 
-        # Reload arguments to override config file values with command line values
-        args = parser.parse_args()
+        # Compute and save report_file_prefix and model_file_prefix as part of self
+        self.report_file_prefix, self.model_file_prefix, self.wordvec_file_prefix = \
+            self.args_get_report_name_prefix(
+                args.labeled_data, args.log_files_prefix, args.output_directory, args.new_data,
+                args.model_name, args.doe_spec_file, args.text_data, args.wordvec_model
+            )
 
-        # compute and save report_file_prefix and model_file_prefix as part of self
-        self.report_file_prefix, self.model_file_prefix, self.wordvec_file_prefix = self.args_get_report_name_prefix( \
-            args.labeled_data, args.log_files_prefix, args.output_directory, args.new_data, args.model_name, 
-            args.doe_spec_file, args.wordvec_model) 
-        #print(self.report_file_prefix, self.model_file_prefix, self.wordvec_file_prefix); assert False
-        
-        # Save tool configuration and model rerun configuration
-        # Adapted code from https://micha-feigin.medium.com/on-using-config-files-with-pythons-argparse-8af09d0bdfb9
-        # TODO !!! this is not the right place to save configuration. This is better to do 
-        # within function args_dict_parse called above, but in current implementation we are forced
-        # to save configuration only after inst (paths definitions) has been instantiated, as we 
-        # need to compute file name for the dumped json file and for this we need function 
-        # inst.get_report_name_prefix() from inst to be available
-        #print('args.save_configuration', args.save_configuration)
+        # Save config if requested
         if args.save_configuration:
-            #args_config_file = inst.get_report_name_prefix() + '_args_config.json'
             args_config_file = self.report_file_prefix + '_args_config.json'
             tmp_args = vars(args).copy()
-            del tmp_args['save_configuration']  # Do not dump value of conf_export flag
-            del tmp_args['load_configuration']  # Values already loaded
+            del tmp_args['save_configuration'] # Do not dump value of this option
+            del tmp_args['load_configuration'] # Values already loaded
             self.config = tmp_args
             with open(args_config_file, 'w') as f:
-                f.write(json.dumps(tmp_args,  indent=4, sort_keys=True))
-                f.close()
-                #json.dump(args, f, indent='\t', cls=np_JSONEncoder)
-        
-        # save configuration to be able to build model with same parameters for new data
+                f.write(json.dumps(tmp_args, indent=4, sort_keys=True))
+
+        # Save model rerun config if requested
         if args.save_model_rerun_configuration:
-            #model_rerum_config_file = inst.get_report_name_prefix() + '_rerun_model_config.json'
             if not vars(args)['save_model']:
                 return args
-            #model_rerum_config_file = self.report_file_prefix + '_rerun_model_config.json'
             model_args = vars(args).copy()
             # assign false to save_model since we are using an already saved model
-            model_args['save_model'] = 'false' 
+            model_args['save_model'] = 'false'
             # assign true to use_model since we want to use a saved model
-            model_args['use_model'] = 'true' 
+            model_args['use_model'] = 'true'
             # new data set must be provided, we are not using new data from config file
-            model_args['new_data'] = None 
+            model_args['new_data'] = None
             # training (labeled) data set from which model was built is not required
             model_args['labeled_data'] = None
             # the log file prefix used to create model is not needed
@@ -213,6 +214,5 @@ class SmlpConfig:
             # prefix model_name with the output directory
             model_args['model_name'] = None
             self.model_rerun_config = model_args
-        #print('args', args)
+
         return args
-    

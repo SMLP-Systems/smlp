@@ -10,8 +10,43 @@ from spacy.lang.en.stop_words import STOP_WORDS
 
 from smlp_py.smlp_utils import str_to_bool #, str_to_int_tuple, lists_union_order_preserving_without_duplicates
 
+'''
+Summary
+
+The SmlpNlp class is a configurable text preprocessing engine built around the SpaCy NLP library. 
+It allows users to flexibly construct a customized SpaCy pipeline with only the components they need, 
+making it suitable for various machine learning and text analytics workflows, such as:
+-- Lemmatization: reduces words to their base or dictionary form, called a lemma. Stemming uses a heuristic approach, 
+   simply removing suffixes or prefixes, while lemmatization considers the word's context and morphology to find its lemma.
+-- Part-Of-Speech (POS) tagging: assigning a grammatical label (like noun, verb, adjective, etc.) to each word in a text.
+-- Named entity recognition (NER): recognizes named entities within text (like people, organizations, locations, dates...)
+-- Sentence splitting (also known as sentence segmentation or sentence tokenization): is the process of dividing a text into 
+   its individual sentences. It enables further analysis and processing of the text on a sentence-by-sentence basis.
+-- Removing stop words, punctuation, and irrelevant tokens
+It also provides a helper function for text cleaning using SpaCy pipelines, with token filtering based 
+on part-of-speech and stopword status.
+
+Key features:
+
+-- Modular NLP Pipeline: Dynamically builds SpaCy pipelines with only needed components (e.g., lemmatizer, NER, parser, etc.).             
+-- Preprocessing: Lemmatizes text and removes irrelevant tokens (e.g., stop words, punctuation, whitespace).                           |
+-- Blank vs Pre-trained Pipelines: Supports building a blank pipeline from scratch or loading from SpaCy’s pre-trained models 
+   (`en_core_web_sm`, etc.). 
+-- Custom NLP Parameters: Parameters like `nlp_lemmatizer`, `nlp_ruler`, etc., let users fine-tune the preprocessing logic.              
+
+Best Use Case
+
+-- Preprocess text before vectorization or classification
+-- Customize NLP pipelines based on task needs
+-- Work alongside tools like SmlpText for embedding, feature synthsis and downstream ML analysis
+
+'''
+
 class SmlpNlp:
     def __init__(self):
+        '''
+        Initializes the class with default NLP pipeline settings. These defaults can be overridden using set_nlp_params()
+        '''
         self._DEF_NLP_SPACY_BLANK = False
         self._DEF_NLP_SPACY_LEMMATIZER = True
         self._DEF_NLP_SPACY_TAGGER = True
@@ -74,6 +109,7 @@ class SmlpNlp:
     def set_logger(self, logger):
         self._nlp_logger = logger 
 
+    # Allows manual configuration of the SpaCy pipeline components to enable or disable.
     def set_nlp_params(self, nlp_blank:bool, nlp_lemmatizer:bool, nlp_tagger:bool, nlp_ruler:bool, 
             nlp_senter:bool, nlp_parser:bool, nlp_tok2vec:bool, nlp_ner:bool, nlp_morphologizer:bool,
             nlp_spacy_core:str):
@@ -88,6 +124,10 @@ class SmlpNlp:
         self.nlp_morphologizer = nlp_morphologizer
         self.nlp_spacy_core = nlp_spacy_core
     
+    
+    # Dynamically constructs a SpaCy nlp object according to the configured pipeline components. 
+    # Handles loading from SpaCy core models or from scratch (spacy.blank).
+    #
     # blank=True and opt_load=True version does not work, due to an issue in spacy.
     # Suggested fix like installing spacy-lookups-data does not work either:
     # https://github.com/explosion/spaCy/discussions/9512
@@ -174,6 +214,12 @@ class SmlpNlp:
         self._nlp_logger.info('Creating NLP instance: end')
         return nlp
 
+    # Applies the constructed pipeline to a given text. Filters out tokens that are stop words, 
+    # punctuation, or POS tags like 'SPACE', 'X', or 'PUNCT'. Outputs lemmatized, cleaned text.
+    # Used say in process_text method to process text data before synthesizing feature from text.
+    # The nlp_preprocess() method applies: Lemmatization, Token filtering: removes stopwords, 
+    # punctuation, whitespace, Optional regex (commented). Handles long text cutoff (>100,000 characters)
+    # This method prepares text for ML models, classifiers, or vectorization (e.g., in SmlpText).
     # TODO extend this function to support more text processing heuristics
     # Currently we just apply lemmatization and drop the stop words and
     # punctuation marks as well as tokens of categories ['SPACE', 'X', 'PUNCT'].

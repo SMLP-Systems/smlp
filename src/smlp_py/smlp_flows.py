@@ -22,7 +22,9 @@ from smlp_py.smlp_optimize import SmlpOptimize
 from smlp_py.smlp_refine import SmlpRefine
 from smlp_py.smlp_correlations import SmlpCorrelations
 from smlp_py.smlp_generate import SmlpGenerate
-
+from smlp_py.smlp_llm import SmlpLlm
+from smlp_py.smlp_finetune import SmlpFinetune
+from smlp_py.smlp_rag import SmlpRag
 
 # Combining simulation results, optimization, uncertainty analysis, sequential experiments
 # https://foqus.readthedocs.io/en/3.1.0/chapt_intro/index.html
@@ -57,9 +59,12 @@ class SmlpFlows:
         self.refineInst = SmlpRefine()
         self.correlInst = SmlpCorrelations()
         self.genInst = SmlpGenerate()
+        self.llmInst = SmlpLlm()
+        self.finetuneInst = SmlpFinetune()
+        self.ragInst = SmlpRag()
         
         # get args
-        args_dict = self.modelInst.model_params_dict | \
+        self.args_dict = self.modelInst.model_params_dict | \
                     self.dataInst.data_params_dict | \
                     self.configInst.config_params_dict | \
                     self.loggerInst.logger_params_dict | \
@@ -75,9 +80,13 @@ class SmlpFlows:
                     self.queryInst.query_params_dict | \
                     self.verifyInst.asrt_params_dict | \
                     self.optInst.opt_params_dict | \
-                    self.solverInst.solver_params_dict #| \
+                    self.solverInst.solver_params_dict | \
+                    self.llmInst.llm_params_dict | \
+                    self.ragInst.rag_params_dict | \
+                    self.finetuneInst.finetune_config_dict
                     
-        self.args = self.configInst.args_dict_parse(argv, args_dict)
+        self.args = self.configInst.args_dict_parse(argv, self.args_dict)
+        
         self.log_file = self.configInst.report_file_prefix + '.txt'
         self.trace_file = self.configInst.report_file_prefix + '_trace.csv'
         
@@ -98,6 +107,9 @@ class SmlpFlows:
         self.refineInst.set_logger(self.logger)
         self.correlInst.set_logger(self.logger)
         self.genInst.set_logger(self.logger)
+        self.llmInst.set_logger(self.logger)
+        self.ragInst.set_logger(self.logger)
+        self.finetuneInst.set_logger(self.logger)
         
         # set report. model and wordvec files / file prefixes
         self.psgInst.set_report_file_prefix(self.configInst.report_file_prefix)
@@ -116,6 +128,9 @@ class SmlpFlows:
         self.correlInst.set_report_file_prefix(self.configInst.report_file_prefix)
         self.textInst.set_report_file_prefix(self.configInst.report_file_prefix)
         self.genInst.set_report_file_prefix(self.configInst.report_file_prefix)
+        self.llmInst.set_report_file_prefix(self.configInst.report_file_prefix)
+        self.ragInst.set_report_file_prefix(self.configInst.report_file_prefix)
+        self.finetuneInst.set_report_file_prefix(self.configInst.report_file_prefix)
         
         # set spec file / spec and term params
         self.modelTernaInst.set_spec_file(self.args.spec)
@@ -139,11 +154,10 @@ class SmlpFlows:
             self.args.nlp_ruler, self.args.nlp_senter, self.args.nlp_parser, self.args.nlp_tok2vec, 
             self.args.nlp_ner, self.args.nlp_morphologizer, self.args.nlp_spacy_core)
         self.textInst.set_nlp_inst(self.nlpInst)
-        self.genInst.set_nlp_inst(self.nlpInst)
+        self.genInst.set_nlp_inst(self.nlpInst); 
         self.textInst.set_text_params(self.args.text_colname, self.args.text_embedding, self.args.ngram_range,
             self.args.wordvec_model, self.args.wordvec_dimension, self.configInst.wordvec_file_prefix,
-            self.args.use_wordvec, self.args.save_wordvec, self.args.fasttext_minn, self.args.fasttext_maxn, 
-            self.args.analytics_task)
+            self.args.use_wordvec, self.args.save_wordvec, self.args.fasttext_minn, self.args.fasttext_maxn)
         
         # ML model exploration modes. They require a spec file for model exploration.
         self.model_prediction_modes = ['train', 'predict']
@@ -151,6 +165,9 @@ class SmlpFlows:
         self.data_exploration_modes = ['frontier']
         self.supervised_modes = ['subgroups', 'discretize', 'correlate'] + self.model_prediction_modes + \
             self.model_exploration_modes + self.data_exploration_modes
+        self.llm_modes = ['rag', 'nlp', 'generate', 'llm']
+        self.smlp_modes = self.model_prediction_modes + self.model_exploration_modes + self.data_exploration_modes + \
+            self.supervised_modes + self.llm_modes
         
         # create and set tracer (to profile steps of system/model exploration algorithm)
         if self.args.analytics_mode in self.model_exploration_modes:
@@ -261,7 +278,7 @@ class SmlpFlows:
             doe_out_df = self.doeInst.sample_doepy(args.doe_algo, args.doe_spec_file, args.doe_num_samples, 
                 self.configInst.report_file_prefix, args.doe_prob_distribution, args.doe_design_resolution, 
                 args.doe_central_composite_center, args.doe_central_composite_face, 
-                args.doe_central_composite_alpha, args.doe_box_behnken_centers); #print('doe_out_df\n', doe_out_df); 
+                args.doe_central_composite_alpha, args.doe_box_behnken_centers)
             if args.analytics_mode == 'doe':
                 self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
                 self.logger.info('Executing run_smlp.py script: End')
@@ -273,7 +290,7 @@ class SmlpFlows:
                     doe_out_df[r] = doe_out_df.apply(lambda row: eval(expr, {}, row), axis=1)
                 new_file_path = self.configInst.report_file_prefix + '_doe_data.csv'
                 doe_out_df.to_csv(new_file_path, index=False)
-                self.data_fname = new_file_path; #print('self.data_fname 2', self.data_fname, self._data_fname)
+                self.data_fname = new_file_path
       
         if args.analytics_mode == 'discretize':
             X, y, feat_names, resp_names, feat_names_dict = self.dataInst.preprocess_data(self.data_fname, 
@@ -284,6 +301,7 @@ class SmlpFlows:
                 result_type=args.discretization_type)
             self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
             self.logger.info('Executing run_smlp.py script: End')
+            return None
         
         if args.analytics_mode == 'correlate':
             X, y, feat_names, resp_names, feat_names_dict = self.dataInst.preprocess_data(self.data_fname, 
@@ -296,6 +314,7 @@ class SmlpFlows:
                 args.mrmr_feat_count_for_correlation)
             self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
             self.logger.info('Executing run_smlp.py script: End')
+            return None
         
         if args.analytics_mode == 'subgroups':
             X, y, feat_names, resp_names, feat_names_dict = self.dataInst.preprocess_data(self.data_fname, 
@@ -321,15 +340,68 @@ class SmlpFlows:
             self.logger.info('Executing run_smlp.py script: End')
             return None
         
+        # Custom defined LLM training and text generation flow, for experimentation  with transformers
         if args.analytics_mode == 'generate':
             self.genInst.smlp_generate(self.data_fname)
+            
+        # Training LLM from scratch and text generation
+        if args.analytics_mode == 'llm':
+            self.llmInst.smlp_llm(llm_text=args.text_data, llm_model_class=args.llm_model_class, 
+                llm_trained_model_path=args.llm_trained_model_path, 
+                llm_train=args.llm_train, llm_generate=args.llm_generate, llm_prompt=args.llm_prompt, 
+                llm_vocab_size=args.llm_vocab_size, llm_block_size=args.llm_block_size, 
+                llm_epochs=args.llm_epochs, llm_batch_size=args.llm_batch_size)
+            self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
+            self.logger.info('Executing run_smlp.py script: End')
             return None
+        
+        # The RAG (Retrieval Augmented Generation) flow for LLMs
+        if args.analytics_mode == 'rag':
+            self.ragInst.smlp_rag(rag_questions=args.rag_questions, rag_text=args.text_data, rag_type=args.rag_type, 
+                rag_base_model_name=args.rag_base_model_name, rag_trained_model_path=args.rag_trained_model_path, 
+                rag_index_backend=args.rag_index_backend, rag_top_k_passages=args.rag_top_k_passages, 
+                rag_base_url=args.rag_base_url, rag_embedding_model=args.rag_embedding_model, 
+                rag_prompt_type=args.rag_prompt_type, rag_max_input_length=args.rag_max_input_length, 
+                rag_max_target_length=args.rag_max_target_length, rag_max_new_tokens=args.rag_max_new_tokens,
+                rag_trust_remote_code=args.rag_trust_remote_code, rag_sample=args.rag_sample, 
+                rag_token=args.rag_token, rag_train=args.rag_train, rag_eval=args.rag_eval, 
+                rag_batch_size=args.rag_batch_size, rag_epochs=args.rag_epochs, 
+                rag_question_column=args.rag_question_column, rag_context_column=args.rag_context_column, 
+                rag_eval_strategy=args.rag_eval_strategy, rag_save_steps=args.rag_save_steps, 
+                rag_logging_steps=args.rag_logging_steps, rag_report_to=args.rag_report_to, rag_lr=args.rag_lr,
+                rag_weight_decay=args.rag_weight_decay, rag_save_total_limit=args.rag_save_total_limit,
+                rag_compute_device=args.rag_compute_device)
+            self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
+            self.logger.info('Executing run_smlp.py script: End')
+            return None
+        
+        # Finetuning of pre-trained LLM models
+        if args.analytics_mode == 'finetune':
+            self.finetuneInst.smlp_finetune(finetune_base_model_name=args.finetune_base_model_name, 
+                finetune_trained_model_path=args.finetune_trained_model_path, 
+                finetune_dataset_name=args.text_data, finetune_prompt=args.finetune_prompt,
+                finetune_context=args.finetune_context,
+                finetune_task_type=args.finetune_task_type, finetune_max_new_tokens=args.finetune_max_new_tokens,
+                finetune_train=args.finetune_train, finetune_eval=args.finetune_eval, 
+                finetune_num_train_epochs=args.finetune_num_train_epochs, 
+                finetune_per_device_train_batch_size=args.finetune_per_device_train_batch_size, 
+                finetune_use_4bit=args.finetune_use_4bit, finetune_lora_r=args.finetune_lora_r, 
+                finetune_lora_alpha=args.finetune_lora_alpha, finetune_lora_dropout=args.finetune_lora_dropout,
+                finetune_fp16=args.finetune_fp16, finetune_bf16=args.finetune_bf16, 
+                finetune_max_seq_length=args.finetune_max_seq_length, finetune_save_steps=args.finetune_save_steps, 
+                finetune_save_strategy=args.finetune_save_strategy, finetune_sample=args.finetune_sample, 
+                finetune_temperature=args.finetune_temperature,finetune_num_beams=args.finetune_num_beams,
+                finetune_top_k=args.finetune_top_k, finetune_top_p=args.finetune_top_p, 
+                finetune_repetition_penalty=args.finetune_repetition_penalty)
+            self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
+            self.logger.info('Executing run_smlp.py script: End')
+            return None
+            
         
         # prepare data for model training
         if args.analytics_mode in self.model_prediction_modes + self.model_exploration_modes:
             #self.logger.info('Running SMLP in mode "{}": Start'.format(args.analytics_mode))
             self.logger.info('PREPARE DATA FOR MODELING')
-            #if args.analytics_task == 'ml':
             X, y, X_train, y_train, X_test, y_test, X_new, y_new, mm_scaler_feat, mm_scaler_resp, \
             levels_dict, model_features_dict, feat_names, resp_names = self.dataInst.process_data(
                 self.configInst.report_file_prefix, self.data_fname, self.new_data_fname, True, args.split_test, 
@@ -337,27 +409,11 @@ class SmlpFlows:
                 args.interactive_plots, args.response_plots, args.data_scaler,
                 args.scale_features, args.scale_responses, args.impute_responses, args.mrmr_feat_count_for_prediction, 
                 args.positive_value, args.negative_value, args.response_map, args.response_to_bool, args.save_model, args.use_model)
-            if False and args.analytics_task == 'nlp':
-                import pandas as pd
-                X, y, X_train, y_train, X_test, y_test, X_new, y_new, model_features_dict, feat_names, resp_names = \
-                self.textInst.process_text( \
-                    pd.concat([X, y], axis=1), resp_names[0], feat_names[0], args.mrmr_feat_count_for_prediction, \
-                    args.positive_value, args.negative_value, 'dt_sklearn', 'fasttext', \
-                    (1,2), args.nlp_blank, 'en_core_web_sm', args.nlp_lemmatizer, \
-                    args.nlp_tagger, args.nlp_ruler, args.nlp_senter, args.nlp_parser, args.nlp_tok2vec, \
-                    args.nlp_ner, args.nlp_morphologizer)
-                mm_scaler_feat, mm_scaler_resp, levels_dict = None, None, None
-            '''
-            (self, df, feat_names:list[str], resp_names:list[str], text_colname:str, vectorizer:str, 
-            ngram_range=(1,1), blank=False, spacy_core_web_name:str='en_core_web_sm', lemmatizer=True, 
-            tagger=True, ruler=True, senter=False, parser=False, tok2vec=False, ner=False, morphologizer=False)
-            '''
+
             # sanity check that the order of features in model_features_dict, feat_names, X_train, X_test, X is 
             # the same; this is mostly important for model exploration modes 
             self.modelInst.model_features_sanity_check(model_features_dict, feat_names, X_train, X_test, X)
-            print(X_train.shape, type(X_train)); print(y_train.shape, type(y_train))
-            print(X.shape, type(X)); print(y.shape, type(y))
-            print('feat_names', feat_names); print(model_features_dict)
+
             # model training, validation, testing, prediction on training, labeled and new data (when available)
             if args.model == 'system':
                 model = syst_expr_dict
@@ -385,8 +441,8 @@ class SmlpFlows:
             if args.analytics_mode == 'verify':
                 if True or len(self.specInst.get_spec_knobs)> 0:
                     if config_dict is None:
-                        configuration = self.specInst.sanity_check_verification_spec(); #print('configuration', configuration)
-                        config_dict = dict([(asrt_name, configuration) for asrt_name in asrt_names]); #print('config_dict', config_dict)
+                        configuration = self.specInst.sanity_check_verification_spec()
+                        config_dict = dict([(asrt_name, configuration) for asrt_name in asrt_names])
                     self.queryInst.smlp_verify(syst_expr_dict, args.model, model, 
                         model_features_dict, feat_names, resp_names, asrt_names, asrt_exprs, config_dict,
                         delta_dict, alpha_global_expr, beta_expr, args.eta, theta_radii_dict, 
@@ -460,7 +516,6 @@ class SmlpFlows:
                     args.data_scaler, args.scale_features, args.scale_responses, args.scale_objectives, 
                     args.approximate_fractions, args.fraction_precision,
                     self.dataInst.data_bounds_file, bounds_factor=None, T_resp_bounds_csv_path=None)
-            
                 
             self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
             self.logger.info('Executing run_smlp.py script: End')
