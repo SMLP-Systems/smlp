@@ -999,13 +999,15 @@ def main():
 
     for process in process_list:
         process.join()
+
     # fixing output and master path for the system use:
-    master_path = master_path.replace('/',
-                                      path.sep).replace('\"',
-                                                        '').replace('\'', '')
-    output_path = output_path.replace('/',
-                                      path.sep).replace('\"',
-                                                        '').replace('\'', '')
+    # XXX fb: What exactly does "fix" mean here? '\"' and '\'' are perfectly
+    #         valid symbols in a path.
+    def fix_path(p):
+        return p.replace('/', path.sep).replace('\"', '').replace('\'', '')
+
+    master_path = fix_path(master_path)
+    output_path = fix_path(output_path)
     files_in_master = get_all_files_from_dir(master_path)
     files_in_output = get_all_files_from_dir(output_path)
 
