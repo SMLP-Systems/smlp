@@ -496,31 +496,30 @@ def main():
             tempdir += tests
         else:
             tempdir = 'temp_code4'
-        temp_code_dir = path.join(
-            TREE_PATH, tempdir
-        )  # Path of temp copied code dir.
+        # Path of temp copied code dir.
+        temp_code_dir = path.join(TREE_PATH, tempdir)
         if path.exists(temp_code_dir):
             rmtree(temp_code_dir)
-        copytree(
-            dst=temp_code_dir, src=code_path, ignore=ignored_files
-        )  # Copies code to temp dir.
+        # Copies code to temp dir.
+        copytree(dst=temp_code_dir, src=code_path, ignore=ignored_files)
         chdir(temp_code_dir)  # Changes working dir to temp code dir.
     else:
         temp_code_dir = code_path
-    master_path = path.join(
-        TREE_PATH, 'master'
-    )  # Path to master results (to compare with)
-    models_path = path.join(
-        TREE_PATH, 'models'
-    )  # Path to saved models and everything required to re-run it
+
+    # Path to master results (to compare with)
+    master_path = path.join(TREE_PATH, 'master')
+
+    # Path to saved models and everything required to re-run it
+    models_path = path.join(TREE_PATH, 'models')
+
     data_path = path.join(TREE_PATH, 'data')  # Path to the data
     doe_path = path.join(TREE_PATH, 'grids')  # Path to the doe grids data
-    specs_path = path.join(
-        TREE_PATH, 'specs'
-    )  # Path to the domain spec for model exploration
-    tests_data = path.join(
-        temp_code_dir, 'smlp_regr.csv'
-    )  # Path of the tests config file
+
+    # Path to the domain spec for model exploration
+    specs_path = path.join(TREE_PATH, 'specs')
+
+    # Path of the tests config file
+    tests_data = path.join(temp_code_dir, 'smlp_regr.csv')
 
     diff = 'diff'
 
