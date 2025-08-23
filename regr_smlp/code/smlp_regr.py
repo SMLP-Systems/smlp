@@ -48,16 +48,6 @@ def get_all_files_from_dir(dir_path):
     return listdir(dir_path)
 
 
-def fetch_test(test_id, tests_data_path):
-    with open(tests_data_path, 'r') as rFile:
-        csvreader = reader(rFile, delimiter=',')
-        next(csvreader, None)
-        for row in csvreader:
-            if row[0] == test_id:
-                return row
-    raise NameError('Test {0} not found!'.format(test_id))
-
-
 def conf_identifier(switches):
     return '-config' in switches
 
@@ -530,6 +520,13 @@ def main():
     tests_queue = Queue()
     print_lock = Lock()
 
+    # First, read in the tests_data_path CSV. As a list we can easily manipulate it.
+
+    with open(tests_data_path, 'r') as rFile:
+        csvreader = reader(rFile, delimiter=',')
+        next(csvreader, None)
+        tests_data = list(csvreader)
+
     def is_toy_test(row):
         prefixes = ('smlp_toy', 'mltp_toy')
         if any(row[i].startswith(p) for p in prefixes for i in (1, 2)):
@@ -539,47 +536,34 @@ def main():
             get_conf_name(row[3]).startswith('smlp_toy')
         )
 
+    # XXX fb: what exactly is this special case here?
+    def is_special_toy(row):
+        return row[1] == '' and row[2] == '' and not conf_identifier(row[3])
+
     if tests == "all":
-        with open(tests_data_path, 'r') as rFile:
-            csvreader = reader(rFile, delimiter=',')
-            next(csvreader, None)
-            for row in csvreader:
-                if row[0] not in ignored_tests:
-                    tests_list.append(row)
-                    tests_queue.put(row)
-    elif tests == 'toy':
-        with open(tests_data_path, 'r') as rFile:
-            csvreader = reader(rFile, delimiter=',')
-            next(csvreader, None)
-            for row in csvreader:
-                if row[0] in ignored_tests:
-                    continue
-                if (
-                    is_toy_test(row) or (
-                        not conf_identifier(row[3]) and row[1] == '' and
-                        row[2] == ''
-                    )
-                ):
-                    tests_list.append(row[0])
-                    tests_queue.put(row)
-    elif tests == 'real':
-        with open(tests_data_path, 'r') as rFile:
-            csvreader = reader(rFile, delimiter=',')
-            next(csvreader, None)
-            for row in csvreader:
-                if is_toy_test(row) or row[0] in ignored_tests:
-                    continue
+        for row in tests_data:
+            if row[0] not in ignored_tests:
                 tests_list.append(row)
                 tests_queue.put(row)
+    elif tests == 'toy':
+        for row in tests_data:
+            if row[0] in ignored_tests:
+                continue
+            if is_toy_test(row) or is_special_toy(row):
+                tests_list.append(row[0])
+                tests_queue.put(row)
+    elif tests == 'real':
+        for row in tests_data:
+            if is_toy_test(row) or row[0] in ignored_tests:
+                continue
+            tests_list.append(row)
+            tests_queue.put(row)
     elif tests == 'test':
-        with open(tests_data_path, 'r') as rFile:
-            csvreader = reader(rFile, delimiter=',')
-            next(csvreader, None)
-            i_picks = ['36', '51', '60', '80', '95', '104', '120']
-            for row in csvreader:
-                if row[0] in i_picks:
-                    tests_list.append(row)
-                    tests_queue.put(row)
+        i_picks = ['36', '51', '60', '80', '95', '104', '120']
+        for row in tests_data:
+            if row[0] in i_picks:
+                tests_list.append(row)
+                tests_queue.put(row)
     elif ',' in tests:
         t_list = tests.split(',')
         for e in t_list:
@@ -592,39 +576,32 @@ def main():
                                         int(e_range[1]) + 1))
                 ]
                 #print('t_list', t_list)
-        with open(tests_data_path, 'r') as rFile:
-            csvreader = reader(rFile, delimiter=',')
-            next(csvreader, None)
-            for row in csvreader:
-                if row[0] in t_list:
-                    tests_list.append(row)
-                    tests_queue.put(row)
+        for row in tests_data:
+            if row[0] in t_list:
+                tests_list.append(row)
+                tests_queue.put(row)
     elif ':' in tests:  # this option to support tests range, eg: 5:10
         t_range = tests.split(':')
         start = t_range[0]
         end = t_range[1]
         t_list = [str(i) for i in range(int(start), int(end) + 1)]
         #print('start', start, 'end', end, 't_list', t_list)
-        with open(tests_data_path, 'r') as rFile:
-            csvreader = reader(rFile, delimiter=',')
-            next(csvreader, None)
-            for row in csvreader:
-                #print('row', row)
-                if row[0] in t_list:
-                    tests_list.append(row)
-                    tests_queue.put(row)
+        for row in tests_data:
+            #print('row', row)
+            if row[0] in t_list:
+                tests_list.append(row)
+                tests_queue.put(row)
     else:
         #print('tests', tests, 'tests_data_path', tests_data_path)
-        tests_list.append(fetch_test(tests, tests_data_path))
-        tests_queue.put(fetch_test(tests, tests_data_path))
-    """def fetch_test_outputs(test_id):
-        test = fetch_test(test_id)
-        new_prefix = 'Test' + test_id
-        test_data = test[1]
-        test_new_data = test[2]
-        test_switches = test[3]
-        test_type = mode_identifier(test_switches)
-        return test_outputs(test_id, new_prefix, test_data, test_new_data, test_type, test_switches)"""
+        r = None
+        for row in tests_data:
+            if row[0] == tests:
+                r = row
+                break
+        if r is None:
+            raise NameError('Test {0} not found!'.format(tests))
+        tests_list.append(r)
+        tests_queue.put(r)
     '''
     Indexes for test list:
     0 - id
