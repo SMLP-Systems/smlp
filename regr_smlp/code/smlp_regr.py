@@ -1155,12 +1155,11 @@ def main():
                             file_name in files_to_ignore_from_diff or
                             file_name.endswith('_model_term.json')
                         )
+                        suffixes = ('.csv', '.txt', '.html', '.json')
                         if (
-                            new_file.endswith('.csv') or
-                            new_file.endswith('.txt') or
-                            new_file.endswith('.html') or
-                            new_file.endswith('.json')
-                        ) and not exclude_cond:
+                            any(new_file.endswith(s) for s in suffixes) and
+                            not exclude_cond
+                        ):
                             print(
                                 'comparing {file} to master'.format(
                                     file=file_name
