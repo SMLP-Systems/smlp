@@ -1018,7 +1018,7 @@ def main():
         else:
             return False
 
-    def comapre_files(file1, file2):
+    def compare_files(file1, file2):
         if file1.endswith('.csv'):
             return csv_cmp.compare_csv(file1, file2)
         f1 = open(file1, 'r')
@@ -1177,7 +1177,7 @@ def main():
                             )
                             output, error = p.communicate()
                             if p.returncode == 1:
-                                if not comapre_files(new_file, master_file):
+                                if not compare_files(new_file, master_file):
                                     if not args.no_graphical_compare and to_show:
                                         Popen(
                                             '{diff} {l} {k}'.format(
