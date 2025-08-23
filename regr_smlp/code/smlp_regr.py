@@ -17,7 +17,9 @@ from threading import Timer
 
 TUI_DIFF = 'diff'
 GUI_DIFF = 'tkdiff'
-TREE_PATH = '../'  # Path to regression location (where data, code, specs, master and model directories are located)
+# Path to regression location (where data, code, specs, master and model
+# directories are located)
+TREE_PATH = '../'
 SOLVERS_PATH = '../../../external'  # Path to external solvers
 
 DEBUG = False
@@ -31,7 +33,8 @@ RELEASE = False  # to run regression with SMLP from release area
 
 def ignored_files(src, filenames):
     """
-    Copy code and regression scripts required to run regression from a different directory
+    Copy code and regression scripts required to run regression from a different
+    directory
     """
     return [
         filename for filename in filenames if not (
@@ -315,8 +318,13 @@ def use_model_in_config(conf):
         lines = c.readlines()
     for line in lines:
         ln = line.lower()
-        #if '--use_saved_prediction_model true' in ln or '--use_saved_prediction_model t' in ln or '-use_model true' in ln or '-use_model t' in ln:
-        # to work with json config file we are are looking to match slightly different patterns
+        #if (
+        #   '--use_saved_prediction_model true' in ln or
+        #   '--use_saved_prediction_model t' in ln or
+        #   '-use_model true' in ln or '-use_model t' in ln
+        #):
+        # to work with json config file we are are looking to match slightly
+        # different patterns
         if '"use_model": "true"' in ln or '"use_model": "true"' in ln:
             return True
     return False
@@ -364,13 +372,15 @@ def main():
         help='print the command to run manually; the test will not be executed.'
     )
     parser.add_argument('-diff', '--diff', action='store_true')
-    #parser.add_argument('-c', '--cross_check', action='store_true', help='Cross check specific csv outputs.')
+    #parser.add_argument('-c', '--cross_check', action='store_true',
+    #                    help='Cross check specific csv outputs.')
     parser.add_argument(
         '-w',
         '--workers',
         help='Number of concurrent tests that will run, default 2.'
     )
-    #parser.add_argument('-temp', '--tempdir', help='Specify where to copy and run code, default=temp_dir.')
+    #parser.add_argument('-temp', '--tempdir',
+    #                    help='Specify where to copy and run code, default=temp_dir.')
     parser.add_argument(
         '-i',
         '--ignore_tests',
@@ -868,7 +878,8 @@ def main():
                             )
                         else:
                             raise Exception(
-                                'spec file must be specified in command line in model exploration modes'
+                                'spec file must be specified in command line '
+                                'in model exploration modes'
                             )
                         # add relative path to external solver name
                         solver_bin = solver_path_identifier(test_switches)
@@ -1168,8 +1179,9 @@ def main():
                         #  new_file.endswith('.h5')) and
                         # not file_name in files_to_ignore_from_diff:
                         exclude_cond = file_name in files_to_ignore_from_diff
-                        exclude_cond = file_name in files_to_ignore_from_diff or file_name.endswith(
-                            '_model_term.json'
+                        exclude_cond = (
+                            file_name in files_to_ignore_from_diff or
+                            file_name.endswith('_model_term.json')
                         )
                         if (
                             new_file.endswith('.csv') or
@@ -1183,7 +1195,8 @@ def main():
                                 )
                             )
                             p = Popen(
-                                '{diff} -B -I \'Feature selection.*file .*\' -I \'\\[-v-] Input.*\' -I \'usage:.*\' {k} {l}'
+                                '{diff} -B -I \'Feature selection.*file .*\' '
+                                '-I \'\\[-v-] Input.*\' -I \'usage:.*\' {k} {l}'
                                 .format(diff=diff, k=new_file, l=master_file),
                                 shell=True,
                                 stdin=PIPE,
@@ -1214,7 +1227,9 @@ def main():
                                         user_input = answer
                                     else:
                                         user_input = input(
-                                            'Do you wish to switch the new file with the master?\n(yes/no|y/n): '
+                                            'Do you wish to switch the new '
+                                            'file with the master?\n'
+                                            '(yes/no|y/n): '
                                         ).lower()
                                     while user_input not in {
                                         'yes', 'no', 'y', 'n'
@@ -1231,7 +1246,8 @@ def main():
                                                 )
                                             )
                                             print(
-                                                'Replacing Files both in master and data'
+                                                'Replacing Files both in '
+                                                'master and data'
                                             )
 
                                         else:
@@ -1244,7 +1260,10 @@ def main():
                                                     user_input = args.default
                                                 else:
                                                     user_input = input(
-                                                        'File exists also in data, switch there as well?\n(yes/no|y/n): '
+                                                        'File exists also in '
+                                                        'data, switch there as '
+                                                        'well?\n'
+                                                        '(yes/no|y/n): '
                                                     ).lower()
                                                 while user_input not in {
                                                     'yes', 'no', 'y', 'n'
@@ -1283,7 +1302,8 @@ def main():
                             if os.path.isfile(file):
                                 master_files.remove(file)
                     else:
-                        # not comparing directories; such as the range plots directory in mode subgroups
+                        # not comparing directories; such as the range plots
+                        # directory in mode subgroups
                         if os.path.isdir(new_file):
                             continue
                         print(
@@ -1304,7 +1324,13 @@ def main():
                         else:
                             if not args.default:
                                 user_input = input(
-                                    'What to do with the new file?\n1 - Nothing\n2 - Copy to master only\n3 - Copy to master and models\n4 - Remove from master only\n5 - Remove from master and models\nOption number: '
+                                    'What to do with the new file?\n'
+                                    '1 - Nothing\n'
+                                    '2 - Copy to master only\n'
+                                    '3 - Copy to master and models\n'
+                                    '4 - Remove from master only\n'
+                                    '5 - Remove from master and models\n'
+                                    'Option number: '
                                 )
                                 while user_input not in {
                                     '1', '2', '3', '4', '5'
@@ -1355,7 +1381,10 @@ def main():
                     #  diff_errors.append('File new {file} does not exist'.format(file=file))
                     if not args.default:
                         user_input = input(
-                            'What to do with the master file?\n1 - Nothing\n2 - Remove from master only\n3 - Remove from master and models\nOption number: '
+                            'What to do with the master file?\n'
+                            '1 - Nothing\n'
+                            '2 - Remove from master only\n'
+                            '3 - Remove from master and models\nOption number: '
                         )
                         while user_input not in {
                             '1',
@@ -1423,7 +1452,9 @@ def main():
                     shell=True
                 ).wait()
                 user_input = input(
-                    'Do you wish to switch the new log file with the master log file?\n(yes/no|y/n): '
+                    'Do you wish to switch the new log file with the master '
+                    'log file?\n'
+                    '(yes/no|y/n): '
                 ).lower()
                 while user_input not in {'yes', 'no', 'y', 'n'}:
                     user_input = input('(yes/no|y/n):').lower()
@@ -1435,7 +1466,8 @@ def main():
         else:
             print("master log file does not exist!")
             user_input = input(
-                'Do you wish to copy the new log file to master?\n(yes/no|y/n): '
+                'Do you wish to copy the new log file to master?\n'
+                '(yes/no|y/n): '
             ).lower()
             while user_input not in {'yes', 'no', 'y', 'n'}:
                 user_input = input('(yes/no|y/n):').lower()
@@ -1459,7 +1491,8 @@ def main():
         except:
             print("Can't delete " + temp_code_dir + " dir.")
 
-    # report tests that crashed -- based on TestXXX_error.txt files that do not exist in master
+    # report tests that crashed -- based on TestXXX_error.txt files that do not
+    # exist in master
     if len(new_error_fns) > 0:
         print('Tests crashed (not in the masters):')
         for efn in new_error_fns:
