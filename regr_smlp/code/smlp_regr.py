@@ -48,8 +48,8 @@ def get_all_files_from_dir(dir_path):
     return listdir(dir_path)
 
 
-def fetch_test(test_id, tests_data):
-    with open(tests_data, 'r') as rFile:
+def fetch_test(test_id, tests_data_path):
+    with open(tests_data_path, 'r') as rFile:
         csvreader = reader(rFile, delimiter=',')
         next(csvreader, None)
         for row in csvreader:
@@ -519,7 +519,7 @@ def main():
     specs_path = path.join(TREE_PATH, 'specs')
 
     # Path of the tests config file
-    tests_data = path.join(temp_code_dir, 'smlp_regr.csv')
+    tests_data_path = path.join(temp_code_dir, 'smlp_regr.csv')
 
     diff = 'diff'
 
@@ -540,7 +540,7 @@ def main():
         )
 
     if tests == "all":
-        with open(tests_data, 'r') as rFile:
+        with open(tests_data_path, 'r') as rFile:
             csvreader = reader(rFile, delimiter=',')
             next(csvreader, None)
             for row in csvreader:
@@ -548,7 +548,7 @@ def main():
                     tests_list.append(row)
                     tests_queue.put(row)
     elif tests == 'toy':
-        with open(tests_data, 'r') as rFile:
+        with open(tests_data_path, 'r') as rFile:
             csvreader = reader(rFile, delimiter=',')
             next(csvreader, None)
             for row in csvreader:
@@ -563,7 +563,7 @@ def main():
                     tests_list.append(row[0])
                     tests_queue.put(row)
     elif tests == 'real':
-        with open(tests_data, 'r') as rFile:
+        with open(tests_data_path, 'r') as rFile:
             csvreader = reader(rFile, delimiter=',')
             next(csvreader, None)
             for row in csvreader:
@@ -572,7 +572,7 @@ def main():
                 tests_list.append(row)
                 tests_queue.put(row)
     elif tests == 'test':
-        with open(tests_data, 'r') as rFile:
+        with open(tests_data_path, 'r') as rFile:
             csvreader = reader(rFile, delimiter=',')
             next(csvreader, None)
             i_picks = ['36', '51', '60', '80', '95', '104', '120']
@@ -592,7 +592,7 @@ def main():
                                         int(e_range[1]) + 1))
                 ]
                 #print('t_list', t_list)
-        with open(tests_data, 'r') as rFile:
+        with open(tests_data_path, 'r') as rFile:
             csvreader = reader(rFile, delimiter=',')
             next(csvreader, None)
             for row in csvreader:
@@ -605,7 +605,7 @@ def main():
         end = t_range[1]
         t_list = [str(i) for i in range(int(start), int(end) + 1)]
         #print('start', start, 'end', end, 't_list', t_list)
-        with open(tests_data, 'r') as rFile:
+        with open(tests_data_path, 'r') as rFile:
             csvreader = reader(rFile, delimiter=',')
             next(csvreader, None)
             for row in csvreader:
@@ -614,9 +614,9 @@ def main():
                     tests_list.append(row)
                     tests_queue.put(row)
     else:
-        #print('tests', tests, 'tests_data', tests_data)
-        tests_list.append(fetch_test(tests, tests_data))
-        tests_queue.put(fetch_test(tests, tests_data))
+        #print('tests', tests, 'tests_data_path', tests_data_path)
+        tests_list.append(fetch_test(tests, tests_data_path))
+        tests_queue.put(fetch_test(tests, tests_data_path))
     """def fetch_test_outputs(test_id):
         test = fetch_test(test_id)
         new_prefix = 'Test' + test_id
