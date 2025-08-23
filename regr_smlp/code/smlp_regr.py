@@ -530,6 +530,15 @@ def main():
     tests_queue = Queue()
     print_lock = Lock()
 
+    def is_toy_test(row):
+        prefixes = ('smlp_toy', 'mltp_toy')
+        if any(row[i].startswith(p) for p in prefixes for i in (1, 2)):
+            return True
+        return (
+            conf_identifier(row[3]) and
+            get_conf_name(row[3]).startswith('smlp_toy')
+        )
+
     if tests == "all":
         with open(tests_data, 'r') as rFile:
             csvreader = reader(rFile, delimiter=',')
@@ -543,18 +552,14 @@ def main():
             csvreader = reader(rFile, delimiter=',')
             next(csvreader, None)
             for row in csvreader:
+                if row[0] in ignored_tests:
+                    continue
                 if (
-                    row[1].startswith('smlp_toy') or
-                    row[1].startswith('mlbt_toy') or
-                    row[2].startswith('smlp_toy') or
-                    row[2].startswith('mlbt_toy') or (
-                        conf_identifier(row[3]) and
-                        get_conf_name(row[3]).startswith('smlp_toy')
-                    ) or (
+                    is_toy_test(row) or (
                         not conf_identifier(row[3]) and row[1] == '' and
                         row[2] == ''
                     )
-                ) and (row[0] not in ignored_tests):
+                ):
                     tests_list.append(row[0])
                     tests_queue.put(row)
     elif tests == 'real':
@@ -562,19 +567,10 @@ def main():
             csvreader = reader(rFile, delimiter=',')
             next(csvreader, None)
             for row in csvreader:
-                if (
-                    not (
-                        row[1].startswith('smlp_toy') or
-                        row[1].startswith('mlbt_toy') or
-                        row[2].startswith('smlp_toy') or
-                        row[2].startswith('mlbt_toy') or (
-                            conf_identifier(row[3]) and
-                            get_conf_name(row[3]).startswith('smlp_toy')
-                        )
-                    )
-                ) and (row[0] not in ignored_tests):
-                    tests_list.append(row)
-                    tests_queue.put(row)
+                if is_toy_test(row) or row[0] in ignored_tests:
+                    continue
+                tests_list.append(row)
+                tests_queue.put(row)
     elif tests == 'test':
         with open(tests_data, 'r') as rFile:
             csvreader = reader(rFile, delimiter=',')
