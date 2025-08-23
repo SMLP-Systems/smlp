@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid mt-5">
+  <div class="row g-3 align-items-stretch">
+
+    <div class="col-md-6 col-lg-6 d-flex">
+      <div class="card flex-fill d-flex flex-column shadow-sm bg-body-tertiary" style="height: 700px;">
+        <div class="card-header bg-primary text-bg-primary d-flex justify-content-between align-items-center">
+          <h2 class="card-title mb-0">Results</h2>
+        </div>
+        <div class="collapse show d-flex flex-column flex-grow-1" id="resultsCollapse">
+          <div class="card-body flex-grow-1" style="overflow-y: auto; max-height: 600px;">
+            <pre class="p-3 rounded bg-body-secondary" 
+                 style="font-size: 14px; white-space: pre-wrap;">{{ output }}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-6 d-flex">
+      <div class="card flex-fill d-flex flex-column shadow-sm bg-body-tertiary" style="height: 700px;">
+        <div class="card-header bg-primary text-bg-primary">
+          <h2 class="card-title mb-0">Generated Plots</h2>
+        </div>
+        <div class="card-body flex-grow-1 d-flex justify-content-center align-items-center" 
+             style="overflow-y: auto; max-height: 600px;">
+          {% if plots %}
+            <div class="container">
+              <div class="row row-cols-2 g-2">
+                {% for plot in plots %}
+                  <div class="col text-center">
+                    <a href="{{ url_for('serve_plot', filename=plot) }}" target="_blank">
+                      <img src="{{ url_for('serve_plot', filename=plot) }}" alt="Generated Plot"
+                           class="img-fluid rounded shadow-sm"
+                           style="width: 100%; max-height: 250px; object-fit: contain;">
+                    </a>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% else %}
+            <p class="text-center">No plots available.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if use_h5 %}
+  <div class="row mt-4">
+    <div class="col-lg-12">
+      <div class="card shadow-sm bg-body-tertiary">
+        <div class="card-header bg-primary text-bg-primary">
+          <h2 class="card-title mb-0">Model Visualization</h2>
+        </div>
+        <div class="card-body">
+          <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+          <div class="container">
+            {{ h5_plot_html | safe }} 
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="row mt-4">
+    <div class="col-12 text-center">
+      <a href="{{ url_for('home') }}" class="btn btn-secondary btn-lg">Return Home</a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

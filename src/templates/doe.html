@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Design of Experiments (DOE)</h2>
+
+<form method="POST" enctype="multipart/form-data" class="row g-3">
+
+  <div class="col-md-6">
+    <label for="doe_spec_file" class="form-label">DOE Spec File (.csv)</label>
+    <input type="file" name="doe_spec_file" class="form-control" required />
+  </div>
+
+  <div class="col-md-6">
+    <label for="doe_algo" class="form-label">DOE Algorithm (-doe_algo)</label>
+    <input type="text" name="doe_algo" class="form-control" placeholder="e.g. full_factorial, latin_hypercube" />
+  </div>
+
+  <div class="col-md-6">
+    <label for="doe_num_samples" class="form-label">Number of Samples (-doe_num_samples)</label>
+    <input type="text" name="doe_num_samples" class="form-control" placeholder="Optional (e.g. 20)" />
+  </div>
+
+  <div class="col-md-6">
+    <label for="out_dir_val" class="form-label">Output Directory (-out_dir)</label>
+    <input type="text" name="out_dir_val" class="form-control" placeholder="Default: ./ (optional)" />
+  </div>
+
+  <div class="col-md-6">
+    <label for="pref_val" class="form-label">Run Prefix (-pref)</label>
+    <input type="text" name="pref_val" class="form-control" placeholder="e.g. TestDOE" />
+  </div>
+
+  <div class="col-md-6">
+    <label for="log_time" class="form-label">Log Time (-log_time)</label>
+    <select name="log_time" class="form-select">
+      <option value="f" selected>No</option>
+      <option value="t">Yes</option>
+    </select>
+  </div>
+
+  <div class="col-md-12">
+    <label for="additional_command" class="form-label">Additional Command</label>
+    <input type="text" name="additional_command" class="form-control" />
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Generate DOE</button>
+  </div>
+</form>
+{% endblock %}
