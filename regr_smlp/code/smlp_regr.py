@@ -368,9 +368,6 @@ def parse_args():
     parser = ArgumentParser(
         description='''
             Runs the SMLP regression test suite.
-
-            Mandatory arguments for long options are mandatory for short options
-            as well.
         ''',
         usage='%s [-OPTS]' % os.path.basename(sys.argv[0]),
         add_help=False,
@@ -378,6 +375,13 @@ def parse_args():
             lambda prog: ConciseHelpFormatter(prog, max_help_position=32)
         )
     )
+    # uppercase the defaults, keep them English
+    parser._positionals.title = 'Positional arguments'
+    parser._optionals.title = 'Options'
+    parser._optionals.description = '''
+        Mandatory arguments for long options are mandatory for short options as
+        well.
+    '''
 
     # Keep arguments in alphabetical order. This helps users to quickly find
     # the help message for the option they are interested in. If they just want
@@ -400,6 +404,7 @@ def parse_args():
     )
     parser.add_argument('--diff', action='store_true')
     parser.add_argument(
+        '-e',
         '--extra_options',
         metavar='OPTIONS',
         help='''
@@ -417,7 +422,7 @@ def parse_args():
     )
     parser.add_argument('-g', '--no-graphical-compare', action='store_true')
     parser.add_argument(
-        '-h', '--help', action='help', help='show this help message and exit'
+        '-h', '--help', action='help', help='Print this help message and exit.'
     )
     parser.add_argument(
         '-i',
