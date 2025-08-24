@@ -322,7 +322,6 @@ def use_model_in_config(conf):
     return False
 
 
-
 class CustomHelpFormatter(HelpFormatter):
     """Custom formatter for setting argparse formatter_class. Identical to the
     default formatter, except that the metavar is not repeated for every
@@ -340,10 +339,11 @@ class CustomHelpFormatter(HelpFormatter):
     separations of text by two line breaks instead of replacing them with
     a single space.
     """
-
     def _fill_text(self, text, width, indent):
-        return '\n\n'.join(HelpFormatter._fill_text(self, par, width, indent)
-                           for par in text.split('\n\n'))
+        return '\n\n'.join(
+            HelpFormatter._fill_text(self, par, width, indent)
+            for par in text.split('\n\n')
+        )
 
     def _format_action_invocation(self, action):
         if not action.option_strings:
@@ -374,7 +374,9 @@ def parse_args():
         ''',
         usage='%s [-OPTS]' % os.path.basename(sys.argv[0]),
         add_help=False,
-        formatter_class=CustomHelpFormatter
+        formatter_class=(
+            lambda prog: CustomHelpFormatter(prog, max_help_position=32)
+        )
     )
 
     # Keep arguments in alphabetical order, this helps users to quickly find
@@ -384,20 +386,22 @@ def parse_args():
     #parser.add_argument('-c', '--cross_check', action='store_true',
     #                    help='Cross check specific csv outputs.')
     parser.add_argument(
-        '-conf',
-        '--config_default',
+        '-C',
+        '--config-default',
+        metavar='ANSWER',
         help='Yes/No/Y/N answer to config file all replacements/updates.'
     )
     parser.add_argument('-d', '--debug', action='store_true')
     parser.add_argument(
-        '-def',
+        '-D',
         '--default',
+        metavar='ANSWER',
         help='Yes/No/Y/N answer to all master file replacements/updates.'
     )
-    parser.add_argument('-diff', '--diff', action='store_true')
+    parser.add_argument('--diff', action='store_true')
     parser.add_argument(
-        '-extra',
         '--extra_options',
+        metavar='OPTIONS',
         help='Specify command line options that will be appended to the '
         'command line.'
     )
@@ -407,17 +411,17 @@ def parse_args():
         action='store_true',
         help="Don't compare all files if .txt main log file comparison fails."
     )
-    parser.add_argument('-g', '--no_graphical_compare', action='store_true')
+    parser.add_argument('-g', '--no-graphical-compare', action='store_true')
     parser.add_argument(
         '-h', '--help', action='help', help='show this help message and exit'
     )
     parser.add_argument(
         '-i',
         '--ignore_tests',
+        metavar='TESTS',
         help='Ignores test/s that are passed as this argument.'
     )
     parser.add_argument(
-        '-models',
         '--models',
         help='Specify models (e.g., dt_sklearn) of tests to run, default is '
         'all modes.'
@@ -455,13 +459,11 @@ def parse_args():
     #parser.add_argument('-temp', '--tempdir',
     #                    help='Specify where to copy and run code, default=temp_dir.')
     parser.add_argument(
-        '-time',
         '--timeout',
         help='Set the timeout for each test to given value, if not provided, '
         'no timeout.'
     )
     parser.add_argument(
-        '-tol',
         '--tolerance',
         help='Set the csv comparison tolerance to ignore differences in low '
         'decimal bits.'
