@@ -819,59 +819,32 @@ def main():
     # Regression test script command line arguments
     args = parse_args()
 
-    if not args.output:
-        output_path = Path('.')
-    else:
-        output_path = Path(args.output)
+    output_path = Path(args.output if args.output else '.')
 
-    if not args.tests:
-        tests = 'all'
-    else:
-        tests = args.tests.replace(" ", "").replace("\'", "")
+    tests = args.tests if args.tests else 'all'
 
-    if args.debug:
-        debug = '-d 1'
-    else:
-        debug = ''
+    debug = '-d 1' if args.debug else ''
 
     ignored_tests = []
     if args.ignore_tests:
-        if ',' in args.ignore_tests:
-            ignored_tests = args.ignore_tests.replace(" ",
-                                                      "").replace("\'", ""
-                                                                  ).split(',')
-        else:
-            ignored_tests.append(
-                args.ignore_tests.replace(" ", "").replace("\'", "")
-            )
+        ignored_tests = args.ignore_tests.split(',')
     #print('ignored_tests', ignored_tests);
 
     relevant_modes = []
     if args.modes:
-        if ',' in args.modes:
-            relevant_modes = args.modes.replace(" ", "").replace("\'",
-                                                                 "").split(',')
-        else:
-            relevant_modes.append(args.modes.replace(" ", "").replace("\'", ""))
+        relevant_modes = args.modes.split(',')
     #print('relevant_modes',relevant_modes);
 
     relevant_models = []
     if args.models:
-        if ',' in args.models:
-            relevant_models = args.models.replace(" ",
-                                                  "").replace("\'",
-                                                              "").split(',')
-        else:
-            relevant_models.append(
-                args.models.replace(" ", "").replace("\'", "")
-            )
+        relevant_models = args.models.split(',')
     #print('relevant_models',relevant_models)
 
+    # Number of concurrent processes
+    workers = int(args.workers) if args.workers else 2
+
     global DIFF
-    if 'DISPLAY' in os.environ:
-        DIFF = GUI_DIFF
-    else:
-        DIFF = TUI_DIFF
+    DIFF = GUI_DIFF if 'DISPLAY' in os.environ else TUI_DIFF
 
     # Create and migrate code to temp dir
     if False:  #not args.print_command:
@@ -931,12 +904,8 @@ def main():
 
     process_list = []
     expected_outs = tests_queue.qsize()
-    if args.workers:
-        workers = int(args.workers)
-    else:
-        workers = 2  # Number of concurrent processes
-    if tests_queue.qsize() < workers:
-        workers = tests_queue.qsize()
+    if expected_outs < workers:
+        workers = expected_outs
 
     print("Calling %d workers for multiprocessing..." % workers)
     for i in range(workers):
