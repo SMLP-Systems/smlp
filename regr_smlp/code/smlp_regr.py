@@ -21,16 +21,14 @@ TUI_DIFF = 'diff'
 GUI_DIFF = 'tkdiff'
 # Path to regression location (where data, code, specs, master and model
 # directories are located)
-TREE_PATH = Path('..')
-SOLVERS_PATH = '../../../external'  # Path to external solvers
+TREE_PATH = Path(__file__).parent.parent
+SOLVERS_PATH = TREE_PATH.parent.parent / 'external'  # Path to external solvers
 
 DEBUG = False
 # used for excluding from diff reports that involve randomness
 files_to_ignore_from_diff = [
     'Test41_doe_two_levels_doe.csv', 'Test42_doe_two_levels_doe.csv'
 ]
-
-RELEASE = False  # to run regression with SMLP from release area
 
 
 def ignored_files(src, filenames):
@@ -773,10 +771,7 @@ def worker(
                     test_switches, models_path
                 )
 
-            if RELEASE:
-                command = "../../src/run_smlp.py"
-            else:
-                command = "../../src/run_smlp.py"
+            command = "../../src/run_smlp.py"
 
             if timeout:  # timeout -- TODO !!!
                 command = '/usr/bin/timeout 600 ' + command
@@ -809,7 +804,7 @@ def worker(
                     # add relative path to external solver name
                     solver_bin = solver_path_identifier(test_switches)
                     if solver_bin is not None:
-                        solver_path_bin = os.path.join(SOLVERS_PATH, solver_bin)
+                        solver_path_bin = SOLVERS_PATH / solver_bin
                         test_switches = test_switches.replace(
                             solver_bin, solver_path_bin
                         )
