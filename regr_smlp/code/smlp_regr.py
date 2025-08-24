@@ -322,7 +322,7 @@ def use_model_in_config(conf):
     return False
 
 
-class CustomHelpFormatter(HelpFormatter):
+class ConciseHelpFormatter(HelpFormatter):
     """Custom formatter for setting argparse formatter_class. Identical to the
     default formatter, except that the metavar is not repeated for every
     possible Optional. E.g., instead of
@@ -366,7 +366,7 @@ class CustomHelpFormatter(HelpFormatter):
 
 def parse_args():
     parser = ArgumentParser(
-        description='''\
+        description='''
             Runs the SMLP regression test suite.
 
             Mandatory arguments for long options are mandatory for short options
@@ -375,11 +375,11 @@ def parse_args():
         usage='%s [-OPTS]' % os.path.basename(sys.argv[0]),
         add_help=False,
         formatter_class=(
-            lambda prog: CustomHelpFormatter(prog, max_help_position=32)
+            lambda prog: ConciseHelpFormatter(prog, max_help_position=32)
         )
     )
 
-    # Keep arguments in alphabetical order, this helps users to quickly find
+    # Keep arguments in alphabetical order. This helps users to quickly find
     # the help message for the option they are interested in. If they just want
     # to get an overview, alphabetical order doesn't matter.
 
@@ -402,14 +402,18 @@ def parse_args():
     parser.add_argument(
         '--extra_options',
         metavar='OPTIONS',
-        help='Specify command line options that will be appended to the '
-        'command line.'
+        help='''
+            Specify command line options that will be appended to the command
+            line.
+        '''
     )
     parser.add_argument(
         '-f',
         '--fail_txt',
         action='store_true',
-        help="Don't compare all files if .txt main log file comparison fails."
+        help='''
+            Don't compare all files if .txt main log file comparison fails.
+        '''
     )
     parser.add_argument('-g', '--no-graphical-compare', action='store_true')
     parser.add_argument(
@@ -419,54 +423,67 @@ def parse_args():
         '-i',
         '--ignore_tests',
         metavar='TESTS',
-        help='Ignores test/s that are passed as this argument.'
+        help='Ignores tests that are passed as this argument.'
     )
     parser.add_argument(
         '--models',
-        help='Specify models (e.g., dt_sklearn) of tests to run, default is '
-        'all modes.'
+        help='''
+            Specify models (e.g., dt_sklearn) of tests to run, default is all
+            modes.
+        '''
     )
     parser.add_argument(
         '-m',
         '--modes',
-        help='Specify modes (e.g., verify) of tests to run, default is all '
-        'modes.'
+        help='''
+            Specify modes (e.g., verify) of tests to run, default is all modes.
+        '''
     )
     parser.add_argument(
         '-n',
         '--no_all',
         action='store_true',
-        help='Answer no to all file replacements/updates when a mismatch is '
-        'found between current and master results.'
+        help='''
+            Answer no to all file replacements/updates when a mismatch is
+            found between current and master results.
+        '''
     )
     parser.add_argument('-o', '--output', help='Output directory.')
     parser.add_argument(
         '-p',
         '--print_command',
         action='store_true',
-        help='print the command to run manually; the test will not be executed.'
+        help='''
+            Print the command to run manually; the test will not be executed.
+        '''
     )
     parser.add_argument(
         '-t',
         '--tests',
-        help='Specify tests to run. It can be a comma-separated list of test '
-        'numbers like -t 5,8,10; it can be a range of consecutive tests like '
-        '-t 10:15; one can also run all toy tests, where toy means that the '
-        'test data name starts with smlp_toy, by specifying -t toy; or run all '
-        'other tests by specifying -t real; or run all the regression tests by '
-        'specifying -t all.'
+        help='''
+            Specify tests to run. It can be a comma-separated list of test
+            numbers like -t 5,8,10; it can be a range of consecutive tests like
+            -t 10:15; one can also run all toy tests, where toy means that the
+            test data name starts with smlp_toy, by specifying -t toy; or run
+            all other tests by specifying -t real; or run all the regression
+            tests by specifying -t all.
+        '''
     )
     #parser.add_argument('-temp', '--tempdir',
     #                    help='Specify where to copy and run code, default=temp_dir.')
     parser.add_argument(
         '--timeout',
-        help='Set the timeout for each test to given value, if not provided, '
-        'no timeout.'
+        help='''
+            Set the timeout for each test to given value, if not provided, no
+            timeout.
+        '''
     )
     parser.add_argument(
         '--tolerance',
-        help='Set the csv comparison tolerance to ignore differences in low '
-        'decimal bits.'
+        help='''
+            Set the csv comparison tolerance to ignore differences in low
+            decimal bits.
+        '''
     )
     parser.add_argument(
         '-w',
