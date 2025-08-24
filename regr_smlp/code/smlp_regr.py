@@ -492,7 +492,9 @@ def parse_args():
     )
     parser.add_argument(
         '-w',
+        '-j',
         '--workers',
+        metavar='N',
         help='Number of concurrent tests that will run, default 2.'
     )
 
