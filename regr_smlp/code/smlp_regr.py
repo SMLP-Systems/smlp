@@ -499,6 +499,316 @@ def filter_tests(tests_data, tests: str, ignored_tests: list[str]):
         yield r
 
 
+def kill_process(pr):
+    pr.kill()
+
+
+def popen_timeout(command, timeout):
+    p = Popen(
+        command,
+        shell=True,
+        stdin=PIPE,
+        stdout=PIPE,
+        stderr=PIPE,
+        universal_newlines=True
+    )
+    my_timer = Timer(timeout, kill_process, [p])
+    cm = False
+    try:
+        my_timer.start()
+        cm = p.communicate()
+    finally:
+        my_timer.cancel()
+        return cm
+
+
+def worker(
+    q, id_q, print_l, data_path: Path, output_path: Path, models_path: Path,
+    doe_path: Path, specs_path: Path, relevant_modes: list[str],
+    relevant_models: list[str], timeout: str | None, debug: str,
+    extra_options: str | None, do_exec: bool
+):
+    while True:
+        if q.empty():
+            return True
+        test = q.get()
+        test_id = test[0]
+        test_data = test[1]
+        #print('test_data', test_data)
+        test_new_data = test[2]
+        #print('test_new_data', test_new_data)
+        test_switches = test[3]
+        #print('test_switvhed', test_switches)
+        test_description = test[4]
+        use_model = use_model_identifier(test_switches)
+        #print('use_model', use_model)
+        save_model = save_model_identifier(test_switches)
+        #print('save_model', save_model)
+        test_type = mode_identifier(test_switches)
+        #print('test_type', test_type)
+        model_algo = model_algo_identifier(test_switches)
+        #print('model_algo', model_algo)
+
+        if DEBUG:
+            print('test_data', test_data)
+            print('test_new_data', test_new_data)
+            print('test_switches', test_switches)
+            print('test_description', test_description)
+            print('use_model', use_model)
+            print('save_model', save_model)
+            print('test_type', test_type)
+            print('model_algo', model_algo)
+
+        use_config_file = conf_identifier(test_switches)
+        #print('use_config_file', use_config_file)
+        #print('config file', get_conf_path(get_conf_name(test_switches), models_path))
+        if use_config_file:
+            use_model = use_model_in_config(
+                get_conf_path(get_conf_name(test_switches), models_path)
+            )
+            #print('use_model updated', use_model)
+
+        test_errors = []
+        model = False  # flag if test uses model
+        status = True  # test run status
+        execute_test = True  # flag if test should be executed
+        if DEBUG:
+            print('use_config_file', use_config_file)
+            if use_config_file:
+                print('use_model updated', use_model)
+                print("DEBUG 1")
+        if test_type == 'no mode':
+            if test_switches not in {'-h', '--help'}:
+                test_type = 'unknown'
+            else:
+                test_type = 'help'
+        if test_type == 'unknown' and not (use_config_file):
+            execute_test = False
+            test_errors.append(['Build', 'Unknown mode or was not specified'])
+
+        if DEBUG:
+            print("DEBUG 2")
+            print('execute_test', execute_test)
+
+        if execute_test:
+            new_prefix = 'Test' + test_id
+            #print('test_data', test_data)
+            #print('use_model', use_model)
+            #print('use_config_file', use_config_file)
+            if (
+                test_data == '' and not use_model and not use_config_file and
+                not '-doe_spec' in test_switches
+            ):
+                if test_type != 'help':
+                    execute_test = False
+                    test_errors.append(['Build', 'No test data specified'])
+                else:
+                    if test_switches == '-h':
+                        test_data = 'h'
+                    else:
+                        test_data = 'help'
+                    test_out = output_path / (
+                        new_prefix + '_' + test_data + '.txt'
+                    )
+                    test_type = 'help'
+            elif use_model:
+                # model_name = data_path / test_data
+                model_name = models_path / test_data
+                #print('model_name', model_name)
+                # here we use a model instead of data
+                test_data_path = '-model_name \"{0}\"'.format(model_name)
+                if DEBUG:
+                    print('model_name', model_name)
+            else:
+                if test_data != "":
+                    if test_type == 'doe':
+                        #print('test_data', test_data)
+                        path = doe_path / (test_data + '.csv')
+                        if path.exists():
+                            test_data_path = '-doe_spec \"{0}\"'.format(path)
+                        else:
+                            execute_test = False
+                            test_errors.append(
+                                ['Build', 'DOE file does not exist']
+                            )
+                    else:
+                        #print('test_data', test_data)
+                        path = data_path / test_data
+                        if path.exists():
+                            test_data_path = '-data \"{0}\"'.format(path)
+                        elif (data_path / (test_data + '.csv')).exists():
+                            test_data_path = '-data \"{0}.csv\"'.format(path)
+                        else:
+                            execute_test = False
+                            test_errors.append(
+                                ['Build', 'Data file does not exist']
+                            )
+                else:
+                    test_data_path = ""
+            if DEBUG:
+                print('test_data', test_data)
+                print('test_new_data', test_new_data)
+                print('test_data_path', test_data_path)
+                print('use_config_file', use_config_file)
+                print(test_new_data != "")
+
+            if test_type == 'prediction' or (
+                test_new_data != ""
+            ):  #use_config_file and
+                if not test_new_data == '':
+                    test_new_data_path = data_path / test_new_data
+                    if test_new_data_path.exists():
+                        test_new_data_path = '-new_dat \"{0}\"'.format(
+                            test_new_data_path
+                        )
+                    elif (data_path / (test_new_data + '.csv')).exists():
+                        test_new_data_path = '-new_dat \"{0}.csv\"'.format(
+                            test_new_data_path
+                        )
+                    else:
+                        execute_test = False
+                        test_errors.append(
+                            ['Build', 'New data file does not exist']
+                        )
+                else:
+                    execute_test = False
+                    test_errors.append(['Build', 'No new data file specified'])
+            if len(relevant_modes
+                   ) > 0 and (test_type not in relevant_modes + ['no mode']):
+                execute_test = False
+            #print('(relevant_models)', relevant_models,
+            #      'model_algo', model_algo, flush=True);
+            if len(relevant_models) > 0 and (model_algo not in relevant_models):
+                execute_test = False
+
+        if DEBUG:
+            print("DEBUG 3")
+            print('execute_test', execute_test)
+            print('test_errors', test_errors)
+
+        if execute_test:
+            if use_config_file:
+                test_switches = get_switches_with_conf(
+                    test_switches, models_path
+                )
+
+            if RELEASE:
+                command = "../../src/run_smlp.py"
+            else:
+                command = "../../src/run_smlp.py"
+
+            if timeout:  # timeout -- TODO !!!
+                command = '/usr/bin/timeout 600 ' + command
+            if DEBUG:
+                print('command (0)', command)
+                print('test_type', test_type)
+            if test_type == 'help':
+                command += ' {args} > {output}'.format(
+                    args=test_switches, output=test_out
+                )
+            else:
+                if test_type in [
+                    'optimize', 'verify', 'query', 'optsyn', 'certify',
+                    'synthesize', 'frontier'
+                ]:
+                    # add relative path to spec file name
+                    spec_fn = spec_identifier(test_switches)  # + '.spec';
+                    print('spec_fn', spec_fn)
+                    print('specs_path', specs_path)
+                    if spec_fn is not None:
+                        spec_file = os.path.join(specs_path, spec_fn)
+                        test_switches = test_switches.replace(
+                            spec_fn, spec_file
+                        )
+                    else:
+                        raise Exception(
+                            'spec file must be specified in command line '
+                            'in model exploration modes'
+                        )
+                    # add relative path to external solver name
+                    solver_bin = solver_path_identifier(test_switches)
+                    if solver_bin is not None:
+                        solver_path_bin = os.path.join(SOLVERS_PATH, solver_bin)
+                        test_switches = test_switches.replace(
+                            solver_bin, solver_path_bin
+                        )
+                        #test_switches = test_switches.replace("-solver_path ", ' ')
+                        #test_switches = test_switches.replace(solver_path_bin, ' ')
+                #print('test_switches', test_switches); print('test_type', test_type)
+                command += ' {dat} {out_dir} {pref} {args} {debug} '.format(
+                    dat=test_data_path,
+                    out_dir='-out_dir {output_path}'.format(
+                        output_path=output_path
+                    ),
+                    pref='-pref {prefix}'.format(prefix=new_prefix),
+                    args=test_switches,
+                    debug=debug
+                )
+                if DEBUG:
+                    print('command (1)', command)
+                #print('test_type', test_type, 'test_new_data',test_new_data)
+                if test_type == 'prediction' or (
+                    test_new_data != ""
+                ):  #use_config_file and
+                    command += '{new_dat} '.format(new_dat=test_new_data_path)
+                    #print('command (2)', command);
+
+            # append extra arguments
+            if extra_options is not None:
+                command = command + ' ' + extra_options
+
+            if DEBUG:
+                print('command (2)', command)
+
+            with print_l:
+                print(
+                    "Running test {0} test type: {1}, description: {2}".format(
+                        test_id, test_type, test_description
+                    )
+                )
+                print(command + '\n')
+            if do_exec:
+                if save_model:
+                    model = True
+                if False:  #timeout:
+                    pr = popen_timeout(command, int(timeout))
+                    if pr:
+                        outs, errs = pr
+                        if debug:
+                            print(
+                                'Output: \n' + outs + '\n' + 'Errors: \n' +
+                                errs + '\n'
+                            )
+                        if extract_smlp_error(errs) != 'OK':
+                            status = False
+                            test_errors.append(['Run', errs])
+                    else:
+                        status = False
+                        test_errors.append(['Run', 'Timeout'])
+                        execute_test = False
+                else:
+                    pr = Popen(
+                        command,
+                        shell=True,
+                        stdin=PIPE,
+                        stdout=PIPE,
+                        stderr=PIPE,
+                        universal_newlines=True
+                    )
+                    outs, errs = pr.communicate()
+                    if debug:
+                        print(
+                            'Output: \n' + outs + '\n' + 'Errors: \n' + errs +
+                            '\n'
+                        )
+                    if extract_smlp_error(errs) != 'OK':
+                        status = False
+                        test_errors.append(['Run', errs])
+        if model:
+            model = get_model_name(test_switches)
+        id_q.put([test_id, execute_test, model, status, test_errors])
+
+
 def main():
     start_time = time()
 
@@ -616,331 +926,6 @@ def main():
     test_id_list = []
     test_out_queue = Queue()
 
-    def kill_process(pr):
-        pr.kill()
-
-    def popen_timeout(command, timeout):
-        p = Popen(
-            command,
-            shell=True,
-            stdin=PIPE,
-            stdout=PIPE,
-            stderr=PIPE,
-            universal_newlines=True
-        )
-        my_timer = Timer(timeout, kill_process, [p])
-        cm = False
-        try:
-            my_timer.start()
-            cm = p.communicate()
-        finally:
-            my_timer.cancel()
-            return cm
-
-    def worker(q, id_q, print_l):
-        while True:
-            if q.empty():
-                return True
-            test = q.get()
-            test_id = test[0]
-            test_data = test[1]
-            #print('test_data', test_data)
-            test_new_data = test[2]
-            #print('test_new_data', test_new_data)
-            test_switches = test[3]
-            #print('test_switvhed', test_switches)
-            test_description = test[4]
-            use_model = use_model_identifier(test_switches)
-            #print('use_model', use_model)
-            save_model = save_model_identifier(test_switches)
-            #print('save_model', save_model)
-            test_type = mode_identifier(test_switches)
-            #print('test_type', test_type)
-            model_algo = model_algo_identifier(test_switches)
-            #print('model_algo', model_algo)
-
-            if DEBUG:
-                print('test_data', test_data)
-                print('test_new_data', test_new_data)
-                print('test_switvhes', test_switches)
-                print('test_description', test_description)
-                print('use_model', use_model)
-                print('save_model', save_model)
-                print('test_type', test_type)
-                print('model_algo', model_algo)
-
-            use_config_file = conf_identifier(test_switches)
-            #print('use_config_file', use_config_file)
-            #print('config file', get_conf_path(get_conf_name(test_switches), models_path))
-            if use_config_file:
-                use_model = use_model_in_config(
-                    get_conf_path(get_conf_name(test_switches), models_path)
-                )
-                #print('use_model updated', use_model)
-
-            test_errors = []
-            model = False  # flag if test uses model
-            status = True  # test run status
-            execute_test = True  # flag if test should be executed
-            if DEBUG:
-                print('use_config_file', use_config_file)
-                if use_config_file:
-                    print('use_model updated', use_model)
-                    print("DEBUG 1")
-            if test_type == 'no mode':
-                if test_switches not in {'-h', '--help'}:
-                    test_type = 'unknown'
-                else:
-                    test_type = 'help'
-            if test_type == 'unknown' and not (use_config_file):
-                execute_test = False
-                test_errors.append(
-                    ['Build', 'Unknown mode or was not specified']
-                )
-
-            if DEBUG:
-                print("DEBUG 2")
-                print('execute_test', execute_test)
-
-            if execute_test:
-                new_prefix = 'Test' + test_id
-                #print('test_data', test_data)
-                #print('use_model', use_model)
-                #print('use_config_file', use_config_file)
-                if (
-                    test_data == '' and not use_model and
-                    not use_config_file and not '-doe_spec' in test_switches
-                ):
-                    if test_type != 'help':
-                        execute_test = False
-                        test_errors.append(['Build', 'No test data specified'])
-                    else:
-                        if test_switches == '-h':
-                            test_data = 'h'
-                        else:
-                            test_data = 'help'
-                        test_out = path.join(
-                            output_path, new_prefix + '_' + test_data + '.txt'
-                        )
-                        test_type = 'help'
-                elif use_model:
-                    # model_name = path.join(data_path, test_data).replace('\\', '/')
-                    model_name = path.join(models_path,
-                                           test_data).replace('\\', '/')
-                    #print('model_name', model_name)
-                    test_data_path = '-model_name \"{0}\"'.format(
-                        model_name
-                    )  # here we use a model instead of data
-                    if DEBUG:
-                        print('model_name', model_name)
-                else:
-                    if test_data != "":
-                        if test_type == 'doe':
-                            test_data_path = path.join(doe_path, test_data
-                                                       ).replace('\\', '/')
-                            #print('test_data_path', test_data_path)
-                            #print('test_data', test_data)
-                            if path.exists(test_data_path + '.csv'):
-                                test_data_path = '-doe_spec \"{0}.csv\"'.format(
-                                    test_data_path
-                                )
-                            else:
-                                execute_test = False
-                                test_errors.append(
-                                    ['Build', 'DOE file does not exist']
-                                )
-                        else:
-                            test_data_path = path.join(data_path, test_data
-                                                       ).replace('\\', '/')
-                            #print('test_data_path', test_data_path)
-                            #print('test_data', test_data)
-                            if path.exists(test_data_path):
-                                test_data_path = '-data \"{0}\"'.format(
-                                    test_data_path
-                                )
-                            elif path.exists(test_data_path + '.csv'):
-                                test_data_path = '-data \"{0}.csv\"'.format(
-                                    test_data_path
-                                )
-                            else:
-                                execute_test = False
-                                test_errors.append(
-                                    ['Build', 'Data file does not exist']
-                                )
-                    else:
-                        test_data_path = ""
-                if DEBUG:
-                    print('test_data', test_data)
-                    print('test_new_data', test_new_data)
-                    print('test_data_path', test_data_path)
-                    print('use_config_file', use_config_file)
-                    print(test_new_data != "")
-
-                if test_type == 'prediction' or (
-                    test_new_data != ""
-                ):  #use_config_file and
-                    if not test_new_data == '':
-                        test_new_data_path = path.join(
-                            data_path, test_new_data
-                        ).replace('\\', '/')
-                        if path.exists(test_new_data_path):
-                            test_new_data_path = '-new_dat \"{0}\"'.format(
-                                test_new_data_path
-                            )
-                        elif path.exists(test_new_data_path + '.csv'):
-                            test_new_data_path = '-new_dat \"{0}.csv\"'.format(
-                                test_new_data_path
-                            )
-                        else:
-                            execute_test = False
-                            test_errors.append(
-                                ['Build', 'New data file does not exist']
-                            )
-                    else:
-                        execute_test = False
-                        test_errors.append(
-                            ['Build', 'No new data file specified']
-                        )
-                if len(relevant_modes) > 0 and (
-                    test_type not in relevant_modes + ['no mode']
-                ):
-                    execute_test = False
-                #print('(relevant_models)', relevant_models,
-                #      'model_algo', model_algo, flush=True);
-                if len(relevant_models
-                       ) > 0 and (model_algo not in relevant_models):
-                    execute_test = False
-
-            if DEBUG:
-                print("DEBUG 3")
-                print('execute_test', execute_test)
-                print('test_errors', test_errors)
-
-            if execute_test:
-                if use_config_file:
-                    test_switches = get_switches_with_conf(
-                        test_switches, models_path
-                    )
-
-                if RELEASE:
-                    command = "../../src/run_smlp.py"
-                else:
-                    command = "../../src/run_smlp.py"
-
-                if args.timeout:  # timeout -- TODO !!!
-                    command = '/usr/bin/timeout 600 ' + command
-                if DEBUG:
-                    print('command (0)', command)
-                    print('test_type', test_type)
-                if test_type == 'help':
-                    command += ' {args} > {output}'.format(
-                        args=test_switches, output=test_out
-                    )
-                else:
-                    if test_type in [
-                        'optimize', 'verify', 'query', 'optsyn', 'certify',
-                        'synthesize', 'frontier'
-                    ]:
-                        # add relative path to spec file name
-                        spec_fn = spec_identifier(test_switches)  # + '.spec';
-                        print('spec_fn', spec_fn)
-                        print('specs_path', specs_path)
-                        if spec_fn is not None:
-                            spec_file = os.path.join(specs_path, spec_fn)
-                            test_switches = test_switches.replace(
-                                spec_fn, spec_file
-                            )
-                        else:
-                            raise Exception(
-                                'spec file must be specified in command line '
-                                'in model exploration modes'
-                            )
-                        # add relative path to external solver name
-                        solver_bin = solver_path_identifier(test_switches)
-                        if solver_bin is not None:
-                            solver_path_bin = os.path.join(
-                                SOLVERS_PATH, solver_bin
-                            )
-                            test_switches = test_switches.replace(
-                                solver_bin, solver_path_bin
-                            )
-                            #test_switches = test_switches.replace("-solver_path ", ' ')
-                            #test_switches = test_switches.replace(solver_path_bin, ' ')
-                    #print('test_switches', test_switches); print('test_type', test_type)
-                    command += ' {dat} {out_dir} {pref} {args} {debug} '.format(
-                        dat=test_data_path,
-                        out_dir='-out_dir {output_path}'.format(
-                            output_path=output_path
-                        ),
-                        pref='-pref {prefix}'.format(prefix=new_prefix),
-                        args=test_switches,
-                        debug=debug
-                    )
-                    if DEBUG:
-                        print('command (1)', command)
-                    #print('test_type', test_type, 'test_new_data',test_new_data)
-                    if test_type == 'prediction' or (
-                        test_new_data != ""
-                    ):  #use_config_file and
-                        command += '{new_dat} '.format(
-                            new_dat=test_new_data_path
-                        )
-                        #print('command (2)', command);
-
-                # append extra arguments
-                if args.extra_options is not None:
-                    command = command + ' ' + args.extra_options
-
-                if DEBUG:
-                    print('command (2)', command)
-
-                with print_l:
-                    print(
-                        "Running test {0} test type: {1}, description: {2}".
-                        format(test_id, test_type, test_description)
-                    )
-                    print(command + '\n')
-                if not args.print_command:
-                    if save_model:
-                        model = True
-                    if False:  #args.timeout:
-                        pr = popen_timeout(command, int(args.timeout))
-                        if pr:
-                            outs, errs = pr
-                            if args.debug:
-                                print(
-                                    'Output: \n' + outs + '\n' + 'Errors: \n' +
-                                    errs + '\n'
-                                )
-                            if extract_smlp_error(errs) != 'OK':
-                                status = False
-                                test_errors.append(['Run', errs])
-                        else:
-                            status = False
-                            test_errors.append(['Run', 'Timeout'])
-                            execute_test = False
-                    else:
-                        pr = Popen(
-                            command,
-                            shell=True,
-                            stdin=PIPE,
-                            stdout=PIPE,
-                            stderr=PIPE,
-                            universal_newlines=True
-                        )
-                        outs, errs = pr.communicate()
-                        if args.debug:
-                            print(
-                                'Output: \n' + outs + '\n' + 'Errors: \n' +
-                                errs + '\n'
-                            )
-                        if extract_smlp_error(errs) != 'OK':
-                            status = False
-                            test_errors.append(['Run', errs])
-            if model:
-                model = get_model_name(test_switches)
-            id_q.put([test_id, execute_test, model, status, test_errors])
-
     if DEBUG:
         print("DEBUG 4")
 
@@ -956,7 +941,13 @@ def main():
     print("Calling %d workers for multiprocessing..." % workers)
     for i in range(workers):
         t = Process(
-            target=worker, args=(tests_queue, test_out_queue, print_lock)
+            target=worker,
+            args=(
+                tests_queue, test_out_queue, print_lock, data_path, output_path,
+                models_path, doe_path, specs_path, relevant_modes,
+                relevant_models, args.timeout, debug, args.extra_options,
+                not args.print_command
+            )
         )
         process_list.append(t)
         print("Initiating worker #%d..." % i)
