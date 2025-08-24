@@ -416,8 +416,7 @@ def parse_args():
     parser.add_argument(
         '-g',
         '--no_graphical_compare',
-        action='store_true',
-        help='Answer no on all replacing.'
+        action='store_true'
     )
 
     return parser.parse_args()
