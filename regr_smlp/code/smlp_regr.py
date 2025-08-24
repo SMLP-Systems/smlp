@@ -324,10 +324,78 @@ def use_model_in_config(conf):
 
 def parse_args():
     parser = ArgumentParser(
-        description='Runs the SMLP regression test suite.',
-        usage='%s [-OPTS]' % os.path.basename(sys.argv[0])
+        description='''\
+            Runs the SMLP regression test suite.
+        ''',
+        usage='%s [-OPTS]' % os.path.basename(sys.argv[0]),
+        add_help=False
+    )
+
+    # Keep arguments in alphabetical order, this helps users to quickly find
+    # the help message for the option they are interested in. If they just want
+    # to get an overview, alphabetical order doesn't matter.
+
+    #parser.add_argument('-c', '--cross_check', action='store_true',
+    #                    help='Cross check specific csv outputs.')
+    parser.add_argument(
+        '-conf',
+        '--config_default',
+        help='Yes/No/Y/N answer to config file all replacements/updates.'
+    )
+    parser.add_argument('-d', '--debug', action='store_true')
+    parser.add_argument(
+        '-def',
+        '--default',
+        help='Yes/No/Y/N answer to all master file replacements/updates.'
+    )
+    parser.add_argument('-diff', '--diff', action='store_true')
+    parser.add_argument(
+        '-extra',
+        '--extra_options',
+        help='Specify command line options that will be appended to the '
+        'command line.'
+    )
+    parser.add_argument(
+        '-f',
+        '--fail_txt',
+        action='store_true',
+        help="Don't compare all files if .txt main log file comparison fails."
+    )
+    parser.add_argument('-g', '--no_graphical_compare', action='store_true')
+    parser.add_argument(
+        '-h', '--help', action='help', help='show this help message and exit'
+    )
+    parser.add_argument(
+        '-i',
+        '--ignore_tests',
+        help='Ignores test/s that are passed as this argument.'
+    )
+    parser.add_argument(
+        '-models',
+        '--models',
+        help='Specify models (e.g., dt_sklearn) of tests to run, default is '
+        'all modes.'
+    )
+    parser.add_argument(
+        '-m',
+        '--modes',
+        help='Specify modes (e.g., verify) of tests to run, default is all '
+        'modes.'
+    )
+    parser.add_argument(
+        '-n',
+        '--no_all',
+        action='store_true',
+        help='Answer no to all file replacements/updates when a mismatch is '
+        'found between current and master results.'
     )
     parser.add_argument('-o', '--output', help='Output directory.')
+    parser.add_argument(
+        '-p',
+        '--print_command',
+        action='store_true',
+        help='print the command to run manually; the test will not be executed.'
+    )
     parser.add_argument(
         '-t',
         '--tests',
@@ -338,59 +406,8 @@ def parse_args():
         'other tests by specifying -t real; or run all the regression tests by '
         'specifying -t all.'
     )
-    parser.add_argument(
-        '-m',
-        '--modes',
-        help='Specify modes (e.g., verify) of tests to run, default is all '
-        'modes.'
-    )
-    parser.add_argument(
-        '-models',
-        '--models',
-        help='Specify models (e.g., dt_sklearn) of tests to run, default is '
-        'all modes.'
-    )
-    parser.add_argument(
-        '-extra',
-        '--extra_options',
-        help='Specify command line options that will be appended to the '
-        'command line.'
-    )
-    parser.add_argument('-d', '--debug', action='store_true')
-    parser.add_argument(
-        '-p',
-        '--print_command',
-        action='store_true',
-        help='print the command to run manually; the test will not be executed.'
-    )
-    parser.add_argument('-diff', '--diff', action='store_true')
-    #parser.add_argument('-c', '--cross_check', action='store_true',
-    #                    help='Cross check specific csv outputs.')
-    parser.add_argument(
-        '-w',
-        '--workers',
-        help='Number of concurrent tests that will run, default 2.'
-    )
     #parser.add_argument('-temp', '--tempdir',
     #                    help='Specify where to copy and run code, default=temp_dir.')
-    parser.add_argument(
-        '-i',
-        '--ignore_tests',
-        help='Ignores test/s that are passed as this argument.'
-    )
-    parser.add_argument(
-        '-n',
-        '--no_all',
-        action='store_true',
-        help='Answer no to all file replacements/updates when a mismatch is '
-        'found between current and master results.'
-    )
-    parser.add_argument(
-        '-f',
-        '--fail_txt',
-        action='store_true',
-        help="Don't compare all files if .txt main log file comparison fails."
-    )
     parser.add_argument(
         '-time',
         '--timeout',
@@ -404,19 +421,9 @@ def parse_args():
         'decimal bits.'
     )
     parser.add_argument(
-        '-def',
-        '--default',
-        help='Yes/No/Y/N answer to all master file replacements/updates.'
-    )
-    parser.add_argument(
-        '-conf',
-        '--config_default',
-        help='Yes/No/Y/N answer to config file all replacements/updates.'
-    )
-    parser.add_argument(
-        '-g',
-        '--no_graphical_compare',
-        action='store_true'
+        '-w',
+        '--workers',
+        help='Number of concurrent tests that will run, default 2.'
     )
 
     return parser.parse_args()
