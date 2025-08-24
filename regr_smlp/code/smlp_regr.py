@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os
+import os, sys
 from os import path, chdir, sep, remove, listdir, kill
 from argparse import ArgumentParser
 from shutil import copytree, rmtree, copyfile
@@ -323,7 +323,10 @@ def use_model_in_config(conf):
 
 
 def parse_args():
-    parser = ArgumentParser(description='SMLP regression')
+    parser = ArgumentParser(
+        description='Runs the SMLP regression test suite.',
+        usage='%s [-OPTS]' % os.path.basename(sys.argv[0])
+    )
     parser.add_argument('-o', '--output', help='Output directory.')
     parser.add_argument(
         '-t',
