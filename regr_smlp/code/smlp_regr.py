@@ -420,7 +420,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def filter_tests(tests_data : list, tests: str, ignored_tests: list[str]):
+def filter_tests(tests_data, tests: str, ignored_tests: list[str]):
     '''
     Indexes for rows in tests_data:
     0 - id
@@ -501,9 +501,12 @@ def filter_tests(tests_data : list, tests: str, ignored_tests: list[str]):
 
 def main():
     start_time = time()
-    file_path = Path(__file__).absolute().parent
 
-    # Regression arguments
+    # Path to SMLP regression code - also where smlp_regr.csv file and this
+    # script are located.
+    code_path = Path(__file__).absolute().parent
+
+    # Regression test script command line arguments
     args = parse_args()
 
     if not args.output:
@@ -553,19 +556,12 @@ def main():
                 args.models.replace(" ", "").replace("\'", "")
             )
     #print('relevant_models',relevant_models)
-    """def read_txt_file_to_list(file_path):
-        with open(file_path, 'r') as rFile:
-            return rFile.read().splitlines()"""
 
     global DIFF
     if 'DISPLAY' in os.environ:
         DIFF = GUI_DIFF
     else:
         DIFF = TUI_DIFF
-
-    # Path to SMLP regression code - also where smlp_tests.csv file and this
-    # script are located.
-    code_path = file_path
 
     # Create and migrate code to temp dir
     if False:  #not args.print_command:
@@ -607,7 +603,6 @@ def main():
     if args.tolerance:
         csv_cmp.set_threshold(int(args.tolerance))
 
-    tests_list = []
     tests_queue = Queue()
     print_lock = Lock()
 
@@ -615,7 +610,7 @@ def main():
     with open(tests_data_path, 'r') as rFile:
         csvreader = reader(rFile, delimiter=',')
         next(csvreader, None)
-        for row in filter_tests(list(csvreader), tests, ignored_tests):
+        for row in filter_tests(csvreader, tests, ignored_tests):
             tests_queue.put(row)
 
     test_id_list = []
