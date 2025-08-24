@@ -2,7 +2,7 @@
 
 import os, sys
 from os import path, chdir, sep, remove, listdir, kill
-from argparse import ArgumentParser
+from argparse import ArgumentParser, HelpFormatter
 from shutil import copytree, rmtree, copyfile
 from csv import reader
 
@@ -322,13 +322,59 @@ def use_model_in_config(conf):
     return False
 
 
+
+class CustomHelpFormatter(HelpFormatter):
+    """Custom formatter for setting argparse formatter_class. Identical to the
+    default formatter, except that the metavar is not repeated for every
+    possible Optional. E.g., instead of
+
+      -f FILE, --file FILE    Some text describing this option.
+
+    this class will print
+
+      -f, --file FILE         Some text describing this option.
+
+    thereby reducing clutter in the generated help message.
+
+    It will also keep paragraphs in the description and epilog, that is,
+    separations of text by two line breaks instead of replacing them with
+    a single space.
+    """
+
+    def _fill_text(self, text, width, indent):
+        return '\n\n'.join(HelpFormatter._fill_text(self, par, width, indent)
+                           for par in text.split('\n\n'))
+
+    def _format_action_invocation(self, action):
+        if not action.option_strings:
+            metavar, = self._metavar_formatter(action, action.dest)(1)
+            return metavar
+        else:
+            # if the Optional doesn't take a value, format is:
+            #    -s, --long
+            if action.nargs == 0:
+                parts = action.option_strings
+            # if the Optional takes a value, format is:
+            #    -s, --long ARGS
+            else:
+                default = action.dest.upper()
+                args_string = self._format_args(action, default)
+                parts = list(action.option_strings)
+                parts[-1] += ' ' + args_string
+            return ', '.join(parts)
+
+
 def parse_args():
     parser = ArgumentParser(
         description='''\
             Runs the SMLP regression test suite.
+
+            Mandatory arguments for long options are mandatory for short options
+            as well.
         ''',
         usage='%s [-OPTS]' % os.path.basename(sys.argv[0]),
-        add_help=False
+        add_help=False,
+        formatter_class=CustomHelpFormatter
     )
 
     # Keep arguments in alphabetical order, this helps users to quickly find
