@@ -13,13 +13,15 @@ import csv_comparator as csv_cmp
 
 from threading import Timer
 
+from pathlib import Path
+
 # from difflib import ndiff, context_diff
 
 TUI_DIFF = 'diff'
 GUI_DIFF = 'tkdiff'
 # Path to regression location (where data, code, specs, master and model
 # directories are located)
-TREE_PATH = '../'
+TREE_PATH = Path('..')
 SOLVERS_PATH = '../../../external'  # Path to external solvers
 
 DEBUG = False
@@ -320,10 +322,7 @@ def use_model_in_config(conf):
     return False
 
 
-def main():
-    start_time = time()
-    file_path = path.dirname(path.abspath(__file__))
-    # Regression arguments
+def parse_args():
     parser = ArgumentParser(description='SMLP regression')
     parser.add_argument('-o', '--output', help='Output directory.')
     parser.add_argument(
@@ -418,19 +417,110 @@ def main():
         help='Answer no on all replacing.'
     )
 
-    args = parser.parse_args()
-    if not args.output:
-        output_path = './'  #file_path.replace('\\', '/')
+    return parser.parse_args()
+
+
+def filter_tests(tests_data : list, tests: str, ignored_tests: list[str]):
+    '''
+    Indexes for rows in tests_data:
+    0 - id
+    1 - data
+    2 - new data(if exists)
+    3 - switches
+    4 - description
+    '''
+    def is_toy_test(row):
+        prefixes = ('smlp_toy', 'mltp_toy')
+        if any(row[i].startswith(p) for p in prefixes for i in (1, 2)):
+            return True
+        return (
+            conf_identifier(row[3]) and
+            get_conf_name(row[3]).startswith('smlp_toy')
+        )
+
+    # XXX fb: what exactly is this special case here?
+    def is_special_toy(row):
+        return row[1] == '' and row[2] == '' and not conf_identifier(row[3])
+
+    if tests == "all":
+        for row in tests_data:
+            if row[0] not in ignored_tests:
+                yield row
+    elif tests == 'toy':
+        for row in tests_data:
+            if row[0] in ignored_tests:
+                continue
+            if is_toy_test(row) or is_special_toy(row):
+                yield row
+    elif tests == 'real':
+        for row in tests_data:
+            if is_toy_test(row) or row[0] in ignored_tests:
+                continue
+            yield row
+    elif tests == 'test':
+        i_picks = ['36', '51', '60', '80', '95', '104', '120']
+        for row in tests_data:
+            if row[0] in i_picks:
+                yield row
+    elif ',' in tests:
+        t_list = tests.split(',')
+        for e in t_list:
+            if ':' in e:  # this option to support tests range, eg: 5:10
+                t_list.remove(e)
+                e_range = e.split(':')
+                t_list = t_list + [
+                    str(e)
+                    for e in list(range(int(e_range[0]),
+                                        int(e_range[1]) + 1))
+                ]
+                #print('t_list', t_list)
+        for row in tests_data:
+            if row[0] in t_list:
+                yield row
+    elif ':' in tests:  # this option to support tests range, eg: 5:10
+        t_range = tests.split(':')
+        start = t_range[0]
+        end = t_range[1]
+        t_list = [str(i) for i in range(int(start), int(end) + 1)]
+        #print('start', start, 'end', end, 't_list', t_list)
+        for row in tests_data:
+            #print('row', row)
+            if row[0] in t_list:
+                yield row
     else:
-        output_path = args.output.replace('\\', '/')
+        #print('tests', tests, 'tests_data_path', tests_data_path)
+        r = None
+        for row in tests_data:
+            if row[0] == tests:
+                r = row
+                break
+        if r is None:
+            raise NameError('Test {0} not found!'.format(tests))
+        yield r
+
+
+def main():
+    start_time = time()
+    file_path = Path(__file__).absolute().parent
+
+    # Regression arguments
+    args = parse_args()
+
+    if not args.output:
+        output_path = Path('.')
+    else:
+        output_path = Path(args.output)
+
     if not args.tests:
         tests = 'all'
     else:
         tests = args.tests.replace(" ", "").replace("\'", "")
+
     if args.debug:
         debug = '-d 1'
     else:
         debug = ''
+
     ignored_tests = []
     if args.ignore_tests:
         if ',' in args.ignore_tests:
@@ -442,6 +532,7 @@ def main():
                 args.ignore_tests.replace(" ", "").replace("\'", "")
             )
     #print('ignored_tests', ignored_tests);
+
     relevant_modes = []
     if args.modes:
         if ',' in args.modes:
@@ -487,8 +578,8 @@ def main():
         else:
             tempdir = 'temp_code4'
         # Path of temp copied code dir.
-        temp_code_dir = path.join(TREE_PATH, tempdir)
-        if path.exists(temp_code_dir):
+        temp_code_dir = TREE_PATH / tempdir
+        if temp_code_dir.exists():
             rmtree(temp_code_dir)
         # Copies code to temp dir.
         copytree(dst=temp_code_dir, src=code_path, ignore=ignored_files)
@@ -497,19 +588,19 @@ def main():
         temp_code_dir = code_path
 
     # Path to master results (to compare with)
-    master_path = path.join(TREE_PATH, 'master')
+    master_path = TREE_PATH / 'master'
 
     # Path to saved models and everything required to re-run it
-    models_path = path.join(TREE_PATH, 'models')
+    models_path = TREE_PATH / 'models'
 
-    data_path = path.join(TREE_PATH, 'data')  # Path to the data
-    doe_path = path.join(TREE_PATH, 'grids')  # Path to the doe grids data
+    data_path = TREE_PATH / 'data'  # Path to the data
+    doe_path = TREE_PATH / 'grids'  # Path to the doe grids data
 
     # Path to the domain spec for model exploration
-    specs_path = path.join(TREE_PATH, 'specs')
+    specs_path = TREE_PATH / 'specs'
 
     # Path of the tests config file
-    tests_data_path = path.join(temp_code_dir, 'smlp_regr.csv')
+    tests_data_path = temp_code_dir / 'smlp_regr.csv'
 
     diff = 'diff'
 
@@ -520,96 +611,12 @@ def main():
     tests_queue = Queue()
     print_lock = Lock()
 
-    # First, read in the tests_data_path CSV. As a list we can easily manipulate it.
-
+    # First, read in the tests_data_path CSV.
     with open(tests_data_path, 'r') as rFile:
         csvreader = reader(rFile, delimiter=',')
         next(csvreader, None)
-        tests_data = list(csvreader)
-
-    def is_toy_test(row):
-        prefixes = ('smlp_toy', 'mltp_toy')
-        if any(row[i].startswith(p) for p in prefixes for i in (1, 2)):
-            return True
-        return (
-            conf_identifier(row[3]) and
-            get_conf_name(row[3]).startswith('smlp_toy')
-        )
-
-    # XXX fb: what exactly is this special case here?
-    def is_special_toy(row):
-        return row[1] == '' and row[2] == '' and not conf_identifier(row[3])
-
-    if tests == "all":
-        for row in tests_data:
-            if row[0] not in ignored_tests:
-                tests_list.append(row)
-                tests_queue.put(row)
-    elif tests == 'toy':
-        for row in tests_data:
-            if row[0] in ignored_tests:
-                continue
-            if is_toy_test(row) or is_special_toy(row):
-                tests_list.append(row[0])
-                tests_queue.put(row)
-    elif tests == 'real':
-        for row in tests_data:
-            if is_toy_test(row) or row[0] in ignored_tests:
-                continue
-            tests_list.append(row)
+        for row in filter_tests(list(csvreader), tests, ignored_tests):
             tests_queue.put(row)
-    elif tests == 'test':
-        i_picks = ['36', '51', '60', '80', '95', '104', '120']
-        for row in tests_data:
-            if row[0] in i_picks:
-                tests_list.append(row)
-                tests_queue.put(row)
-    elif ',' in tests:
-        t_list = tests.split(',')
-        for e in t_list:
-            if ':' in e:  # this option to support tests range, eg: 5:10
-                t_list.remove(e)
-                e_range = e.split(':')
-                t_list = t_list + [
-                    str(e)
-                    for e in list(range(int(e_range[0]),
-                                        int(e_range[1]) + 1))
-                ]
-                #print('t_list', t_list)
-        for row in tests_data:
-            if row[0] in t_list:
-                tests_list.append(row)
-                tests_queue.put(row)
-    elif ':' in tests:  # this option to support tests range, eg: 5:10
-        t_range = tests.split(':')
-        start = t_range[0]
-        end = t_range[1]
-        t_list = [str(i) for i in range(int(start), int(end) + 1)]
-        #print('start', start, 'end', end, 't_list', t_list)
-        for row in tests_data:
-            #print('row', row)
-            if row[0] in t_list:
-                tests_list.append(row)
-                tests_queue.put(row)
-    else:
-        #print('tests', tests, 'tests_data_path', tests_data_path)
-        r = None
-        for row in tests_data:
-            if row[0] == tests:
-                r = row
-                break
-        if r is None:
-            raise NameError('Test {0} not found!'.format(tests))
-        tests_list.append(r)
-        tests_queue.put(r)
-    '''
-    Indexes for test list:
-    0 - id
-    1 - data
-    2 - new data(if exists)
-    3 - switches
-    4 - description
-    '''
 
     test_id_list = []
     test_out_queue = Queue()
@@ -950,18 +957,16 @@ def main():
         workers = 2  # Number of concurrent processes
     if tests_queue.qsize() < workers:
         workers = tests_queue.qsize()
-    print(
-        "Calling {workers} workers for multiprocessing...".format(
-            workers=workers
-        )
-    )
-    for i in range(0, workers):
+
+    print("Calling %d workers for multiprocessing..." % workers)
+    for i in range(workers):
         t = Process(
             target=worker, args=(tests_queue, test_out_queue, print_lock)
         )
         process_list.append(t)
+        print("Initiating worker #%d..." % i)
         t.start()
-        print("Initiating {i} worker...".format(i=i))
+
     counter = 0
     while counter < expected_outs:
         test_id_list.append(test_out_queue.get())
@@ -972,13 +977,7 @@ def main():
 
     for process in process_list:
         process.join()
-    # fixing output and master path for the system use:
-    master_path = master_path.replace('/',
-                                      path.sep).replace('\"',
-                                                        '').replace('\'', '')
-    output_path = output_path.replace('/',
-                                      path.sep).replace('\"',
-                                                        '').replace('\'', '')
+
     files_in_master = get_all_files_from_dir(master_path)
     files_in_output = get_all_files_from_dir(output_path)
 
@@ -1038,8 +1037,8 @@ def main():
 
     # to tell if there is a main log compare needed
     log = tests in {'all', 'real', 'toy', 'test'}
-    master_log_file = path.join(master_path, tests + '_log.txt')
-    log_file = path.join(output_path, tests + '_log.txt')
+    master_log_file = master_path / (tests + '_log.txt')
+    log_file = output_path / (tests + '_log.txt')
 
     if DEBUG:
         print("DEBUG 7")
@@ -1224,9 +1223,7 @@ def main():
                                         else:
                                             copyfile(new_file, master_file)
                                             print('Replacing Files...')
-                                            if path.exists(
-                                                path.join(data_path, file_name)
-                                            ):
+                                            if (data_path / file_name).exists():
                                                 if args.default:
                                                     user_input = args.default
                                                 else:
@@ -1245,9 +1242,7 @@ def main():
                                                 if user_input in {'yes', 'y'}:
                                                     copyfile(
                                                         new_file,
-                                                        path.join(
-                                                            data_path, file_name
-                                                        )
+                                                        data_path / file_name
                                                     )
                                     test_result = False
                                     test_files_check.append(
