@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, sys
+import os, sys, shlex
 from os import path, chdir, sep, remove, listdir, kill
 from argparse import ArgumentParser, HelpFormatter
 from shutil import copytree, rmtree, copyfile
@@ -771,7 +771,7 @@ def worker(
                     test_switches, models_path
                 )
 
-            command = "../../src/run_smlp.py"
+            command = str(TREE_PATH.parent / 'src' / 'run_smlp.py')
 
             if timeout:  # timeout -- TODO !!!
                 command = '/usr/bin/timeout 600 ' + command
@@ -811,12 +811,10 @@ def worker(
                         #test_switches = test_switches.replace("-solver_path ", ' ')
                         #test_switches = test_switches.replace(solver_path_bin, ' ')
                 #print('test_switches', test_switches); print('test_type', test_type)
-                command += ' {dat} {out_dir} {pref} {args} {debug} '.format(
-                    dat=test_data_path,
-                    out_dir='-out_dir {output_path}'.format(
-                        output_path=output_path
-                    ),
-                    pref='-pref {prefix}'.format(prefix=new_prefix),
+                command += ' {dat} -out_dir {out_dir} -pref {pref} {args} {debug} '.format(
+                    dat=shlex.quote(test_data_path),
+                    out_dir=shlex.quote(output_path),
+                    pref=shlex.quote(new_prefix),
                     args=test_switches,
                     debug=debug
                 )
@@ -826,12 +824,12 @@ def worker(
                 if test_type == 'prediction' or (
                     test_new_data != ""
                 ):  #use_config_file and
-                    command += '{new_dat} '.format(new_dat=test_new_data_path)
+                    command += '%s ' % shlex.quote(test_new_data_path)
                     #print('command (2)', command);
 
             # append extra arguments
             if extra_options is not None:
-                command = command + ' ' + extra_options
+                command += ' ' + extra_options
 
             if DEBUG:
                 print('command (2)', command)
@@ -1180,7 +1178,6 @@ def main():
                         #  new_file.endswith('.json') or
                         #  new_file.endswith('.h5')) and
                         # not file_name in files_to_ignore_from_diff:
-                        exclude_cond = file_name in files_to_ignore_from_diff
                         exclude_cond = (
                             file_name in files_to_ignore_from_diff or
                             file_name.endswith('_model_term.json')
@@ -1190,14 +1187,15 @@ def main():
                             any(new_file.endswith(s) for s in suffixes) and
                             not exclude_cond
                         ):
-                            print(
-                                'comparing {file} to master'.format(
-                                    file=file_name
-                                )
-                            )
+                            print('comparing %s to master' % file_name)
                             p = Popen(
-                                '{diff} -B -I \'Feature selection.*file .*\' '
-                                '-I \'\\[-v-] Input.*\' -I \'usage:.*\' {k} {l}'
+                                [
+                                    diff, '-B',
+                                    '-I', 'Feature selection.*file .*',
+                                    '-I', '\\[-v-] Input.*',
+                                    '-I', 'usage:.*',
+                                    new_file, master_file
+                                ],
                                 .format(diff=diff, k=new_file, l=master_file),
                                 shell=True,
                                 stdin=PIPE,
@@ -1209,11 +1207,7 @@ def main():
                                 if not compare_files(new_file, master_file):
                                     if not args.no_graphical_compare and to_show:
                                         Popen(
-                                            '{diff} {l} {k}'.format(
-                                                diff=DIFF,
-                                                k=new_file,
-                                                l=master_file
-                                            ),
+                                            [DIFF, master_file, new_file],
                                             shell=True
                                         ).wait()
                                     if args.default or (
@@ -1432,9 +1426,7 @@ def main():
             if not path.exists(master_log_file):
                 copyfile(log_file, master_log_file)
             p = Popen(
-                'diff {master_log} {new_log}'.format(
-                    new_log=log_file, master_log=master_log_file
-                ),
+                [diff, master_log_file, log_file],
                 shell=True,
                 stdin=PIPE,
                 stdout=PIPE,
@@ -1442,12 +1434,7 @@ def main():
             )
             output, error = p.communicate()
             if p.returncode == 1:
-                Popen(
-                    '{diff} {master_log} {new_log}'.format(
-                        diff=DIFF, new_log=log_file, master_log=master_log_file
-                    ),
-                    shell=True
-                ).wait()
+                Popen([diff, master_log_file, log_file], shell=True).wait()
                 user_input = input(
                     'Do you wish to switch the new log file with the master '
                     'log file?\n'
