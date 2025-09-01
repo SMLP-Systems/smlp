@@ -21,7 +21,8 @@ When you use this tool, please cite our corresponding CAV 2024 tool paper,
 a pre-submission version of which is provided on arXiv:
 <https://arxiv.org/abs/2402.01415>
 
-Coming soon: Support for NLP and LLMs in SMLP -- see [SMLP_manual_v2.pdf] for more details:
+Coming soon: Support for NLP and LLMs in SMLP.
+See [SMLP_manual_v2.pdf](https://github.com/SMLP-Systems/smlp/SMLP_manual_v2.pdf) for more details.
 
 NLP:
 -	NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
