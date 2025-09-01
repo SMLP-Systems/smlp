@@ -22,7 +22,7 @@ a pre-submission version of which is provided on arXiv:
 <https://arxiv.org/abs/2402.01415>
 
 Coming soon: Support for NLP and LLMs in SMLP.
-See [SMLP_manual_v2.pdf](https://github.com/SMLP-Systems/smlp/SMLP_manual_v2.pdf) for more details.
+See [SMLP_manual_v2.pdf](./SMLP_manual_v2.pdf) for more details.
 
 NLP:
 -	NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
