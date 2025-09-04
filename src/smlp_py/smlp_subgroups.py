@@ -813,7 +813,6 @@ class SubgroupDiscovery:
     # function to visualize the selected ranges).
     def _smlp_subgroups_single_response(self, feat_df:pd.DataFrame, resp_df:pd.DataFrame, 
             resp_name:str, pos_value:int, qf:str, dim:int, top_n:int):
-        assert pos_value == 0 or pos_value == 1
         #print('smlp_subgroups_single_response: feat_df cols', feat_df.columns.tolist())
         cls_reg_mode = get_response_type(resp_df, resp_name); #print('cls_reg_mode', cls_reg_mode)
         assert cls_reg_mode == CLASSIFICATION or cls_reg_mode == REGRESSION
@@ -822,9 +821,16 @@ class SubgroupDiscovery:
             target = ps.NumericTarget(resp_name)
             feat_resp_df = pd.concat([feat_df, resp_df], axis=1);
         else:
-            # keep resp_df as is, to use in fs_ranking_with_frequencies (thus the use of inplace=False)
-            pf_resp_df = resp_df[resp_name].replace({pos_value: self._psg_positive_value, 
-                1-pos_value: self._psg_negative_value}, inplace=False)
+            # At this stage, classification responses should have values in {0,1}, where 1 represents
+            # positive STAT_POSITIVE_VALUE and 0 represents negative STAT_POSITIVE_VALUE. We need to 
+            # replave these values respectively with strings self._psg_positive_value (= 'fail') and
+            # self._psg_negative_value (= 'pass'), because the pysubgroup package expects these values
+            # for classification responses.
+            # We keep resp_df as is, to use in fs_ranking_with_frequencies (thus the use of inplace=False)
+            print('here', set(resp_df[resp_name]))
+            assert set(resp_df[resp_name]).issubset({self.STAT_POSITIVE_VALUE, self.STAT_NEGATIVE_VALUE})
+            pf_resp_df = resp_df[resp_name].replace({self.STAT_POSITIVE_VALUE: self._psg_positive_value, 
+                1-self.STAT_POSITIVE_VALUE: self._psg_negative_value}, inplace=False)
             #print('resp_df\n', resp_df); print('pf_resp_df\n', pf_resp_df)
             target = ps.BinaryTarget(resp_name, self._psg_positive_value)
             feat_resp_df = pd.concat([feat_df, pf_resp_df], axis=1); #print('feat_resp_df\n', feat_resp_df);

@@ -1,0 +1,11 @@
+<think>
+Okay, let's see what the user is asking for here. They provided a question about who developed SMLP and a specific context that says SMLP was developed by Franz, Zurich, and Konstantin. My task is to answer this in bullet points without any extra commentary or filler text.
+
+First, I need to understand the query clearly. The user wants the answer based solely on the provided context. So, I don't have access to external information beyond what's given here.
+
+Looking at the context, it explicitly states that SMLP was developed by three individuals: Franz, Zurich, and Konstantin. Each of these names is mentioned directly in the text. The manual is linked to Git Hub for those interested, but that doesn't affect who developed SMLP itself.
+
+Since the context clearly lists the developers' names, I can confidently answer based on this information without any additional assumptions or guesses.
+</think>
+
+- Franz, Zurich, and Konstantin were the developers of SMLP.

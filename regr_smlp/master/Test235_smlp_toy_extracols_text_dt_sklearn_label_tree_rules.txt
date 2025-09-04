@@ -1,0 +1,6 @@
+#Forest semantics: majority vote
+#Number of trees: 1
+
+#TREE 0
+if (cbow_288 > 0.00011124351294711232) then (label = 1.0) | based on 2 samples
+if (cbow_288 <= 0.00011124351294711232) then (label = 0.0) | based on 2 samples
