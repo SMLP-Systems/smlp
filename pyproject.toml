@@ -1,0 +1,18 @@
+[project]
+name = "smlp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "doepy>=0.0.1",
+    "jenkspy>=0.4.1",
+    "mrmr-selection>=0.2.8",
+    "pandas>=2.1.4",
+    "pycaret>=3.3.2",
+    "pydoe>=0.3.8",
+    "pysubgroup>=0.8.0",
+    "scikit-learn>=1.4.2",
+    "seaborn>=0.13.2",
+    "tensorflow>=2.18.1",
+]
