@@ -1,7 +1,7 @@
 [project]
 name = "smlp"
 version = "0.1.0"
-description = "Add your description here"
+description = "symbolic machine learning prover"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
