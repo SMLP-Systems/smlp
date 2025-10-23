@@ -55,18 +55,18 @@ Agentic:
 
 4. **Output Files:** During and after the SMLP run, the visualization framework will generate several output files in the main project directory (or a specified output directory), prefixed with the `setno` and experiment number (`expno`):
 
-_**`Set{setno}_experiments.json`**: Contains comprehensive data for all experiments conducted on the specified `setno`, stored in JSON format.
-_ **`Set{setno}_experiments_output.ods`**: Presents key experiment results in a structured OpenDocument Spreadsheet table format for easy viewing and analysis.
-_\*\*`Set{setno}_{expno}_witnesses.json`**: Details information about all witnesses found during a specific experiment (`expno`) for the given `setno`.
-_ **`Set{setno}_{expno}_scatter_plot_predicted.html`**: An interactive HTML plot showing the performance of the trained model on the test set (predicted vs. actual values).
-_\*\*`Set{setno}_{expno}_stable_x_counter.html`\*\*: _(Key Visualization)_ An interactive HTML plot overlaying the discovered stable witnesses and identified counter-examples onto the original dataset's distribution. This plot is crucial for understanding the explored and excluded regions of the solution space during the stability search.
-_ **`Set{setno}_{expno}_witnesses.html`**: _(Key Visualization)_ An interactive HTML plot showing all discovered witnesses plotted against the original dataset distribution. Markers indicate found witnesses; experiments yielding no witnesses will naturally have no markers shown on this plot for that specific run.
-git clone <https://github.com/fbrausse/kay.git>
-git clone <https://github.com/fbrausse/smlp.git>
-cd smlp/utils/poly
-git clone <https://github.com/smlp-systems/kay.git>
-git clone <https://github.com/smlp-systems/smlp.git>
-cd smlp/utils/poly
+- **`Set{setno}_experiments.json`**: Contains comprehensive data for all experiments conducted on the specified `setno`, stored in JSON format.
+- **`Set{setno}_experiments_output.ods`**: Presents key experiment results in a structured OpenDocument Spreadsheet table format for easy viewing and analysis.
+- \*\*`Set{setno}_{expno}_witnesses.json`\*\*: Details information about all witnesses found during a specific experiment (`expno`) for the given `setno`.
+- **`Set{setno}_{expno}_scatter_plot_predicted.html`**: An interactive HTML plot showing the performance of the trained model on the test set (predicted vs. actual values).
+- \*\*`Set{setno}_{expno}_stable_x_counter.html`\*\*: _(Key Visualization)_ An interactive HTML plot overlaying the discovered stable witnesses and identified counter-examples onto the original dataset's distribution. This plot is crucial for understanding the explored and excluded regions of the solution space during the stability search.
+- **`Set{setno}_{expno}_witnesses.html`**: _(Key Visualization)_ An interactive HTML plot showing all discovered witnesses plotted against the original dataset distribution. Markers indicate found witnesses; experiments yielding no witnesses will naturally have no markers shown on this plot for that specific run.
+  git clone <https://github.com/fbrausse/kay.git>
+  git clone <https://github.com/fbrausse/smlp.git>
+  cd smlp/utils/poly
+  git clone <https://github.com/smlp-systems/kay.git>
+  git clone <https://github.com/smlp-systems/smlp.git>
+  cd smlp/utils/poly
 
 ## Core SMLP Functionality
 
