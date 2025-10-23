@@ -58,3 +58,7 @@ obj/table.c.o
 /regr_smlp/master/Test131_*.*
 
 *.log
+# ignore experiments
+experiment_outputs/*
+# ignore toy_out_dir
+toy_out_dir/*
