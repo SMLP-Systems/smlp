@@ -1,0 +1,6 @@
+stage,solver,p1,p2,x,y1,y2
+interface_consistency,sat,7,3,10
+model_consistency,sat,2,3,10,168100649299644106566247/37778931862957161709568,-154063685034780296478741/302231454903657293676544
+synthesis_feasibility
+synthesis,synthesis_feasibility
+ca,unsat

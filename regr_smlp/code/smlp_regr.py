@@ -16,7 +16,7 @@ from threading import Timer
 # from difflib import ndiff, context_diff
 
 TUI_DIFF = 'diff'
-GUI_DIFF = 'tkdiff'
+GUI_DIFF = 'kdiff3' #'tkdiff'
 TREE_PATH = '../' # Path to regression location (where data, code, specs, master and model directories are located)
 SOLVERS_PATH = '../../../external' # Path to external solvers
     
@@ -120,7 +120,7 @@ def mode_identifier(switches):
             if mode_prefix3.startswith('tra'):
                 return 'train'
             elif mode_prefix3.startswith('tun'):
-                print('mode tune was renamed');
+                #print('mode tune was renamed');
                 assert False
                 return 'tune'
             else:
@@ -133,6 +133,8 @@ def mode_identifier(switches):
                 return 'features'
             elif mode_prefix3 == 'fro':
                 return 'frontier'
+            elif mode_prefix3 == 'fin':
+                return 'finetune'
             else:
                 assert False
             return 'features'
@@ -157,9 +159,12 @@ def mode_identifier(switches):
                 print('unknown mode prefix', mode_prefix4);
                 assert False
         elif mode == 'l':
-            return 'level'
+            return 'llm'
         elif mode == 'r':
-            return 'representatives'
+            if mode_prefix3 == 'rag':
+                return 'rag'
+            else:
+                return 'representatives'
         elif mode == 'd':
             if mode_prefix3.startswith('dis'):
                 return 'discretization'
@@ -170,6 +175,8 @@ def mode_identifier(switches):
             return 'datainfo'
         elif mode == 'n':
             return 'novelty'
+        elif mode == 'g':
+            return 'generate'
         else:
             return 'unknown'
     else:
@@ -217,6 +224,7 @@ def solver_path_identifier(switches):
             return sub_switches
 
 def model_algo_identifier(switches):
+    #print('model_algo_identifier switches', switches)
     # return '-use_model' in switches
     if not ('-model' in switches or '--model ' in switches):
          return None
@@ -304,7 +312,7 @@ def main():
     parser.add_argument('-m', '--modes', help='Specify modes (e.g., verify) of tests to run, default is all modes.')
     parser.add_argument('-models', '--models', help='Specify models (e.g., dt_sklearn) of tests to run, default is all modes.')
     parser.add_argument('-extra', '--extra_options', help='Specify command line options that will be appended to the command line.')
-    parser.add_argument('-d', '--debug', action='store_true')
+    parser.add_argument('-d', '--debug', action='store_true', help='Debug the regression script.')
     parser.add_argument('-p', '--print_command', action='store_true', help='print the command to run manually;\
                         the test will not be executed.')
     parser.add_argument('-diff', '--diff', action='store_true')
@@ -333,10 +341,10 @@ def main():
         tests = 'all'
     else:
         tests = args.tests.replace(" ", "").replace("\'", "")
-    if args.debug:
-        debug = '-d 1'
-    else:
-        debug = ''
+    #if args.debug:
+    #    debug = '-d 1'
+    #else:
+    #    debug = ''
     ignored_tests = []
     if args.ignore_tests:
         if ',' in args.ignore_tests:
@@ -391,6 +399,7 @@ def main():
     master_path = path.join(TREE_PATH, 'master')  # Path to master results (to compare with)
     models_path = path.join(TREE_PATH, 'models')  # Path to saved models and everything required to re-run it
     data_path = path.join(TREE_PATH, 'data')      # Path to the data
+    text_path = path.join(TREE_PATH, 'texts')     # Path to the text data
     doe_path = path.join(TREE_PATH, 'grids')      # Path to the doe grids data
     specs_path = path.join(TREE_PATH, 'specs')    # Path to the domain spec for model exploration
     tests_data = path.join(temp_code_dir, 'smlp_regr.csv')  # Path of the tests config file
@@ -529,7 +538,7 @@ def main():
             test_description = test[4]
             use_model = use_model_identifier(test_switches); #print('use_model', use_model)
             save_model = save_model_identifier(test_switches); #print('save_model', save_model)
-            test_type = mode_identifier(test_switches); #print('test_type', test_type)
+            test_type = mode_identifier(test_switches);#print('test_type', test_type)
             model_algo = model_algo_identifier(test_switches); #print('model_algo', model_algo)
             
             if DEBUG:
@@ -600,6 +609,21 @@ def main():
                             else:
                                 execute_test = False
                                 test_errors.append(['Build', 'DOE file does not exist'])
+                        elif test_type in ['finetune', 'rag', 'llm']:
+                            test_data_path = path.join(text_path, test_data).replace('\\', '/')
+                            #print('test_data_path', test_data_path); print('test_data', test_data)
+                            if path.exists(test_data_path):
+                                test_data_path = '--text_data \"{0}\"'.format(test_data_path)
+                            elif path.exists(test_data_path + '.json'):
+                                test_data_path = '--text_data \"{0}.json\"'.format(test_data_path)
+                            elif path.exists(test_data_path + '.csv'):
+                                test_data_path = '--text_data \"{0}.csv\"'.format(test_data_path)
+                            elif path.exists(test_data_path + '.pdf'):
+                                test_data_path = '--text_data \"{0}.pdf\"'.format(test_data_path)
+                            else:
+                                print("++++++++++++++++ skipping test")
+                                execute_test = False
+                                test_errors.append(['Build', 'Data file does not exist'])
                         else:
                             test_data_path = path.join(data_path, test_data).replace('\\', '/')
                             #print('test_data_path', test_data_path); print('test_data', test_data)
@@ -608,6 +632,7 @@ def main():
                             elif path.exists(test_data_path + '.csv'):
                                 test_data_path = '-data \"{0}.csv\"'.format(test_data_path)
                             else:
+                                #print("++++++++++++++++ skipping test")
                                 execute_test = False
                                 test_errors.append(['Build', 'Data file does not exist'])
                     else:
@@ -618,8 +643,9 @@ def main():
                         print('test_data_path', test_data_path)
                         print('use_config_file', use_config_file )
                         print(test_new_data != "")
-                        
-                if test_type == 'prediction' or (test_new_data != ""): #use_config_file and
+                if test_type in ['generate','rag']:
+                    pass
+                elif test_type == 'prediction' or (test_new_data != ""): #use_config_file and
                     if not test_new_data == '':
                         test_new_data_path = path.join(data_path, test_new_data).replace('\\', '/')
                         if path.exists(test_new_data_path):
@@ -662,7 +688,7 @@ def main():
                     if test_type in ['optimize', 'verify', 'query', 'optsyn', 'certify', 'synthesize', 'frontier']:
                         # add relative path to spec file name
                         spec_fn = spec_identifier(test_switches)# + '.spec';
-                        print('spec_fn', spec_fn); print('specs_path', specs_path)
+                        #print('spec_fn', spec_fn); print('specs_path', specs_path)
                         if spec_fn is not None:
                             spec_file = os.path.join(specs_path, spec_fn)
                             test_switches = test_switches.replace(spec_fn, spec_file)
@@ -675,6 +701,7 @@ def main():
                             test_switches = test_switches.replace(solver_bin, solver_path_bin)
                             #test_switches = test_switches.replace("-solver_path ", ' ').replace(solver_path_bin, ' ') 
                     #print('test_switches', test_switches); print('test_type', test_type)
+                    '''
                     command += ' {dat} {out_dir} {pref} {args} {debug} '.format(dat=test_data_path,
                                                                                                out_dir='-out_dir {output_path}'.format(
                                                                                                    output_path=output_path),
@@ -682,6 +709,13 @@ def main():
                                                                                                    prefix=new_prefix),
                                                                                                args=test_switches,
                                                                                                debug=debug)
+                    '''
+                    command += ' {dat} {out_dir} {pref} {args} '.format(dat=test_data_path,
+                                                                                               out_dir='-out_dir {output_path}'.format(
+                                                                                                   output_path=output_path),
+                                                                                               pref='-pref {prefix}'.format(
+                                                                                                   prefix=new_prefix),
+                                                                                               args=test_switches)
                     if DEBUG:
                         print('command (1)', command);
                     #print('test_type', test_type, 'test_new_data',test_new_data) 
@@ -697,8 +731,8 @@ def main():
                     print('command (2)', command);
                     
                 with print_l:
-                    print("Running test {0} test type: {1}, description: {2}".format(test_id, test_type,
-                                                                                     test_description))
+                #    print("Running test {0} test type: {1}, description: {2}".format(test_id, test_type,
+                #                                                                     test_description))
                     print(command + '\n')
                 if not args.print_command:
                     if save_model:
@@ -741,7 +775,7 @@ def main():
         workers = tests_queue.qsize()
     print("Calling {workers} workers for multiprocessing...".format(workers=workers))
     for i in range(0, workers):
-        t = Process(target=worker, args=(tests_queue, test_out_queue, print_lock))
+        t = Process(target=worker, args=(tests_queue, test_out_queue, print_lock)); print('t', t)
         process_list.append(t)
         t.start()
         print("Initiating {i} worker...".format(i=i))
@@ -1052,7 +1086,7 @@ def main():
                         write_to_log(test_error[1])
 
     if DEBUG:
-        print('9')
+        print('DEBUG 9')
         print('log and not args.diff', log and not args.diff)
         
     if log and not args.diff:
@@ -1102,6 +1136,8 @@ def main():
             rmtree(temp_code_dir)
         except:
             print("Can't delete " + temp_code_dir + " dir.")
+    if DEBUG:
+        print('DEBUG 10')
     
     # report tests that crashed -- based on TestXXX_error.txt files that do not exist in master
     if len(new_error_fns) > 0:

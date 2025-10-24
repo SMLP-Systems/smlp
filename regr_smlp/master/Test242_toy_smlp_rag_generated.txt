@@ -1,0 +1,11 @@
+<think>
+Okay, I need to answer the question "Who developed SMLP?" based on the context provided. Let me look through the information given. The context states that SMLP was developed by Franz, Zurab, and Konstantin. So, these three individuals are the developers of the tool.
+
+I should structure this into a clear bullet point list. Each bullet should start with the person's name followed by their roles or contributions. Since all three are mentioned together, each can be listed separately without needing to combine them.
+</think>
+
+- Franz developed SMLP.
+- Zurab contributed to its development and implementation.
+- Konstantin also played a role in its creation.
+
+Each bullet point lists one developer with the specific contribution they made.

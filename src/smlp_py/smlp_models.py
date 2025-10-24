@@ -192,22 +192,38 @@ class SmlpModels:
         #print('pred\n', pred); print('\npred_type', type(pred));
         #print('resp\n', resp); print('\nresp_type', type(resp));
         predictions_colnames = [rn+'_'+algo for rn in resp_names]
-
         # expecting here pred to be np array (while resp is expected to be a data frames)
         assert resp is None or type(resp) == type(pd.DataFrame())
-        assert type(pred) == type(np.array([]))
-        if not isinstance(pred[0], list):
-            # we have a single response prediction
-            if not resp is None:
-                if len(pred) != resp.shape[0]:
-                    raise Exception('Implementation error in function pred_results_to_df')   
-            pred_ind = resp.index if not resp is None else range(len(pred)); #print('pred_ind', pred_ind)
-            predictions_df = pd.DataFrame(pred, index=pred_ind, columns=predictions_colnames)
+        from packaging import version
+        import keras
+        if version.parse(keras.__version__) <= version.parse("3.0.0") or not algo in self._instKeras.SMLP_KERAS_MODELS:
+            assert type(pred) == type(np.array([]))
+            if not isinstance(pred[0], list):
+                # we have a single response prediction
+                if not resp is None:
+                    if len(pred) != resp.shape[0]:
+                        raise Exception('Implementation error in function pred_results_to_df')   
+                pred_ind = resp.index if not resp is None else range(len(pred)); #print('pred_ind', pred_ind)
+                predictions_df = pd.DataFrame(pred, index=pred_ind, columns=predictions_colnames)
+            else:
+                # we have multiple response prediction
+                pred_ind = resp.index if not resp is None else range(pred.shape[0]); #print('pred_ind', pred_ind)
+                predictions_df = pd.DataFrame(pred, index=pred_ind, columns=predictions_colnames)
         else:
-            # we have multiple response prediction
-            pred_ind = resp.index if not resp is None else range(pred.shape[0]); #print('pred_ind', pred_ind)
-            predictions_df = pd.DataFrame(pred, index=pred_ind, columns=predictions_colnames)
-
+            if isinstance(pred, dict):
+                pred_ind = resp.index if not resp is None else range(len(pred)); #print('pred_ind', pred_ind)
+                pred2 = { (k+'_'+algo) : v.flatten() for (k, v) in pred.items()}; #print('pred2\n', pred2)
+                predictions_df = pd.DataFrame(pred2, index=pred_ind)
+                assert set(predictions_df.columns.tolist()) == set(predictions_colnames)
+                predictions_df = predictions_df[predictions_colnames]
+            else:
+                # we have a single response prediction
+                if not resp is None:
+                    if len(pred) != resp.shape[0]:
+                        raise Exception('Implementation error in function pred_results_to_df')   
+                pred_ind = resp.index if not resp is None else range(len(pred)); #print('pred_ind', pred_ind)
+                predictions_df = pd.DataFrame(pred, index=pred_ind, columns=predictions_colnames)
+        #print('predictions_df\n', predictions_df)
         assert type(predictions_df) == type(pd.DataFrame())
         assert isinstance(predictions_df, pd.DataFrame)
         return predictions_df
@@ -292,7 +308,7 @@ class SmlpModels:
         self._model_logger.info('Saving predictions summary into file: \n' + \
                                 str(self.predictions_summary_filename(data_version)))
         predictions_df.to_csv(self.predictions_summary_filename(data_version), index=True)
-        #print('predictions_df\n', predictions_df) 
+        #print('predictions_df\n', predictions_df)
 
         # generate prediction precisions table / file
         if not resp_df is None:

@@ -1,0 +1,14 @@
+
+smlp_logger - INFO - Executing run_smlp.py script: Start
+
+smlp_logger - INFO - Running SMLP in mode "generate": Start
+
+smlp_logger - INFO - Creating NLP instance: start
+
+smlp_logger - INFO - NLP pipe: tagger, attribute_ruler, lemmatizer, sentencizer
+
+smlp_logger - INFO - Creating NLP instance: end
+
+smlp_logger - WARNING - Spacy library cannot support processing text                 longer than 100,000 characters; ignoring characters in the text beyond that limit
+
+smlp_logger - INFO - Writing the generated text into file ./Test238_smlp_shekespeare_generated_text.txt

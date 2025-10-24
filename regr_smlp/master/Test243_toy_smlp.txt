@@ -1,0 +1,70 @@
+
+smlp_logger - INFO - Executing run_smlp.py script: Start
+
+smlp_logger - INFO - Running SMLP in mode "rag": Start
+
+smlp_logger - INFO - Running RAG with base model deepseek-r1:1.5b, using LangChain libs.
+
+smlp_logger - INFO - Starting RAG training
+
+smlp_logger - INFO - Computing passages from input text
+
+smlp_logger - INFO - Number of passages loaded: 4
+
+smlp_logger - INFO - Computing embedding and indexing
+
+smlp_logger - INFO - Creating RAG chain for training
+
+smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at rag_base_url http://localhost:11434
+
+smlp_logger - INFO - Saving RAG artifacts in directory: ./test243_model
+
+smlp_logger - INFO - Saving FAISS index into file ./test243_model/faiss_index
+
+smlp_logger - INFO - Saving model artifacts config into file ./test243_model/rag_config.json
+
+smlp_logger - INFO - {'rag_prompt_type': 'document_focused', 'rag_retriever_top_k': 3, 'rag_embedding_model': 'nomic-embed-text', 'rag_base_url': 'http://localhost:11434', 'rag_base_model_name': 'deepseek-r1:1.5b'}
+
+smlp_logger - INFO - Saved RAG artifacts to: ./test243_model
+
+smlp_logger - INFO - Creating RAG chain for answering question(s)
+
+smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at rag_base_url http://localhost:11434
+
+smlp_logger - INFO - Answering questions...
+
+
+smlp_logger - INFO - Q: Who developed SMLP?
+
+smlp_logger - INFO - Top 3 retrieved passages for this question
+
+smlp_logger - INFO - [1] SMLP was developed by franz, zurab and konstantin.
+
+smlp_logger - INFO - [2] SMLP manual is available at Git Hub. 
+
+smlp_logger - INFO - [3] SMLP is an open source model exploration tool.
+
+smlp_logger - INFO - Answer: <think>
+Okay, so I'm trying to figure out who developed the SMLP tool. The question is asking for a name or author of it. Let me look back at the context provided.
+
+The context says that SMLP was developed by three people: franz, zurab, and konstantin. So when the question asks "Who developed SMLP?" I need to make sure there's no confusion about who is contributing.
+
+Wait, I should double-check if I'm remembering this correctly. Sometimes in programming or technical discussions, it's easy to mix up authors or contributors. But according to what's written here, the three individuals are the ones responsible for creating SMLP.
+
+Additionally, the context mentions that SMLP has a manual available on Git Hub and is an open-source model exploration tool. These details don't change the fact that the developers are franz, zurab, and konstantin as stated earlier.
+
+So putting it all together, I should confirm each part of the query to ensure accuracy. The context provides the key information about who developed SMLP, so unless there's more to this question or context not provided here, I can safely state that the developers are franz, zurab, and konstantin.
+</think>
+
+The three individuals who developed SMLP are franz, zurab, and konstantin. 
+
+<font color="green">
+    The developers of SMLP are franz, zurab, and konstantin.
+</font>
+
+
+smlp_logger - INFO - Saving generated text into ./Test243_toy_smlp_rag_generated.txt
+
+smlp_logger - INFO - Running SMLP in mode "rag": End
+
+smlp_logger - INFO - Executing run_smlp.py script: End

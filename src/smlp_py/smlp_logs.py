@@ -36,7 +36,11 @@ class SmlpLogger:
     def create_logger(self, logger_name, log_file, log_level, log_mode, log_time):
         # create logger for an application called logger_name
         logger = logging.getLogger(logger_name)
-
+                
+        # Prevent duplicate handlers
+        if logger.hasHandlers():
+            logger.handlers.clear()
+        
         def log_level_to_level_object(level_str):
             if level_str == 'critical':
                 return logging.CRITICAL
@@ -87,6 +91,9 @@ class SmlpLogger:
         logger.addHandler(ch)
         logger.addHandler(fh)
 
+        # prevents double logging from parent/root logger
+        logger.propagate = False  
+        
         return logger
 
 # profiling SMLP run, the steps taken by the algorithm and solver runtimes

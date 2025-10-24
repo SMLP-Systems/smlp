@@ -51,6 +51,11 @@ def str_to_str_list(value):
 def str_to_str_list_list(value):
     return [x for x in value.split(';')]
 
+def str_to_int_tuple(value):    
+    return tuple([int(x) for x in value.split(',')])
+
+def str_to_str_list_pipe(value):
+    return value.split("|||")
 
 def timed(f, desc=None, log=lambda *args: print(*args, file=sys.stderr)):
     now = datetime.datetime.now()
@@ -232,10 +237,17 @@ def list_remove_duplicates(lst):
 def lists_union_order_preserving_without_duplicates(list_of_lists):
     return list_remove_duplicates(lists_union(list_of_lists))
 
+# While python numeric value types are int and float, numeric values in mumpy
+# have types 'int32', 'int64', 'float32' or 'float64' (these types are strings).
+# In this implementation, we accept both python and numpy numeric types as numeric
+# while determining whether a pamdas series in of type numeric. We could have 
+# defined separate functions for detecting pandas numeric and numpy numeric tyoes
+# for pandas series (and consequently also pandas data frames), these fucntions
+# would give titghter control during object type sam=nity checks and other usages.
 def pd_series_is_numeric(column:Series):
-    #assert column.dtype in [int , float , object , datetime , bool] 
-    res = column.dtype in [int, float]
-    assert res == (column.dtype.name in ['int64', 'float64'])
+    res = column.dtype in [int, float, 'int32', 'float32']
+    assert res == (column.dtype.name in ['int32', 'float32', 'int64', 'float64'])
+    
     # issubdtype may exit with error if say column of type category (ordered or unordered) 
     # is passed to it as argument. Hence we use try/except here.
     try:
@@ -243,6 +255,7 @@ def pd_series_is_numeric(column:Series):
     except:
         res2 = None
     if res2 is not None:
+        #print(res2, res, type(column)); print(type(column[0])); 
         assert res2 == res
     return res 
 
@@ -360,13 +373,17 @@ def param_dict_with_algo_name(param_dict, algo):
         result_dict[algo + '_' + k] = v_updated
     return result_dict
 
-# Whether a response is numeric or binary. Numeric responses are defined as ones
-# that have float values or int values besides 0 and 1. Responses with values 0 or 1 
+# Whether a response is numeric or binary. Numeric responses are defined as ones that
+# have float values or int values besides 0 and 1. Responses with values 0 and/or 1 
 # are defined as binary. It is expected that if response was of type object/string
-# with 1 or 2 values then these value have been renames to 1 and 0 based of definition
-# of which one of these two strings is positive and which one is nagative, and based
-# on smlp postive and negative values declared by user (where by default 1 is positive 
-# and 0 is negative)
+# with 1 or 2 values, or even int or float with up to two values other than 0 and 1, 
+# then these value have been renamed to 1 and 0 based of definition of which one of 
+# these two strings represents positive and which one negative, which are specified
+# using options --positive_value and --negative_values, respectively. This value 
+# replacement is done in function _preprocess_responses(), at data pre-processing stage. 
+# See smlp_data.py for explanations how the response columns are inferred as classification 
+# or as regression tasks. This function get_response_type() works correctly / can be safely
+# invoked after data preprocessing is done (after _preprocess_responses() was run).
 def get_response_type(df:DataFrame, resp_name:str):
     assert resp_name in df.columns.tolist()
     #print('df.shape', df.shape)

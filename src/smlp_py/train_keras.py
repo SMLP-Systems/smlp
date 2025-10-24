@@ -8,6 +8,8 @@ import tensorflow as tf
 from tensorflow import keras
 from keras.optimizers import Adam
 from keras.models import clone_model # for rounding model weights and biases
+import keras
+from packaging import version
 import matplotlib.pyplot as plt
 from math import ceil
 import json
@@ -285,7 +287,8 @@ class ModelKeras:
         return model
 
         
-    # In case of a non-deterministic behaviour, one can try to use output_initializer wih a seed (output_initializer = GlorotUniform(seed=42)
+    # In case of a non-deterministic behaviour, one can try to use output_initializer wih a seed 
+    # (output_initializer = GlorotUniform(seed=42)
     def _nn_init_model_functional(self, resp_names:list[str], input_dim:int, optimizer:str, hid_activation:str, out_activation:str, 
             layers_spec_list:list[int], loss_function, metrics):
         self._keras_logger.info('building NN model using Keras Functional API')
@@ -297,19 +300,42 @@ class ModelKeras:
         for size in layers_spec_list:
             self._keras_logger.info('dense layer of size ' + str(size))
             x = keras.layers.Dense(units=size, activation=hid_activation)(x)
-        
-        outputs = []
+       
         # loss = {} -- required if we wanted to use different loss functions for different responses
-        for resp in resp_names:
-            self._keras_logger.info('output layer of size ' + str(1))
-            # the following line would define a monolothic output layer like this is done for sequential API
-            #outputs = keras.layers.Dense(len(resp_names), activation=out_activation)(x)
-            output = keras.layers.Dense(1, name=resp, activation=out_activation)(x)
-            outputs.append(output)
+        if version.parse(keras.__version__) <= version.parse("3.0.0"):
+            outputs = []
+            for resp in resp_names:
+                self._keras_logger.info('output layer of size ' + str(1))
+                # the following line would define a monolothic output layer like this is done for sequential API
+                #outputs = keras.layers.Dense(len(resp_names), activation=out_activation)(x)
+                output = keras.layers.Dense(1, name=resp, activation=out_activation)(x)
+                outputs.append(output)
+        else:
+            outputs = {}
+            for resp in resp_names:
+                self._keras_logger.info('output layer of size ' + str(1))
+                outputs[resp] = keras.layers.Dense(1, name=resp, activation=out_activation)(x)
         
         # Initialize the Functional model
         model = keras.Model(inputs=inputs, outputs=outputs)
-        model.compile(optimizer=optimizer, loss=loss_function, metrics=metrics)
+        from keras.losses import get as get_loss
+        from keras.metrics import get as get_metric
+
+        if version.parse(keras.__version__) <= version.parse("3.0.0"):
+            model.compile(optimizer=optimizer, loss=loss_function, metrics=metrics)
+        else:
+            # Make independent instances
+            loss_dict = {
+                resp_name: get_loss(loss_function)  # creates a new instance
+                for resp_name in resp_names
+            }; #print('loss_dict', loss_dict)
+            metrics_dict = {
+                resp_name: [get_metric(m) for m in metrics]  # creates new instances
+                for resp_name in resp_names
+            }; #print('metrics_dict', metrics_dict)
+
+            model.compile(optimizer=optimizer, loss=loss_dict, metrics=metrics_dict)
+
         return model
     
     # function for comparing model configurations model.get_config() for sequential vs functional models
@@ -377,8 +403,12 @@ class ModelKeras:
                 if str(v) in str(model.loss) or str(k) in str(model.loss):
                     self._keras_logger.info("Loss function: " + str(k))
         if hasattr(model, 'compiled_metrics'):
-            compiled_metrics = model.compiled_metrics._metrics  # Access the private _metrics attribute
-            self._keras_logger.info("Metrics: " + str([m.name for m in compiled_metrics]))
+            if version.parse(keras.__version__) <= version.parse("3.0.0"):
+                compiled_metrics = model.compiled_metrics._metrics  # Access the private _metrics attribute
+                self._keras_logger.info("Metrics: " + str([m.name for m in compiled_metrics]))
+            else:
+                compiled_metrics = model.metrics_names ; #print('compiled_metrics', compiled_metrics)
+                self._keras_logger.info("Metrics: " + str([name for name in compiled_metrics]))
         else:
             self._keras_logger.info("Metrics: " + str([]))
         #self._keras_logger.info("Metrics: " + str(model.metrics))
@@ -473,14 +503,83 @@ class ModelKeras:
             '''
             # log model details
             self._log_model_summary(model, epochs, batch_size, sample_weights_dict, callbacks)
-            history = model.fit(X_train, y_train,
-                                epochs=epochs,
-                                validation_data=(X_test, y_test),
-                                #steps_per_epoch=10,
-                                sample_weight=sample_weights_dict,
-                                callbacks=callbacks,
-                                batch_size=batch_size)
-            #'''
+            if version.parse(keras.__version__) <= version.parse("3.0.0"):
+                history = model.fit(X_train, y_train,
+                    epochs=epochs,
+                    validation_data=(X_test, y_test),
+                    #steps_per_epoch=10,
+                    sample_weight=sample_weights_dict,
+                    callbacks=callbacks,
+                    batch_size=batch_size)
+            else:
+                #print("model.output_names:", model.output_names)
+                #print("type of model.output:", type(model.output))
+                #print("model.output:", model.output)
+
+                output_names = list(model.output_names)
+                is_multi_output = len(output_names) > 1
+                #print("is_multi_output", is_multi_output)
+                #print("Model output names:", output_names)
+
+                X_train_np = X_train.to_numpy(dtype=np.float32)
+                X_test_np = X_test.to_numpy(dtype=np.float32)
+
+                if is_multi_output:
+                    #print("multi-output case")
+                    '''
+                    y_train_np = {
+                        name: np.asarray(y_train[name], dtype=np.float32)
+                        for name in output_names
+                    }
+                    y_test_np = {
+                        name: np.asarray(y_test[name], dtype=np.float32)
+                        for name in output_names
+                    }
+                    '''
+                    y_train_np = {
+                        k: np.asarray(y_train[k], dtype=y_train[k].dtype)
+                        for k in y_train.columns
+                    }
+                    y_test_np = {
+                        k: np.asarray(y_test[k], dtype=y_test[k].dtype)
+                        for k in y_test.columns
+                    }
+                    sample_weights = None if sample_weights_dict is None else {
+                        name: np.asarray(sample_weights_dict[name], dtype=np.float32)
+                        for name in output_names
+                    }
+                else:
+                    #print("single-output case (functional or sequential)")
+                    output_name = output_names[0]
+                    y_train_np = np.asarray(y_train[output_name], dtype=np.float32)
+                    y_test_np = np.asarray(y_test[output_name], dtype=np.float32)
+                    sample_weights = None if sample_weights_dict is None else \
+                        np.asarray(sample_weights_dict[output_name], dtype=np.float32)
+                '''
+                print("Y train dict:")
+                if isinstance(y_train_np, dict):
+                    for k, v in y_train_np.items():
+                        print(f"{k}: type={type(v)}, dtype={v.dtype}, shape={v.shape}")
+                else:
+                    print(f"single: type={type(y_train_np)}, dtype={y_train_np.dtype}, shape={y_train_np.shape}")
+
+                print("Sample weights:")
+                if isinstance(sample_weights, dict):
+                    for k, v in sample_weights.items():
+                        print(f"{k}: type={type(v)}, dtype={v.dtype}, shape={v.shape}")
+                elif sample_weights is not None:
+                    print(f"single: type={type(sample_weights)}, dtype={sample_weights.dtype}, shape={sample_weights.shape}")
+                '''
+                history = model.fit(
+                    X_train_np,
+                    y_train_np,
+                    validation_data=(X_test_np, y_test_np),
+                    epochs=epochs,
+                    callbacks=callbacks,
+                    batch_size=batch_size,
+                    sample_weight=sample_weights
+                )
+            
         if weights_precision is not None:
             self.round_model_weights(model, int(weights_precision))
         return history

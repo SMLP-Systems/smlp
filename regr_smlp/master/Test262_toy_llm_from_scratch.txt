@@ -1,0 +1,14 @@
+
+smlp_logger - INFO - Executing run_smlp.py script: Start
+
+smlp_logger - INFO - Running SMLP in mode "llm": Start
+
+smlp_logger - INFO - Generated text: !
+
+smlp_logger - INFO - Saving generated text into ./Test262_toy_llm_from_scratch_llm_generated.txt
+
+smlp_logger - INFO - Generated: !
+
+smlp_logger - INFO - Running SMLP in mode "llm": End
+
+smlp_logger - INFO - Executing run_smlp.py script: End

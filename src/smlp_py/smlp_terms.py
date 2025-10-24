@@ -16,6 +16,7 @@ import functools #for cacheing
 from collections import defaultdict
 import sys
 from enum import Enum
+from packaging import version
 
 import smlp
 from smlp_py.smlp_utils import (np_JSONEncoder, lists_union_order_preserving_without_duplicates, 
@@ -1395,22 +1396,30 @@ class NNKerasTerms: #(SmlpTerms):
         return curr_layer_terms
 
     def _nn_keras_is_sequential(self, model):
-        try:
-            # v2.9 has this API
-            cl = keras.engine.sequential.Sequential
-        except AttributeError:
-            # v2.14+ has this API
-            cl = keras.src.engine.sequential.Sequential
-        return isinstance(model, cl)
+        if version.parse(keras.__version__) <= version.parse("3.0.0"):
+            try:
+                # v2.9 has this API
+                cl = keras.engine.sequential.Sequential
+            except AttributeError:
+                # v2.14+ has this API
+                cl = keras.src.engine.sequential.Sequential
+            return isinstance(model, cl)
+        else:
+            from keras import Sequential
+        return isinstance(model, Sequential)
 
     def _nn_keras_is_functional(self, model):
-        try:
-            # v2.9 has this API
-            cl = keras.engine.functional.Functional
-        except AttributeError:
-            # v2.14+ has this API
-            cl = keras.src.engine.functional.Functional
-        return isinstance(model, cl)
+        if version.parse(keras.__version__) <= version.parse("3.0.0"):
+            try:
+                # v2.9 has this API
+                cl = keras.engine.functional.Functional
+            except AttributeError:
+                # v2.14+ has this API
+                cl = keras.src.engine.functional.Functional
+            return isinstance(model, cl)
+        else:
+            from keras import Sequential, Model
+            return isinstance(model, Model) and not isinstance(model, keras.Sequential)
     
     # determine the model type -- sequential vs functional
     def get_nn_keras_model_type(self, model):
@@ -2439,21 +2448,59 @@ class ModelTerms(ScalerTerms):
             # would work well both with sequential and functional APIs and wouldn't use response_names).
             def declare_iternal_node_vars(model, resp_name, resp_names):
                 #print('resp_name', resp_name)
-                for l, layer in enumerate(model.layers):
-                    is_input_layer = self._nnKerasTermsInst.nn_keras_layer_is_input(model, layer)
-                    is_output_layer = self._nnKerasTermsInst.nn_keras_layer_is_output(model, l, resp_names)
-                    if is_input_layer or is_output_layer:
-                        # we do not create internal variables layer_i_node_j for model inouts and responses
-                        #print('layer', l, 'is input/output')
-                        continue
-                    else:
-                        curr_layer_nodes_count = getattr(layer, 'units', None); #print('curr_layer_nodes_count', curr_layer_nodes_count)
-                        #print('layer', l, 'is internal layer with weights', len(list(layer.weights[1])), 'nodes', curr_layer_nodes_count)
-                        assert curr_layer_nodes_count == len(list(layer.weights[1])); 
+                if version.parse(keras.__version__) <= version.parse("3.0.0") or algo != 'nn_keras':
+                    for l, layer in enumerate(model.layers):
+                        is_input_layer = self._nnKerasTermsInst.nn_keras_layer_is_input(model, layer)
+                        is_output_layer = self._nnKerasTermsInst.nn_keras_layer_is_output(model, l, resp_names)
+                        if is_input_layer or is_output_layer:
+                            # we do not create internal variables layer_i_node_j for model inouts and responses
+                            #print('layer', l, 'is input/output')
+                            continue
+                        else:
+                            curr_layer_nodes_count = getattr(layer, 'units', None); #print('curr_layer_nodes_count', curr_layer_nodes_count)
+                            #print('layer', l, 'is internal layer with weights', len(list(layer.weights[1])), 'nodes', curr_layer_nodes_count)
+
+                            assert curr_layer_nodes_count == len(list(layer.weights[1])); 
+                            for node in range(curr_layer_nodes_count):
+                                #print('domain', self._nnKerasTermsInst._nn_keras_node_name(resp_name, l, node))
+                                domain_dict[self._nnKerasTermsInst._nn_keras_node_name(resp_name, l, node)] = \
+                                    smlp.component(self.smlp_real)
+                else:
+                    for l, layer in enumerate(model.layers):
+                        is_input_layer = self._nnKerasTermsInst.nn_keras_layer_is_input(model, layer)
+                        is_output_layer = self._nnKerasTermsInst.nn_keras_layer_is_output(model, l, resp_names)
+
+                        if is_input_layer or is_output_layer:
+                            continue  # skip input/output layers
+
+                        # Skip layers with no weights or no biases (e.g., Dropout, Activation)
+                        if not hasattr(layer, "weights") or len(layer.weights) < 2:
+                            # TODDO !!!!!!!!!! are any constraints lost here ?????????
+                            assert False
+                            self._smlp_terms_logger.warning(f"[DEBUG] Skipping layer {layer.name} (no bias vector)")
+                            continue
+
+                        # Get number of nodes via 'units' or bias shape
+                        curr_layer_nodes_count = getattr(layer, 'units', None)
+                        bias_shape = layer.weights[1].shape
+
+                        #print(f"[DEBUG] Layer: {layer.name}")
+                        #print(f"[DEBUG] units: {curr_layer_nodes_count}")
+                        #print(f"[DEBUG] bias shape: {bias_shape}")
+
+                        # Fallback if 'units' is None
+                        if curr_layer_nodes_count is None:
+                            curr_layer_nodes_count = bias_shape[0]
+
+                        # Confirm bias shape matches
+                        assert curr_layer_nodes_count == bias_shape[0], (
+                            f"Mismatch in node count vs bias length in layer {layer.name}"
+                        )
+
                         for node in range(curr_layer_nodes_count):
-                            #print('domain', self._nnKerasTermsInst._nn_keras_node_name(resp_name, l, node))
-                            domain_dict[self._nnKerasTermsInst._nn_keras_node_name(resp_name, l, node)] = smlp.component(self.smlp_real)
-            
+                            node_name = self._nnKerasTermsInst._nn_keras_node_name(resp_name, l, node)
+                            domain_dict[node_name] = smlp.component(self.smlp_real)
+
             if isinstance(model, dict):
                 for resp_name in resp_names:
                     declare_iternal_node_vars(model[resp_name], resp_name, [resp_name])
