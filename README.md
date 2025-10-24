@@ -3,39 +3,44 @@
 SMLP is a tool for optimization, synthesis and design space exploration. It is
 based on statistical and machine learning techniques combined with formal verification
 approaches that allows selection of optimal configurations with respect to given
-constraints on the inputs and outputs of the system under consideration.  
+constraints on the inputs and outputs of the system under consideration.
 
 SMLP has been applied at Intel for hardware design optimization. It is a gneral
 purpose optimization and verification tool applicable to any domain where ML models
-can be trained on data. The supported modes in SMLP include processing data and 
+can be trained on data. The supported modes in SMLP include processing data and
 training models (NNs, tree-based, and polynomial models), querying data and models,
 certifying and verifying assertions, synthesis and pareto-optimization of configurations,
 design of experiments (to simulate systems and produce data), feature selection,
 rule learning/subgroup discovery, root-cause analysis, and more.
 
 If you want to try out SMLP on your optimization problems
-and require support, please contact the developers through 
+and require support, please contact the developers through
 the [discussion page](https://github.com/SMLP-Systems/smlp/discussions).
 
 When you use this tool, please cite our corresponding CAV 2024 tool paper,
 a pre-submission version of which is provided on arXiv:
 <https://arxiv.org/abs/2402.01415>
 
+## Overview
+
+The visualization framework is integrated alongside the main SMLP codebase. It allows users to generate insightful plots that illustrate how SMLP identifies stable witnesses and avoids counter-examples within the defined search space.
 Coming soon: Support for NLP and LLMs in SMLP.
 See [SMLP_manual_v2.pdf](./SMLP_manual_v2.pdf) for more details.
 
 NLP:
--	NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
--	NLP based root cause analysis: which words or collections of words are most correlative to classification decision (especially, for the positive class).
+
+- NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
+- NLP based root cause analysis: which words or collections of words are most correlative to classification decision (especially, for the positive class).
 
 LLM:
--	LLM training from scratch
--	LLM finetuning
--	RAG (with HuggingFace and with LangChain)
+
+- LLM training from scratch
+- LLM finetuning
+- RAG (with HuggingFace and with LangChain)
 
 Agentic:
--	SMLP Agent
 
+- SMLP Agent
 
 # Platform support
 
@@ -43,36 +48,34 @@ SMLP has successfully been run without a container or VM on Ubuntu,
 Suse Linux Enterprise Server 15, and Gentoo. The following section provides
 instruction for the installation on Ubuntu.
 
-
 ## Installation on a stock Ubuntu-22.04
 
-	sudo apt install \
-		python3-pip ninja-build z3 libz3-dev libboost-python-dev texlive \
-		pkg-config libgmp-dev libpython3-all-dev python-is-python3
-	# get a recent version of the meson configure tool
-	pip install --user meson
+    sudo apt install \
+     python3-pip ninja-build z3 libz3-dev libboost-python-dev texlive \
+     pkg-config libgmp-dev libpython3-all-dev python-is-python3
+    # get a recent version of the meson configure tool
+    pip install --user meson
 
-	# obtain sources
-	git clone https://github.com/smlp-systems/kay.git
-	git clone https://github.com/smlp-systems/smlp.git
-	cd smlp/utils/poly
+    # obtain sources
+    git clone https://github.com/smlp-systems/kay.git
+    git clone https://github.com/smlp-systems/smlp.git
+    cd smlp/utils/poly
 
-	# workaround <https://bugs.launchpad.net/ubuntu/+source/swig/+bug/1746755>
-	echo 'export PYTHONPATH=$HOME/.local/lib/python3/dist-packages:$PYTHONPATH' >> ~/.profile
-	# get $HOME/.local/bin into PATH and get PYTHONPATH
-	mkdir -p $HOME/.local/bin
-	source ~/.profile
+    # workaround <https://bugs.launchpad.net/ubuntu/+source/swig/+bug/1746755>
+    echo 'export PYTHONPATH=$HOME/.local/lib/python3/dist-packages:$PYTHONPATH' >> ~/.profile
+    # get $HOME/.local/bin into PATH and get PYTHONPATH
+    mkdir -p $HOME/.local/bin
+    source ~/.profile
 
-	# setup, build & install libsmlp
-	meson setup -Dkay-prefix=$HOME/kay --prefix $HOME/.local build
-	ninja -C build install
+    # setup, build & install libsmlp
+    meson setup -Dkay-prefix=$HOME/kay --prefix $HOME/.local build
+    ninja -C build install
 
-	# tensorflow-2.16 has a change leading to the error:
-	# 'The filepath provided must end in .keras (Keras model format).'
-	pip install --user \
-		pandas tensorflow==2.15.1 scikit-learn pycaret seaborn \
-		mrmr-selection jenkspy pysubgroup pyDOE doepy
-
+    # tensorflow-2.16 has a change leading to the error:
+    # 'The filepath provided must end in .keras (Keras model format).'
+    pip install --user \
+     pandas tensorflow==2.15.1 scikit-learn pycaret seaborn \
+     mrmr-selection jenkspy pysubgroup pyDOE doepy
 
 ## Quick instructions on testing whether the tool works
 
@@ -91,13 +94,12 @@ instruction for the installation on Ubuntu.
     # then the regression script
     ./smlp_regr.py -w 1 -def n -t 88 -tol 5
 
-
 # Running the regression suite
 
 The regression script has to be run from inside the regression's code directory:
 
-	cd $HOME/smlp/regr_smlp/code
-	./smlp_regr.py -w 8 -def n -t all -tol 7
+    cd $HOME/smlp/regr_smlp/code
+    ./smlp_regr.py -w 8 -def n -t all -tol 7
 
 The above commands will execute the script, run the regression tests numbered
 1 to 129 (-t all) parallely on 8 cores (-w 8), not overwriting the stored
@@ -110,8 +112,8 @@ The output of the command will report on the results of comparing the stored
 known-good results (called 'master' in this directory tree) with those created
 by running the test locally. It should form a sequence of
 
-	comparing $FILE to master
-	Passed!
+    comparing $FILE to master
+    Passed!
 
 In case there differences between the current run and the stored files, a diff
 between the generated files will be printed instead.
@@ -119,19 +121,18 @@ between the generated files will be printed instead.
 The actual SMLP commands being run by the script can be obtained by appending
 the parameter -p, e.g.
 
-	./smlp_regr.py -def n -t 1 -p
+    ./smlp_regr.py -def n -t 1 -p
 
 will produce the SMLP command for the regression test number 1:
 
-	../../src/run_smlp.py -data "../data/smlp_toy_num_resp_mult" \
-	-out_dir ./ -pref Test1 -mode train -resp y1 -feat x,p1,p2 \
-	-model dt_caret -save_model_config f -mrmr_pred 0 -plots f \
-	-seed 10 -log_time f
+    ../../src/run_smlp.py -data "../data/smlp_toy_num_resp_mult" \
+    -out_dir ./ -pref Test1 -mode train -resp y1 -feat x,p1,p2 \
+    -model dt_caret -save_model_config f -mrmr_pred 0 -plots f \
+    -seed 10 -log_time f
 
 For details about those parameters, please refer to the help messages (-h) of
 both tools, src/run_smlp.py and regr_smlp/code/smlp_regr.py, as well as the
 manual.
-
 SMLP commands run in the regression can be found in ./smlp_regr.csv together
 with a short description of the respective test.
 
@@ -153,14 +154,15 @@ following of SMLP's modes:
 - doe
 
 Detailed outputs of each tests will be generated in the regr_smlp/code directory.
-We refer to the manual for further information. 
+We refer to the manual for further information.
 
 ## A note on external solvers
 
-Some regression tests for performance reasons use external solvers, like
-     MathSAT, instead of the default Z3. The list of those tests can be obtained via
+Some regression tests for performance reasons use external solvers, like MathSAT, instead of the default Z3. The list of those tests can be obtained via
 
-    grep -- -solver_path ./smlp_regr.csv
+```bash
+grep -- -solver_path ./smlp_regr.csv
+```
 
 Unfortunately, due to licensing restrictions, it is impossible for us to
 include a copy of this particular external solver. However, reviewers are
@@ -192,11 +194,10 @@ directory, run the following commands:
     -mode optimize -pareto f -sat_thresh f -resp o0 \
     -feat Byte,CH,RANK,Timing,i0,i1,i2,i3 \
     -model nn_keras -nn_keras_epochs 20 -data_scaler min_max \
-    -epsilon 0.05 -log_time f -plots f  -spec ../specs/smlp_s2_tx 
+    -epsilon 0.05 -log_time f -plots f  -spec ../specs/smlp_s2_tx
 
 These runs will take longer than the regression tests provided earlier,
 usually between one and three hours, depending on the machine.
-
 
 # Source code organization
 
@@ -216,12 +217,12 @@ The source code for this library is located in
 
 and the main files in there include
 
-- algebraics.*: support for algebraic real numbers as solutions to polynomial equations
-- domain.*: definition of the search space (the "domain")
-- expr2.*: definition of internal representation of terms and formulas
+- algebraics.\*: support for algebraic real numbers as solutions to polynomial equations
+- domain.\*: definition of the search space (the "domain")
+- expr2.\*: definition of internal representation of terms and formulas
 - libsmlp.cc: Python interface library 'libsmlp'
 - reals.hh: support for computable real numbers, a superset of the algebraics
-- solver.*: definition of SMT solver interface
+- solver.\*: definition of SMT solver interface
 
 This however is just the backend dealing with the process of solving concrete
 formulas once the semantics has been put in place.
@@ -229,11 +230,9 @@ formulas once the semantics has been put in place.
 The core of the project is written in Python, and is located in
 
 - src/smlp_py/
-
-(and subdirectories). It defines the actual algorithms used in SMLP as described
-in the tool paper, and contains code supporting all modes and configurations
-laid out therein. In alphabetical order, these are the main files:
-
+  (and subdirectories). It defines the actual algorithms used in SMLP as described
+  in the tool paper, and contains code supporting all modes and configurations
+  laid out therein. In alphabetical order, these are the main files:
 - smlp_doe.py: design of experiments
 - smlp_optimize.py: optimization and optimized synthesis
 - smlp_query.py: synthesis, certification, verification and query
@@ -242,17 +241,14 @@ laid out therein. In alphabetical order, these are the main files:
 The main entry point is the script
 
 - src/run_smlp.py
-
-It supports the various modes documented in the CAV submission as well as in the
-manual.
+  It supports the various modes documented in the CAV submission as well as in the manual
 
 SMLP comes with a set of regression tests located in the directory
 
 - regr_smlp
-
-It contains definitions of models, specifications, data sets used for training
-and data constraints for the solving process. A script to run
-the regression tests is provided in
+  It contains definitions of models, specifications, data sets used for training
+  and data constraints for the solving process. A script to run
+  the regression tests is provided in
 
 - regr_smlp/code/smlp_regr.py
 
@@ -263,3 +259,41 @@ outputs to the expected results contained in
 
 Documentation is provided in form of a manual and a description of the .spec
 format as part of the artifact in SMLP_manual.pdf.
+
+## Usage
+
+1. **Dataset Location:** Ensure your SMLP experiment datasets (the `.spec` file and the corresponding `.csv` data file) are located within the `experiment_outputs/` directory, organized into subdirectories named according to their `setno` (e.g., `experiment_outputs/set4/`, `experiment_outputs/set10/`, etc.).
+
+2. **Configuration (Current Requirement):**
+   - Navigate to the visualization code located in `src/smlp_py/ext/`.
+   - Open the relevant Python file containing the `plot_exp` class (likely `plot.py` or similar).
+   - In the `__init__` method of the `plot_exp` class, locate the `setno` parameter.
+   - **Manually change** the value assigned to `setno` to match the dataset set number you wish to analyze (e.g., `setno='4'`, `setno='10'`).
+   - _(Note: This manual step is a current requirement and may be streamlined in future versions.)_
+
+3. **Running SMLP with Visualization:**
+   - When you run SMLP after setting the correct `setno` in the code, the framework will automatically copy the specified dataset (`.spec` and `.csv`) from its subdirectory (e.g., `experiment_outputs/set4/`) into the base directory where SMLP expects to find its input files.
+   - Proceed with running your SMLP experiment (e.g., optimization mode) as usual.
+
+4. **Output Files:** During and after the SMLP run, the visualization framework will generate several output files in the main project directory (or a specified output directory), prefixed with the `setno` and experiment number (`expno`):
+
+- **`Set{setno}_experiments.json`**: Contains comprehensive data for all experiments conducted on the specified `setno`, stored in JSON format.
+- **`Set{setno}_experiments_output.ods`**: Presents key experiment results in a structured OpenDocument Spreadsheet table format for easy viewing and analysis.
+- **`Set{setno}_{expno}_witnesses.json`**: Details information about all witnesses found during a specific experiment (`expno`) for the given `setno`.
+- **`Set{setno}_{expno}_scatter_plot_predicted.html`**: An interactive HTML plot showing the performance of the trained model on the test set (predicted vs. actual values).
+- **`Set{setno}_{expno}_stable_x_counter.html`**: _(Key Visualization)_ An interactive HTML plot overlaying the discovered stable witnesses and identified counter-examples onto the original dataset's distribution. This plot is crucial for understanding the explored and excluded regions of the solution space during the stability search.
+- **`Set{setno}_{expno}_witnesses.html`**: _(Key Visualization)_ An interactive HTML plot showing all discovered witnesses plotted against the original dataset distribution. Markers indicate found witnesses; experiments yielding no witnesses will naturally have no markers shown on this plot for that specific run.
+  git clone <https://github.com/fbrausse/kay.git>
+  git clone <https://github.com/fbrausse/smlp.git>
+  cd smlp/utils/poly
+  git clone <https://github.com/smlp-systems/kay.git>
+  git clone <https://github.com/smlp-systems/smlp.git>
+  cd smlp/utils/poly
+
+## Core SMLP Functionality
+
+Apart from the added visualization outputs and the initial dataset copying mechanism, the core logic and functionality of SMLP (model training, optimization algorithms, SMT solver interaction, etc.) remain unchanged.
+
+---
+
+**Note:** This extension provides valuable visual feedback on the SMLP optimization process, aiding in understanding convergence behavior, the effectiveness of stability constraints, and the distribution of potential solutions. Remember to correctly set the `setno` parameter in the visualization code before running your experiments.

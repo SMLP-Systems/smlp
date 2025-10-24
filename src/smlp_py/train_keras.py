@@ -16,6 +16,8 @@ import pandas as pd
 import random as rn
 import io
 from contextlib import redirect_stdout
+from icecream import ic
+ic.configureOutput(prefix=f'Debug | ', includeContext=True)
 
 #from tensorflow.keras.initializers import GlorotUniform
 
@@ -38,11 +40,11 @@ class ModelKeras:
         self.SMLP_KERAS_MODELS = [self._algo_name_local2global(m) for m in self._KERAS_MODELS]
         
         # hyper parameter defaults
-        self._DEF_LAYERS_SPEC = '2,1'
-        self._DEF_EPOCHS     = 2000
-        self._DEF_BATCH_SIZE = 200
+        self._DEF_LAYERS_SPEC = '1,3,2,1' # '2,1'
+        self._DEF_EPOCHS     = 700 # 1000
+        self._DEF_BATCH_SIZE = 200 # 200
         self._DEF_OPTIMIZER  = 'adam'  # options: 'rmsprop', 'adam', 'sgd', 'adagrad', 'nadam'
-        self._DEF_LEARNING_RATE = 0.001
+        self._DEF_LEARNING_RATE = 0.01
         self._HID_ACTIVATION = 'relu'
         self._OUT_ACTIVATION = 'linear'
         self._SEQUENTIAL_API = True
@@ -209,7 +211,7 @@ class ModelKeras:
     @property
     def model_checkpoint_pattern(self):
         assert self.model_file_prefix is not None
-        return self.model_file_prefix + '_model_checkpoint.h5'
+        return self.model_file_prefix + '_model_checkpoint.keras'  #'_model_checkpoint.h5'
     
     # TODO !!!: add description
     @property
@@ -250,19 +252,29 @@ class ModelKeras:
     def _nn_init_model_sequential(self, resp_names:list[str], input_dim:int, optimizer:str, hid_activation:str, out_activation:str, 
             layers_spec_list:list[int], loss_function, metrics):
         self._keras_logger.info('building NN model using Keras Sequential API')
+
+        ic("Changes here ...")
+        #with tf.device('/GPU:0'):
         # Initialize the Sequential model
         model = keras.Sequential()
         
         # Create the layers based on the selected topology
+        ic(layers_spec_list)
+        #ic("Iniatiating with dropout rate 0.2")
+        ic("Iniatiating without dropout")
         for i, size in enumerate(layers_spec_list):
+            #ic(i, size)
+            #ic(hid_activation, input_dim)
             if i == 0:
                 # The first layer needs to specify the input shape
                 self._keras_logger.info('input layer of size ' + str(input_dim))
                 self._keras_logger.info('dense layer of size ' + str(size))
                 model.add(keras.layers.Dense(units=size, activation=hid_activation, input_shape=(input_dim,)))
+                #model.add(keras.layers.Dropout(rate=0.2))
             else:
                 self._keras_logger.info('dense layer of size ' + str(size))
                 model.add(keras.layers.Dense(units=size, activation=hid_activation))
+                #model.add(keras.layers.Dropout(rate=0.2))
 
         # in sequential API, there is one "monolithic" output layer, we cannot distinguish
         # individual responses there and set the response names as the output layer names when
@@ -281,10 +293,8 @@ class ModelKeras:
         
         model.compile(optimizer=optimizer, loss=loss_function, metrics=metrics)
         #print("nn_init_model:model") ; print(model)
-        
         return model
 
-        
     # In case of a non-deterministic behaviour, one can try to use output_initializer wih a seed (output_initializer = GlorotUniform(seed=42)
     def _nn_init_model_functional(self, resp_names:list[str], input_dim:int, optimizer:str, hid_activation:str, out_activation:str, 
             layers_spec_list:list[int], loss_function, metrics):
@@ -310,6 +320,7 @@ class ModelKeras:
         # Initialize the Functional model
         model = keras.Model(inputs=inputs, outputs=outputs)
         model.compile(optimizer=optimizer, loss=loss_function, metrics=metrics)
+        ic(model)
         return model
     
     # function for comparing model configurations model.get_config() for sequential vs functional models
@@ -377,8 +388,11 @@ class ModelKeras:
                 if str(v) in str(model.loss) or str(k) in str(model.loss):
                     self._keras_logger.info("Loss function: " + str(k))
         if hasattr(model, 'compiled_metrics'):
-            compiled_metrics = model.compiled_metrics._metrics  # Access the private _metrics attribute
-            self._keras_logger.info("Metrics: " + str([m.name for m in compiled_metrics]))
+            ic("Changes here ...")
+            #compiled_metrics = model.compiled_metrics._metrics  # Access the private _metrics attribute
+            #self._keras_logger.info("Metrics: " + str([m.name for m in compiled_metrics]))
+            compiled_metrics = model.compiled_metrics  # Access the private _metrics attribute
+            self._keras_logger.info("Metrics: " + str(compiled_metrics))
         else:
             self._keras_logger.info("Metrics: " + str([]))
         #self._keras_logger.info("Metrics: " + str(model.metrics))
