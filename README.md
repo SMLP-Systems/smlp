@@ -1,4 +1,4 @@
-# SMLP Visualization Framework Extension
+# About SMLP
 
 SMLP is a tool for optimization, synthesis and design space exploration. It is
 based on statistical and machine learning techniques combined with formal verification
@@ -16,6 +16,10 @@ rule learning/subgroup discovery, root-cause analysis, and more.
 If you want to try out SMLP on your optimization problems
 and require support, please contact the developers through
 the [discussion page](https://github.com/SMLP-Systems/smlp/discussions).
+
+When you use this tool, please cite our corresponding CAV 2024 tool paper,
+a pre-submission version of which is provided on arXiv:
+<https://arxiv.org/abs/2402.01415>
 
 ## Overview
 
@@ -154,10 +158,11 @@ We refer to the manual for further information.
 
 ## A note on external solvers
 
-Some regression tests for performance reasons use external solvers, like
-MathSAT, instead of the default Z3. The list of those tests can be obtained via
+Some regression tests for performance reasons use external solvers, like MathSAT, instead of the default Z3. The list of those tests can be obtained via
 
-    grep -- -solver_path ./smlp_regr.csv
+```bash
+grep -- -solver_path ./smlp_regr.csv
+```
 
 Unfortunately, due to licensing restrictions, it is impossible for us to
 include a copy of this particular external solver. However, reviewers are
@@ -238,7 +243,7 @@ The main entry point is the script
 - src/run_smlp.py
   It supports the various modes documented in the CAV submission as well as in the manual
 
-SMLP comes with a set of regresson tests located in the directory
+SMLP comes with a set of regression tests located in the directory
 
 - regr_smlp
   It contains definitions of models, specifications, data sets used for training
