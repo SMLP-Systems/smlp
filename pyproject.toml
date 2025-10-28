@@ -9,6 +9,7 @@ dependencies = [
     "jenkspy>=0.4.1",
     "keras>=3.11.3",
     "keras-tuner>=1.4.7",
+    "loguru>=0.7.3",
     "mrmr-selection>=0.2.8",
     "pandas>=2.1.4",
     "pre-commit>=4.3.0",

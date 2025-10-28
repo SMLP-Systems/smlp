@@ -1,24 +1,24 @@
 # SPDX-License-Identifier: Apache-2.0
 # This file is part of smlp.
-from icecream import ic
+import os
+import sys
+import json
+import numpy as np
 import tensorflow as tf
-from tensorflow import keras
 
 import seaborn as sns
 
 import matplotlib.pyplot as plt
+import keras
 
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, r2_score
 
 from pandas import read_csv, DataFrame
 
-ic.configureOutput(prefix=f"Debug | ", includeContext=True)
-
-from common import *
+from common import get_response_features, np_JSONEncoder, scaler_from_bounds
 from math import ceil
-import json
 
 # defaults
 DEF_SPLIT_TEST = 0.2
@@ -325,14 +325,9 @@ def report_training_regression(history, epochs, out_prefix=None):
     acc = history.history[HIST_MSE]
     val_acc = history.history[HIST_VAL_MSE]
 
-    loss = history.history["loss"]
-    val_loss = history.history["val_loss"]
-
     epochs_range = range(epochs)
 
     plt.figure()
-    # plt.figure(figsize=(12, 5))
-    # plt.subplot(1, 2, 1)
     plt.plot(epochs_range, acc, label="Training mse")
     plt.plot(epochs_range, val_acc, label="Validation mse")
     plt.legend(loc="upper right")
@@ -341,7 +336,6 @@ def report_training_regression(history, epochs, out_prefix=None):
     ind_5 = len(acc) - int(len(acc) / 10)
     acc_5 = acc[-ind_5:]
     plt.ylim(0, max(acc_5))
-    #   plt.ylim(0, 2000)
     plot("train-reg", out_prefix)
 
 
