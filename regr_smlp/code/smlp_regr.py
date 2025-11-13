@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 
 import os
-from os import path, chdir, sep, remove, listdir, kill
+import sys
+from os import path, chdir, remove, listdir
 from argparse import ArgumentParser
 from shutil import copytree, rmtree, copyfile
 from csv import reader
 
 from multiprocessing import Process, Queue, Lock
-from subprocess import Popen, check_output, PIPE
+from subprocess import Popen, PIPE
 from time import time
 import csv_comparator as csv_cmp
+from loguru import logger
 
 from threading import Timer
 
-# from difflib import ndiff, context_diff
 
 TUI_DIFF = "diff"
 GUI_DIFF = "tkdiff"
@@ -353,11 +354,9 @@ def main():
                         the test will not be executed.",
     )
     parser.add_argument("-diff", "--diff", action="store_true")
-    # parser.add_argument('-c', '--cross_check', action='store_true', help='Cross check specific csv outputs.')
     parser.add_argument(
         "-w", "--workers", help="Number of concurrent tests that will run, default 2."
     )
-    # parser.add_argument('-temp', '--tempdir', help='Specify where to copy and run code, default=temp_dir.')
     parser.add_argument(
         "-i", "--ignore_tests", help="Ignores test/s that are passed as this argument."
     )
@@ -405,6 +404,9 @@ def main():
     )
 
     args = parser.parse_args()
+    if not args.debug:
+        logger.remove()
+        logger.add(sys.stdout, level="INFO")
     if not args.output:
         output_path = "./"  # file_path.replace('\\', '/')
     else:
@@ -413,10 +415,6 @@ def main():
         tests = "all"
     else:
         tests = args.tests.replace(" ", "").replace("'", "")
-    if args.debug:
-        debug = "-d 1"
-    else:
-        debug = ""
     ignored_tests = []
     if args.ignore_tests:
         if "," in args.ignore_tests:
@@ -616,15 +614,14 @@ def main():
             test_type = mode_identifier(test_switches)
             model_algo = model_algo_identifier(test_switches)
 
-            if DEBUG:
-                print("test_data", test_data)
-                print("test_new_data", test_new_data)
-                print("test_switches", test_switches)
-                print("test_description", test_description)
-                print("use_model", use_model)
-                print("save_model", save_model)
-                print("test_type", test_type)
-                print("model_algo", model_algo)
+            logger.debug("test_data", test_data)
+            logger.debug("test_new_data", test_new_data)
+            logger.debug("test_switches", test_switches)
+            logger.debug("test_description", test_description)
+            logger.debug("use_model", use_model)
+            logger.debug("save_model", save_model)
+            logger.debug("test_type", test_type)
+            logger.debug("model_algo", model_algo)
 
             use_config_file = conf_identifier(test_switches)
 
@@ -637,11 +634,10 @@ def main():
             model = False  # flag if test uses model
             status = True  # test run status
             execute_test = True  # flag if test should be executed
-            if DEBUG:
-                print("use_config_file", use_config_file)
-                if use_config_file:
-                    print("use_model updated", use_model)
-                    print("DEBUG 1")
+            logger.debug("use_config_file", use_config_file)
+            if use_config_file:
+                logger.debug("use_model updated", use_model)
+                logger.debug("DEBUG 1")
             if test_type == "no mode":
                 if test_switches not in {"-h", "--help"}:
                     test_type = "unknown"
@@ -651,9 +647,8 @@ def main():
                 execute_test = False
                 test_errors.append(["Build", "Unknown mode or was not specified"])
 
-            if DEBUG:
-                print("DEBUG 2")
-                print("execute_test", execute_test)
+            logger.debug("DEBUG 2")
+            logger.debug("execute_test", execute_test)
 
             if execute_test:
                 new_prefix = "Test" + test_id
@@ -661,7 +656,7 @@ def main():
                     test_data == ""
                     and not use_model
                     and not use_config_file
-                    and not "-doe_spec" in test_switches
+                    and "-doe_spec" not in test_switches
                 ):
                     if test_type != "help":
                         execute_test = False
@@ -680,8 +675,7 @@ def main():
                     test_data_path = '-model_name "{0}"'.format(
                         model_name
                     )  # here we use a model instead of data
-                    if DEBUG:
-                        print("model_name", model_name)
+                    logger.debug("model_name", model_name)
                 else:
                     if test_data != "":
                         if test_type == "doe":
@@ -714,12 +708,11 @@ def main():
                                 )
                     else:
                         test_data_path = ""
-                if DEBUG:
-                    print("test_data", test_data)
-                    print("test_new_data", test_new_data)
-                    print("test_data_path", test_data_path)
-                    print("use_config_file", use_config_file)
-                    print(test_new_data != "")
+                logger.debug("test_data", test_data)
+                logger.debug("test_new_data", test_new_data)
+                logger.debug("test_data_path", test_data_path)
+                logger.debug("use_config_file", use_config_file)
+                logger.debug(test_new_data != "")
 
                 if test_type == "prediction" or (
                     test_new_data != ""
@@ -752,10 +745,9 @@ def main():
                 if len(relevant_models) > 0 and (model_algo not in relevant_models):
                     execute_test = False
 
-            if DEBUG:
-                print("DEBUG 3")
-                print("execute_test", execute_test)
-                print("test_errors", test_errors)
+            logger.debug("DEBUG 3")
+            logger.debug("execute_test", execute_test)
+            logger.debug("test_errors", test_errors)
 
             if execute_test:
                 if use_config_file:
@@ -768,9 +760,8 @@ def main():
 
                 if args.timeout:  # timeout -- TODO !!!
                     command = "/usr/bin/timeout 600 " + command
-                if DEBUG:
-                    print("command (0)", command)
-                    print("test_type", test_type)
+                logger.debug("command (0)", command)
+                logger.debug("test_type", test_type)
                 if test_type == "help":
                     command += " {args} > {output}".format(
                         args=test_switches, output=test_out
@@ -812,10 +803,9 @@ def main():
                         ),
                         pref="-pref {prefix}".format(prefix=new_prefix),
                         args=test_switches,
-                        debug=debug,
+                        debug="-d 1",
                     )
-                    if DEBUG:
-                        print("command (1)", command)
+                    logger.debug("command (1)", command)
 
                     if test_type == "prediction" or (
                         test_new_data != ""
@@ -826,8 +816,7 @@ def main():
                 if args.extra_options is not None:
                     command = command + " " + args.extra_options
 
-                if DEBUG:
-                    print("command (2)", command)
+                logger.debug("command (2)", command)
 
                 with print_l:
                     print(
@@ -880,8 +869,7 @@ def main():
                 model = get_model_name(test_switches)
             id_q.put([test_id, execute_test, model, status, test_errors])
 
-    if DEBUG:
-        print("DEBUG 4")
+    logger.debug("DEBUG 4")
 
     process_list = []
     expected_outs = tests_queue.qsize()
@@ -902,8 +890,7 @@ def main():
         test_id_list.append(test_out_queue.get())
         counter += 1
 
-    if DEBUG:
-        print("DEBUG 5")
+    logger.debug("DEBUG 5")
 
     for process in process_list:
         process.join()
@@ -913,8 +900,7 @@ def main():
     files_in_master = get_all_files_from_dir(master_path)
     files_in_output = get_all_files_from_dir(output_path)
 
-    if DEBUG:
-        print("DEBUG 6")
+    logger.debug("DEBUG 6")
 
     def get_file_from_list_underscore(prefix_list, list1):
         outs_list = []
@@ -924,7 +910,6 @@ def main():
                     outs_list.append(file1)
         return outs_list
 
-    cross_tests = []
     new_error_ids = []  # test IDs of crashes reporrted in error files -- ones that should not happen / do not occur in masters
     new_error_fns = []  # filenames of crashes reporrted in error files -- ones that should not happen / do not occur in masters
     # missing_errors = []  # crashes that are expected / are part of masters but do not occur in current run -- not implemented yet
@@ -970,8 +955,7 @@ def main():
     master_log_file = path.join(master_path, tests + "_log.txt")
     log_file = path.join(output_path, tests + "_log.txt")
 
-    if DEBUG:
-        print("DEBUG 7")
+    logger.debug("DEBUG 7")
 
     def write_to_log(line):
         with open(log_file, "a") as writefile:
@@ -983,18 +967,14 @@ def main():
         with open(log_file, "w") as a:
             a.write("~~~~~ Regression log file ~~~~~\n")
 
-    def get_id(l):
-        return int(l[0])
+    def get_id(item):
+        return int(item[0])
 
-    if DEBUG:
-        print("DEBUG 8")
-        print("args.print_command", args.print_command)
-        print("args.diff", args.diff)
-        print("args.debug", args.debug)
+    logger.debug("DEBUG 8")
+    logger.debug("args.print_command", args.print_command)
+    logger.debug("args.diff", args.diff)
+    logger.debug("args.debug", args.debug)
 
-    # sort test list
-    # new_list = []
-    # new_dict = dict()
     test_id_list.sort(key=get_id)
     if not (args.print_command or args.diff or args.debug):
         for i in test_id_list:
@@ -1270,9 +1250,8 @@ def main():
                         )
                         write_to_log(test_error[1])
 
-    if DEBUG:
-        print("9")
-        print("log and not args.diff", log and not args.diff)
+    logger.debug("9")
+    logger.debug("log and not args.diff", log and not args.diff)
 
     if log and not args.diff:
         if path.exists(master_log_file):
@@ -1316,23 +1295,6 @@ def main():
             if user_input in {"yes", "y"}:
                 copyfile(log_file, master_log_file)
                 print("Replacing Files...")
-
-    """
-    for testid, errors in test_errors_dict.items():
-        if len(errors) >= 1:
-            print('Test {0} had the following errors: {1}\n'.format(testid, errors))
-
-    if len(diff_errors) > 0:
-        print("Diff errors:\n")
-    for err in diff_errors:
-        print(err + '\n')
-    """
-    if False:  # not args.print_command:
-        chdir(code_path)
-        try:
-            rmtree(temp_code_dir)
-        except:
-            print("Can't delete " + temp_code_dir + " dir.")
 
     # report tests that crashed -- based on TestXXX_error.txt files that do not exist in master
     if len(new_error_fns) > 0:
