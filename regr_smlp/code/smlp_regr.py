@@ -179,7 +179,6 @@ def mode_identifier(switches):
                 return "doe"
             else:
                 assert False
-            return "datainfo"
         elif mode == "n":
             return "novelty"
         else:
@@ -803,7 +802,7 @@ def main():
                         ),
                         pref="-pref {prefix}".format(prefix=new_prefix),
                         args=test_switches,
-                        debug="-d 1",
+                        debug="-d 1" if args.debug else "",
                     )
                     logger.debug("command (1)", command)
 
@@ -819,12 +818,12 @@ def main():
                 logger.debug("command (2)", command)
 
                 with print_l:
-                    print(
+                    logger.info(
                         "Running test {0} test type: {1}, description: {2}".format(
                             test_id, test_type, test_description
                         )
                     )
-                    print(command + "\n")
+                    logger.info(command + "\n")
                 if not args.print_command:
                     if save_model:
                         model = True
@@ -859,7 +858,7 @@ def main():
                         )
                         outs, errs = pr.communicate()
                         if args.debug:
-                            print(
+                            logger.debug(
                                 "Output: \n" + outs + "\n" + "Errors: \n" + errs + "\n"
                             )
                         if extract_smlp_error(errs) != "OK":
@@ -879,12 +878,14 @@ def main():
         workers = 2  # Number of concurrent processes
     if tests_queue.qsize() < workers:
         workers = tests_queue.qsize()
-    print("Calling {workers} workers for multiprocessing...".format(workers=workers))
+    logger.info(
+        "Calling {workers} workers for multiprocessing...".format(workers=workers)
+    )
     for i in range(0, workers):
         t = Process(target=worker, args=(tests_queue, test_out_queue, print_lock))
         process_list.append(t)
         t.start()
-        print("Initiating {i} worker...".format(i=i))
+        logger.info("Initiating {i} worker...".format(i=i))
     counter = 0
     while counter < expected_outs:
         test_id_list.append(test_out_queue.get())
@@ -1058,7 +1059,9 @@ def main():
                             or new_file.endswith(".html")
                             or new_file.endswith(".json")
                         ) and not exclude_cond:
-                            print("comparing {file} to master".format(file=file_name))
+                            logger.info(
+                                "comparing {file} to master".format(file=file_name)
+                            )
                             p = Popen(
                                 "{diff} -B -I 'Feature selection.*file .*' -I '\\[-v-] Input.*' -I 'usage:.*' {k} {l}".format(
                                     diff=diff, k=new_file, l=master_file
@@ -1086,7 +1089,7 @@ def main():
                                         else:
                                             user_input = args.default
                                     elif not to_show:
-                                        print("answer is: " + answer)
+                                        logger.info("answer is: " + answer)
                                         user_input = answer
                                     else:
                                         user_input = input(
@@ -1101,13 +1104,13 @@ def main():
                                                 new_file,
                                                 path.join(models_path, file_name),
                                             )
-                                            print(
+                                            logger.info(
                                                 "Replacing Files both in master and data"
                                             )
 
                                         else:
                                             copyfile(new_file, master_file)
-                                            print("Replacing Files...")
+                                            logger.info("Replacing Files...")
                                             if path.exists(
                                                 path.join(data_path, file_name)
                                             ):
@@ -1139,10 +1142,10 @@ def main():
                                         to_show = False
                                         answer = user_input
                                 else:
-                                    print("Passed!")
+                                    logger.info("Passed!")
                                     test_files_check.append((file_name, "Passed"))
                             else:
-                                print("Passed!")
+                                logger.info("Passed!")
                                 test_files_check.append((file_name, "Passed"))
                         if model_file:
                             master_files.remove(file_name)
@@ -1156,13 +1159,15 @@ def main():
                         # not comparing directories; such as the range plots directory in mode subgroups
                         if os.path.isdir(new_file):
                             continue
-                        print("File master {file} does not exist".format(file=file))
+                        logger.info(
+                            "File master {file} does not exist".format(file=file)
+                        )
                         test_files_check.append(
                             (file, "Failed -> master file does not exist")
                         )
                         if file.endswith("smlp_error.txt"):
                             to_print = "Test number " + test_id + " Crashed!"
-                            print(to_print)
+                            logger.info(to_print)
                             new_error_ids.append(test_id)
                             new_error_fns.append(file)
                         elif file.endswith("png"):
@@ -1207,7 +1212,7 @@ def main():
                     new_file = path.join(output_path, file)
                     master_file = path.join(master_path, file)
                     file_name = file
-                    print("File new {file} does not exist".format(file=file))
+                    logger.error("File new {file} does not exist".format(file=file))
                     test_files_check.append((file, "Failed -> new file does not exist"))
                     test_result = False
                     #  diff_errors.append('File new {file} does not exist'.format(file=file))
@@ -1238,12 +1243,12 @@ def main():
                         write_to_log(file_check[0] + " " + file_check[1])
                     write_to_log("")
             else:
-                print("Test {id} Failed:".format(id=test_id))
+                logger.error("Test {id} Failed:".format(id=test_id))
                 if log:
                     write_to_log("Test {id} Failed:".format(id=test_id))
                 for test_error in test_errors:
-                    print("Error in {stage} stage:".format(stage=test_error[0]))
-                    print(test_error[1])
+                    logger.error("Error in {stage} stage:".format(stage=test_error[0]))
+                    logger.error(test_error[1])
                     if log:
                         write_to_log(
                             "Error in {stage} stage:".format(stage=test_error[0])
@@ -1255,7 +1260,7 @@ def main():
 
     if log and not args.diff:
         if path.exists(master_log_file):
-            print("Comparing regression logs:")
+            logger.info("Comparing regression logs:")
             if not path.exists(master_log_file):
                 copyfile(log_file, master_log_file)
             p = Popen(
@@ -1282,30 +1287,34 @@ def main():
                     user_input = input("(yes/no|y/n):").lower()
                 if user_input in {"yes", "y"}:
                     copyfile(log_file, master_log_file)
+                    logger.info("Replacing Files...")
+            else:
+                logger.info("Passed!")
+        else:
+            logger.info("master log file does not exist!")
+            if not args.default.lower()[0] != "y":
+                user_input = input(
+                    "Do you wish to copy the new log file to master?\n(yes/no|y/n): "
+                ).lower()
+                while user_input not in {"yes", "no", "y", "n"}:
+                    user_input = input("(yes/no|y/n):").lower()
+                if user_input in {"yes", "y"}:
+                    copyfile(log_file, master_log_file)
                     print("Replacing Files...")
             else:
-                print("Passed!")
-        else:
-            print("master log file does not exist!")
-            user_input = input(
-                "Do you wish to copy the new log file to master?\n(yes/no|y/n): "
-            ).lower()
-            while user_input not in {"yes", "no", "y", "n"}:
-                user_input = input("(yes/no|y/n):").lower()
-            if user_input in {"yes", "y"}:
                 copyfile(log_file, master_log_file)
                 print("Replacing Files...")
 
     # report tests that crashed -- based on TestXXX_error.txt files that do not exist in master
     if len(new_error_fns) > 0:
-        print("Tests crashed (not in the masters):")
+        logger.error("Tests crashed (not in the masters):")
         for efn in new_error_fns:
-            print(efn)
+            logger.error(efn)
     else:
-        print("No new tests crashed (not in the masters)")
+        logger.info("No new tests crashed (not in the masters)")
 
-    print("Time: " + str((time() - start_time) / 60.0) + " minutes")
-    print("End of regression")
+    logger.info("Time: " + str((time() - start_time) / 60.0) + " minutes")
+    logger.info("End of regression")
 
 
 if __name__ == "__main__":
