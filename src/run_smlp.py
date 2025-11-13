@@ -7,12 +7,10 @@
 # coding: utf-8
 
 import sys
-from icecream import ic
 from smlp_py.ext import plot
 from smlp_py.smlp_flows import SmlpFlows
 import time
 
-ic.configureOutput(prefix="Debug | ", includeContext=True)
 
 start_time = time.time()
 
