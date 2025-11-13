@@ -64,3 +64,4 @@ experiment_outputs/*
 toy_out_dir/*
 
 justfile
+.idea

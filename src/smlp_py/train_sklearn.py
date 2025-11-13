@@ -2,7 +2,8 @@
 # This file is part of smlp.
 
 # Fitting sklearn regression tree models
-from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
+from sklearn.tree import DecisionTreeRegressor
+from skilearn.decomposition import PCA
 
 # from sklearn.tree import _tree
 from sklearn import tree, ensemble
@@ -35,9 +36,14 @@ class ModelSklearn:
         self.SMLP_SKLEARN_MODELS = [
             self._algo_name_local2global(m) for m in self._SKLEARN_MODELS
         ]
+        self._reducer = None
+        self._REDUCER_HPARAMS = {
+            "n_components": 0.95,
+            "whiten": False,
+            "svd_solver": "auto",
+        }
         self._instTreeTerms = TreeTerms()
         self._instPolyTerms = PolyTerms()
-        # trees (rf, dt, et) common
         self._DEF_MIN_SAMPLES_SPLIT = 4  # 2
         self._DEF_MIN_SAMPLES_LEAF = 3  # 1
         self._DEF_MAX_DEPTH = 15  # None
@@ -454,6 +460,31 @@ class ModelSklearn:
             return None
         return hparam.removeprefix(self._algo_name_local2global(algo) + "_")
 
+    def _make_reducer(self, reducer_params: dict):
+        """Instantiate the chosen reducer (currently PCA) with supplied params."""
+        params = self._REDUCER_HPARAMS.copy()
+        params.update(reducer_params or {})
+        return PCA(**params)
+
+    def _apply_dim_reduction(self, X_train, X_test):
+        """Fit the reducer on X_train and transform both train / test."""
+        if self._reducer is None:
+            return X_train, X_test
+
+        self._reducer.fit(X_train)
+
+        X_train_red = pd.DataFrame(
+            self._reducer.transform(X_train),
+            index=X_train.index,
+            columns=[f"pc{i + 1}" for i in range(self._reducer.n_components_)],
+        )
+        X_test_red = pd.DataFrame(
+            self._reducer.transform(X_test),
+            index=X_test.index,
+            columns=X_train_red.columns,
+        )
+        return X_train_red, X_test_red
+
     # Convert hparam_dict which maps global names of parameters to their values (in current run)
     # into a parameter dictionary where the keys of hparam_dict are replaced by the respective
     # parameter local names.
@@ -671,7 +702,7 @@ class ModelSklearn:
 
         assert feat_names == X_train.columns.tolist()
         assert feat_names == X_test.columns.tolist()
-
+        X_train, X_test = self._apply_dim_reduction(X_train, X_test)
         if algo in ["dt", "et", "rf"]:
             if algo == "dt":
                 # print('feat_names', feat_names, 'X_train\n', X_train, '\nX_test\n',  X_test)
