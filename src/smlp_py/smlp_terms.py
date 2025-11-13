@@ -2,26 +2,23 @@
 # This file is part of smlp.
 from smlp_py.ext import plot
 
-import numpy as np
-import pandas as pd
-import keras
-from sklearn.tree import _tree
 import ast
 import operator as op
 import functools  # for cacheing
 from collections import defaultdict
 import sys
-
-from icecream import ic
-
-ic.configureOutput(prefix=f"Debug | ", includeContext=True)
-ic("Changes here")
-from keras.models import Sequential
+import time
+from fractions import Fraction
+import json
 import smlp
 
+from loguru import logger
+
+logger.info("Changes here")
+
 # from smlp_py.smlp_spec import SmlpSpec
-ic("Changes in traverse()")
-ic("Changes in compress_antecedent()")
+logger.info("Changes in traverse()")
+logger.info("Changes in compress_antecedent()")
 
 plot_instance = plot.plot_exp()
 # TODO !!! create a parent class for TreeTerms, PolyTerms, NNKerasTerms.
@@ -96,14 +93,14 @@ class SmlpTerms:
         # Python operators: https://www.w3schools.com/python/python_operators.asp
         # https://docs.python.org/3/library/operator.html -- python operators documentation
         """
-        boolop = And | Or 
-        operator = Add | Sub | Mult | Div | Mod | Pow | LShift 
+        boolop = And | Or
+        operator = Add | Sub | Mult | Div | Mod | Pow | LShift
                      | RShift | BitOr | BitXor | BitAnd | FloorDiv
         unaryop = Invert | Not | UAdd | USub
         cmpop = Eq | NotEq | Lt | LtE | Gt | GtE | Is | IsNot | In | NotIn
         comprehension = (expr target, expr iter, expr* ifs)
             more grops of operations are supported, such as expr_context (load | store | Del),
-            excepthandler, arguments, arg, keyword, alias, withitem, match_case, pattern, 
+            excepthandler, arguments, arg, keyword, alias, withitem, match_case, pattern,
             type_ignore, type_param
             ast.Is: op.is_, ast.IsNot: op.is_not, ast.In: op.in, ast.NotIn: op.not_in,
         """
@@ -405,14 +402,12 @@ class SmlpTerms:
         # Define a helper function to traverse the object
         def traverse(obj):
             # Destructure the given object
-            destructure_result = self.smlp_destruct(
-                obj
+            destructure_result = self.smlp_destruct(obj)
             # sys.setrecursionlimit(20000)
             destructure_result = self.smlp_destruct(obj)
 
             # Increment the count of the current operator
-            operator_counts[destructure_result["id"]] += (
-            )
+            operator_counts[destructure_result["id"]] += 1
 
             # If there are arguments, recursively traverse them
             if "args" in destructure_result:
@@ -557,6 +552,7 @@ class SmlpTerms:
                 right_term_0 = eval_(node.comparators[0])
                 res_comp = self.ast_operators_smlp_map[type(node.ops[0])](
                     left_term_0, right_term_0
+                )
                 if len(node.ops) > 1:
                     left_term_i = right_term_0
                     for i in range(1, len(node.ops)):
@@ -611,12 +607,11 @@ class SmlpTerms:
         self, ground_term: smlp.term2, approximate=False, precision=32
     ):
         precision = 64
-        ic("Change precision here")
+        logger.info("Change precision here")
         # evaluate to constant term or formula (evaluate all operations in ground_term) -- should
         # succeed because the assumption is that ground_term does not contain variables (is a ground term).
         # The input ground_term and the result smlp_const of smlp.const_fold() are of type <class 'smlp.libsmlp.term2'>.
-        smlp_const = smlp.cnst_fold(
-            ground_term
+        smlp_const = smlp.cnst_fold(ground_term)
 
         assert isinstance(self.smlp_cnst(smlp_const), smlp.libsmlp.Q) or isinstance(
             self.smlp_cnst(smlp_const), smlp.libsmlp.A
@@ -652,14 +647,14 @@ class SmlpTerms:
             )
 
         assert isinstance(val, Fraction) or isinstance(val, float)
-        ic(type(val), val)
+        logger.info(type(val), val)
         return val
 
     # Converts values in sat assignmenet (witness) from terms to python fractions using function
     # self.ground_smlp_expr_to_value() -- see the description of that function for more detail.
     # Can also be applied to a dictionary where values are terms.
     def witness_term_to_const(self, witness, approximate=False, precision=64):
-        ic("See here... important")
+        logger.info("See here... important")
         witness_vals_dict = {}
         for k, t in witness.items():
             witness_vals_dict[k] = self.ground_smlp_expr_to_value(
@@ -673,12 +668,12 @@ class SmlpTerms:
     def approximate_witness_term(
         self, witness, lemma_precision: int, approximate=False, precision=64
     ):
-        ic("This is not being printed")
-        ic("This is not being printed")
-        ic("This is not being printed")
-        ic("This is not being printed")
-        ic("This is not being printed")
-        ic("This is not being printed")
+        logger.info("This is not being printed")
+        logger.info("This is not being printed")
+        logger.info("This is not being printed")
+        logger.info("This is not being printed")
+        logger.info("This is not being printed")
+        logger.info("This is not being printed")
         approx_ca = lemma_precision != 0
         assert lemma_precision >= 0
         if not approx_ca:
@@ -864,7 +859,6 @@ class TreeTerms:
                 path += [(tree_.value[node], tree_.n_node_samples[node])]
                 paths += [path]
 
-
         # sort by samples count
         samples_count = [p[-1][1] for p in paths]
         ii = list(np.argsort(samples_count))
@@ -1016,7 +1010,7 @@ class TreeTerms:
 
             if log:
                 print("#TREE {}\n".format(indx))
-                ic("Changes here")
+                logger.info("Changes here")
                 # for rule in rules:
                 #    print(self._rule_to_str(rule))
                 #    #self._rule_to_solver(None, rule)
@@ -1058,7 +1052,7 @@ class TreeTerms:
     # rules is a list of rules. It is computed from a tree model using method trees_to_rules of the same
     # class TreeTerms.
     def compress_antecedent(self, antecedent):
-        ic("Changes here")
+        logger.info("Changes here")
         if not self._compress_rules:
             return antecedent, len(antecedent), len(antecedent)
         ant_dict = {}
@@ -1115,7 +1109,7 @@ class TreeTerms:
         #    else:
         #        raise Exception('Unexpected binop ' + str(trp[1]) + ' in function reduce_antecedent')
 
-        ic(ant_dict)
+        logger.info(ant_dict)
         for k, v in ant_dict.items():
             if ant_dict[k]["up"] != []:
                 mx = min(ant_dict[k]["up"])
@@ -1170,8 +1164,7 @@ class TreeTerms:
                     if rhs == self.instSmlpTerms.smlp_true
                     else self.instSmlpTerms.smlp_and(rhs, resp_rhs)
                 )
-            form = self.instSmlpTerms.smlp_implies(
-                ant, rhs
+            form = self.instSmlpTerms.smlp_implies(ant, rhs)
             return form
 
         # returned value
@@ -1216,25 +1209,21 @@ class TreeTerms:
                             ant_term, con_term, rules_dict[resp]
                         )
             elif self.tree_encoding_branched(algo):
-                ant_term, resp_dict = (
-                )
-                resp_name = (
-                    None if len(resp_dict) > 1 else list(resp_dict.keys())[0]
-                ant_name = self.tree_antecedent_id(
-                    resp_name, tree_number, i
+                ant_term, resp_dict = ()
+                resp_name = None if len(resp_dict) > 1 else list(resp_dict.keys())[0]
+                ant_name = self.tree_antecedent_id(resp_name, tree_number, i)
                 # TODOD !!! we need ant_var to be a predicate with the same number of variables as in ant_term (which is a formula)
-                ant_var = self.instSmlpTerms.smlp_var(
-                    ant_name
+                ant_var = self.instSmlpTerms.smlp_var(ant_name)
                 ant_var_form = self.instSmlpTerms.smlp_ge(
                     ant_var, self.instSmlpTerms.smlp_cnst(0)
-                ant_form_iff = self.instSmlpTerms.smlp_iff(
-                    ant_var_form, ant_term
+                )
+                ant_form_iff = self.instSmlpTerms.smlp_iff(ant_var_form, ant_term)
                 # ant_dict[ant_name] = self.instSmlpTerms.smlp_implies(ant_var_form, ant_term)
                 ant_dict[ant_name] = ant_form_iff
                 """
                 # (ant_var == 0 | ant_var == 1) & (ant_var == 1 => ant_term)
                 ant_var_form = self.instSmlpTerms.smlp_eq(ant_var, self.instSmlpTerms.smlp_cnst(1))
-                ant_form_or =  self.instSmlpTerms.smlp_or(self.instSmlpTerms.smlp_eq(ant_var, self.instSmlpTerms.smlp_cnst(0)), self.instSmlpTerms.smlp_eq(ant_var, self.instSmlpTerms.smlp_cnst(1))) 
+                ant_form_or =  self.instSmlpTerms.smlp_or(self.instSmlpTerms.smlp_eq(ant_var, self.instSmlpTerms.smlp_cnst(0)), self.instSmlpTerms.smlp_eq(ant_var, self.instSmlpTerms.smlp_cnst(1)))
                 ant_form_impl = self.instSmlpTerms.smlp_implies(self.instSmlpTerms.smlp_eq(ant_var, self.instSmlpTerms.smlp_cnst(1)), ant_term)
                 ant_form_def = self.instSmlpTerms.smlp_and(ant_form_or, ant_form_impl)
                 #print('ant_form_or', ant_form_or, type(ant_form_or))
@@ -1259,7 +1248,6 @@ class TreeTerms:
                     )
             else:
                 raise Exception("Unexpected tree encoding algorithm")
-
 
         return rules_dict, ant_reduction_stats
 
@@ -1294,6 +1282,7 @@ class TreeTerms:
             branches_count_per_tree.append(len(tree_rules))
             tree_term_dict, ant_reduction_stats = self.rules_to_term(
                 algo, i, tree_rules, ant_reduction_stats, resp_names
+            )
             if self.tree_encoding_flat(algo):
                 assert list(tree_term_dict.keys()) == [self._tree_model_id(algo, i)]
             elif self.tree_encoding_branched(algo):
@@ -1304,10 +1293,8 @@ class TreeTerms:
 
         if self._compress_rules:
             trees_count = len(trees)
-            branches_count = sum(
-                branches_count_per_tree
-            ant_len_befor = sum(
-                ant_reduction_stats["before"]
+            branches_count = sum(branches_count_per_tree)
+            ant_len_befor = sum(ant_reduction_stats["before"])
             ant_len_after = sum(ant_reduction_stats["after"])
             unique_conj_befor = count_occurrences(
                 ant_reduction_stats["before"]
@@ -1346,8 +1333,7 @@ class TreeTerms:
                 + str(tree_max_depth_after)
             )
 
-        number_of_trees = len(
-            trees
+        number_of_trees = len(trees)
         tree_model_term_dict = {}
         flat_model_formulas = []
         for j, tree_rules in enumerate(trees):
@@ -1513,7 +1499,6 @@ class PolyTerms:  # (SmlpTerms):
                     for p in range(2, powers[r][i] + 1):
                         curr_term = curr_term * smlp.Var(feat_names[i])
 
-
             if term_str == "":
                 term_str = curr_term_str
                 term = curr_term
@@ -1552,6 +1537,7 @@ class PolyTerms:  # (SmlpTerms):
                 resp_id,
                 log,
                 formula_filename,
+            )
         return poly_model_terms_dict
 
 
@@ -1595,21 +1581,21 @@ class NNKerasTerms:  # (SmlpTerms):
     # (the argument called last_layer_terms); as well as the weights and bias for that node with
     # respect to the preceding layer last_layer_terms.
     def _nn_dense_layer_node_term(self, last_layer_terms, node_weights, node_bias):
-        ic("Before rounding up")
-        ic("After rounding up")
+        logger.info("Before rounding up")
+        logger.info("After rounding up")
         layer_term = None
-        ic(last_layer_terms)
-        ic(node_weights)
-        ic(node_bias)
+        logger.info(last_layer_terms)
+        logger.info(node_weights)
+        logger.info(node_bias)
         for i, t in enumerate(last_layer_terms):
             if i == 0:
                 layer_term = last_layer_terms[0] * smlp.Cnst(float(node_weights[0]))
                 # layer_term = last_layer_terms[0] * smlp.Cnst(float(np.round(node_weights[0], 4)))
             else:
-                ic(last_layer_terms[i])
-                ic(smlp.Cnst(float(node_weights[i])))
-                ic(type(smlp.Cnst(float(node_weights[i]))))
-                ic(layer_term)
+                logger.info(last_layer_terms[i])
+                logger.info(smlp.Cnst(float(node_weights[i])))
+                logger.info(type(smlp.Cnst(float(node_weights[i]))))
+                logger.info(layer_term)
                 layer_term = layer_term + last_layer_terms[i] * smlp.Cnst(
                     float(node_weights[i])
                 )
@@ -1617,7 +1603,7 @@ class NNKerasTerms:  # (SmlpTerms):
                 # layer_term = layer_term + last_layer_terms[i] * smlp.Cnst(float(np.round(node_weights[i], 4)))
 
         layer_term = layer_term + smlp.Cnst(float(node_bias))
-        ic(layer_term)
+        logger.info(layer_term)
         # layer_term = layer_term + smlp.Cnst(float(np.round(node_bias, 4)))
 
         return layer_term
@@ -1645,7 +1631,6 @@ class NNKerasTerms:  # (SmlpTerms):
     def _nn_dense_layer_terms(
         self, last_layer_terms, layer_weights, layer_biases, activation_func
     ):
-
         assert layer_weights.shape[1] == len(last_layer_terms)
         assert layer_biases.shape[0] == layer_weights.shape[0]
         curr_layer_terms = [
@@ -1729,12 +1714,11 @@ class NNKerasTerms:  # (SmlpTerms):
         assert model_type in ["sequential", "functional"]
         model_terms_dict = {}
         # input variables layer as list of terms
-        last_layer_terms = [
-            smlp.Var(v) for v in model_feat_names
+        last_layer_terms = [smlp.Var(v) for v in model_feat_names]
         for layer in model.layers:
             if type(layer).__name__ == "InputLayer":
                 assert model_type == "functional"
-                ic("Input layer")
+                logger.info("Input layer")
                 continue
             # assert isinstance(layer, keras.layers.Dense)
             if self.nn_keras_layer_is_input(model, layer):
@@ -1742,8 +1726,7 @@ class NNKerasTerms:  # (SmlpTerms):
             assert isinstance(layer, keras.layers.Dense)
             # pprint(inspect.getmembers(layer));
             if isinstance(layer, keras.layers.Dense):
-                layer_activation = layer.get_config()[
-                    "activation"
+                layer_activation = layer.get_config()["activation"]
                 weights, biases = layer.get_weights()
                 curr_layer_terms = self._nn_dense_layer_terms(
                     last_layer_terms,
@@ -1791,6 +1774,7 @@ class NNKerasTerms:  # (SmlpTerms):
         )
         layer_form = self._smlpTermsInst.smlp_eq(
             self._smlpTermsInst.smlp_var(node_name), layer_term
+        )
         return layer_form
 
     # iterated over nodes of an NN layer to compute the formulas associated to them using function
@@ -1828,8 +1812,7 @@ class NNKerasTerms:  # (SmlpTerms):
     ):
         # from pprint import pprint
         # import inspect
-        model_type = self.get_nn_keras_model_type(
-            model
+        model_type = self.get_nn_keras_model_type(model)
         assert model_type in ["sequential", "functional"]
         model_terms_dict = {}
         all_layer_forms = []
@@ -1850,8 +1833,7 @@ class NNKerasTerms:  # (SmlpTerms):
         )
 
         # input variables layer as list of terms
-        last_layer_terms = [
-            smlp.Var(v) for v in model_feat_names
+        last_layer_terms = [smlp.Var(v) for v in model_feat_names]
 
         # Get the names of the output layers from the model's output configuration
         # output_layer_names = [out_layer.name for out_layer in model.outputs]
@@ -1866,18 +1848,16 @@ class NNKerasTerms:  # (SmlpTerms):
                 assert model_type == 'functional'
                 assert l == 0
                 #print('skipping layer', l, 'as it is input layer')
-                continue 
+                continue
             """
             assert isinstance(layer, keras.layers.Dense)
             # pprint(inspect.getmembers(layer));
-            layer_activation = layer.get_config()[
-                "activation"
+            layer_activation = layer.get_config()["activation"]
             weights, biases = layer.get_weights()
 
             # Get the number of nodes (units) in the current layer
             # For Dense layers, this is the 'units' attribute
-            current_layer_nodes = getattr(
-                layer, "units", None
+            current_layer_nodes = getattr(layer, "units", None)
 
             # Check if the current layer is an output layer
             # Check if the current layer is an output layer
@@ -1920,8 +1900,7 @@ class NNKerasTerms:  # (SmlpTerms):
 
                 else:
                     prev_layer_number = l - output_layer_number - 1
-                    prev_layer = model.layers[
-                        prev_layer_number
+                    prev_layer = model.layers[prev_layer_number]
 
                 if self.nn_keras_layer_is_input(model, prev_layer):
                     assert l == 1
@@ -2234,7 +2213,7 @@ class ModelTerms(ScalerTerms):
         if resp is None:
             return self.model_file_prefix + '_smlp_full_model_term.json'
         else:
-            return 
+            return
     """
 
     # This function computes a dictionary with response names as keys and an smlp term corresponding to the
@@ -2451,8 +2430,7 @@ class ModelTerms(ScalerTerms):
             ###print('model_full_term_dict befor', model_full_term_dict)
             assert len(model_full_term_dict) == 1
             key = list(model_full_term_dict.keys())[0]
-            new_key = self._scalerTermsInst._unscaled_name(
-                key
+            new_key = self._scalerTermsInst._unscaled_name(key)
             model_full_term_dict_new = {}
             model_full_term_dict_new[new_key] = [
                 self.smlp_cnst_fold(
@@ -2468,11 +2446,11 @@ class ModelTerms(ScalerTerms):
             # responses_unscaler_terms_dict = self.feature_unscaler_terms(data_bounds, resp_names); print('responses_unscaler_terms_dict', responses_unscaler_terms_dict)
             responses_scaler_terms_dict = self.feature_scaler_terms(
                 data_bounds, resp_names
+            )
             model_full_term_dict_new = {}
             for model_name, model_term in model_full_term_dict.items():
                 for j, resp in enumerate(resp_names):
-                    resp_unscaled = self._scalerTermsInst._unscaled_name(
-                        resp
+                    resp_unscaled = self._scalerTermsInst._unscaled_name(resp)
                     model_full_term_dict_new[model_name] = [
                         self.smlp_cnst_fold(formula, responses_scaler_terms_dict)
                         for formula in model_term
@@ -2667,8 +2645,7 @@ class ModelTerms(ScalerTerms):
     # Covers grid as well as range/interval constraints.
     def compute_grid_range_formulae_eta(self, model_inputs):
         eta_grid_form = self.smlp_true
-        eta_grids_dict = (
-            self._specInst.get_spec_eta_grids_dict
+        eta_grids_dict = self._specInst.get_spec_eta_grids_dict
         for var, grid in eta_grids_dict.items():
             # we only generate grid constraints for knobs that are model inputs
             # (some of the knobs and inputs in the initial dataset could have been dropped)
@@ -2692,8 +2669,7 @@ class ModelTerms(ScalerTerms):
     # Compute formulae alpha, beta, eta from respective expression string.
     def compute_input_ranges_formula_alpha(self, model_inputs):
         alpha_form = self.smlp_true
-        alpha_dict = (
-            self._specInst.get_spec_alpha_bounds_dict
+        alpha_dict = self._specInst.get_spec_alpha_bounds_dict
         for v, b in alpha_dict.items():
             if v not in model_inputs:
                 continue
@@ -2838,8 +2814,7 @@ class ModelTerms(ScalerTerms):
     # Adding variable ranges here is not strictly required since they are added as part of alpha constraints
     # in function self.compute_input_ranges_formula_alpha_eta()
     def var_domain(self, var, spec_domain_dict):
-        interval = spec_domain_dict[var][
-            self._specInst.get_spec_domain_interval_tag
+        interval = spec_domain_dict[var][self._specInst.get_spec_domain_interval_tag]
         if interval is None:
             interval_has_none = True
         elif interval[0] is None or interval[1] is None:
@@ -2902,7 +2877,7 @@ class ModelTerms(ScalerTerms):
         self._smlp_terms_logger.info(
             "Creating model exploration base components: Start"
         )
-        ic(float_precision)
+        logger.info(float_precision)
         self._smlp_terms_logger.info("Parsing the SPEC: Start")
         if data_bounds_json_path is not None:
             with open(data_bounds_json_path, "r") as f:
@@ -2912,24 +2887,17 @@ class ModelTerms(ScalerTerms):
         self._smlp_terms_logger.info("Parsing the SPEC: End")
 
         # get variable domains dictionary; certain sanity checks are performrd within this function.
-        spec_domain_dict = (
-            self._specInst.get_spec_domain_dict
+        spec_domain_dict = self._specInst.get_spec_domain_dict
 
         # contraints on features used as control variables and on the responses
-        alph_ranges = self.compute_input_ranges_formula_alpha_eta(
-            "alpha", feat_names
-        alph_global = self.compute_global_alpha_formula(
-            alph_expr, feat_names
-        beta = self.compute_beta_formula(
-            beta_expr, feat_names + resp_names
-        eta_ranges = self.compute_input_ranges_formula_alpha_eta(
-            "eta", feat_names
-        eta_grids = self.compute_grid_range_formulae_eta(
-            feat_names
-        eta_global = self.compute_eta_formula(
-            eta_expr, feat_names
-        eta = self.smlp_and_multi(
-            [eta_ranges, eta_grids, eta_global]
+        alph_ranges = self.compute_input_ranges_formula_alpha_eta("alpha", feat_names)
+        alph_global = self.compute_global_alpha_formula(alph_expr, feat_names)
+        beta = self.compute_beta_formula(beta_expr, feat_names + resp_names)
+        eta_ranges = self.compute_input_ranges_formula_alpha_eta("eta", feat_names)
+        eta_grids = self.compute_grid_range_formulae_eta(feat_names)
+        eta_global = self.compute_eta_formula(eta_expr, feat_names)
+        eta = self.smlp_and_multi([eta_ranges, eta_grids, eta_global])
+        alpha = None
 
         self._smlp_terms_logger.info("Alpha global   constraints: " + str(alph_global))
         self._smlp_terms_logger.info("Alpha ranges   constraints: " + str(alph_ranges))
@@ -2992,24 +2960,23 @@ class ModelTerms(ScalerTerms):
             # (for now we couldn't see a reliable way to determine whether a layer is output layer that
             # would work well both with sequential and functional APIs and wouldn't use response_names).
             def declare_iternal_node_vars(model, resp_name, resp_names):
-                for l, layer in enumerate(model.layers):
+                for index, layer in enumerate(model.layers):
                     is_input_layer = self._nnKerasTermsInst.nn_keras_layer_is_input(
                         model, layer
                     )
                     is_output_layer = self._nnKerasTermsInst.nn_keras_layer_is_output(
-                        model, l, resp_names
+                        model, index, resp_names
                     )
                     if is_input_layer or is_output_layer:
                         # we do not create internal variables layer_i_node_j for model inouts and responses
                         continue
                     else:
-                        curr_layer_nodes_count = getattr(
-                            layer, "units", None
+                        curr_layer_nodes_count = getattr(layer, "units", None)
                         assert curr_layer_nodes_count == len(list(layer.weights[1]))
                         for node in range(curr_layer_nodes_count):
                             domain_dict[
                                 self._nnKerasTermsInst._nn_keras_node_name(
-                                    resp_name, l, node
+                                    resp_name, index, node
                                 )
                             ] = smlp.component(self.smlp_real)
 
@@ -3036,6 +3003,7 @@ class ModelTerms(ScalerTerms):
                     (resp_name, self.ast_expr_to_term(resp_expr))
                     for resp_name, resp_expr in syst_expr_dict.items()
                 ]
+            )
             self._smlp_terms_logger.info(
                 "System terms dictionary: " + str(system_term_dict)
             )
@@ -3083,9 +3051,9 @@ class ModelTerms(ScalerTerms):
                 ops = [self.smlp_count_operators(form) for form in m]
                 ops = self.sum_operator_counts(ops)
             else:
-            self._smlp_terms_logger.info(
-                "Model operator counts for " + str(key) + ": " + str(ops)
-            )
+                self._smlp_terms_logger.info(
+                    "Model operator counts for " + str(key) + ": " + str(ops)
+                )
         self._smlp_terms_logger.info("Building model terms: End")
 
         model_consistent = self.check_alpha_eta_consistency(
@@ -3155,8 +3123,7 @@ class ModelTerms(ScalerTerms):
                         # that define tree antecedents and these must be added to solver as is:
                         base_solver.add(resp_term)
                     else:
-                        eq_form = self.smlp_eq(
-                            self.smlp_var(resp_name), resp_term
+                        eq_form = self.smlp_eq(self.smlp_var(resp_name), resp_term)
                         base_solver.add(eq_form)
         return base_solver
 
@@ -3171,7 +3138,7 @@ class ModelTerms(ScalerTerms):
             sat_model = {}
         elif isinstance(res, smlp.sat):
             status = "sat"
-            ic("here")
+            logger.info("here")
             sat_model = self.witness_term_to_const(
                 res.model, approximate=False, precision=64
             )
@@ -3185,8 +3152,7 @@ class ModelTerms(ScalerTerms):
         else:
             raise Exception("Unexpected solver result " + str(res))
 
-        anonym_interface_dict = (
-            self._specInst.get_anonymized_interface
+        anonym_interface_dict = self._specInst.get_anonymized_interface
 
         # genrate columns for trace file to enable viewing candidates and counter-example in a convenient way
         if call_name == "interface_consistency":
@@ -3277,7 +3243,7 @@ class ModelTerms(ScalerTerms):
                         if e in assignment.keys()
                     ]
                     output_values_approx = [
-                        str(assignmentv[e])
+                        str(assignment_approx[e])
                         for e in list(anonym_interface_dict["outputs"].values())
                         if e in assignment.keys()
                     ]
@@ -3424,7 +3390,7 @@ class ModelTerms(ScalerTerms):
             domain, model_full_term_dict, False, solver_logic
         )
         # res = solver.check(); print('res', res, flush=True)
-        ic("here")
+        logger.info("here")
         res = self.smlp_solver_check(
             solver,
             "interface_consistency"
