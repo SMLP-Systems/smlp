@@ -11,7 +11,11 @@
     in
     {
         devShells."x86_64-linux".default = pkgs.mkShell {
-            packages = with pkgs; [ python313Packages.tkinter meson ninja ];
+            buildInputs = with pkgs; [ gmp meson ninja ];
+            installPhase = ''
+                meson setup -Dkay-prefix=$HOME/kay --prefix $HOME/.local build
+                ninja -C build install
+                '';
         };
     };
 }
