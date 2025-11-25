@@ -6,13 +6,16 @@ readme = "README.md"
 requires-python = "==3.11.12"
 dependencies = [
     "doepy>=0.0.1",
+    "gmp>=0.0.17",
     "icecream>=2.1.8",
     "jenkspy>=0.4.1",
     "keras>=3.11.3",
     "keras-tuner>=1.4.7",
     "loguru>=0.7.3",
+    "meson>=1.9.1",
     "mrmr-selection>=0.2.8",
     "pandas>=2.1.4",
+    "pkgconfig>=1.5.5",
     "pre-commit>=4.3.0",
     "pycaret>=3.3.2",
     "pydoe>=0.3.8",
