@@ -1819,7 +1819,9 @@ dependencies = [
     { name = "ruff" },
     { name = "scikit-learn" },
     { name = "seaborn" },
+    { name = "setuptools" },
     { name = "tensorflow" },
+    { name = "wheel" },
 ]
 
 [package.metadata]
@@ -1842,7 +1844,9 @@ requires-dist = [
     { name = "ruff", specifier = ">=0.14.1" },
     { name = "scikit-learn", specifier = ">=1.4.2" },
     { name = "seaborn", specifier = ">=0.13.2" },
+    { name = "setuptools", specifier = ">=80.9.0" },
     { name = "tensorflow", specifier = ">=2.18.1" },
+    { name = "wheel", specifier = ">=0.45.1" },
 ]
 
 [[package]]

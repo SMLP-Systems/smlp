@@ -23,5 +23,7 @@ dependencies = [
     "ruff>=0.14.1",
     "scikit-learn>=1.4.2",
     "seaborn>=0.13.2",
+    "setuptools>=80.9.0",
     "tensorflow>=2.18.1",
+    "wheel>=0.45.1",
 ]

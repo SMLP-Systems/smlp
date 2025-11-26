@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: smlp
+Version: 0.10.1
+Home-page: https://github.com/fbrausse/smlp
+Author: Franz Brauße
+Author-email: franz.brausse@manchester.ac.uk
+License: Apache-2.0
+License-File: LICENSE
+Dynamic: author
+Dynamic: author-email
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
