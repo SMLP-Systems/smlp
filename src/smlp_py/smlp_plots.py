@@ -56,16 +56,35 @@ else:
     sys.exit(1)
 
 
+# STATIC_IMAGES_DIR = os.path.abspath(os.path.join(os.getcwd(), "static/images"))
+
+# os.makedirs(STATIC_IMAGES_DIR, exist_ok=True)
+
+
+# def plot(name, interactive, out_prefix=None, **show_kws):
+#     #print('saved figure filename: ', 'out_prefix', out_prefix, 'name', name)
+#     #print('interactive', interactive); print('show_kws', show_kws)
+#     if out_prefix is not None:
+#         #print('Saving plot ' + out_prefix + '_' + name + '.png')
+#         plot_path = os.path.join(STATIC_IMAGES_DIR, f"{out_prefix}_{name}.png")
+#         plt.savefig(plot_path)
+#     # if interactive:
+#     #     #print('HERE2', show_kws)
+#     #     plt.show(**show_kws)
+#     # plt.clf()
+PLOT_SAVE_DIR  = os.path.abspath("../../regr_smlp/code/images")
+# Ensure the directory exists
+# os.makedirs(PLOT_SAVE_DIR , exist_ok=True)
+
 def plot(name, interactive, out_prefix=None, **show_kws):
-    #print('saved figure filename: ', 'out_prefix', out_prefix, 'name', name)
-    #print('interactive', interactive); print('show_kws', show_kws)
     if out_prefix is not None:
-        #print('Saving plot ' + out_prefix + '_' + name + '.png')
-        plt.savefig(out_prefix + '_' + name + '.png')
-    if interactive:
-        #print('HERE2', show_kws)
-        plt.show(**show_kws)
-    plt.clf()
+        plot_path = os.path.join(PLOT_SAVE_DIR , f"{out_prefix}_{name}.png")
+        plt.savefig(plot_path)  # Save in the correct location
+    
+    # if interactive:
+    #     plt.show(**show_kws)
+    
+    # plt.clf()
 
 
 def plot_data_columns(data):
