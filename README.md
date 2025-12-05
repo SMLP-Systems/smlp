@@ -85,7 +85,7 @@ instruction for the installation on Ubuntu.
     -spec smlp_toy_num_resp_mult_free_inps -data_scaler min_max \
     -beta "y1>7 and y2>6" -objv_names obj1,objv2,objv3 \
     -objv_exprs "(y1+y2)/2;y1/2-y2;y2" -epsilon 0.05 -delta_rel 0.01 \
-    -save_model_config f -mrmr_pred 0 -plots f -seed 10 -log_time f \
+    -save_model_config f -plots f -seed 10 -log_time f \
     -spec ../specs/smlp_toy_num_resp_mult_free_inps.spec
 
     # then the regression script
@@ -125,8 +125,8 @@ will produce the SMLP command for the regression test number 1:
 
 	../../src/run_smlp.py -data "../data/smlp_toy_num_resp_mult" \
 	-out_dir ./ -pref Test1 -mode train -resp y1 -feat x,p1,p2 \
-	-model dt_caret -save_model_config f -mrmr_pred 0 -plots f \
-	-seed 10 -log_time f
+	-model dt_caret -save_model_config f -feat_select_model mrmr \
+	-feat_select_count 0 -plots f -seed 10 -log_time f
 
 For details about those parameters, please refer to the help messages (-h) of
 both tools, src/run_smlp.py and regr_smlp/code/smlp_regr.py, as well as the
@@ -186,12 +186,14 @@ directory, run the following commands:
     -mode optimize -pareto f -sat_thresh f -resp o0 -feat \
     Byte,CH,RANK,Timing,i0,i1,i2,i3 -model dt_sklearn -dt_sklearn_max_depth 15 \
     -data_scaler min_max -epsilon 0.05 -log_time f -plots f \
+	-feat_select_model mrmr -feat_select_count 15 \
     -spec ../specs/smlp_s2_tx
 
     ../../src/run_smlp.py -out_dir ./ -pref smlp_s2_tx_nn -data ../data/smlp_s2_tx \
     -mode optimize -pareto f -sat_thresh f -resp o0 \
     -feat Byte,CH,RANK,Timing,i0,i1,i2,i3 \
     -model nn_keras -nn_keras_epochs 20 -data_scaler min_max \
+	-feat_select_model mrmr -feat_select_count 15 \
     -epsilon 0.05 -log_time f -plots f  -spec ../specs/smlp_s2_tx 
 
 These runs will take longer than the regression tests provided earlier,

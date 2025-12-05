@@ -11,9 +11,6 @@ class SmlpMrmr:
         self._MRMR_FEATURES_PRED = 15
         self._MRMR_FEATURES_CORR = 15
         self.mrmr_params_dict = {
-            'mrmr_feat_count_for_prediction': {'abbr':'mrmr_pred', 'default':self._MRMR_FEATURES_PRED, 'type':int,
-                'help':'Count of features selected by MRMR algorithm for predictive models '  +
-                    '[default: {}]'.format(str(self._MRMR_FEATURES_PRED))},
             'mrmr_feat_count_for_correlation': {'abbr':'mrmr_corr', 'default':self._MRMR_FEATURES_CORR, 'type':int,
                 'help':'Count of features selected by MRMR algorithm for correlation analysis '  +
                     '[default: {}]'.format(str(self._MRMR_FEATURES_CORR))}
@@ -63,7 +60,7 @@ class SmlpMrmr:
                                str(y.name) + ' :\n'+ str(mrmr_scores_df))
         
         self._mrmr_logger.info('MRMR feature selection for response ' + y.name + ' : end') 
-        return mrmr_res[0], mrmr_scores_df
+        return mrmr_res[0], mrmr_scores_df, mrmr_res[1]
 
     # mrmr feature selection using mrmr-feature package, where y is a categorical variable (pandas.Series)
     # TODO !!!: not tested
@@ -87,7 +84,7 @@ class SmlpMrmr:
                                y.name + ' :\n'+ str(mrmr_scores_df))
         
         self._mrmr_logger.info('MRMR feature selection for response ' + y.name + ' : end')
-        return mrmr_res[0], mrmr_scores_df
+        return mrmr_res[0], mrmr_scores_df, mrmr_res[1]
     
     def smlp_mrmr(self, X:pd.DataFrame, y:pd.Series, #resp_type:str, #"numeric", 
             feat_cnt:int):

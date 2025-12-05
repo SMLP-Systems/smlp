@@ -18,6 +18,9 @@ from smlp_py.smlp_plots import response_distribution_plot
 from smlp_py.smlp_utils import (np_JSONEncoder, list_intersection, str_to_bool, list_unique_unordered,
     lists_union_order_preserving_without_duplicates, get_response_type, cast_type, pd_df_col_is_numeric)
 from smlp_py.smlp_mrmr import SmlpMrmr
+from smlp_py.smlp_shap import SmlpShap
+from smlp_py.smlp_pca import SmlpPCA
+#from smlp_py.smlp_spec import SmlpSpec
 #from smlp_py.smlp_spec import SmlpSpec
 from smlp_py.smlp_constants import *
 from smlp_py.smlp_discretize import SmlpDiscretize
@@ -35,8 +38,10 @@ class SmlpData:
         # and in that case we might need to instantiate MrmrFeatures at a top level script (like smslp_train.py)
         # along with instantiating DataCommon (and maybe ModelsCommon).
         self._mrmrInst = SmlpMrmr() 
+        self._shapInst = SmlpShap()
+        self._pcaInst = SmlpPCA()  
         self._specInst = None # SmlpSpec()
-        
+
         # default values of parameters related to dataset; used to generate args.
         self._DEF_TRAIN_FIRST = 0 # subseting first_n rows from training data
         self._DEF_TRAIN_RAND = 0  # sampling random_n rows from training data
@@ -65,6 +70,10 @@ class SmlpData:
         
         # features that must be used in training models (assuming they are within initially defined input features)
         self._DEF_KEEP_FEATURES = []
+
+        # SMLP feature selection default parameters on model used and feature counts (off by default)
+        self._DEF_FEATURE_SELECTION = 'mrmr'
+        self._DEF_FEATURE_COUNT = 0
         
         # Dictionary with features (names) that have a missing values as dictionary keys and row indices of the 
         # missing values as dictionary values. It is computed just before imputing missing values in features. 
@@ -264,8 +273,18 @@ class SmlpData:
             'response_plots': {'abbr':'resp_plots', 'default': self._DEF_RESPONSE_PLOTS, 'type':str_to_bool,
                 'help': 'Should response value distribution plots be genrated during data processing? ' +
                     'A related option interactive_plots controls whether the generated plots should be ' +
-                    'displayed interactively during runtime [default: ' + str(self._DEF_RESPONSE_PLOTS) + ']'}
-            } | self._mrmrInst.mrmr_params_dict
+                    'displayed interactively during runtime [default: ' + str(self._DEF_RESPONSE_PLOTS) + ']'},
+            'feature_selection_model': {'abbr':'feat_select_model', 'default': self._DEF_FEATURE_SELECTION, 'type':str,
+                'help': 'What feature selection model do you want to use? ' +
+                    'Can choose between mrmr, shap, mrmr_shap or mrmr_shap_ensemble meaning the model can ' +
+                    'use just mrmr, just shap, mrmr then shap, or both scored combined' + 
+                    ' in order to select features [default: ' + str(self._DEF_FEATURE_SELECTION) + ']'},
+            'feature_selection_count': {'abbr':'feat_select_count', 'default': self._DEF_FEATURE_COUNT, 'type':int,
+                'help': 'The amount of features the feature selection model should take into account. ' +
+                    'If mrmr_shap is chosen as the model, then the number of features will first be chosen by mrmr, then by shap ' +
+                    'and then listed together, and if mrmr_shap_ensemble is chosen, then the importance values will be combined ' +
+                    'and then features are chosen [default: ' + str(self._DEF_FEATURE_COUNT) + ']'}
+            } | self._pcaInst.pca_params_dict
         self.data_bounds_dict = None
         
     
@@ -273,6 +292,8 @@ class SmlpData:
     def set_logger(self, logger):
         self._data_logger = logger 
         self._mrmrInst.set_logger(logger)
+        self._shapInst.set_logger(logger)
+        self._pcaInst.set_logger(logger)
     
     # report_file_prefix is a string used as prefix in all report files of SMLP
     def set_report_file_prefix(self, report_file_prefix):
@@ -908,7 +929,37 @@ class SmlpData:
             #print('X_test with y_test > 0.9', X_test.shape); print(X_test.head())
 
         return X_train, y_train, X_test, y_test
-    
+
+    def _combine_feature_importance(self, shap_importance, mrmr_importance, feature_names, feat_count):
+        
+        # Combines SHAP and MRMR feature importance scores using MinMax iteration.
+        importance_list = []
+
+        for i, feature in enumerate(feature_names):
+            # Get absolute MRMR and SHAP values
+            shap_val = abs(shap_importance[i])  
+            mrmr_val = abs(mrmr_importance.get(feature, 0))
+
+            importance_list.append([feature, shap_val, mrmr_val])
+
+        importance_df = pd.DataFrame(importance_list, columns=['Feature', 'SHAP_Importance', 'MRMR_Importance'])
+
+        # Normalize SHAP and MRMR importance to [0,1] range
+        scaler = MinMaxScaler()
+        importance_df[['SHAP_Importance', 'MRMR_Importance']] = scaler.fit_transform(
+            importance_df[['SHAP_Importance', 'MRMR_Importance']]
+        )
+
+        # Compute the final combined importance score
+        importance_df['Combined_Importance'] = importance_df['SHAP_Importance'] + importance_df['MRMR_Importance']
+
+        # Sort by importance score and select top features
+        importance_df = importance_df.sort_values(by='Combined_Importance', ascending=False)
+        top_features = importance_df['Feature'].head(feat_count).tolist()
+        print(importance_df)
+
+        return importance_df , top_features
+
     # load data, scale using sklearn MinMaxScaler(), then split into training and test 
     # subsets with ratio given by split_test. Optionally (based on arguments train_first_n, 
     # train_random_n, train_uniform_n), subsample/resample training data using function
@@ -922,11 +973,12 @@ class SmlpData:
     # Besides training and test subsets, the function returns also the MinMaxScaler object 
     # used for data normalization, to be reused for applying the model to unseen datasets
     # and also to rescale back the prediction results to the original scale where needed.
-    def _prepare_data_for_modeling(self, data_file:str, is_training:bool, split_test:float, 
+    def _prepare_data_for_modeling(self, data_file:str, spec_path:str, is_training:bool, split_test:float, 
             feat_names:list[str], resp_names:list[str], keep_feat:list[str], out_prefix:str, 
             train_first_n:int, train_random_n:int, train_uniform_n:int, interactive_plots:bool, 
-            response_plots:bool, mrmr_features_n:int, pos_value:int, neg_value:int, resp_map:str, resp_to_bool:str, 
-            scaler_type:str, scale_features:bool, scale_responses:bool, impute_responses:bool, 
+            response_plots:bool, feat_select_model:str, feat_select_count:int, pca_features:int,
+            pos_value:int, neg_value:int, resp_map:str,
+            resp_to_bool:str, scaler_type:str, scale_features:bool, scale_responses:bool, impute_responses:bool, 
             mm_scaler_feat=None, mm_scaler_resp=None, levels_dict=None, model_features_dict=None):
         data_version_str = 'training' if is_training else 'new'
         self._data_logger.info('Preparing ' + data_version_str + ' data for modeling: start')
@@ -945,7 +997,6 @@ class SmlpData:
         if not y is None:
             assert set(resp_names) == set(y.columns.tolist())
         
-        
         # TMP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! start
         try_correlations = False
         if try_correlations: # use test 46
@@ -961,14 +1012,64 @@ class SmlpData:
         if is_training:
             #keep_feat = keep_feat + self._specInst.get_spec_constraint_vars(); #print('keep_feat', keep_feat)
             #print('features before mrmr', feat_names)
+            pca_equations = None
+            input_keep_feat = set(ft for ft in keep_feat if ft not in resp_names) 
             for rn in resp_names:
-                mrmr_feat, _ = self._mrmrInst.smlp_mrmr(X, y[rn], mrmr_features_n); #print('mrmr_feat', mrmr_feat)
-                model_feat = [ft for ft in feat_names if (ft in mrmr_feat or ft in keep_feat)]; #print(model_feat); 
-                model_features_dict[rn] = model_feat #mrmr_feat
+                selected_features = set(input_keep_feat)
+                if feat_select_model not in {'mrmr', 'shap', 'mrmr_shap_ensemble', 'mrmr_shap'}:
+                    raise ValueError(f"Invalid feature selection model '{feat_select_model}'. Allowed values are: 'mrmr', 'shap', 'mrmr_shap_ensemble', 'mrmr_shap'.")
+                # If mrmr model or mrmr and shap model is called
+                if (feat_select_model == 'mrmr' or feat_select_model == 'mrmr_shap') and feat_select_count > 0:
+                    mrmr_feat, _ , mrmr_model= self._mrmrInst.smlp_mrmr(X, y[rn], feat_select_count); #print('mrmr_feat', mrmr_feat)
+                    model_feat = [ft for ft in feat_names if (ft in mrmr_feat or ft in keep_feat)]; #print(model_feat); 
+                    selected_features.update(model_feat)
+                # If shap model or mrmr and shap model is called
+                if (feat_select_model == 'shap' or feat_select_model == 'mrmr_shap') and feat_select_count > 0:
+                    shap_feat, shap_importance = self._shapInst.smlp_shap(X, y[rn], feat_select_count)
+                    shap_feat = [ft for ft in feat_names if (ft in shap_feat or ft in keep_feat)]
+                    selected_features.update(shap_feat)
+                # If mrmr and shap ensemble model is called
+                if feat_select_model == 'mrmr_shap_ensemble' and feat_select_count > 0:
+                    mrmr_feat, _ , mrmr_model= self._mrmrInst.smlp_mrmr(X, y[rn], feat_select_count)
+                    shap_feat, shap_importance = self._shapInst.smlp_shap(X, y[rn], feat_select_count)
+
+                    model , mrmr_shap_feat = self._combine_feature_importance(shap_importance, mrmr_model, feat_names, feat_select_count)
+
+                    self._data_logger.info(f'MRMR_SHAP ensemble selected feature scores for response {rn}:\n{model}')
+                    self._data_logger.info(f'MRMR_SHAP ensemble selected features for response {rn}:{mrmr_shap_feat}')
+
+                    mrmr_shap_ensemble_feat = [ft for ft in mrmr_shap_feat if ft in feat_names]
+                    selected_features.update(mrmr_shap_ensemble_feat)
+                if feat_select_count > 0:
+                    model_features_dict[rn] = sorted(selected_features, key=lambda ft: feat_names.index(ft))
             feat_names = [ft for ft in feat_names if ft in 
                 lists_union_order_preserving_without_duplicates(list(model_features_dict.values()))]
             X = X[feat_names]
-            #print('features after mrmr', feat_names); print('model_features_dict after MRMR', model_features_dict)
+            # If pca model is called, still in development stage
+            if pca_features > 0:
+                max_components = min(pca_features, X.shape[1])
+                if pca_features > X.shape[1]:
+                    self._data_logger.warning(f"Requested {pca_features} PCA components, but only {X.shape[1]} features available. Using {max_components} components instead.")
+                    pca_features = X.shape[1]
+                X_pca, pca_model = self._pcaInst.smlp_pca(X[feat_names], y, pca_features , spec_path)
+                X_reversed = self._pcaInst.inverse_transform(X_pca, X)
+
+                # This is to compare the efficiency of reversing PCA, can comment this out
+                self._data_logger.info(f"Comparison between initial input matrix and PCA attempt to reconstruct it, initial matrix: \n {X} \n Reconstructed matrix: \n{X_reversed}")
+
+                # Calculating variance for information about model efficiency
+                variance = pca_model.explained_variance_ratio_
+                total_variance = sum(pca_model.explained_variance_ratio_)
+                self._data_logger.info(f"PCA Variance Ratio per output: {variance}")
+                self._data_logger.info(f"Total Variance Captured: {total_variance}")
+
+                pca_equations = self._pcaInst.get_feature_equations(X_pca, X)
+                X = X_pca  
+
+                for rn in resp_names:
+                    model_features_dict[rn] = list(X_pca.columns)  # Use PCA-transformed feature names
+
+                feat_names = list(X.columns)  
         
         # encode levels of categorical features as integers for model training (in feature selection tasks 
         # it is best to use the original categorical features). 
@@ -994,7 +1095,7 @@ class SmlpData:
             X_train, y_train, X_test, y_test = self._split_data_for_training(X, y, split_test, 
                 train_first_n, train_random_n, train_uniform_n)
             res = X, y, X_train, y_train, X_test, y_test, mm_scaler_feat, mm_scaler_resp, \
-                feat_names, resp_names, levels_dict, model_features_dict
+                feat_names, resp_names, pca_equations, levels_dict, model_features_dict
         else:
             res = X, y
 
@@ -1003,22 +1104,24 @@ class SmlpData:
                 
     # Process data to prepare components required for training models and prediction, and reporting results in
     # original scale. Supports also prediction and results reporting in origibal scale from saved model
-    def process_data(self, report_file_prefix:str, data_file:str, new_data_file:str, is_training:bool, split_test, 
+    def process_data(self, report_file_prefix:str, data_file:str, new_data_file:str, spec_path:str, is_training:bool, split_test, 
             feat_names:list[str], resp_names:list[str], keep_feat:list[str],  
             train_first_n:int, train_random_n:int, train_uniform_n:int, interactive_plots:bool, response_plots:bool,
-            scaler_type:str, scale_features:bool, scale_responses:bool, impute_responses:bool, mrmr_features_n:int, 
-            pos_value, neg_value, resp_map:str, resp_to_bool, save_model:bool, use_model:bool):
+            scaler_type:str, scale_features:bool, scale_responses:bool, impute_responses:bool, feat_select_model:str,
+            feat_select_count:int, pca_features_n:int, pos_value, neg_value,
+            resp_map:str, resp_to_bool, save_model:bool, use_model:bool):
         
         #scale = not self._get_data_scaler(scaler_type) is None
         keep_feat = keep_feat + self._specInst.get_spec_constraint_vars()
         if data_file is not None:
             split_test = self._DEF_SPLIT_TEST if split_test is None else split_test
             X, y, X_train, y_train, X_test, y_test, mm_scaler_feat, mm_scaler_resp, \
-            feat_names, resp_names, levels_dict, model_features_dict = self._prepare_data_for_modeling(
-                data_file, True, split_test, feat_names, resp_names, keep_feat, report_file_prefix, 
+            feat_names, resp_names, pca_equations, levels_dict, model_features_dict = self._prepare_data_for_modeling(
+                data_file, spec_path, True, split_test, feat_names, resp_names, keep_feat, report_file_prefix, 
                 train_first_n, train_random_n, train_uniform_n, interactive_plots, response_plots,
-                mrmr_features_n, pos_value, neg_value, resp_map, resp_to_bool, scaler_type, 
-                scale_features, scale_responses, impute_responses, None, None, None, None)
+                feat_select_model, feat_select_count, pca_features_n, pos_value,
+                neg_value, resp_map, resp_to_bool, scaler_type, scale_features, scale_responses,
+                impute_responses, None, None, None, None)
             
             # santy check that: mm_scaler_feat is not None --> scaler_type != 'none'
             assert not scaler_type == 'none' or mm_scaler_feat is None
@@ -1040,13 +1143,14 @@ class SmlpData:
             model_features_dict = self._load_model_features(self.model_features_dict_file)
             feat_names = lists_union_order_preserving_without_duplicates(list(model_features_dict.values()))
             #print('model_features_dict loaded', model_features_dict); print('feat_names loaded', feat_names)
-            X, y, X_train, y_train, X_test, y_test =  None, None, None, None, None, None 
+            X, y, X_train, y_train, X_test, y_test , pca_equations =  None, None, None, None, None, None 
         
         if new_data_file is not None:
             X_new, y_new = self._prepare_data_for_modeling(
-                new_data_file, False, None, feat_names, resp_names, keep_feat, report_file_prefix,  None, None, None, 
-                interactive_plots, response_plots, mrmr_features_n, pos_value, neg_value, resp_map, resp_to_bool, scaler_type,
-                scale_features, scale_responses, impute_responses, mm_scaler_feat, mm_scaler_resp, levels_dict, model_features_dict)
+                new_data_file, spec_path, False, None, feat_names, resp_names, keep_feat, report_file_prefix,  None, None, None, 
+                interactive_plots, response_plots, feat_select_model, feat_select_count, pca_features_n,
+                pos_value, neg_value, resp_map, resp_to_bool, scaler_type,scale_features, scale_responses,
+                impute_responses, mm_scaler_feat, mm_scaler_resp, levels_dict, model_features_dict)
         else:
             X_new, y_new = None, None
 
@@ -1059,4 +1163,4 @@ class SmlpData:
             X_new = X_new[common_features]
         
         return X, y, X_train, y_train, X_test, y_test, X_new, y_new, mm_scaler_feat, mm_scaler_resp, \
-            levels_dict, model_features_dict, feat_names, resp_names
+            levels_dict, pca_equations, model_features_dict, feat_names, resp_names

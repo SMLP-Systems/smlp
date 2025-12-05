@@ -2051,7 +2051,7 @@ class ModelTerms(ScalerTerms):
     def compute_models_terms_dict(self, algo, model_or_model_dict, model_features_dict, feat_names, resp_names, 
             data_bounds, data_scaler,scale_features, scale_responses):
         #print('model_features_dict', model_features_dict); print('feat_names', feat_names, 'resp_names', resp_names, flush=True)
-        assert lists_union_order_preserving_without_duplicates(list(model_features_dict.values())) == feat_names
+        assert set(lists_union_order_preserving_without_duplicates(list(model_features_dict.values()))) == set(feat_names)
         #print('model_or_model_dict', model_or_model_dict)
         if isinstance(model_or_model_dict, dict):
             models_full_terms_dict = {}
@@ -2355,7 +2355,7 @@ class ModelTerms(ScalerTerms):
         return var_component
     
     # this function builds terms and formulas for constraints, system description and the models
-    def create_model_exploration_base_components(self, syst_expr_dict:dict, algo, model, model_features_dict:dict, feat_names:list, resp_names:list, 
+    def create_model_exploration_base_components(self, syst_expr_dict:dict, algo, model, model_features_dict:dict, pca_equations:dict, feat_names:list, resp_names:list, 
             alph_expr:str, beta_expr:str, eta_expr:str, data_scaler, scale_feat, scale_resp, 
             float_approx=True, float_precision=64, data_bounds_json_path=None):
         self._smlp_terms_logger.info('Creating model exploration base components: Start')
@@ -2373,14 +2373,26 @@ class ModelTerms(ScalerTerms):
         
         # contraints on features used as control variables and on the responses
         alph_ranges = self.compute_input_ranges_formula_alpha_eta('alpha', feat_names); #print('alph_ranges')
-        alph_global = self.compute_global_alpha_formula(alph_expr, feat_names); #print('alph_global')
-        alpha = self.smlp_and(alph_ranges, alph_global); #print('alpha')
-        beta = self.compute_beta_formula(beta_expr, feat_names+resp_names); #print('beta')
-        eta_ranges = self.compute_input_ranges_formula_alpha_eta('eta', feat_names); #print('eta_ranges')
-        eta_grids = self.compute_grid_range_formulae_eta(feat_names); #print('eta_grids')
-        eta_global = self.compute_eta_formula(eta_expr, feat_names); #print('eta_global', eta_global)
-        eta = self.smlp_and_multi([eta_ranges, eta_grids, eta_global]); #print('eta', eta)
-        
+
+        if pca_equations is None:
+            alph_global = self.compute_global_alpha_formula(alph_expr, feat_names); #print('alph_global')
+            alpha = self.smlp_and(alph_ranges, alph_global); #print('alpha')
+            beta = self.compute_beta_formula(beta_expr, feat_names+resp_names); #print('beta')
+            eta_ranges = self.compute_input_ranges_formula_alpha_eta('eta', feat_names); #print('eta_ranges')
+            eta_grids = self.compute_grid_range_formulae_eta(feat_names); #print('eta_grids')
+            eta_global = self.compute_eta_formula(eta_expr, feat_names); #print('eta_global', eta_global)
+            eta = self.smlp_and_multi([eta_ranges, eta_grids, eta_global]); #print('eta', eta)
+        else:
+            alph_global = True
+            alpha = True
+            beta = True
+            eta_ranges = True
+            eta_grids = True
+            eta_global = True
+            eta = True
+        if pca_equations is not None:
+            self._smlp_terms_logger.warn('PCA is currently under development, so alpha, beta and eta constraints will be ignored.')
+            
         self._smlp_terms_logger.info('Alpha global   constraints: ' + str(alph_global))
         self._smlp_terms_logger.info('Alpha ranges   constraints: ' + str(alph_ranges))
         self._smlp_terms_logger.info('Alpha combined constraints: ' + str(alpha))

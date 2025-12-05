@@ -465,6 +465,8 @@ class ModelSklearn:
         else:
             #union_feat_names = list(set(sum(list(feat_names_dict.values()), []))) - the ordering is affected 
             union_feat_names = lists_union_order_preserving_without_duplicates(list(feat_names_dict.values()))
+            # Added check 
+            union_feat_names = sorted(union_feat_names, key=lambda x: X_train.columns.tolist().index(x))
             model = self._sklearn_train_multi_response(get_model_file_prefix, union_feat_names, resp_names, algo,
                 X_train, X_test, y_train, y_test, hparam_dict, interactive_plots, 
                 seed, sample_weights_vect)
