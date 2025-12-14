@@ -276,11 +276,11 @@ all_deps += {'python3': py3_dep}
 libsmlp_deps += py3_dep
 message(py3.language_version())
 message('python' + py3.language_version().replace('.',''))
-# boost_dep = dependency('boost',
-#                        modules: ['python' + py3.language_version().replace('.','')],
-#                        required: true)
-# all_deps += {'boost': boost_dep}
-# libsmlp_deps += boost_dep
+boost_dep = dependency('boost',
+                       modules: ['python' + py3.language_version().replace('.','')],
+                       required: true)
+all_deps += {'boost': boost_dep}
+libsmlp_deps += boost_dep
 if py3_dep.found() # and boost_dep.found()
   have_smlp_py = true
   features += {'Python module "smlp"': true}

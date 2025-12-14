@@ -1,0 +1,29 @@
+{
+    "0.276": {
+        "z_bounds": "min z: 0.1 max z: 10.0",
+        "Length_of_dataset": "10",
+        "x_bounds": "min x: -0.8218 max x: 9.546",
+        "y_bounds": "min y: -1 max y: 1",
+        "setno": "15",
+        "expno": "0.276",
+        "Obj_max": 10.0
+    },
+    "0.841": {
+        "z_bounds": "min z: 0.1 max z: 10.0",
+        "Length_of_dataset": "10",
+        "x_bounds": "min x: -0.8218 max x: 9.546",
+        "y_bounds": "min y: -1 max y: 1",
+        "setno": "15",
+        "expno": "0.841",
+        "Obj_max": 10.0
+    },
+    "0.452": {
+        "z_bounds": "min z: 0.1 max z: 10.0",
+        "Length_of_dataset": "10",
+        "x_bounds": "min x: -0.8218 max x: 9.546",
+        "y_bounds": "min y: -1 max y: 1",
+        "setno": "15",
+        "expno": "0.452",
+        "Obj_max": 10.0
+    }
+}

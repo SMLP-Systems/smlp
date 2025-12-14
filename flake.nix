@@ -13,6 +13,9 @@
         pkgs.ninja
         pkgs.cmake
         pkgs.python311
+        pkgs.hdf5
+        pkgs.flint
+        pkgs.z3
       ];
 
       buildInputs = [
@@ -22,16 +25,16 @@
       ];
 
       shellHook = ''
-        export BOOST_ROOT=${pkgs.lib.getDev pkgs.python311Packages.boost}
+        # export BOOST_ROOT=${pkgs.lib.getDev pkgs.python311Packages.boost}
         export BOOST_INCLUDEDIR=${pkgs.lib.getDev pkgs.python311Packages.boost}/include
-        export BOOST_LIBRARYDIR=${pkgs.lib.getDev pkgs.python311Packages.boost}/lib
+        export BOOST_LIBRARYDIR=${pkgs.lib.getLib pkgs.python311Packages.boost}/lib
 
         echo "Meson ${pkgs.meson.version}, Boost ${pkgs.python311Packages.boost.version}"
 
         echo "location being ${pkgs.lib.getDev pkgs.python311Packages.boost}"
 
         rm -rf build
-        meson setup -Dkay-prefix=$HOME/kay --prefix $VIRTUAL_ENV -Dboost-prefix=${pkgs.lib.getDev pkgs.python311Packages.boost} build
+        meson setup -Dkjson-prefix=$HOME/kjson -Dkay-prefix=$HOME/kay --prefix $VIRTUAL_ENV -Dboost-prefix=${pkgs.lib.getDev pkgs.python311Packages.boost} build
         ninja -C build install
       '';
     };
