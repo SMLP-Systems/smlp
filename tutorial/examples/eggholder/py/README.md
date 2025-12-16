@@ -54,3 +54,8 @@ python3 sortdf.py -f dataset.txt -c 3 -hdr -r
 - `-hdr, --header` - Indicates file has a header row
 - `-r, --reverse` - Sort in reverse order
 - `-s, --separator` - Separator (default: `'\\s+'`)
+
+### Validation: creating dataset and optimization using SHGO
+```bash
+pytest
+```
