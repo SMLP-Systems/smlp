@@ -9,7 +9,7 @@ from scipy import optimize
 from numpy import sin, sqrt, arange, meshgrid, stack, abs
 from os import popen
 from sys import argv
-from os.path import realpath, dirname
+from os.path import realpath, basename
 from rich import print as rprint
 from shlex import split as lexsplit
 from argparse import ArgumentParser, Namespace
@@ -36,7 +36,7 @@ def sort_dataframe(args: Namespace) -> list:
         return df.sort_values(by = df.columns[args.column-1], ascending = not args.reverse).values.tolist() 
 
     except Exception as err:
-        rprint(f"\n[magenta]{script_name}:[red] ERROR: {err}[/red]\n")
+        rprint(f"\n[magenta]{basename(realpath(argv[0]))}:[red] ERROR: {err}[/red]\n")
         exit(1)
 
 def main(n = 512) -> int:

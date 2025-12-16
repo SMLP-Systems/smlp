@@ -1,4 +1,4 @@
-#!/usr/bin/python3.14
+#!/usr/bin/python3.12
 import sys
 from os.path import realpath, basename
 from rich import print as rprint
