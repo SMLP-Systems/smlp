@@ -4,7 +4,7 @@ from optimization_ex import main
 from os import remove, popen
 from os.path import exists
 
-def test_myprog(monkeypatch):
+def test_optimization_ex(monkeypatch):
     with monkeypatch.context() as m:
         out = 'dataset.txt'
         if exists(out):
