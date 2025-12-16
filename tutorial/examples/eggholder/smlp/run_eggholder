@@ -23,11 +23,11 @@ $script_path:h:h:h:h/src/run_smlp.py -data $csv \
     -resp Y1 \
     -feat X1,X2 \
     -model dt_sklearn \
-    -dt_sklearn_max_depth 20 \
-    -tree_encoding nested \
-    -compress_rules f \
+    -dt_sklearn_max_depth 15 \
+    -tree_encoding flat \
+    -compress_rules t \
     -mrmr_pred 0 \
-    -epsilon 0.05 \
+    -epsilon 0.005 \
     -delta_rel 0.5 \
     -save_model t \
     -model_name $csv:r_model \
