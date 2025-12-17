@@ -39,7 +39,7 @@ def constraint(x):
     """Constraint: x1^2 + x2^2 <= 1 (must return >= 0 for feasibility)"""
     return 1 - x[0]**2 - x[1]**2
 
-def main():
+def main(n=400):
 # Initial guess
     x0 = np.array([0.5, 0.5])
     
@@ -68,11 +68,17 @@ def main():
     fig, ax = plt.subplots(figsize=(10, 8))
     
     # Create grid for contour plot
-    x1 = np.linspace(-1.5, 2.5, 400)
-    x2 = np.linspace(-1.5, 2.0, 400)
+    r = range(0, n)
+    x1_start, x1_stop = (-1.5, 2.5)
+    x2_start, x2_stop = (-1.5, 2.0)
+    x1 = np.linspace(x1_start, x1_stop, r.stop)
+    x2 = np.linspace(x2_start, x1_stop, r.stop)
     X1, X2 = np.meshgrid(x1, x2)
     Z = (X1 - 2)**2 + (X2 - 1)**2
-    
+    dataset="dataset.txt"
+    with open(dataset,"w") as ds:
+        ds.write("X1 X2 Y1\n")
+        [[ds.write(f"{X1[i][j]} {X2[i][j]} {Z[i][j]}\n") for j in r] for i in r]
     # Plot contours of objective function
     contours = ax.contour(X1, X2, Z, levels=20, cmap='viridis', alpha=0.6)
     ax.clabel(contours, inline=True, fontsize=8)
