@@ -5,12 +5,13 @@ from os import remove, popen
 from os.path import exists
 from sys import version
 
-def test_constraint_dora(monkeypatch):
+def test_nsga2(monkeypatch):
     with monkeypatch.context() as m:
         out = 'NSGA2_pareto.txt'
         if exists(out):
             remove(out)
         assert exists(out) == False
+        print("")
         m.setattr(sys, 'argv', ['bnh'])
         assert main() == 0
         if version.split()[0] == '3.14.2':
