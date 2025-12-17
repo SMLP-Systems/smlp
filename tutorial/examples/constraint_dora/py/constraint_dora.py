@@ -28,6 +28,7 @@ import numpy as np
 from scipy.optimize import minimize
 import matplotlib.pyplot as plt
 from hashlib import sha256
+from os import popen
 
 # Define the objective function
 def objective(x):
@@ -41,6 +42,30 @@ def constraint(x):
 
 def main(n=400):
 # Initial guess
+    # Create grid for contour plot and calculate result using brute force method
+    r = range(0, n)
+    x1_start, x1_stop = (-1.5, 2.5)
+    x2_start, x2_stop = (-1.5, 2.0)
+    x1 = np.linspace(x1_start, x1_stop, r.stop)
+    x2 = np.linspace(x2_start, x1_stop, r.stop)
+    X1, X2 = np.meshgrid(x1, x2)
+    Z = (X1 - 2)**2 + (X2 - 1)**2
+    C = 1 - X1**2 - X2**2
+    dataset="dataset.txt"
+    with open(dataset,"w") as ds:
+        ds.write("X1 X2 Y1\n")
+        [[ds.write(f"{X1[i][j]} {X2[i][j]} {Z[i][j]}\n") for j in r] for i in r]
+    constraint_set="constraint.txt"
+    with open(constraint_set,"w") as cs:
+        cs.write("X1 X2 Y1\n")
+        [[cs.write(f"{X1[i][j]} {X2[i][j]} {C[i][j]}\n") for j in r] for i in r]
+    #Brute force solution
+    brute_force_command = "paste dataset.txt constraint.txt | " + \
+                          "sortdf.py -c6 -hdr | grep -v ^X | awk '{if($6>0) {print}}' | " + \
+                          "sortdf.py -c3 | head -1"
+    brute_force_result=popen(brute_force_command).read().strip().split()[:3]
+    print("=" * 60)
+    print(f"Brute force result: x1 = {float(brute_force_result[0]):.5f} x2 = {float(brute_force_result[1]):.5f} f(x*) = {float(brute_force_result[2]):.5f}") 
     x0 = np.array([0.5, 0.5])
     
     # Define constraint dictionary for scipy
@@ -67,18 +92,6 @@ def main(n=400):
     # Visualization
     fig, ax = plt.subplots(figsize=(10, 8))
     
-    # Create grid for contour plot
-    r = range(0, n)
-    x1_start, x1_stop = (-1.5, 2.5)
-    x2_start, x2_stop = (-1.5, 2.0)
-    x1 = np.linspace(x1_start, x1_stop, r.stop)
-    x2 = np.linspace(x2_start, x1_stop, r.stop)
-    X1, X2 = np.meshgrid(x1, x2)
-    Z = (X1 - 2)**2 + (X2 - 1)**2
-    dataset="dataset.txt"
-    with open(dataset,"w") as ds:
-        ds.write("X1 X2 Y1\n")
-        [[ds.write(f"{X1[i][j]} {X2[i][j]} {Z[i][j]}\n") for j in r] for i in r]
     # Plot contours of objective function
     contours = ax.contour(X1, X2, Z, levels=20, cmap='viridis', alpha=0.6)
     ax.clabel(contours, inline=True, fontsize=8)
