@@ -29,6 +29,7 @@ from scipy.optimize import minimize
 import matplotlib.pyplot as plt
 from hashlib import sha256
 from os import popen
+from pandas import read_csv, concat
 
 # Define the objective function
 def objective(x):
@@ -39,6 +40,33 @@ def objective(x):
 def constraint(x):
     """Constraint: x1^2 + x2^2 <= 1 (must return >= 0 for feasibility)"""
     return 1 - x[0]**2 - x[1]**2
+
+def brute_force(f_data, f_constraint):
+    # Read both files
+    df1 = read_csv(f_data, sep=r'\s+')
+    df2 = read_csv(f_constraint, sep=r'\s+')
+    # Paste (merge side by side) - add suffixes to avoid duplicate column names
+    df1.columns = [f"{col}_1" for col in df1.columns]
+    df2.columns = [f"{col}_2" for col in df2.columns]
+    df = concat([df1, df2], axis=1)
+
+    # Sort by column 6 (index 5)
+    df = df.sort_values(by=df.columns[5])
+
+    # Filter out rows where first column starts with 'X'
+    df = df[~df.iloc[:, 0].astype(str).str.startswith('X')]
+
+    # Filter rows where column 6 > 0
+    df = df[df.iloc[:, 5] > 0]
+
+    # Sort by column 3 (index 2)
+    df = df.sort_values(by=df.columns[2])
+
+    # Get the first row
+    result = df.head(1)
+
+    # Print the result
+    return result.to_string(index=False, header=False)
 
 def main(n=400):
 # Initial guess
@@ -60,10 +88,7 @@ def main(n=400):
         cs.write("X1 X2 Y1\n")
         [[cs.write(f"{X1[i][j]} {X2[i][j]} {C[i][j]}\n") for j in r] for i in r]
     #Brute force solution
-    brute_force_command = "paste dataset.txt constraint.txt | " + \
-                          "sortdf.py -c6 -hdr | grep -v ^X | awk '{if($6>0) {print}}' | " + \
-                          "sortdf.py -c3 | head -1"
-    brute_force_result=popen(brute_force_command).read().strip().split()[:3]
+    brute_force_result=brute_force(dataset, constraint_set).split()
     print("=" * 60)
     print(f"Brute force result: x1 = {float(brute_force_result[0]):.5f} x2 = {float(brute_force_result[1]):.5f} f(x*) = {float(brute_force_result[2]):.5f}") 
     x0 = np.array([0.5, 0.5])
