@@ -68,7 +68,7 @@ def brute_force(f_data, f_constraint):
     # Print the result
     return result.to_string(index=False, header=False)
 
-def main(n=400):
+def main(n: int = 400, rootpath: str = ".") -> int:
 # Initial guess
     # Create grid for contour plot and calculate result using brute force method
     r = range(0, n)
@@ -79,11 +79,11 @@ def main(n=400):
     X1, X2 = np.meshgrid(x1, x2)
     Z = (X1 - 2)**2 + (X2 - 1)**2
     C = 1 - X1**2 - X2**2
-    dataset="dataset.txt"
+    dataset=rootpath + "/dataset.txt"
     with open(dataset,"w") as ds:
         ds.write("X1 X2 Y1\n")
         [[ds.write(f"{X1[i][j]} {X2[i][j]} {Z[i][j]}\n") for j in r] for i in r]
-    constraint_set="constraint.txt"
+    constraint_set=rootpath + "/constraint.txt"
     with open(constraint_set,"w") as cs:
         cs.write("X1 X2 Y1\n")
         [[cs.write(f"{X1[i][j]} {X2[i][j]} {C[i][j]}\n") for j in r] for i in r]

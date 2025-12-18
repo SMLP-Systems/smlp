@@ -39,7 +39,7 @@ def sort_dataframe(args: Namespace) -> list:
         rprint(f"\n[magenta]{basename(realpath(argv[0]))}:[red] ERROR: {err}[/red]\n")
         exit(1)
 
-def main(n = 512) -> int:
+def main(n: int = 512, rootpath: str = ".") -> int:
 
     r = range(-n, n+1)
     x = arange(r.start, r.stop)
@@ -51,7 +51,7 @@ def main(n = 512) -> int:
     angle=45
     ax.view_init(angle, -angle)
     eggholder_xy=eggholder(xy)
-    dataset="dataset.txt"
+    dataset=rootpath + "/dataset.txt"
     with open(dataset,"w") as ds:
         ds.write("X1 X2 Y1\n")
         [[ds.write(f"{xy[0][i][j]} {xy[1][i][j]} {eggholder_xy[i][j]}\n") for j in r] for i in r]
@@ -80,7 +80,7 @@ def main(n = 512) -> int:
 
     results['shgo'] = optimize.shgo(eggholder, bounds, n=200, iters=5)
     results_shgo_pprinted= f"Simplicial homology global optimization [2]: {results['shgo']['x'][0]:.1f} {results['shgo']['x'][1]:.2f} {results['shgo']['fun']:.4f}"
-
+    print(results_shgo_pprinted)
     results['DA'] = optimize.dual_annealing(eggholder, bounds, maxiter=10000)
     print(f"Dual annealing [3]:                          {results['DA']['x'][0]:.1f} {results['DA']['x'][1]:.2f} {results['DA']['fun']:.4f}")
 

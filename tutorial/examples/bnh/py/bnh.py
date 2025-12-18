@@ -35,7 +35,7 @@ from pymoo.termination import get_termination
 from pymoo.optimize import minimize
 from inspect import getsource
 
-def main():
+def main(rootpath: str = ".") -> int:
     # 1. Define the Binh-Korn problem (BNH)
     problem = get_problem("bnh")
     
@@ -144,7 +144,7 @@ def main():
                 edgecolors='darkblue', linewidth=1, zorder=5)
     
     
-    with open("NSGA2_pareto.txt","w") as nsga2_pareto:
+    with open(rootpath + "/NSGA2_pareto.txt","w") as nsga2_pareto:
             nsga2_pareto.write("X1 X2 F1 F2\n") 
             [nsga2_pareto.write(f"{X[i][0]} {X[i][1]} {F[i][0]} {F[i][1]}\n") for i in range(0,len(X))]
     
