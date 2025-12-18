@@ -41,20 +41,6 @@ This will:
 3. Sort the dataset by the objective function value
 4. Run two optimization algorithms and compare results
 
-### Sorting Data Files
-
-```bash
-python3 sortdf.py -f dataset.txt -c 3 -hdr -r
-```
-
-**Arguments:**
-- `-f, --file` - Input file (default: stdin)
-- `-o, --out` - Output file (default: stdout)
-- `-c, --column` - Column number to sort by (1-indexed)
-- `-hdr, --header` - Indicates file has a header row
-- `-r, --reverse` - Sort in reverse order
-- `-s, --separator` - Separator (default: `'\\s+'`)
-
 ### Validation: creating dataset and optimization using SHGO
 ```bash
 pytest
