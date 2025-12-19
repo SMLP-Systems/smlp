@@ -48,6 +48,21 @@ The problem involves evaluating the contributions of each objective with respect
 
 ---
 
+## Known issue
+
+- GP (Gausssian Process) sampler performance degrades for experiment with large trial numbers<br>
+  See example below
+
+## Example: Calculated Pareto front
+
+![Pareto front - calculated](media/pareto_front_calculated.png)<br>
+
+- Benchmark results for: LENOVO_MT_80X2_BU_idea_FM_ideapad 520S-14IKB<br> 
+  Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz dual core with hyperthreading<br>
+  GeForce 940MX
+
+![Benchmark results](media/c3dtlz4_benchmark.png)
+
 ## Applications
 
 The C3-DTLZ4 problem is particularly useful for:
