@@ -8,10 +8,9 @@ Reference:
 - Jain & Deb (2014) - An Evolutionary Many-Objective Optimization Algorithm (for constraints)
 """
 
-import math
+from math import pi, sin, cos
 from pandas import read_csv
-from json import loads
-
+from sys import argv
 
 def dtlz4_objectives(x, n_objectives=2, alpha=100.0):
     """
@@ -55,11 +54,11 @@ def dtlz4_objectives(x, n_objectives=2, alpha=100.0):
         
         # Multiply by cosine terms
         for j in range(n_objectives - i - 1):
-            f *= math.cos(x[j] ** alpha * math.pi / 2.0)
+            f *= cos(x[j] ** alpha * pi / 2.0)
         
         # Multiply by sine term (if not the first objective)
         if i > 0:
-            f *= math.sin(x[n_objectives - i - 1] ** alpha * math.pi / 2.0)
+            f *= sin(x[n_objectives - i - 1] ** alpha * pi / 2.0)
         
         objectives.append(f)
     
@@ -89,8 +88,8 @@ def dtlz4_2obj(x, alpha=100.0):
     g = sum((x[i] - 0.5) ** 2 for i in range(1, n_vars))
     
     # Calculate objectives
-    f1 = (1.0 + g) * math.cos(x[0] ** alpha * math.pi / 2.0)
-    f2 = (1.0 + g) * math.sin(x[0] ** alpha * math.pi / 2.0)
+    f1 = (1.0 + g) * cos(x[0] ** alpha * pi / 2.0)
+    f2 = (1.0 + g) * sin(x[0] ** alpha * pi / 2.0)
     
     return f1, f2
 
@@ -138,11 +137,15 @@ def evaluate_c3dtlz4(x, n_objectives=2, alpha=100.0):
         'feasible': feasible
     }
 
-if __name__ == "__main__":
-    df = read_csv('results.csv',sep=',')
+def main(csv: str = "results.csv"):
+    df = read_csv(csv,sep=',')
     print("N,X0,X1,X2,F1,F2,C1,C2")
     for i in range(0,df.shape[0]):
         x=(df['X0'][i], df['X1'][i], df['X2'][i])
         result = evaluate_c3dtlz4(x)
         print(f"{df['N'][i]:3d},{df['X0'][i]},{df['X1'][i]},{df['X2'][i]},{result['objectives'][0]},{result['objectives'][1]},{result['constraints'][0]},{result['constraints'][1]}")
-    exit(0)
+    return 0
+
+if __name__ == "__main__":
+    results = "results.csv" if len(argv) < 2 else argv[1]
+    exit(main(results))
