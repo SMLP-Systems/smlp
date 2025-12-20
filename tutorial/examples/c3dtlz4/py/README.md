@@ -94,8 +94,9 @@ This is a minimal configuration for understanding the problem.
 ![Pareto front - calculated](media/pareto_front_calculated.png)<br>
 
 - Benchmark results for: LENOVO_MT_80X2_BU_idea_FM_ideapad 520S-14IKB<br> 
-  Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz dual core with hyperthreading<br>
-  GeForce 940MX
+  CPU: Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz dual core with hyperthreading<br>
+  GPU: GeForce 940MX<br>
+  User time: _12981.400u_ System time: _783.892s_ Elapsed time: _1:16:27.20_ Average CPU load: _300.0%_
 
 ![Benchmark results](media/c3dtlz4_benchmark.png)
 
