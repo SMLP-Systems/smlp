@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 from sys import argv
 from math import inf
 
-def plot_results(csv: str = "results.csv", timeout=inf) -> int:
+def plot_results(csv: str = "results.csv", timeout: float =inf) -> int:
     df = read_csv(csv,sep=',')
     fig = plt.figure(figsize=(10, 6))
     plt.scatter(df['F1'], df['F2'], alpha=0.6, s=50, edgecolors='black', linewidth=0.5)
