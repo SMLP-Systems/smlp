@@ -125,3 +125,8 @@ C3-DTLZ4 is a constrained multi-objective benchmark problem that:
 - Applies C3-type constraints based on objective values
 - Tests optimization algorithms' ability to handle both convergence and constraint satisfaction
 - Is scalable to any number of objectives and variables
+
+## Validation: optimization using [Gaussian Process Sampler](https://medium.com/optuna/introducing-optunas-native-gpsampler-0aa9aa3b4840) 
+```
+pytest
+```
