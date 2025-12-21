@@ -4,6 +4,6 @@ set script_path=`realpath $0 | xargs dirname`
 if($#argv > 0 ) then
    set n="$argv[1]"
 else
-   set n=""
+   set n="10"
 endif
-${script_path}/c3dtlz4_ex.py $n |& tee ${script_name}.log | & grep ^Trial > ${script_name}.trial_time.log
+${script_path}/c3dtlz4_ex.py -n $n |& tee ${script_name}.log | & grep ^Trial > ${script_name}.trial_time.log
