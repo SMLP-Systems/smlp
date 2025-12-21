@@ -265,13 +265,19 @@ def evaluate_c3dtlz4(x, n_objectives=2, alpha=100.0):
 
 def objectives_and_constraints(csv: str = "results.csv", rel_thr: float = 0.0001) -> str:
     df = read_csv(csv,sep=',')
+    dim = len(df.columns[df.columns.str.startswith('X')])
     obj_const_f=realpath(dirname(csv)) + "/obj_const.csv"
     with open(obj_const_f, "w") as o:
-        o.write("N,X0,X1,X2,F1,F2,C1,C2\n")
+        o.write("N,")
+        [o.write(f"X{i},") for i in range(0, dim)]
+        o.write("F1,F2,C1,C2\n")
         for i in range(0,df.shape[0]):
-            x=(df['X0'][i], df['X1'][i], df['X2'][i])
+            x=[]
+            [x.append(df['X'+str(j)][i]) for j in range(0, dim)]
             result = evaluate_c3dtlz4(x)
-            o.write(f"{df['N'][i]:3d},{df['X0'][i]},{df['X1'][i]},{df['X2'][i]},{result['objectives'][0]},{result['objectives'][1]},{result['constraints'][0]},{result['constraints'][1]}\n")
+            o.write(f"{df['N'][i]:3d},")
+            [o.write(f"{x[j]},") for j in range(0, dim)]
+            o.write(f"{result['objectives'][0]},{result['objectives'][1]},{result['constraints'][0]},{result['constraints'][1]}\n")
     df1 = read_csv(obj_const_f,sep=',')
     return compare_dataframes(df, df1, float_threshold=rel_thr)
 

@@ -28,7 +28,7 @@ def run_study(args: Namespace) -> bool:
     args_results  = args.path + "/" + args.results
     print(args.study,args_database,args.n_trials)
     cdtlz = optunahub.load_module("benchmarks/dtlz_constrained")
-    c3dtlz4 = cdtlz.Problem(function_id=4, n_objectives=2, constraint_type=3, dimension=3)
+    c3dtlz4 = cdtlz.Problem(function_id=4, n_objectives=2, constraint_type=3, dimension=args.dimension)
     if exists(args_database):
         move(args_database, args_database + ".bak")
     if exists(args_results):

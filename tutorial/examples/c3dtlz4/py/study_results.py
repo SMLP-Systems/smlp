@@ -12,6 +12,7 @@ def add_study_arguments() -> ArgumentParser:
     p.add_argument('--database', '-db', default="example.db")
     p.add_argument('--study', '-s', default="my_study")
     p.add_argument('--results', '-r', default="results.csv")
+    p.add_argument('--dimension', '-d', type=int, default=3)
     p.add_argument('--path', '-p', default=".")
     return p
 
@@ -25,12 +26,16 @@ def study_results(args: Namespace) -> bool:
         complete_trials = study.get_trials(states=[TrialState.COMPLETE])
         args_results = args.path + "/" + args.results
         with open(args_results, "w") as r:
-            r.write("N,X0,X1,X2,F1,F2,C1,C2\n")
+            r.write("N,")
+            [r.write(f"X{i},") for i in range(0, args.dimension)]
+            r.write("F1,F2,C1,C2\n")
             if complete_trials:
                 for trial in complete_trials:
                     constraints = trial.system_attrs.get("constraints", []) 
                     if all(c <= 0 for c in constraints):
-                        r.write(f"{trial.number:3d},{trial.params['x0']},{trial.params['x1']},{trial.params['x2']},{trial.values[0]},{trial.values[1]},{constraints[0]},{constraints[1]}\n")
+                        r.write(f"{trial.number:3d},")
+                        [r.write(f"{trial.params['x' + str(i)]},") for i in range(0, args.dimension)]
+                        r.write(f"{trial.values[0]},{trial.values[1]},{constraints[0]},{constraints[1]}\n")
                 return True
             else:
                 print("No complete trials found for this study.")
