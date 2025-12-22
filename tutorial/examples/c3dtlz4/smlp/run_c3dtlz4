@@ -26,7 +26,7 @@ $script_path:h:h:h:h/src/run_smlp.py -data $csv \
     -resp F1,F2 \
     -feat X0,X1,X2 \
     -model dt_sklearn \
-    -dt_sklearn_max_depth 10 \
+    -dt_sklearn_max_depth 6 \
     -tree_encoding flat \
     -compress_rules t \
     -mrmr_pred 0 \
