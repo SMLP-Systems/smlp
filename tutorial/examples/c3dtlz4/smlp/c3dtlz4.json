@@ -1,9 +1,9 @@
 {
   "version": "1.2",
   "variables": [
-    {"label":"X0", "interface":"knob", "type":"real", "range":[0,1], "rad-abs": 0.0001},
-    {"label":"X1", "interface":"knob", "type":"real", "range":[0,1], "rad-abs": 0.0001},
-    {"label":"X2", "interface":"knob", "type":"real", "range":[0,1], "rad-abs": 0.0001},
+    {"label":"X0", "interface":"knob", "type":"real", "range":[0,1], "rad-abs": 0.0},
+    {"label":"X1", "interface":"knob", "type":"real", "range":[0,1], "rad-abs": 0.0},
+    {"label":"X2", "interface":"knob", "type":"real", "range":[0,1], "rad-abs": 0.0},
     {"label":"F1", "interface":"output", "type":"real"},
     {"label":"F2", "interface":"output", "type":"real"}
   ],
