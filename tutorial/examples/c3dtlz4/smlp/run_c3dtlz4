@@ -4,7 +4,7 @@ set test=C3dtlz4
 set test_lc=`echo $test | tr '[A-Z]' '[a-z]'`
 if($#argv > 0) then
     if("-clean" == "$argv[1]") then
-        \rm -f test* *.log  >& /dev/null
+        \rm -f ${test}* *.log  >& /dev/null
         exit(0)
     endif
 endif
@@ -16,7 +16,6 @@ set gzipped_dataset=${script_path}/${test_lc}.csv
 set csv=${test}.csv
 set json=${script_path}/${test_lc}.json
 gunzip -c $gzipped_dataset > $csv
-exit(0)
 $script_path:h:h:h:h/src/run_smlp.py -data $csv \
     -spec $json \
     -out_dir ./ \
