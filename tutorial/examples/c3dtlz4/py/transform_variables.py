@@ -32,6 +32,10 @@ def dtlz4_objectives_t(y, n_objectives=2, alpha=mpf(100.0)):
         objectives.append(f)
     
     return objectives
+
+def c3dtlz4_constraints(objectives):
+    return [-objectives[0]**2 - objectives[1]**2 + objectives[0]*0.75 + 1.0,
+            -objectives[0]**2 - objectives[1]**2 + objectives[1]*0.75 + 1.0]
     
 def transform_objectives(csv: str = "results.csv", tcsv: str = "transformed_variables.csv", alpha: mpf = mpf(100)) -> bool:
     df = read_csv(csv,sep=',')
@@ -41,7 +45,7 @@ def transform_objectives(csv: str = "results.csv", tcsv: str = "transformed_vari
         tv.write("N,")
         [tv.write(f"X{i},") for i in range(0, dim)]
         [tv.write(f"Y{i},") for i in range(0, dim)]
-        tv.write(f"F1,F2\n")
+        tv.write(f"F1,F2,C1,C2\n")
         for i in range(0,df.shape[0]):
             tv.write(f"{df['N'][i]:3d},")
             x=[]
@@ -52,14 +56,16 @@ def transform_objectives(csv: str = "results.csv", tcsv: str = "transformed_vari
             [tv.write(f"{float(y[j]):.16g},") for j in range(0, dim-1)]
             tv.write(f"{float(y[dim-1]):.16g},")
             objectives_t=dtlz4_objectives_t(y)
-            tv.write(f"{float(objectives_t[0]):.16g},{float(objectives_t[1]):.16g}\n")
+            constraints_t=c3dtlz4_constraints(objectives_t)
+            tv.write(f"{float(objectives_t[0]):.16g},{float(objectives_t[1]):.16g},")
+            tv.write(f"{float(constraints_t[0]):.16g},{float(constraints_t[1]):.16g}\n")
     return tcsv
 
 def main():
     mp.dps=500
     results = "results.csv" if len(argv) < 2 else argv[1]
     tcsv = transform_objectives(results)
-    df1=read_csv(results,sep=',').drop(['C1','C2'],axis=1)
+    df1=read_csv(results,sep=',')
     df2=read_csv(tcsv,sep=',').drop(['Y0','Y1','Y2'],axis=1)
     print(compare_dataframes(df1,df2,0.001))
     return 0
