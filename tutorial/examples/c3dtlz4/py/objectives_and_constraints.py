@@ -116,7 +116,7 @@ def compare_dataframes(df1, df2, float_threshold=0.01, report_file=None):
             report.append(f"{'─' * 80}")
             
             for idx, v1, v2, reason in col_mismatches[:20]:  # Limit to first 20
-                report.append(f"  Index {idx}: {v1} != {v2} ({reason})")
+                report.append(f"  Line {idx+2}: {v1} != {v2} ({reason})")
             
             if len(col_mismatches) > 20:
                 report.append(f"  ... and {len(col_mismatches) - 20} more mismatches")
