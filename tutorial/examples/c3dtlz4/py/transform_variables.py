@@ -5,6 +5,7 @@ from pandas import read_csv, isna
 from numpy import floating
 from sys import argv
 from os.path import realpath, dirname
+from objectives_and_constraints import compare_dataframes
 
 def dtlz4_objectives_t(y, n_objectives=2, alpha=mpf(100.0)):
     n_vars = len(y)
@@ -32,10 +33,10 @@ def dtlz4_objectives_t(y, n_objectives=2, alpha=mpf(100.0)):
     
     return objectives
     
-def transform_objectives(csv: str = "results.csv", alpha: mpf = mpf(100)):
+def transform_objectives(csv: str = "results.csv", tcsv: str = "transformed_variables.csv", alpha: mpf = mpf(100)) -> bool:
     df = read_csv(csv,sep=',')
     dim = len(df.columns[df.columns.str.startswith('X')])
-    traformed_variables_f=realpath(dirname(csv)) + "/transformed_variables.csv"
+    traformed_variables_f=realpath(dirname(csv)) + "/" + tcsv
     with open(traformed_variables_f, "w") as tv:
         tv.write("N,")
         [tv.write(f"X{i},") for i in range(0, dim)]
@@ -52,8 +53,16 @@ def transform_objectives(csv: str = "results.csv", alpha: mpf = mpf(100)):
             tv.write(f"{float(y[dim-1]):.16g},")
             objectives_t=dtlz4_objectives_t(y)
             tv.write(f"{float(objectives_t[0]):.16g},{float(objectives_t[1]):.16g}\n")
-    return 0
-if __name__ == "__main__":
+    return tcsv
+
+def main():
     mp.dps=500
     results = "results.csv" if len(argv) < 2 else argv[1]
-    print(transform_objectives(results))
+    tcsv = transform_objectives(results)
+    df1=read_csv(results,sep=',').drop(['C1','C2'],axis=1)
+    df2=read_csv(tcsv,sep=',').drop(['Y0','Y1','Y2'],axis=1)
+    print(compare_dataframes(df1,df2,0.001))
+    return 0
+
+if __name__ == "__main__":
+   exit(main())
