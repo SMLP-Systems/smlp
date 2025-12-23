@@ -208,7 +208,7 @@ def run_ga():
     
     return population, logbook, hof
 
-def main(rootpath: str = "."):
+def main(rootpath: str = ".") -> str:
     # Create sample CSV files for demonstration
     # In practice, you'd read these from actual CSV files
     
