@@ -456,10 +456,6 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     ax6.grid(True, alpha=0.3, axis='y')
     
     plt.tight_layout()
-    if not inf == timeout:
-        timer = fig.canvas.new_timer(interval=timeout, callbacks=[(plt.close, [], {})])
-        timer.start()
-    plt.show()
     plt.savefig('pareto_front_analysis.png', dpi=300, bbox_inches='tight')
     print("\n✓ Pareto front visualizations saved as 'pareto_front_analysis.png'")
     
@@ -495,6 +491,10 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     plt.tight_layout()
     plt.savefig('optimal_solutions_comparison.png', dpi=300, bbox_inches='tight')
     print("✓ Optimal solutions comparison saved as 'optimal_solutions_comparison.png'")
+    if not inf == timeout:
+        timer = fig.canvas.new_timer(interval=timeout, callbacks=[(plt.close, [], {})])
+        timer.start()
+    plt.show()
     
     print("\nVisualization complete! Two PNG files have been generated:")
     print("  1. pareto_front_analysis.png - Multi-view Pareto front analysis")
