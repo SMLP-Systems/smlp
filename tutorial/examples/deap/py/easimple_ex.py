@@ -2,12 +2,9 @@
 import pandas as pd
 import numpy as np
 import random
+from hashlib import sha256
 from deap import base, creator, tools, algorithms
 
-# Create sample CSV files for demonstration
-# In practice, you'd read these from actual CSV files
-
-# Products data: cost, profit, weight per unit
 products_data = pd.DataFrame({
     'product': ['A', 'B', 'C', 'D'],
     'cost': [10, 15, 20, 12],
@@ -16,6 +13,8 @@ products_data = pd.DataFrame({
     'min_quantity': [5, 3, 2, 4],
     'max_quantity': [20, 25, 15, 30]
 })
+
+
 
 # Resources data: available capacity
 resources_data = pd.DataFrame({
@@ -29,15 +28,6 @@ requirements_data = pd.DataFrame({
     'resource': ['labor_hours', 'machine_hours', 'storage_space'] * 4,
     'requirement': [2, 1, 0.5, 3, 2, 0.8, 4, 2.5, 1, 2.5, 1.5, 0.6]
 })
-
-# Save to CSV (optional - for demonstration)
-products_data.to_csv('products_ga.csv', index=False)
-resources_data.to_csv('resources_ga.csv', index=False)
-requirements_data.to_csv('requirements_ga.csv', index=False)
-
-print("=" * 70)
-print("GENETIC ALGORITHM OPTIMIZATION: Production Planning with DEAP")
-print("=" * 70)
 
 # Create requirement dictionary for quick lookup
 req_dict = {}
@@ -218,77 +208,99 @@ def run_ga():
     
     return population, logbook, hof
 
-# Run the optimization
-population, logbook, hof = run_ga()
-
-# ============================================================================
-# DISPLAY RESULTS
-# ============================================================================
-
-print("\n" + "=" * 70)
-print("OPTIMIZATION RESULTS")
-print("=" * 70)
-
-best_individual = hof[0]
-best_individual = repair_individual(best_individual)
-
-print(f"\nBest Profit: ${evaluate_profit(best_individual)[0]:.2f}")
-print(f"Constraints Satisfied: {check_all_constraints(best_individual)}")
-
-print("\n" + "-" * 70)
-print("Optimal Production Quantities:")
-print("-" * 70)
-results_df = pd.DataFrame({
-    'Product': products_data['product'],
-    'Quantity': [round(qty, 2) for qty in best_individual],
-    'Profit_per_Unit': products_data['profit'],
-    'Total_Profit': [round(qty * products_data.iloc[i]['profit'], 2) 
-                     for i, qty in enumerate(best_individual)]
-})
-print(results_df.to_string(index=False))
-
-print("\n" + "-" * 70)
-print("Resource Utilization:")
-print("-" * 70)
-resource_usage = []
-for idx, resource in enumerate(resources_data['resource']):
-    capacity = resources_data.iloc[idx]['capacity']
-    used = sum(req_dict.get((products_data.iloc[i]['product'], resource), 0) * best_individual[i]
-              for i in range(len(best_individual)))
-    resource_usage.append({
-        'Resource': resource,
-        'Used': round(used, 2),
-        'Capacity': capacity,
-        'Utilization_%': round(used / capacity * 100, 2)
+def main():
+    # Create sample CSV files for demonstration
+    # In practice, you'd read these from actual CSV files
+    
+    # Products data: cost, profit, weight per unit
+    
+    # Save to CSV (optional - for demonstration)
+    products_data.to_csv('products_ga.csv', index=False)
+    resources_data.to_csv('resources_ga.csv', index=False)
+    requirements_data.to_csv('requirements_ga.csv', index=False)
+    
+    print("=" * 70)
+    print("GENETIC ALGORITHM OPTIMIZATION: Production Planning with DEAP")
+    print("=" * 70)
+    
+    
+    
+    # Run the optimization
+    population, logbook, hof = run_ga()
+    
+    # ============================================================================
+    # DISPLAY RESULTS
+    # ============================================================================
+    
+    print("\n" + "=" * 70)
+    print("OPTIMIZATION RESULTS")
+    print("=" * 70)
+    
+    best_individual = hof[0]
+    best_individual = repair_individual(best_individual)
+    
+    print(f"\nBest Profit: ${evaluate_profit(best_individual)[0]:.2f}")
+    print(f"Constraints Satisfied: {check_all_constraints(best_individual)}")
+    
+    print("\n" + "-" * 70)
+    print("Optimal Production Quantities:")
+    print("-" * 70)
+    results_df = pd.DataFrame({
+        'Product': products_data['product'],
+        'Quantity': [round(qty, 2) for qty in best_individual],
+        'Profit_per_Unit': products_data['profit'],
+        'Total_Profit': [round(qty * products_data.iloc[i]['profit'], 2) 
+                         for i, qty in enumerate(best_individual)]
     })
-resource_df = pd.DataFrame(resource_usage)
-print(resource_df.to_string(index=False))
-
-print("\n" + "-" * 70)
-print("Constraint Verification:")
-print("-" * 70)
-total_weight = sum(products_data.iloc[i]['weight'] * best_individual[i] 
+    print(results_df.to_string(index=False))
+    
+    print("\n" + "-" * 70)
+    print("Resource Utilization:")
+    print("-" * 70)
+    resource_usage = []
+    for idx, resource in enumerate(resources_data['resource']):
+        capacity = resources_data.iloc[idx]['capacity']
+        used = sum(req_dict.get((products_data.iloc[i]['product'], resource), 0) * best_individual[i]
                   for i in range(len(best_individual)))
-print(f"Total Weight: {total_weight:.2f} (limit: 60)")
-ratio = best_individual[1] / max(best_individual[0], 0.001)
-print(f"Product B / Product A ratio: {ratio:.2%} (min: 30%)")
-print(f"All resource constraints: {'✓ Satisfied' if check_resource_constraints(best_individual) else '✗ Violated'}")
-print(f"Minimum quantities: {'✓ Satisfied' if check_min_quantity(best_individual) else '✗ Violated'}")
-
-print("\n" + "-" * 70)
-print("Evolution Statistics:")
-print("-" * 70)
-gen = logbook.select("gen")
-max_fitness = logbook.select("max")
-avg_fitness = logbook.select("avg")
-
-print(f"Generation 0 - Max Fitness: ${max_fitness[0]:.2f}, Avg: ${avg_fitness[0]:.2f}")
-print(f"Generation {len(gen)//2} - Max Fitness: ${max_fitness[len(gen)//2]:.2f}, Avg: ${avg_fitness[len(gen)//2]:.2f}")
-print(f"Generation {len(gen)-1} - Max Fitness: ${max_fitness[-1]:.2f}, Avg: ${avg_fitness[-1]:.2f}")
-
-print("\n" + "=" * 70)
-print("To use with your own CSV files:")
-print("  products_data = pd.read_csv('your_products.csv')")
-print("  resources_data = pd.read_csv('your_resources.csv')")
-print("  requirements_data = pd.read_csv('your_requirements.csv')")
-print("=" * 70)
+        resource_usage.append({
+            'Resource': resource,
+            'Used': round(used, 2),
+            'Capacity': capacity,
+            'Utilization_%': round(used / capacity * 100, 2)
+        })
+    resource_df = pd.DataFrame(resource_usage)
+    print(resource_df.to_string(index=False))
+    
+    print("\n" + "-" * 70)
+    print("Constraint Verification:")
+    print("-" * 70)
+    total_weight = sum(products_data.iloc[i]['weight'] * best_individual[i] 
+                      for i in range(len(best_individual)))
+    print(f"Total Weight: {total_weight:.2f} (limit: 60)")
+    ratio = best_individual[1] / max(best_individual[0], 0.001)
+    print(f"Product B / Product A ratio: {ratio:.2%} (min: 30%)")
+    print(f"All resource constraints: {'✓ Satisfied' if check_resource_constraints(best_individual) else '✗ Violated'}")
+    print(f"Minimum quantities: {'✓ Satisfied' if check_min_quantity(best_individual) else '✗ Violated'}")
+    
+    print("\n" + "-" * 70)
+    print("Evolution Statistics:")
+    print("-" * 70)
+    gen = logbook.select("gen")
+    max_fitness = logbook.select("max")
+    avg_fitness = logbook.select("avg")
+    
+    print(f"Generation 0 - Max Fitness: ${max_fitness[0]:.2f}, Avg: ${avg_fitness[0]:.2f}")
+    print(f"Generation {len(gen)//2} - Max Fitness: ${max_fitness[len(gen)//2]:.2f}, Avg: ${avg_fitness[len(gen)//2]:.2f}")
+    last_generation = (f"Generation {len(gen)-1} - Max Fitness: ${max_fitness[-1]:.2f}, Avg: ${avg_fitness[-1]:.2f}")
+    print(last_generation)
+    
+    print("\n" + "=" * 70)
+    print("To use with your own CSV files:")
+    print("  products_data = pd.read_csv('your_products.csv')")
+    print("  resources_data = pd.read_csv('your_resources.csv')")
+    print("  requirements_data = pd.read_csv('your_requirements.csv')")
+    print("=" * 70)
+    return sha256(last_generation.encode()).hexdigest()
+ 
+if __name__ == "__main__":
+  print(main())
