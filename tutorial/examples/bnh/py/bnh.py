@@ -34,8 +34,10 @@ from pymoo.operators.sampling.rnd import FloatRandomSampling
 from pymoo.termination import get_termination
 from pymoo.optimize import minimize
 from inspect import getsource
+from sys import argv
+from math import inf
 
-def main(rootpath: str = ".") -> int:
+def main(rootpath: str = ".", timeout: float=5000) -> int:
     # 1. Define the Binh-Korn problem (BNH)
     problem = get_problem("bnh")
     
@@ -79,10 +81,19 @@ def main(rootpath: str = ".") -> int:
     
     # Calculate the true Pareto front in decision variable space
     # Use a much smaller sample to avoid memory issues
-    n_samples = 100  # Reduced from 1000
+    n_samples = 101  # Reduced from 1000
     x1_range = np.linspace(0, 5, n_samples)
     x2_range = np.linspace(0, 3, n_samples)
-    
+
+    #Create dataset    
+    with open(rootpath + "/dataset.csv","w") as f_data:
+        f_data.write("X1,X2,F1,F2\n")
+        for x1 in x1_range:
+            for x2 in x2_range:
+                F1 = 4*x1**2 + 4*x2**2
+                F2 = (x1-5)**2 + (x2-5)**2
+                f_data.write(f"{x1},{x2},{F1},{F2}\n")
+
     # Sample only feasible points near constraints instead of full grid
     X_samples = []
     for x1 in x1_range:
@@ -168,10 +179,13 @@ def main(rootpath: str = ".") -> int:
     ax2.grid(True, alpha=0.3)
     
     plt.tight_layout()
-    timer = fig.canvas.new_timer(interval=5000, callbacks=[(plt.close, [], {})])
-    timer.start()
+    if not inf == timeout:
+        timer = fig.canvas.new_timer(interval=timeout, callbacks=[(plt.close, [], {})])
+        timer.start()
     plt.show()
     return 0
 if __name__ == "__main__":
-    print(main())
+    rootpath = "." if len(argv) < 2 else argv[1]
+    timeout = inf if len(argv) < 3 else argv[2]
+    print(main(rootpath,timeout))
     
