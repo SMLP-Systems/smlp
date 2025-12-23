@@ -190,35 +190,6 @@ def dtlz4_objectives(x, n_objectives=2, alpha=100.0):
     
     return objectives
 
-
-def dtlz4_2obj(x, alpha=100.0):
-    """
-    DTLZ4 for exactly 2 objectives.
-    
-    Args:
-        x: Decision variables [x0, x1, ..., x_{n-1}], all in [0, 1]
-           Typically n = 11 for 2-objective DTLZ4
-        alpha: Density parameter (default: 100.0)
-    
-    Returns:
-        Tuple of (f1, f2)
-    
-    Formula:
-        g = sum((x_i - 0.5)^2 for i = 1 to n-1)
-        f1 = (1 + g) * cos(x_0^alpha * π/2)
-        f2 = (1 + g) * sin(x_0^alpha * π/2)
-    """
-    n_vars = len(x)
-    
-    # g function uses all variables except x[0]
-    g = sum((x[i] - 0.5) ** 2 for i in range(1, n_vars))
-    
-    # Calculate objectives
-    f1 = (1.0 + g) * cos(x[0] ** alpha * pi / 2.0)
-    f2 = (1.0 + g) * sin(x[0] ** alpha * pi / 2.0)
-    
-    return f1, f2
-
 def c3dtlz4_constraints(objectives):
     """
     C3-DTLZ4 constraint functions.
