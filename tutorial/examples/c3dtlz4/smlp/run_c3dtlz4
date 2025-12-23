@@ -12,7 +12,7 @@ endif
 if($PATH !~ \.*) then
     setenv PATH ".:${PATH}"
 endif
-set gzipped_dataset=${script_path}/${test_lc}.csv 
+set gzipped_dataset=${script_path}/${test_lc}.csv.gz 
 set csv=${test}.csv
 set json=${script_path}/${test_lc}.json
 gunzip -c $gzipped_dataset > $csv
