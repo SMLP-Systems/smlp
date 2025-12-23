@@ -456,7 +456,7 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     ax6.grid(True, alpha=0.3, axis='y')
     
     plt.tight_layout()
-    plt.savefig('pareto_front_analysis.png', dpi=300, bbox_inches='tight')
+    plt.savefig(rootpath + '/pareto_front_analysis.png', dpi=300, bbox_inches='tight')
     print("\n✓ Pareto front visualizations saved as 'pareto_front_analysis.png'")
     
     # Create additional detailed plot for production quantities
@@ -489,7 +489,7 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
                    ha='center', va='bottom', fontsize=9)
     
     plt.tight_layout()
-    plt.savefig('optimal_solutions_comparison.png', dpi=300, bbox_inches='tight')
+    plt.savefig(rootpath + '/optimal_solutions_comparison.png', dpi=300, bbox_inches='tight')
     print("✓ Optimal solutions comparison saved as 'optimal_solutions_comparison.png'")
     if not inf == timeout:
         timer = fig.canvas.new_timer(interval=timeout, callbacks=[(plt.close, [], {})])
