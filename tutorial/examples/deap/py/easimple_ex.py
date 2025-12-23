@@ -208,16 +208,16 @@ def run_ga():
     
     return population, logbook, hof
 
-def main():
+def main(rootpath: str = "."):
     # Create sample CSV files for demonstration
     # In practice, you'd read these from actual CSV files
     
     # Products data: cost, profit, weight per unit
     
     # Save to CSV (optional - for demonstration)
-    products_data.to_csv('products_ga.csv', index=False)
-    resources_data.to_csv('resources_ga.csv', index=False)
-    requirements_data.to_csv('requirements_ga.csv', index=False)
+    products_data.to_csv(rootpath + '/products_ga.csv', index=False)
+    resources_data.to_csv(rootpath + '/resources_ga.csv', index=False)
+    requirements_data.to_csv(rootpath + '/requirements_ga.csv', index=False)
     
     print("=" * 70)
     print("GENETIC ALGORITHM OPTIMIZATION: Production Planning with DEAP")
