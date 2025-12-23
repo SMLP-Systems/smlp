@@ -11,6 +11,10 @@ from pymoo.termination import get_termination
 from math import inf
 from hashlib import sha256
 from sys import argv
+import matplotlib
+matplotlib.use('Qt5Agg')
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 # Create sample CSV files for demonstration
 # In practice, you'd read these from actual CSV files
@@ -339,8 +343,6 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     # VISUALIZE PARETO FRONT
     # ============================================================================
     
-    import matplotlib.pyplot as plt
-    from mpl_toolkits.mplot3d import Axes3D
     
     print("\n" + "=" * 80)
     print("GENERATING PARETO FRONT VISUALIZATIONS")

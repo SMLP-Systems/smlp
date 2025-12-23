@@ -6,7 +6,7 @@ from os.path import exists, realpath, dirname
 from sys import version
 from os import getenv
 
-def test_pyomo(monkeypatch, request):
+def test_glpk(monkeypatch, request):
     root_dir = str(request.config.rootpath) + '/'
     with monkeypatch.context() as m:
         test_path = dirname(realpath(root_dir + getenv('PYTEST_CURRENT_TEST').split(':')[0]))
