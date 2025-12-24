@@ -146,7 +146,7 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     print("=" * 80)
     
     # Create problem instance
-    problem = ParetoFromCSVData()
+    problem = ParetoFromCSVData(rootpath + "/objectives_data.csv")
     
     # Configure NSGA-II
     algorithm = NSGA2(
@@ -229,7 +229,7 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     print(f"Feasible solutions: {pareto_df['All_constraints_OK'].sum()} / {len(pareto_df)}")
     
     # Save Pareto front to CSV
-    pareto_df.to_csv('pareto_front_results.csv', index=False)
+    pareto_df.to_csv(rootpath + '/pareto_front_results.csv', index=False)
     print(f"\n✓ Pareto front saved to 'pareto_front_results.csv'")
     
     # ============================================================================
@@ -318,7 +318,7 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     ax2.grid(True, alpha=0.3, linestyle='--')
     
     plt.tight_layout()
-    plt.savefig('pareto_front_two_plots.png', dpi=300, bbox_inches='tight')
+    plt.savefig(rootpath + '/pareto_front_two_plots.png', dpi=300, bbox_inches='tight')
     print("✓ Visualization saved as 'pareto_front_two_plots.png'")
     if not inf == timeout:
         timer = fig.canvas.new_timer(interval=timeout, callbacks=[(plt.close, [], {})])
