@@ -229,8 +229,8 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     print(f"Feasible solutions: {pareto_df['All_constraints_OK'].sum()} / {len(pareto_df)}")
     
     # Save Pareto front to CSV
-    pareto_df.to_csv(rootpath + '/pareto_front_results.csv', index=False)
-    print(f"\n✓ Pareto front saved to 'pareto_front_results.csv'")
+    pareto_df.to_csv(rootpath + '/pareto_front_results_tab.csv', index=False)
+    print(f"\n✓ Pareto front saved to 'pareto_front_results_tab.csv'")
     
     # ============================================================================
     # ANALYZE ORIGINAL CSV DATA
