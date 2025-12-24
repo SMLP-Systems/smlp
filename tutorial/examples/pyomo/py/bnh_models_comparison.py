@@ -30,7 +30,8 @@ def main(rootpath: str = ".", timeout: float=5000,
   # Plot each CSV file
   for idx, file in enumerate(csv_files):
       # Read CSV file (assumes 2 columns, no header)
-      data = read_csv(file, sep=',')[columns_to_keep]
+      csv_file = file if rootpath == "." else rootpath + "/" + file
+      data = read_csv(csv_file, sep=',')[columns_to_keep]
       
       # Get color for this file
       color = colors[idx % len(colors)]

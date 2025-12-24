@@ -277,8 +277,8 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     sorted_indices = np.argsort(pareto_F[:, 0])
     ax1.plot(pareto_F[sorted_indices, 0], pareto_F[sorted_indices, 1], 'g--', linewidth=2, alpha=0.5, zorder=5)
     
-    ax1.set_xlabel('F1 (Objective 1 from CSV)', fontsize=13, fontweight='bold')
-    ax1.set_ylabel('F2 (Objective 2 from CSV)', fontsize=13, fontweight='bold')
+    ax1.set_xlabel('F1', fontsize=13, fontweight='bold')
+    ax1.set_ylabel('F2', fontsize=13, fontweight='bold')
     ax1.set_title('Pareto Front in Objective Space', fontsize=14, fontweight='bold')
     ax1.legend(fontsize=11, loc='best')
     ax1.grid(True, alpha=0.3, linestyle='--')
@@ -309,8 +309,8 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     # Draw Pareto path in variable space
     ax2.plot(pareto_X[sorted_indices, 0], pareto_X[sorted_indices, 1], 'g--', linewidth=2, alpha=0.5, zorder=5)
     
-    ax2.set_xlabel('X1 (Variable 1)', fontsize=13, fontweight='bold')
-    ax2.set_ylabel('X2 (Variable 2)', fontsize=13, fontweight='bold')
+    ax2.set_xlabel('X1', fontsize=13, fontweight='bold')
+    ax2.set_ylabel('X2', fontsize=13, fontweight='bold')
     ax2.set_xlim(0, 5)
     ax2.set_ylim(0, 3)
     ax2.set_title('Pareto Front in Variable Space\n(Feasible Region = Green ∩ Blue)', fontsize=14, fontweight='bold')
