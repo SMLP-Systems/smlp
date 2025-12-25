@@ -28,6 +28,7 @@ This directory contains<br>
     test_glpk.py
     test_nsga2_df.py
     test_nsga2_mixed.py
+    test_nsga3_mixed.py
 ```
 
 **Requirements**
@@ -74,8 +75,10 @@ pip install -r requirements.txt
 python glpk.py
 python nsga2.py
 python bnh_csv.py
-bnh_csv_decision_tree.py
-bnh_models_comparison.py
+python bnh_csv_decision_tree.py
+python bnh_models_comparison.py
+python nsga2_mixed.py
+python nsga3_mixed.py
 ```
 
 3. Run the unit tests:
@@ -85,7 +88,9 @@ pytest -s
 ```
 
 **Example - models comparison for BNH problem**<br><br>
-![Benchmark results](media/bnh_models_comparison.png)
+![Benchmark results](media/bnh_models_comparison.png)<br><br>
+**Example - NSGAIII result for multiobjective mixed variables Pareto front**<br><br>
+![Benchmark results](media/nsga3_mixed_models_comparison.png)
 
 **References**
 - [Binh and Korn (BNH) Multi-Objective Optimization Problem](https://pymoo.org/problems/multi/bnh.html)
