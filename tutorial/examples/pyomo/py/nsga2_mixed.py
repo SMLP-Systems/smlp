@@ -177,6 +177,7 @@ def main(rootpath: str = ".", timeout: float=5000):
     
     plt.tight_layout()
     png_file=rootpath + '/nsga2_mixed_models_comparison.png'
+    print(f"✓ Optimal solutions comparison saved as {png_file}")
     plt.savefig(png_file, dpi=300, bbox_inches='tight')
     if not inf == timeout:
         timer = fig.canvas.new_timer(interval=timeout, callbacks=[(plt.close, [], {})])

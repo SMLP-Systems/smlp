@@ -4,7 +4,7 @@ Pymoo and Pyomo MultiObjective optimization examples
 This directory contains<br>
 - NSGA-II algorithm examples for BNH problem. In these examples Pareto front is created from dataset in csv format
 - BNH pareto front comparison for 3 models: analytical, linear interpolation and decision tree
-- NSGA-II algorithm example for multiobjective optimization  problem Pareto front approximation
+- NSGA-II and NSGA-III examples for mixed variables
 - Linear programming example using GLPK
 
 **Files**<br>
@@ -14,6 +14,7 @@ This directory contains<br>
 - **`glpk.py`**: Script that formulates and solves the optimization problem using GLPK solver
 - **`nsga2.py`**: Example of using NSGA2 solver for multiobjective optimization  problem Pareto front approximation  
 - **`nsga2_mixed.py`**: Example of using NSGA2 solver with mixed variables. Pareto front approximation is created for each categorical variable
+- **`nsga3_mixed.py`**: Example of using NSGA3 solver with mixed variables. Pareto front approximation is created for each categorical variable
 - **`objectives_data.csv`**: BNH input dataset
 - **`pareto_front_analytical_expected.csv`**: Expected analytical Pareto front (reference) used in tests.
 - **`pareto_front_results_dt_expected.csv`**: Expected results from the decision-tree approach (used by tests).
@@ -89,6 +90,7 @@ pytest -s
 **References**
 - [Binh and Korn (BNH) Multi-Objective Optimization Problem](https://pymoo.org/problems/multi/bnh.html)
 - [NSGA-II](https://sci2s.ugr.es/sites/default/files/files/Teaching/OtherPostGraduateCourses/Metaheuristicas/Deb_NSGAII.pdf)
+- [NSGA-III](https://www.egr.msu.edu/~kdeb/papers/k2012009.pdf)
 - [GLPK](https://en.wikipedia.org/wiki/GNU_Linear_Programming_Kit)
 - [Pymoo](https://pypi.org/project/pymoo)
 - [GLPK Python wrapper](https://pypi.org/project/glpk)
