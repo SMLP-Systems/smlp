@@ -13,6 +13,7 @@ This directory contains<br>
 - **`bnh_models_comparison.py`**: Comparison plots for NSGA2 algorithm with 3 models: analytical, linear interpolation and decision tree
 - **`glpk.py`**: Script that formulates and solves the optimization problem using GLPK solver
 - **`nsga2.py`**: Example of using NSGA2 solver for multiobjective optimization  problem Pareto front approximation  
+- **`nsga2_mixed.py`**: Example of using NSGA2 solver with mixed variables. Pareto front approximation is created for each categorical variable
 - **`objectives_data.csv`**: BNH input dataset
 - **`pareto_front_analytical_expected.csv`**: Expected analytical Pareto front (reference) used in tests.
 - **`pareto_front_results_dt_expected.csv`**: Expected results from the decision-tree approach (used by tests).
@@ -25,6 +26,7 @@ This directory contains<br>
     test_bnh_models_comparison.py
     test_glpk.py
     test_nsga2_df.py
+    test_nsga2_mixed.py
 ```
 
 **Requirements**
