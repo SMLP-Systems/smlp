@@ -7,11 +7,6 @@ from math import inf
 from base64 import b64encode
 from hashlib import sha256
 
-# Get all CSV files in current directory (or specify your path)
-csv_files = ['pareto_front_analytical_expected.csv',
-             'pareto_front_results_dt_expected.csv',
-             'pareto_front_results_tab_expected.csv']
-
 def main(rootpath: str = ".", timeout: float=5000, 
          csv_files: list[str] = 
              ['pareto_front_analytical_expected.csv',
@@ -64,8 +59,7 @@ def main(rootpath: str = ".", timeout: float=5000,
   plt.show()
   with open(png_file, "rb") as image_file:
       image_data = image_file.read()
-  encoded_image = b64encode(image_data)
-  return sha256(encoded_image).hexdigest()
+  return sha256(b64encode(image_data)).hexdigest()
 
 if __name__ == "__main__":
     rootpath = "." if len(argv) < 2 else argv[1]
