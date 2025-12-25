@@ -100,6 +100,7 @@ pytest -s
 - [Pymoo](https://pypi.org/project/pymoo)
 - [GLPK Python wrapper](https://pypi.org/project/glpk)
 - [Pyomo](https://pypi.org/project/pyomo)
+- [Das and Dennis method](https://www.researchgate.net/profile/Indraneel-Das/publication/2460803_Normal-Boundary_Intersection_A_New_Method_for_Generating_the_Pareto_Surface_in_Nonlinear_Multicriteria_Optimization_Problems/links/586f927708ae329d6215ffb6/Normal-Boundary-Intersection-A-New-Method-for-Generating-the-Pareto-Surface-in-Nonlinear-Multicriteria-Optimization-Problems.pdf)
 
 **Notes & Troubleshooting**
 - Below CSV files are used by pytest - don't change or remove them
