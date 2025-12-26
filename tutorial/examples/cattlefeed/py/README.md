@@ -64,4 +64,4 @@ The problem requires careful handling of the non-linear constraint, especially e
 
 ## References
 
-[16] Hock, W. and Schittkowski, K., "Test Examples for Nonlinear Programming Codes", Lecture Notes in Economics and Mathematical Systems, Vol. 187, Springer-Verlag, 1981.
+[1] Hock, W. and Schittkowski, K., "Test Examples for Nonlinear Programming Codes", Lecture Notes in Economics and Mathematical Systems, Vol. 187, Springer-Verlag, 1981.
