@@ -1,4 +1,3 @@
-#!/usr/bin/python3.12
 import sys
 from transform_variables import main
 from os import remove, popen

@@ -1,4 +1,3 @@
-#!/usr/bin/python3.12
 import sys
 from nsga2 import main
 from os import remove, popen

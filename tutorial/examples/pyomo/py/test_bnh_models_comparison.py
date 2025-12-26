@@ -1,4 +1,3 @@
-#!/usr/bin/python3.12
 import sys
 from bnh_models_comparison import main
 from os import remove, popen

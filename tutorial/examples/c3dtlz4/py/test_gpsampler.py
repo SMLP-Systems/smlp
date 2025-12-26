@@ -1,4 +1,3 @@
-#!/usr/bin/python3.12
 import sys
 from c3dtlz4_ex import main
 from os import remove, popen
