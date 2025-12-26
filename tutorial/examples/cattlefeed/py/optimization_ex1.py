@@ -25,7 +25,8 @@ def main():
             {'type': 'eq', 'fun': h1})
     bounds = [(0, 1.0),]*4
     res = shgo(f, bounds, iters=3, constraints=cons)
-    pprint_res=f'x1={res.x[0]:.3f},x2={res.x[1]:.3f},x3={res.x[2]:.3f},x4={res.x[3]:.3f},f={res.fun:.3f}\ng1={g1(res.x):.3f},g2={g2(res.x):.3f},g3={h1(res.x):.3f}'
+    pprint_res=f'x1={res.x[0]:.3f},x2={res.x[1]:.3f},x3={res.x[2]:.3f},x4={res.x[3]:.3f},f={res.fun:.3f}\n' + \
+               f'g1={g1(res.x):.3f},g2={g2(res.x):.3f},g3={h1(res.x):.3f}'
     print(pprint_res)
     return sha256(pprint_res.encode()).hexdigest();
 
