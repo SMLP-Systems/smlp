@@ -10,7 +10,7 @@ def test_bnh_csv_decision_tree(monkeypatch, request):
     with monkeypatch.context() as m:
         test_path = dirname(realpath(root_dir + getenv('PYTEST_CURRENT_TEST').split(':')[0]))
         print("")
-        m.setattr(sys, 'argv', ['bnh_csv'])
+        m.setattr(sys, 'argv', ['bnh_csv_decision_tree'])
         if version.split()[0] == '3.14.2':
             assert main(test_path) == "8a17cb976a0b670c6b874201065dfca9bec12dc5eb879b49dc2d356ceb4c4f0f"
         else:
