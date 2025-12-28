@@ -146,7 +146,7 @@ def main(rootpath: str = ".", timeout: float=5000, spec: str = "bnh.json" ) -> i
     
     constraints_code = Path(rootpath) /  Path('generated_constraints_claude.py')
     constraints_code.unlink(missing_ok=True)
-    generate_constraints(spec, str(constraints_code))
+    generate_constraints(rootpath + '/' + spec, str(constraints_code))
 
     from generated_constraints_claude import constraint_C1, constraint_C2
 
