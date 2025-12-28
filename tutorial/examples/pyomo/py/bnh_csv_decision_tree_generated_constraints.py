@@ -14,27 +14,9 @@ from sys import argv
 from math import inf
 from hashlib import sha256
 from sklearn.tree import DecisionTreeRegressor
+from generate_constraints import generate_constraints
+from pathlib import Path
 
-# ============================================================================
-# DEFINE CONSTRAINT FUNCTIONS (Python functions)
-# ============================================================================
-
-def constraint_C1(x1, x2):
-    """
-    C1: (x1 - 5)^2 + x2^2 ≤ 25
-    Returns: constraint value (≤ 0 means satisfied)
-    """
-    return (x1 - 5)**2 + x2**2 - 25
-
-def constraint_C2(x1, x2):
-    """
-    C2: (x1 - 8)^2 + (x2 + 3)^2 ≥ 7.7
-    Converted to: -[(x1 - 8)^2 + (x2 + 3)^2] + 7.7 ≤ 0
-    Returns: constraint value (≤ 0 means satisfied)
-    """
-    return -((x1 - 8)**2 + (x2 + 3)**2) + 7.7
-
-# ============================================================================
 # DEFINE OPTIMIZATION PROBLEM FOR PYMOO
 # ============================================================================
 
@@ -67,7 +49,7 @@ class ParetoFromCSVData(Problem):
         # ============================================================================
 
         print("\n" + "=" * 80)
-        print("CREATING INTERPOLATORS FROM CSV DATA")
+        print("CREATING MODEL FROM CSV DATA")
         print("=" * 80)
 
         # Extract points and values from CSV
@@ -128,6 +110,7 @@ class ParetoFromCSVData(Problem):
         return self.f2_tree.predict(X_pred)
     
     def _evaluate(self, X, out, *args, **kwargs):
+        from generated_constraints_claude import constraint_C1, constraint_C2
         """
         Evaluate objectives and constraints
         
@@ -150,13 +133,23 @@ class ParetoFromCSVData(Problem):
         out["F"] = np.column_stack([f1, f2])
         out["G"] = np.column_stack([g1, g2])
     
-def main(rootpath: str = ".", timeout: float=5000) -> int:
+def main(rootpath: str = ".", timeout: float=5000, spec: str = "bnh.json" ) -> int:
     print("=" * 80)
     print("PARETO FRONT FROM CSV DATA (NO ANALYTICAL FUNCTIONS)")
     print("=" * 80)
     print("\nIMPORTANT: F1 and F2 are read ONLY from the DataFrame/CSV")
     print("No analytical functions are used for objectives!")
     
+    # ============================================================================
+    # GENERATING CONSTRAINTS
+    # ============================================================================
+    
+    constraints_code = Path(rootpath) /  Path('generated_constraints_claude.py')
+    constraints_code.unlink(missing_ok=True)
+    generate_constraints(spec, str(constraints_code))
+
+    from generated_constraints_claude import constraint_C1, constraint_C2
+
     # ============================================================================
     # RUN NSGA-II OPTIMIZATION
     # ============================================================================
@@ -249,8 +242,8 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     print(f"Feasible solutions: {pareto_df['All_constraints_OK'].sum()} / {len(pareto_df)}")
     
     # Save Pareto front to CSV
-    pareto_df.to_csv(rootpath + '/pareto_front_results_dt.csv', index=False)
-    print(f"\n✓ Pareto front saved to 'pareto_front_results_dt.csv'")
+    pareto_df.to_csv(rootpath + '/pareto_front_results_dt_gc.csv', index=False)
+    print(f"\n✓ Pareto front saved to 'pareto_front_results_dt_gc.csv'")
     
     # ============================================================================
     # ANALYZE ORIGINAL CSV DATA
@@ -338,8 +331,8 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     ax2.grid(True, alpha=0.3, linestyle='--')
     
     plt.tight_layout()
-    plt.savefig(rootpath + '/pareto_front_two_plots_dt.png', dpi=300, bbox_inches='tight')
-    print("✓ Visualization saved as 'pareto_front_two_plots_dt.png'")
+    plt.savefig(rootpath + '/pareto_front_two_plots_dt_gc.png', dpi=300, bbox_inches='tight')
+    print("✓ Visualization saved as 'pareto_front_two_plots_dt_gc.png'")
     if not inf == timeout:
         timer = fig.canvas.new_timer(interval=timeout, callbacks=[(plt.close, [], {})])
         timer.start()
@@ -349,8 +342,8 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     print("OPTIMIZATION COMPLETE")
     print("=" * 80)
     print("\nGenerated files:")
-    print("  1. pareto_front_results_dt.csv - Pareto optimal solutions")
-    print("  2. pareto_front_two_plots_dt.png - Objective and variable space plots")
+    print("  1. pareto_front_results_dt_gc.csv - Pareto optimal solutions")
+    print("  2. pareto_front_two_plots_dt_gc.png - Objective and variable space plots")
     print("\n✓ F1 and F2 were obtained ONLY from CSV data (no analytical functions)")
     print("✓ Interpolation used to estimate objectives for new X1, X2 combinations")
     print("✓ The Pareto front shows optimal trade-offs based purely on your data")
@@ -359,5 +352,6 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     
 if __name__ == "__main__":
     rootpath = "." if len(argv) < 2 else argv[1]
-    timeout = inf if len(argv) < 3 else argv[2]
-    print(main(rootpath,timeout))
+    spec = "bnh.json" if len(argv) < 3 else argv[2]
+    timeout = inf if len(argv) < 4 else argv[3]
+    print(main(rootpath,timeout, spec))
