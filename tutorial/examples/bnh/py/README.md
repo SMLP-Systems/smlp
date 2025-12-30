@@ -22,11 +22,14 @@
     0 ≤ x₂ ≤ 3
 ```
 
-Expected and NSGA-II approximation results:
+### Expected and NSGA-II approximation results:
 ![ResultsImage](media/BNH.png)
-Expected Z3 results:
+#### Z3 versions used:
+- Z3 version: 4.8.12,  64 bit
+- Python package version: z3-solver==4.8.12<br>
+### Expected Z3 results:
 ![ResultsImage](media/BNH_Z3.png)
-Expected Z3 stable results (3 flavors):
+### Expected Z3 stable results (3 flavors):
 ![ResultsImage](media/BNH_Z3.stable_flavor1.png)
 ![ResultsImage](media/BNH_Z3.stable_flavor2.png)
 ![ResultsImage](media/BNH_Z3.stable_flavor3.png)
