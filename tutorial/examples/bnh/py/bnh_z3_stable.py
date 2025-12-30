@@ -359,7 +359,7 @@ def plot_results(solutions, stability_results, timeout):
     # Plot feasible region
     feasible = (C1 <= 25) & (C2 >= 7.7)
     ax1.contourf(X1, X2, feasible.astype(int), levels=[0.5, 1.5], 
-                 colors=['lightblue'], alpha=0.3, label='Feasible Region')
+                 colors=['lightblue'], alpha=0.3)
     
     # Plot constraint boundaries
     contour1 = ax1.contour(X1, X2, C1, levels=[25], colors='blue', linewidths=2)
