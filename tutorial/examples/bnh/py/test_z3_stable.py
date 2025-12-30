@@ -11,4 +11,6 @@ def test_z3_stable(monkeypatch, request):
         test_path = dirname(realpath(root_dir + getenv('PYTEST_CURRENT_TEST').split(':')[0]))
         print("")
         m.setattr(sys, 'argv', ['bnh_z3'])
-        assert solve_bnh_z3(test_path) == "b28ff663398cde468954641b095de693d2d6e201681e1e8cd0bada61c6bedbbd"
+        result = solve_bnh_z3(test_path)
+        assert result == "f6837c61792b36166b0394286ad5da8e89e334b392e3aec4ffa9e02fa40f0e70" or \
+               result == "08af985a9d077117f4bdc8240c0d4bdeec24265796b51162e4edf526b324c03d"

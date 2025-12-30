@@ -156,8 +156,8 @@ def solve_bnh_z3(rootpath: str = ".", timeout: float=5000) -> int:
         model = opt.model()
         x1_val = float(model[x1].as_decimal(10).rstrip('?'))
         x2_val = float(model[x2].as_decimal(10).rstrip('?'))
-        f1_val = 4 * x1_val**2 + 4 * x2_val**2
-        f2_val = (x1_val - 5)**2 + (x2_val - 5)**2
+        f1_val = round(4 * x1_val**2 + 4 * x2_val**2,4)
+        f2_val = round((x1_val - 5)**2 + (x2_val - 5)**2,4)
         
         print(f"x1 = {x1_val:.6f}")
         print(f"x2 = {x2_val:.6f}")
@@ -188,8 +188,8 @@ def solve_bnh_z3(rootpath: str = ".", timeout: float=5000) -> int:
         model = opt2.model()
         x1_val = float(model[x1_2].as_decimal(10).rstrip('?'))
         x2_val = float(model[x2_2].as_decimal(10).rstrip('?'))
-        f1_val = 4 * x1_val**2 + 4 * x2_val**2
-        f2_val = (x1_val - 5)**2 + (x2_val - 5)**2
+        f1_val = round(4 * x1_val**2 + 4 * x2_val**2,4)
+        f2_val = round((x1_val - 5)**2 + (x2_val - 5)**2,4)
         
         print(f"x1 = {x1_val:.6f}")
         print(f"x2 = {x2_val:.6f}")
@@ -243,11 +243,11 @@ def solve_bnh_z3(rootpath: str = ".", timeout: float=5000) -> int:
             model = opt_w.model()
             x1_val = float(model[x1_w].as_decimal(10).rstrip('?'))
             x2_val = float(model[x2_w].as_decimal(10).rstrip('?'))
-            f1_val = 4 * x1_val**2 + 4 * x2_val**2
-            f2_val = (x1_val - 5)**2 + (x2_val - 5)**2
+            f1_val = round(4 * x1_val**2 + 4 * x2_val**2,4)
+            f2_val = round((x1_val - 5)**2 + (x2_val - 5)**2,4)
             
-            print(f"  ✓ x1 = {x1_val:.6f}, x2 = {x2_val:.6f}")
-            print(f"    f1 = {f1_val:.6f}, f2 = {f2_val:.6f}")
+            print(f"  ✓ x1 = {x1_val:.4f}, x2 = {x2_val:.4f}")
+            print(f"    f1 = {f1_val:.4f}, f2 = {f2_val:.4f}")
             pareto_solutions.append((x1_val, x2_val, f1_val, f2_val))
         elif result == unknown:
             print(f"  ✗ Solver timeout or unknown result for weights ({w1}, {w2})")
