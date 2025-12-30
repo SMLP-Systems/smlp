@@ -24,3 +24,9 @@
 
 Expected and NSGA-II approximation results:
 ![ResultsImage](media/BNH.png)
+Expected Z3 results:
+![ResultsImage](media/BNH_Z3.png)
+Expected Z3 stable results (3 flavors):
+![ResultsImage](media/BNH_Z3.stable_flavor1.png)
+![ResultsImage](media/BNH_Z3.stable_flavor2.png)
+![ResultsImage](media/BNH_Z3.stable_flavor3.png)
