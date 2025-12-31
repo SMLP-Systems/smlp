@@ -118,7 +118,7 @@ def check_solution_stability(x1_val, x2_val, epsilon=1e-5, num_samples=20):
         'num_feasible_perturbations': len(perturbations)
     }
 
-def solve_bnh_z3(rootpath: str = ".", timeout: float=5000) -> int:
+def solve_bnh_z3_gradient(rootpath: str = ".", timeout: float=5000) -> int:
     """
     Solve the BNH multi-objective optimization problem using Z3.
     Uses multiple approaches to find Pareto optimal solutions.
@@ -455,4 +455,4 @@ def plot_results(solutions, stability_results, timeout):
 if __name__ == "__main__":
     rootpath = "." if len(argv) < 2 else argv[1]
     timeout = inf if len(argv) < 3 else argv[2]
-    print(solve_bnh_z3(rootpath,timeout))
+    print(solve_bnh_z3_gradient(rootpath,timeout))

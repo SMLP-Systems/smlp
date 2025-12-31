@@ -29,7 +29,10 @@
 - Python package version: z3-solver==4.8.12<br>
 ### Expected Z3 results:
 ![ResultsImage](media/BNH_Z3.png)
-### Expected Z3 stable results (3 flavors):
-![ResultsImage](media/BNH_Z3.stable_flavor1.png)
-![ResultsImage](media/BNH_Z3.stable_flavor2.png)
-![ResultsImage](media/BNH_Z3.stable_flavor3.png)
+### Expected Z3 gradient-stable results (3 flavors):
+![ResultsImage](media/BNH_Z3.stable_gradient_flavor1.png)
+![ResultsImage](media/BNH_Z3.stable_gradient_flavor2.png)
+![ResultsImage](media/BNH_Z3.stable_gradient_flavor3.png)
+### Expected Z3 minimax-stable results (2 flavors):
+![ResultsImage](media/BNH_Z3.stable_minimax_flavor1.png)<br><br>
+![ResultsImage](media/BNH_Z3.stable_minimax_flavor2.png)
