@@ -7,6 +7,13 @@ from sys import argv
 from math import inf
 from hashlib import sha256
 from base64 import b64encode
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(message)s'
+)
+
 
 def check_solution_stability(x1_val, x2_val, epsilon=1e-5, num_samples=20):
     """
@@ -124,16 +131,16 @@ def solve_bnh_z3_gradient(rootpath: str = ".", timeout: float=5000) -> int:
     Uses multiple approaches to find Pareto optimal solutions.
     """
     
-    print("=" * 60)
-    print("BNH Multi-Objective Optimization Problem with Z3")
-    print("=" * 60)
+    logging.info("=" * 60)
+    logging.info("BNH Multi-Objective Optimization Problem with Z3")
+    logging.info("=" * 60)
     
     # Store Pareto solutions
     pareto_solutions = []
     
     # Approach 1: Lexicographic optimization (minimize f1, then f2)
-    print("\n1. Lexicographic Optimization (f1 primary, f2 secondary):")
-    print("-" * 60)
+    logging.info("\n1. Lexicographic Optimization (f1 primary, f2 secondary):")
+    logging.info("-" * 60)
     
     opt = Optimize()
     x1 = Real('x1')
@@ -159,15 +166,15 @@ def solve_bnh_z3_gradient(rootpath: str = ".", timeout: float=5000) -> int:
         f1_val = round(4 * x1_val**2 + 4 * x2_val**2,4)
         f2_val = round((x1_val - 5)**2 + (x2_val - 5)**2,4)
         
-        print(f"x1 = {x1_val:.6f}")
-        print(f"x2 = {x2_val:.6f}")
-        print(f"f1 = {f1_val:.6f}")
-        print(f"f2 = {f2_val:.6f}")
+        logging.info(f"x1 = {x1_val:.6f}")
+        logging.info(f"x2 = {x2_val:.6f}")
+        logging.info(f"f1 = {f1_val:.6f}")
+        logging.info(f"f2 = {f2_val:.6f}")
         pareto_solutions.append((x1_val, x2_val, f1_val, f2_val))
     
     # Approach 2: Lexicographic optimization (minimize f2, then f1)
-    print("\n2. Lexicographic Optimization (f2 primary, f1 secondary):")
-    print("-" * 60)
+    logging.info("\n2. Lexicographic Optimization (f2 primary, f1 secondary):")
+    logging.info("-" * 60)
     
     opt2 = Optimize()
     x1_2 = Real('x1_2')
@@ -191,21 +198,21 @@ def solve_bnh_z3_gradient(rootpath: str = ".", timeout: float=5000) -> int:
         f1_val = round(4 * x1_val**2 + 4 * x2_val**2,4)
         f2_val = round((x1_val - 5)**2 + (x2_val - 5)**2,4)
         
-        print(f"x1 = {x1_val:.6f}")
-        print(f"x2 = {x2_val:.6f}")
-        print(f"f1 = {f1_val:.6f}")
-        print(f"f2 = {f2_val:.6f}")
+        logging.info(f"x1 = {x1_val:.6f}")
+        logging.info(f"x2 = {x2_val:.6f}")
+        logging.info(f"f1 = {f1_val:.6f}")
+        logging.info(f"f2 = {f2_val:.6f}")
         pareto_solutions.append((x1_val, x2_val, f1_val, f2_val))
     
     # Approach 3: Weighted sum method with different weights
-    print("\n3. Weighted Sum Method (various weights):")
-    print("-" * 60)
+    logging.info("\n3. Weighted Sum Method (various weights):")
+    logging.info("-" * 60)
     
     # Avoid problematic weight combinations (e.g., 0.9, 0.1) and use robust alternatives
     weights = [(0.1, 0.9), (0.2, 0.8), (0.4, 0.6), (0.5, 0.5), (0.6, 0.4), (0.8, 0.2), (0.9, 0.1)]
     
     for w1, w2 in weights:
-        print(f"\nTrying weights (w1={w1}, w2={w2})...")
+        logging.info(f"\nTrying weights (w1={w1}, w2={w2})...")
         
         opt_w = Optimize()
         x1_w = Real(f'x1_w{w1}_{w2}')
@@ -246,71 +253,71 @@ def solve_bnh_z3_gradient(rootpath: str = ".", timeout: float=5000) -> int:
             f1_val = round(4 * x1_val**2 + 4 * x2_val**2,4)
             f2_val = round((x1_val - 5)**2 + (x2_val - 5)**2,4)
             
-            print(f"  ✓ x1 = {x1_val:.4f}, x2 = {x2_val:.4f}")
-            print(f"    f1 = {f1_val:.4f}, f2 = {f2_val:.4f}")
+            logging.info(f"  ✓ x1 = {x1_val:.4f}, x2 = {x2_val:.4f}")
+            logging.info(f"    f1 = {f1_val:.4f}, f2 = {f2_val:.4f}")
             pareto_solutions.append((x1_val, x2_val, f1_val, f2_val))
         elif result == unknown:
-            print(f"  ✗ Solver timeout or unknown result for weights ({w1}, {w2})")
-            print(f"    Z3 may have numerical difficulties with this weight combination")
+            logging.info(f"  ✗ Solver timeout or unknown result for weights ({w1}, {w2})")
+            logging.info(f"    Z3 may have numerical difficulties with this weight combination")
         else:
-            print(f"  ✗ No solution found (unsat) for weights ({w1}, {w2})")
+            logging.info(f"  ✗ No solution found (unsat) for weights ({w1}, {w2})")
     
     # Verify constraints for all solutions
-    print("\n4. Constraint Verification:")
-    print("-" * 60)
+    logging.info("\n4. Constraint Verification:")
+    logging.info("-" * 60)
     for i, (x1_val, x2_val, f1_val, f2_val) in enumerate(pareto_solutions):
         c1 = (x1_val - 5)**2 + x2_val**2
         c2 = (x1_val - 8)**2 + (x2_val + 3)**2
-        print(f"Solution {i+1}:")
-        print(f"  C1 = {c1:.6f} (should be ≤ 25): {'✓' if c1 <= 25 else '✗'}")
-        print(f"  C2 = {c2:.6f} (should be ≥ 7.7): {'✓' if c2 >= 7.7 else '✗'}")
+        logging.info(f"Solution {i+1}:")
+        logging.info(f"  C1 = {c1:.6f} (should be ≤ 25): {'✓' if c1 <= 25 else '✗'}")
+        logging.info(f"  C2 = {c2:.6f} (should be ≥ 7.7): {'✓' if c2 >= 7.7 else '✗'}")
     
     # Stability analysis for all solutions
-    print("\n5. Stability Analysis:")
-    print("=" * 60)
+    logging.info("\n5. Stability Analysis:")
+    logging.info("=" * 60)
     stability_results = []
     
     for i, (x1_val, x2_val, f1_val, f2_val) in enumerate(pareto_solutions):
-        print(f"\nSolution {i+1}: x = ({x1_val:.6f}, {x2_val:.6f})")
-        print("-" * 60)
+        logging.info(f"\nSolution {i+1}: x = ({x1_val:.6f}, {x2_val:.6f})")
+        logging.info("-" * 60)
         
         stability = check_solution_stability(x1_val, x2_val)
         stability_results.append(stability)
         
-        print(f"Gradient Information:")
-        print(f"  ∇f1 = [{stability['grad_f1'][0]:>8.4f}, {stability['grad_f1'][1]:>8.4f}], ||∇f1|| = {stability['grad_f1_norm']:.4f}")
-        print(f"  ∇f2 = [{stability['grad_f2'][0]:>8.4f}, {stability['grad_f2'][1]:>8.4f}], ||∇f2|| = {stability['grad_f2_norm']:.4f}")
+        logging.info(f"Gradient Information:")
+        logging.info(f"  ∇f1 = [{stability['grad_f1'][0]:>8.4f}, {stability['grad_f1'][1]:>8.4f}], ||∇f1|| = {stability['grad_f1_norm']:.4f}")
+        logging.info(f"  ∇f2 = [{stability['grad_f2'][0]:>8.4f}, {stability['grad_f2'][1]:>8.4f}], ||∇f2|| = {stability['grad_f2_norm']:.4f}")
         
-        print(f"\nConstraint Status:")
-        print(f"  C1 active: {stability['c1_active']} (value: {stability['c1_value']:.6f})")
-        print(f"  C2 active: {stability['c2_active']} (value: {stability['c2_value']:.6f})")
+        logging.info(f"\nConstraint Status:")
+        logging.info(f"  C1 active: {stability['c1_active']} (value: {stability['c1_value']:.6f})")
+        logging.info(f"  C2 active: {stability['c2_active']} (value: {stability['c2_value']:.6f})")
         if stability['c1_active']:
-            print(f"    ∇C1 = [{stability['grad_c1'][0]:>8.4f}, {stability['grad_c1'][1]:>8.4f}]")
+            logging.info(f"    ∇C1 = [{stability['grad_c1'][0]:>8.4f}, {stability['grad_c1'][1]:>8.4f}]")
         if stability['c2_active']:
-            print(f"    ∇C2 = [{stability['grad_c2'][0]:>8.4f}, {stability['grad_c2'][1]:>8.4f}]")
+            logging.info(f"    ∇C2 = [{stability['grad_c2'][0]:>8.4f}, {stability['grad_c2'][1]:>8.4f}]")
         
-        print(f"\nSensitivity Analysis:")
-        print(f"  Avg sensitivity (f1): {stability['sensitivity_f1']:.4f}")
-        print(f"  Avg sensitivity (f2): {stability['sensitivity_f2']:.4f}")
-        print(f"  Max sensitivity (f1): {stability['max_sensitivity_f1']:.4f}")
-        print(f"  Max sensitivity (f2): {stability['max_sensitivity_f2']:.4f}")
-        print(f"  Feasible perturbations tested: {stability['num_feasible_perturbations']}/20")
+        logging.info(f"\nSensitivity Analysis:")
+        logging.info(f"  Avg sensitivity (f1): {stability['sensitivity_f1']:.4f}")
+        logging.info(f"  Avg sensitivity (f2): {stability['sensitivity_f2']:.4f}")
+        logging.info(f"  Max sensitivity (f1): {stability['max_sensitivity_f1']:.4f}")
+        logging.info(f"  Max sensitivity (f2): {stability['max_sensitivity_f2']:.4f}")
+        logging.info(f"  Feasible perturbations tested: {stability['num_feasible_perturbations']}/20")
         
-        print(f"\nStability Assessment:")
-        print(f"  At boundary: {stability['at_boundary']}")
-        print(f"  Stability score: {stability['stability_score']:.4f}")
-        print(f"  Classification: {stability['stability_class']}")
+        logging.info(f"\nStability Assessment:")
+        logging.info(f"  At boundary: {stability['at_boundary']}")
+        logging.info(f"  Stability score: {stability['stability_score']:.4f}")
+        logging.info(f"  Classification: {stability['stability_class']}")
     
     # Summary table
-    print("\n" + "=" * 60)
-    print("STABILITY SUMMARY TABLE")
-    print("=" * 60)
-    print(f"{'Sol':<5} {'x1':<10} {'x2':<10} {'||∇f1||':<10} {'||∇f2||':<10} {'Score':<10} {'Class':<20}")
-    print("-" * 60)
+    logging.info("\n" + "=" * 60)
+    logging.info("STABILITY SUMMARY TABLE")
+    logging.info("=" * 60)
+    logging.info(f"{'Sol':<5} {'x1':<10} {'x2':<10} {'||∇f1||':<10} {'||∇f2||':<10} {'Score':<10} {'Class':<20}")
+    logging.info("-" * 60)
     for i, ((x1, x2, f1, f2), stab) in enumerate(zip(pareto_solutions, stability_results)):
-        print(f"{i+1:<5} {x1:<10.4f} {x2:<10.4f} {stab['grad_f1_norm']:<10.4f} "
+        logging.info(f"{i+1:<5} {x1:<10.4f} {x2:<10.4f} {stab['grad_f1_norm']:<10.4f} "
               f"{stab['grad_f2_norm']:<10.4f} {stab['stability_score']:<10.4f} {stab['stability_class']:<20}")
-    print("=" * 60)
+    logging.info("=" * 60)
     
     # Plot Pareto front
     plot_results(pareto_solutions, stability_results, timeout)
@@ -438,19 +445,19 @@ def plot_results(solutions, stability_results, timeout):
         timer.start()
     plt.show()
     
-    print("\n6. Decision Space, Pareto Front, and Stability Plots Generated")
-    print("-" * 60)
-    print("\n" + "=" * 60)
-    print(f"Found {len(solutions)} Pareto optimal solutions")
+    logging.info("\n6. Decision Space, Pareto Front, and Stability Plots Generated")
+    logging.info("-" * 60)
+    logging.info("\n" + "=" * 60)
+    logging.info(f"Found {len(solutions)} Pareto optimal solutions")
     
     # Find most stable solution
     most_stable_idx = min(range(len(stability_results)), 
                          key=lambda i: stability_results[i]['stability_score'])
-    print(f"\nMost stable solution: #{most_stable_idx + 1}")
-    print(f"  x = ({solutions[most_stable_idx][0]:.6f}, {solutions[most_stable_idx][1]:.6f})")
-    print(f"  Stability class: {stability_results[most_stable_idx]['stability_class']}")
-    print(f"  Stability score: {stability_results[most_stable_idx]['stability_score']:.4f}")
-    print("=" * 60)
+    logging.info(f"\nMost stable solution: #{most_stable_idx + 1}")
+    logging.info(f"  x = ({solutions[most_stable_idx][0]:.6f}, {solutions[most_stable_idx][1]:.6f})")
+    logging.info(f"  Stability class: {stability_results[most_stable_idx]['stability_class']}")
+    logging.info(f"  Stability score: {stability_results[most_stable_idx]['stability_score']:.4f}")
+    logging.info("=" * 60)
 
 if __name__ == "__main__":
     rootpath = "." if len(argv) < 2 else argv[1]

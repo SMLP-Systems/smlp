@@ -6,6 +6,12 @@ from sys import argv
 from math import inf
 from hashlib import sha256
 from gc import collect
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(message)s'
+)
 
 def check_minimax_stability(x1_val, x2_val, epsilon=0.001, num_directions=100):
     """
@@ -34,7 +40,7 @@ def check_minimax_stability(x1_val, x2_val, epsilon=0.001, num_directions=100):
     f2_nominal = f2(x)
     
     # Step 1: Directional search for worst-case perturbations
-    print(f"    Searching worst-case in {num_directions} directions...")
+    logging.info(f"    Searching worst-case in {num_directions} directions...")
     
     worst_case_f1_increase = 0
     worst_case_f2_increase = 0
@@ -79,7 +85,7 @@ def check_minimax_stability(x1_val, x2_val, epsilon=0.001, num_directions=100):
                 worst_point_f2 = x_perturbed.copy()
     
     # Step 2: Optimization-based worst-case search
-    print("    Optimization-based worst-case search...")
+    logging.info("    Optimization-based worst-case search...")
     
     def find_worst_case(objective_func, n_starts=10):
         best_worst = 0
@@ -154,7 +160,7 @@ def check_minimax_stability(x1_val, x2_val, epsilon=0.001, num_directions=100):
         robustness_class = "NOT ROBUST"
         color = 'red'
     
-    print(f"    ✓ Worst-case analysis complete")
+    logging.info(f"    ✓ Worst-case analysis complete")
     
     return {
         'worst_case_f1_increase': worst_case_f1_increase,
@@ -179,20 +185,20 @@ def solve_bnh_z3_minimax(rootpath: str = ".", timeout: float = 5000) -> str:
     Solve BNH problem using Z3 with minimax stability analysis.
     """
     
-    print("=" * 70)
-    print("BNH Multi-Objective Optimization with Minimax Stability Analysis")
-    print("=" * 70)
-    print("\nMinimax Philosophy:")
-    print("  - Optimizes for WORST-CASE scenario")
-    print("  - Ensures robustness under uncertainty")
-    print("  - Provides strong guarantees against adversarial perturbations")
-    print("=" * 70)
+    logging.info("=" * 70)
+    logging.info("BNH Multi-Objective Optimization with Minimax Stability Analysis")
+    logging.info("=" * 70)
+    logging.info("\nMinimax Philosophy:")
+    logging.info("  - Optimizes for WORST-CASE scenario")
+    logging.info("  - Ensures robustness under uncertainty")
+    logging.info("  - Provides strong guarantees against adversarial perturbations")
+    logging.info("=" * 70)
     
     pareto_solutions = []
     
     # Approach 1: Lexicographic (f1 primary)
-    print("\n1. Lexicographic Optimization (f1 primary):")
-    print("-" * 70)
+    logging.info("\n1. Lexicographic Optimization (f1 primary):")
+    logging.info("-" * 70)
     
     opt = Optimize()
     x1, x2 = Real('x1'), Real('x2')
@@ -212,13 +218,13 @@ def solve_bnh_z3_minimax(rootpath: str = ".", timeout: float = 5000) -> str:
         f1_val = round(4 * x1_val**2 + 4 * x2_val**2, 4)
         f2_val = round((x1_val - 5)**2 + (x2_val - 5)**2, 4)
         
-        print(f"  Solution: x=({x1_val:.6f}, {x2_val:.6f})")
-        print(f"  Objectives: f1={f1_val:.4f}, f2={f2_val:.4f}")
+        logging.info(f"  Solution: x=({x1_val:.6f}, {x2_val:.6f})")
+        logging.info(f"  Objectives: f1={f1_val:.4f}, f2={f2_val:.4f}")
         pareto_solutions.append((x1_val, x2_val, f1_val, f2_val))
     
     # Approach 2: Lexicographic (f2 primary)
-    print("\n2. Lexicographic Optimization (f2 primary):")
-    print("-" * 70)
+    logging.info("\n2. Lexicographic Optimization (f2 primary):")
+    logging.info("-" * 70)
     
     opt.pop()
     opt2 = Optimize()
@@ -240,13 +246,13 @@ def solve_bnh_z3_minimax(rootpath: str = ".", timeout: float = 5000) -> str:
         f1_val = round(4 * x1_val**2 + 4 * x2_val**2, 4)
         f2_val = round((x1_val - 5)**2 + (x2_val - 5)**2, 4)
         
-        print(f"  Solution: x=({x1_val:.6f}, {x2_val:.6f})")
-        print(f"  Objectives: f1={f1_val:.4f}, f2={f2_val:.4f}")
+        logging.info(f"  Solution: x=({x1_val:.6f}, {x2_val:.6f})")
+        logging.info(f"  Objectives: f1={f1_val:.4f}, f2={f2_val:.4f}")
         pareto_solutions.append((x1_val, x2_val, f1_val, f2_val))
     
     # Approach 3: Weighted sum
-    print("\n3. Weighted Sum Method:")
-    print("-" * 70)
+    logging.info("\n3. Weighted Sum Method:")
+    logging.info("-" * 70)
     
     weights = [(0.1, 0.9), (0.2, 0.8), (0.4, 0.6), (0.5, 0.5), (0.6, 0.4), (0.8, 0.2), (0.9, 0.1)]
     
@@ -285,64 +291,64 @@ def solve_bnh_z3_minimax(rootpath: str = ".", timeout: float = 5000) -> str:
             f1_val = round(4 * x1_val**2 + 4 * x2_val**2, 4)
             f2_val = round((x1_val - 5)**2 + (x2_val - 5)**2, 4)
             
-            print(f"  w=({w1},{w2}): x=({x1_val:.4f},{x2_val:.4f}), "
+            logging.info(f"  w=({w1},{w2}): x=({x1_val:.4f},{x2_val:.4f}), "
                   f"f1={f1_val:.4f}, f2={f2_val:.4f}")
             pareto_solutions.append((x1_val, x2_val, f1_val, f2_val))
             opt_w.pop()
     
     # Minimax stability analysis
-    print("\n" + "=" * 70)
-    print("MINIMAX STABILITY ANALYSIS")
-    print("=" * 70)
+    logging.info("\n" + "=" * 70)
+    logging.info("MINIMAX STABILITY ANALYSIS")
+    logging.info("=" * 70)
     
     minimax_results = []
     
     for i, (x1_val, x2_val, f1_val, f2_val) in enumerate(pareto_solutions):
-        print(f"\nSolution {i+1}: x = ({x1_val:.6f}, {x2_val:.6f})")
-        print("-" * 70)
+        logging.info(f"\nSolution {i+1}: x = ({x1_val:.6f}, {x2_val:.6f})")
+        logging.info("-" * 70)
         
         mm = check_minimax_stability(x1_val, x2_val)
         minimax_results.append(mm)
         
-        print(f"\n  Nominal values:")
-        print(f"    f1 = {mm['nominal_f1']:.6f}")
-        print(f"    f2 = {mm['nominal_f2']:.6f}")
+        logging.info(f"\n  Nominal values:")
+        logging.info(f"    f1 = {mm['nominal_f1']:.6f}")
+        logging.info(f"    f2 = {mm['nominal_f2']:.6f}")
         
-        print(f"\n  Worst-case increases (within ε={mm['epsilon']}):")
-        print(f"    Δf1 = {mm['worst_case_f1_increase']:.6f} "
+        logging.info(f"\n  Worst-case increases (within ε={mm['epsilon']}):")
+        logging.info(f"    Δf1 = {mm['worst_case_f1_increase']:.6f} "
               f"({mm['worst_case_f1_relative']*100:.2f}%)")
-        print(f"    Δf2 = {mm['worst_case_f2_increase']:.6f} "
+        logging.info(f"    Δf2 = {mm['worst_case_f2_increase']:.6f} "
               f"({mm['worst_case_f2_relative']*100:.2f}%)")
         
-        print(f"\n  Robustness Assessment:")
-        print(f"    Score: {mm['worst_case_score']:.6f} (lower is better)")
-        print(f"    Class: {mm['robustness_class']}")
+        logging.info(f"\n  Robustness Assessment:")
+        logging.info(f"    Score: {mm['worst_case_score']:.6f} (lower is better)")
+        logging.info(f"    Class: {mm['robustness_class']}")
     
     # Summary table
-    print("\n" + "=" * 70)
-    print("MINIMAX ROBUSTNESS SUMMARY")
-    print("=" * 70)
-    print(f"{'Sol':<5} {'x1':<10} {'x2':<10} {'Δf1(%)':<10} {'Δf2(%)':<10} "
+    logging.info("\n" + "=" * 70)
+    logging.info("MINIMAX ROBUSTNESS SUMMARY")
+    logging.info("=" * 70)
+    logging.info(f"{'Sol':<5} {'x1':<10} {'x2':<10} {'Δf1(%)':<10} {'Δf2(%)':<10} "
           f"{'Score':<10} {'Robustness':<18}")
-    print("-" * 70)
+    logging.info("-" * 70)
     
     for i, ((x1, x2, f1, f2), mm) in enumerate(zip(pareto_solutions, minimax_results)):
-        print(f"{i+1:<5} {x1:<10.4f} {x2:<10.4f} "
+        logging.info(f"{i+1:<5} {x1:<10.4f} {x2:<10.4f} "
               f"{mm['worst_case_f1_relative']*100:<10.2f} "
               f"{mm['worst_case_f2_relative']*100:<10.2f} "
               f"{mm['worst_case_score']:<10.4f} {mm['robustness_class']:<18}")
     
-    print("=" * 70)
+    logging.info("=" * 70)
     
     # Find most robust
     most_robust_idx = min(range(len(minimax_results)), 
                          key=lambda i: minimax_results[i]['worst_case_score'])
-    print(f"\nMost Robust Solution: #{most_robust_idx + 1}")
-    print(f"  x = ({pareto_solutions[most_robust_idx][0]:.6f}, "
+    logging.info(f"\nMost Robust Solution: #{most_robust_idx + 1}")
+    logging.info(f"  x = ({pareto_solutions[most_robust_idx][0]:.6f}, "
           f"{pareto_solutions[most_robust_idx][1]:.6f})")
-    print(f"  Worst-case score: {minimax_results[most_robust_idx]['worst_case_score']:.6f}")
-    print(f"  Class: {minimax_results[most_robust_idx]['robustness_class']}")
-    print("=" * 70)
+    logging.info(f"  Worst-case score: {minimax_results[most_robust_idx]['worst_case_score']:.6f}")
+    logging.info(f"  Class: {minimax_results[most_robust_idx]['robustness_class']}")
+    logging.info("=" * 70)
     
     # Plot results
     plot_results(pareto_solutions, minimax_results, timeout)
@@ -512,7 +518,7 @@ def plot_results(solutions, minimax_results, timeout):
     
     plt.show()
     
-    print("\n✓ Visualization complete")
+    logging.info("\n✓ Visualization complete")
 
 if __name__ == "__main__":
     rootpath = "." if len(argv) < 2 else argv[1]
