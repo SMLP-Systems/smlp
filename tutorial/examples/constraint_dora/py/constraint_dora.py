@@ -68,14 +68,14 @@ def brute_force(f_data, f_constraint):
     # Print the result
     return result.to_string(index=False, header=False)
 
-def main(n: int = 400, rootpath: str = ".") -> int:
+def main(n: int = 1000, rootpath: str = ".") -> int:
 # Initial guess
     # Create grid for contour plot and calculate result using brute force method
     rng = range(0, n)
     x1_start, x1_stop = (-1.5, 2.5)
     x2_start, x2_stop = (-1.5, 2.0)
     x1 = np.linspace(x1_start, x1_stop, rng.stop)
-    x2 = np.linspace(x2_start, x1_stop, rng.stop)
+    x2 = np.linspace(x2_start, x2_stop, rng.stop)
     X1, X2 = np.meshgrid(x1, x2)
     Z = (X1 - 2)**2 + (X2 - 1)**2
     C = 1 - X1**2 - X2**2
@@ -133,8 +133,14 @@ def main(n: int = 400, rootpath: str = ".") -> int:
     result_slsqp_pprinted= f"\nOptimal solution: x1 = {result.x[0]:.6f} x2 = {result.x[1]:.6f} f(x*) = {result.fun:.6f}"
     print(result_slsqp_pprinted)
     print("\nExpected result (analytical solution):")
-    print(f"  2/√5 = {2/np.sqrt(5):.6f}, 1/√5 = {1/np.sqrt(5):.6f}")
-    print(f"  (√5 - 1)² = {(np.sqrt(5) - 1)**2:.6f}")
+    x1_expected = 2/np.sqrt(5)
+    x2_expected = 1/np.sqrt(5)
+    y_expected = (np.sqrt(5) - 1)**2
+    print(f"  2/√5 = {x1_expected:.6f}, 1/√5 = {x2_expected:.6f}")
+    print(f"  (√5 - 1)² = {y_expected:.6f}")
+    print(f"x1 error    = {(result.x[0]/x1_expected -1)*100:.6f}" + '%')
+    print(f"x2 error    = {(result.x[1]/x2_expected -1)*100:.6f}" + '%')
+    print(f"f(x*) error = {(result.fun/y_expected   -1)*100:.6f}" + '%')
     print("=" * 60)
     
     # Visualization

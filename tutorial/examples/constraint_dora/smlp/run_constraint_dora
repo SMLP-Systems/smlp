@@ -12,7 +12,7 @@ if($PATH !~ \.*) then
 endif
 set csv=Constraint_dora.csv
 set json=`echo $csv:r | tr '[A-Z]' '[a-z]'`.json
-gunzip -c $script_path:h/py/dataset_polar.txt.expected.gz | tr ' ' , > $csv
+gunzip -c $script_path:h/py/dataset.txt.expected.gz | tr ' ' , > $csv
 $script_path:h:h:h:h/src/run_smlp.py -data $csv \
     -spec $script_path/$json \
     -out_dir ./ \
@@ -23,7 +23,7 @@ $script_path:h:h:h:h/src/run_smlp.py -data $csv \
     -resp Y1 \
     -feat X1,X2 \
     -model dt_sklearn \
-    -dt_sklearn_max_depth 14 \
+    -dt_sklearn_max_depth 15 \
     -tree_encoding flat \
     -compress_rules t \
     -mrmr_pred 0 \
