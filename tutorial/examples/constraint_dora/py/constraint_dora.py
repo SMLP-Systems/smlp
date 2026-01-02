@@ -71,26 +71,49 @@ def brute_force(f_data, f_constraint):
 def main(n: int = 400, rootpath: str = ".") -> int:
 # Initial guess
     # Create grid for contour plot and calculate result using brute force method
-    r = range(0, n)
+    rng = range(0, n)
     x1_start, x1_stop = (-1.5, 2.5)
     x2_start, x2_stop = (-1.5, 2.0)
-    x1 = np.linspace(x1_start, x1_stop, r.stop)
-    x2 = np.linspace(x2_start, x1_stop, r.stop)
+    x1 = np.linspace(x1_start, x1_stop, rng.stop)
+    x2 = np.linspace(x2_start, x1_stop, rng.stop)
     X1, X2 = np.meshgrid(x1, x2)
     Z = (X1 - 2)**2 + (X2 - 1)**2
     C = 1 - X1**2 - X2**2
     dataset=rootpath + "/dataset.txt"
     with open(dataset,"w") as ds:
         ds.write("X1 X2 Y1\n")
-        [[ds.write(f"{X1[i][j]} {X2[i][j]} {Z[i][j]}\n") for j in r] for i in r]
+        [[ds.write(f"{X1[i][j]} {X2[i][j]} {Z[i][j]}\n") for j in rng] for i in rng]
     constraint_set=rootpath + "/constraint.txt"
     with open(constraint_set,"w") as cs:
         cs.write("X1 X2 Y1\n")
-        [[cs.write(f"{X1[i][j]} {X2[i][j]} {C[i][j]}\n") for j in r] for i in r]
+        [[cs.write(f"{X1[i][j]} {X2[i][j]} {C[i][j]}\n") for j in rng] for i in rng]
     #Brute force solution
     brute_force_result=brute_force(dataset, constraint_set).split()
     print("=" * 60)
     print(f"Brute force result: x1 = {float(brute_force_result[0]):.5f} x2 = {float(brute_force_result[1]):.5f} f(x*) = {float(brute_force_result[2]):.5f}") 
+    dataset_polar=rootpath + "/dataset_polar.txt"
+    R = np.sqrt(X1*X1 + X2*X2)
+    THETA = np.arctan2(X2,X1)
+    X11 = R * np.cos(THETA)
+    X21 = R * np.sin(THETA)
+    Z1 = (X11 - 2)**2 + (X21 - 1)**2
+    C1 = 1 - R**2
+    with open(dataset_polar,"w") as ds:
+        ds.write("X1 X2 Y1\n")
+        [[ds.write(f"{R[i][j]} {THETA[i][j]} {Z1[i][j]}\n") for j in rng] for i in rng]
+    constraint_set_polar=rootpath + "/constraint_polar.txt"
+    with open(constraint_set_polar,"w") as cs:
+        cs.write("X1 X2 Y1\n")
+        [[cs.write(f"{R[i][j]} {THETA[i][j]} {C1[i][j]}\n") for j in rng] for i in rng]
+    #Brute force solution in polar coordinates
+    brute_force_result_polar=brute_force(dataset_polar, constraint_set_polar).split()
+    print("=" * 60)
+    print(f"Brute force result polar: r = {float(brute_force_result_polar[0]):.5f} theta = {float(brute_force_result_polar[1]):.5f} f(x*) = {float(brute_force_result_polar[2]):.5f}") 
+    brute_force_result_polar_x = float(brute_force_result_polar[0])*np.cos(float(brute_force_result_polar[1]))
+    brute_force_result_polar_y = float(brute_force_result_polar[0])*np.sin(float(brute_force_result_polar[1]))
+    print(f"Brute force result polar Cartesian coordinate system: x1 = {float(brute_force_result_polar_x):.5f} theta = {float(brute_force_result_polar_y):.5f} f(x*) = {float(brute_force_result_polar[2]):.5f}") 
+    print("=" * 60)
+
     x0 = np.array([0.5, 0.5])
     
     # Define constraint dictionary for scipy
@@ -145,7 +168,6 @@ def main(n: int = 400, rootpath: str = ".") -> int:
     ax.legend(loc='upper right')
     ax.grid(True, alpha=0.3)
     ax.axis('equal')
-    ax.set_xlim(-1.5, 2.5)
     ax.set_ylim(-1.5, 2.0)
     
     plt.tight_layout()
