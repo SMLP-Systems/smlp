@@ -23,7 +23,7 @@ $script_path:h:h:h:h/src/run_smlp.py -data $csv \
     -resp Y1 \
     -feat X1,X2 \
     -model dt_sklearn \
-    -dt_sklearn_max_depth 15 \
+    -dt_sklearn_max_depth 14 \
     -tree_encoding flat \
     -compress_rules t \
     -mrmr_pred 0 \
