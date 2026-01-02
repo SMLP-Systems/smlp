@@ -111,7 +111,7 @@ def main(n: int = 400, rootpath: str = ".") -> int:
     print(f"Brute force result polar: r = {float(brute_force_result_polar[0]):.5f} theta = {float(brute_force_result_polar[1]):.5f} f(x*) = {float(brute_force_result_polar[2]):.5f}") 
     brute_force_result_polar_x = float(brute_force_result_polar[0])*np.cos(float(brute_force_result_polar[1]))
     brute_force_result_polar_y = float(brute_force_result_polar[0])*np.sin(float(brute_force_result_polar[1]))
-    print(f"Brute force result polar Cartesian coordinate system: x1 = {float(brute_force_result_polar_x):.5f} theta = {float(brute_force_result_polar_y):.5f} f(x*) = {float(brute_force_result_polar[2]):.5f}") 
+    print(f"Brute force result polar Cartesian coordinate system: x1 = {float(brute_force_result_polar_x):.5f} x2 = {float(brute_force_result_polar_y):.5f} f(x*) = {float(brute_force_result_polar[2]):.5f}") 
     print("=" * 60)
 
     x0 = np.array([0.5, 0.5])
