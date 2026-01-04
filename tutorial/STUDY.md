@@ -10,7 +10,9 @@
 5.2.1 `NSGA-II`: four categorical variables, three objectives, non-linear constraints<br>
 5.2.2 `NSGA-II`: one continuos and four categorical variables, two objectives, no constraints<br>
 5.2.3 `NSGA-III`: one continuos and four categorical variables, three objectives, no constraints<br>
-- [Study details](media/study.xlsx)
+- ![Study - coverage table ](media/Table1.png)
+- ![Study - code ](media/Table2.png)
+- [Study - details ](media/study.xlsx)
 ## Regression
 - python3.12: `run_smlp_tutorial_clone_and_examples`
 - python3.14: `run_smlp_tutorial_clone_and_examples_314`
