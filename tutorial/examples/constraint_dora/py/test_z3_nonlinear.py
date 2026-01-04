@@ -10,4 +10,4 @@ def test_constraint_dora(monkeypatch, request):
         test_path = dirname(realpath(root_dir + getenv('PYTEST_CURRENT_TEST').split(':')[0]))
         print("")
         m.setattr(sys, 'argv', ['constraint_dora_z3'])
-        assert main(test_path,10000) == '9405a560dd32fe3788a01b79963081072285d51063c798dd3585bfa4141ff489'
+        assert main(test_path,10000) == '16fba6eda91f97f8533e146143bdff2fc1d658193925eda86a62c44c6c37294a'

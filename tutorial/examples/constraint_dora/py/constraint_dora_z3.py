@@ -1,4 +1,4 @@
-#!/usr/bin/python3.12
+#!/usr/bin/python3.14
 from z3 import *
 import numpy as np
 from scipy.optimize import minimize
@@ -15,38 +15,48 @@ logging.basicConfig(
 
 def main(rootpath: str = ".", timeout: int = 30000):
     logging.info("=" * 60)
-    logging.info("METHOD 1: Z3 Optimizer (for comparison)")
+    logging.info("METHOD 1: Z3 Solver")
     logging.info("=" * 60)
     results = {}
     
-    # Create Z3 optimizer
-    opt = Optimize()
-    
-    # Define real variables
+    s = Solver()
     x1 = Real('x1')
     x2 = Real('x2')
-    
-    # Define the objective function: (x1-2)^2 + (x2-1)^2
-    objective = (x1 - 2)**2 + (x2 - 1)**2
-    
-    # Add constraint: x1^2 + x2^2 <= 1 (inside unit circle)
-    opt.add(x1**2 + x2**2 <= 1)
-    
-    # Minimize the objective
-    opt.set("timeout",timeout)
-    opt.minimize(objective)
-    
-    # Solve
-    if opt.check() == sat:
-        model = opt.model()
-        x1_val = model[x1]
-        x2_val = model[x2]
-        
-        # Convert to float for display
-        x1_float = float(x1_val.as_decimal(10).rstrip('?'))
-        x2_float = float(x2_val.as_decimal(10).rstrip('?'))
+    grid = []
+    for i in range(0,3600,200):
+        ind=[i,i+200]
+        success = False
+        for j in ind:
+            v_float=j/1000
+            v = RealVal(v_float)
+            s.add(1 - x1**2 - x2**2 >= 0)
+            s.push()
+            s.add((x1 - 2)**2 + (x2 - 1)**2 < v)
+            if s.check() == sat:
+                success = True
+                break
+            s.reset()
+        if(success): grid.append(ind)
+    z3_results = []
+    for interval in grid:
+        for i in range(interval[0],interval[1]):
+            v_float=i/1000
+            v = RealVal(v_float)
+            s.add(1 - x1**2 - x2**2 >= 0)
+            s.add((x1 - 2)**2 + (x2 - 1)**2 < v)
+            if s.check() == sat:
+                model = s.model()
+                x1_fraction=model[x1].as_fraction()
+                x1_float=float(x1_fraction.numerator)/float(x1_fraction.denominator)
+                x2_fraction=model[x2].as_fraction()
+                x2_float=float(x2_fraction.numerator)/float(x2_fraction.denominator)
+                z3_results.append((x1_float, x2_float,v_float)) 
+            s.reset()
+    if len(z3_results) > 0:
+        sorted_results = sorted(z3_results, key=lambda x: x[2])
+        x1_float = sorted_results[0][0]
+        x2_float = sorted_results[0][1]
         obj_val = (x1_float - 2)**2 + (x2_float - 1)**2
-        
         logging.info(f"Z3 Solution:")
         logging.info(f"  x1 = {x1_float:.6f}")
         logging.info(f"  x2 = {x2_float:.6f}")
@@ -54,7 +64,7 @@ def main(rootpath: str = ".", timeout: int = 30000):
         logging.info(f"  Constraint check: x1^2 + x2^2 = {x1_float**2 + x2_float**2:.6f}")
         results['z3']=(round(x1_float,4),round(x2_float,4))
     else:
-        logging.info(f"No solution found by Z3 after {timeout//1000} second(s)")
+        logging.info(f"No solution found by Z3")
         results['z3']=(nan,nan)
      
     logging.info("\n" + "=" * 60)
