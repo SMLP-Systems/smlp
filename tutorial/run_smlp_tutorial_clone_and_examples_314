@@ -1,0 +1,19 @@
+#!/usr/bin/tcsh -f
+set rundir=/tmp/smlp_tutorial_${USER}_$$
+set script_path=`realpath $0 | xargs dirname`
+set script_name=`realpath $0 | xargs basename`
+set log=${script_path}/${script_name}.log
+echo "Run directory: $rundir" |& tee $log
+\rm -rf $rundir >& /dev/null
+mkdir -p $rundir
+cd $rundir
+git clone ssh://git@github.com/SMLP-Systems/smlp |& tee -a $log 
+cd smlp
+git switch SMLP_TUTORIAL |& tee -a $log
+cd tutorial/examples
+set cmd="env PYTHONDONTWRITEBYTECODE=1 /usr/local/lib/python3.14/dist-packages/bin/pytest -v --forked -m forked $PWD"
+echo $cmd |& tee -a $log
+$cmd |& tee -a $log
+set cmd="env PYTHONDONTWRITEBYTECODE=1 /usr/local/lib/python3.14/dist-packages/bin/pytest -v -s -m 'not forked' $PWD"
+echo $cmd | tr '\047' '"' |& tee -a $log
+echo $cmd | tr '\047' '"' | source /dev/stdin |& tee -a $log
