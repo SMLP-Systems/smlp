@@ -24,7 +24,7 @@
 - python3.14: `run_smlp_tutorial_clone_and_examples_314`
 ## Priorities
 1. **Move to** `python3.12`
-- Justification: `python3.12 is the default version for **Ubuntu 24.04** (current release)
+- Justification: `python3.12` is the default version for **Ubuntu 24.04** (current release)
 - **Ubuntu 26.04** (next release) will have `python3.14` as a default
 2. **Enhance Pareto** to provide more than one point in one run
 - Justification: this is common practice in alternative tools
