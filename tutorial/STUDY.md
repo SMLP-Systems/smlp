@@ -9,15 +9,24 @@
 5.2.1 `GLPK`: four categorical variables, three objectives, non-linear constraints<br>
 5.2.1 `NSGA-II`: four categorical variables, three objectives, non-linear constraints<br>
 5.2.2 `NSGA-II`: one continuos and four categorical variables, two objectives, no constraints<br>
-5.2.3 `NSGA-III`: one continuos and four categorical variables, three objectives, no constraints<br>
-- ![Study - coverage table ](media/Table1.png)
-- ![Study - code ](media/Table2.png)
+5.2.3 `NSGA-III`: one continuos and four categorical variables, three objectives, no constraints<br><br>
+**Study coverage**<br>
+![Study - coverage table ](media/Table1.png)
+![Study - coverage table legend ](media/Legend1.png)<br><br>
+**Study code**<br>
+![Study - code ](media/Table2.png)
+![Study - code legend ](media/Legend2.png)<br><br>
+**Study benchmarks**<br>
+![Study - benchmarks ](media/Table3.png)<br>
 - [Study - details ](media/study.xlsx)
 ## Regression
 - python3.12: `run_smlp_tutorial_clone_and_examples`
 - python3.14: `run_smlp_tutorial_clone_and_examples_314`
 ## Priorities
 1. **Move to** `python3.12`
+- Justification: `python3.12 is the default version for **Ubuntu 24.04** (current release)
+- **Ubuntu 26.04** (next release) will have `python3.14` as a default
 2. **Enhance Pareto** to provide more than one point in one run
+- Justification: this is common practice in alternative tools
 3. **Performance improvement**
-
+- Justification: all other methods are much faster
