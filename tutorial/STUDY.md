@@ -16,7 +16,7 @@
 **Study code**<br>
 ![Study - code ](media/Table2.png)
 ![Study - code legend ](media/Legend2.png)<br><br>
-**Study benchmarks**<br>
+**Study SMLP benchmarks**<br>
 ![Study - benchmarks ](media/Table3.png)<br>
 - [Study - details ](media/study.xlsx)
 ## Regression
