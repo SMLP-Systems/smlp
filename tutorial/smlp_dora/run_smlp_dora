@@ -1,11 +1,12 @@
 #!/usr/bin/tcsh -f
 set script_path=`realpath $0 | xargs dirname`
+set script_name=`realpath $0 | xargs basename`
 set test=smlp_toy_num_resp_mult
 set log=${test}.log
 set pref=Test83
+\rm -f *.log ${pref}_* >& /dev/null
 if($#argv > 0 ) then
     if( '-clean' == "$argv[1]" ) then
-        \rm -f *.log ${pref}_* >& /dev/null
         exit(0)
     endif
 endif
@@ -36,3 +37,21 @@ $script_path:h:h/src/run_smlp.py \
     -plots f \
     -seed 10 \
     -log_time f \
+    >& $log
+set new_results=${pref}_smlp_toy_num_resp_mult_optimization_results.json 
+set expected_results=${script_path}/smlp_dora_expected_results.json
+if(-e $new_results) then
+    set diff_cmd="diff $new_results $expected_results"
+    echo $diff_cmd
+    $diff_cmd
+    if($status) then
+        echo "\nSMLP passed, but results do not match expected. DORA test failed\n"
+        exit 1
+    else
+        echo "\nDORA test PASSED\n"
+        exit 0
+    endif
+else
+    echo "\nERROR: Can't find file $new_results\nDORA test failed\n" 
+    exit 1
+endif
