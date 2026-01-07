@@ -15,11 +15,11 @@ smlp_logger - INFO - Loaded model artifacts config {'rag_prompt_type': 'document
 
 smlp_logger - INFO - Loaded configuration {'rag_embedding_model': 'nomic-embed-text', 'rag_retriever_top_k': 3, 'rag_prompt_type': 'document_focused', 'rag_base_model_name': 'deepseek-r1:1.5b', 'rag_base_url': 'http://localhost:11434'}
 
-smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at rag_base_url http://localhost:11434
+smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at http://localhost:11434
 
 smlp_logger - INFO - Creating RAG chain for answering question(s)
 
-smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at rag_base_url http://localhost:11434
+smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at http://localhost:11434
 
 smlp_logger - INFO - Answering questions...
 
@@ -34,24 +34,41 @@ SMLP manual is available at Git Hub.
 -----
 
 smlp_logger - INFO - Answer: <think>
-Alright, let's tackle this question. The user is asking who developed SMLP. I remember that the user has provided a context where it says SMLP was developed by Franz, Zurab, and Konstantin. So, based on the information given in the context, the answer should be these three individuals.
+Okay, so I need to figure out who developed the SMLP tool. The question is straightforward: "Who developed SMLP?" 
 
-I don't need to look at any other parts of the context because the question is solely dependent on what's stated there. The tool paper and manual details might provide more context about SMLP but aren't necessary for answering who developed it. 
+Looking at the context provided, it says that SMLP was developed by Franz, Zurab, and Konstantin. That's pretty direct. There are other details about the paper being published in CAV 2025 and the manual being available on Git Hub, but those don't provide information about who developed the tool itself.
 
-So, putting it all together, I can confidently state that SMLP was developed by these three people.
+I should focus only on the first part of the context because that's where the developers' names are listed. The other parts are probably additional information about the tool, like its publication details or availability, which might be useful for understanding how it's used or referenced elsewhere but don't affect the answer to who developed it.
+
+So, putting it all together, the developers are Franz, Zurab, and Konstantin. I don't need any other information from the context because that doesn't change the fact that those three are responsible for SMLP.
 </think>
 
-The development of SMLP was created by Franz, Zurab, and Konstantin.
-
-Step-by-step explanation:
-1. The context states that SMLP was developed by these three individuals.
-2. No additional information is needed beyond this fact.
-3. The question only asks for the developers, not other details about the tool or its publications.
-
-Answer: Franz, Zurab, and Konstantin were the developers of SMLP.
+Franz, Zurab, and Konstantin developed SMLP.
 
 
 smlp_logger - INFO - Saving generated text into ./Test240_toy_smlp_rag_generated.txt
+
+smlp_logger - INFO - Saved retrieved contexts to ./Test240_toy_smlp_rag_retrieved_contexts.json
+
+smlp_logger - INFO - ======================================================================
+
+smlp_logger - INFO - MEMORY CLEANUP: Freeing RAG model memory before loading judge
+
+smlp_logger - INFO - ======================================================================
+
+smlp_logger - INFO - Cleaning up LangChain RAG memory...
+
+smlp_logger - INFO - Memory cleanup complete
+
+smlp_logger - INFO - ======================================================================
+
+smlp_logger - INFO - Running RAG quality evaluation with LLM-as-a-Judge
+
+smlp_logger - INFO - Running LLM judge using model: Qwen/Qwen2.5-1.5B-Instruct
+
+smlp_logger - INFO - Judge results for (training): {'summary': {'num_examples': 1, 'num_valid': 1, 'grounded_rate': 1.0, 'grounded_none_count': 0, 'hallucination_rate': 0.0, 'hallucination_none_count': 0, 'avg_score': 5.0}, 'details': [{'grounded': True, 'hallucination': False, 'score': 5, 'explanation': 'The answer is directly supported by the given context which states that Franz, Zurab, and Konstantin developed SMLP.', 'confidence': 'high'}]}
+
+smlp_logger - INFO - LLM judge results written to ./Test240_toy_smlp_llm_training_quality.json
 
 smlp_logger - INFO - Running SMLP in mode "rag": End
 

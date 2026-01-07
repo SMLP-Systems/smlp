@@ -17,15 +17,15 @@ smlp_logger - INFO - Creating RAG chain for training
 
 smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at http://localhost:11434
 
-smlp_logger - INFO - Saving RAG artifacts in directory: ./test243_model
+smlp_logger - INFO - Saving RAG artifacts in directory: ./test263_model
 
-smlp_logger - INFO - Saving FAISS index into file ./test243_model/faiss_index
+smlp_logger - INFO - Saving FAISS index into file ./test263_model/faiss_index
 
-smlp_logger - INFO - Saving model artifacts config into file ./test243_model/rag_config.json
+smlp_logger - INFO - Saving model artifacts config into file ./test263_model/rag_config.json
 
 smlp_logger - INFO - {'rag_prompt_type': 'document_focused', 'rag_retriever_top_k': 3, 'rag_embedding_model': 'nomic-embed-text', 'rag_base_url': 'http://localhost:11434', 'rag_base_model_name': 'deepseek-r1:1.5b'}
 
-smlp_logger - INFO - Saved RAG artifacts to: ./test243_model
+smlp_logger - INFO - Saved RAG artifacts to: ./test263_model
 
 smlp_logger - INFO - Creating RAG chain for answering question(s)
 
@@ -54,9 +54,9 @@ SMLP manual is available at Git Hub.
 SMLP is an open source model exploration tool.
 
 
-smlp_logger - INFO - Saving generated text into ./Test243_toy_smlp_rag_generated.txt
+smlp_logger - INFO - Saving generated text into ./Test263_toy_smlp_rag_generated.txt
 
-smlp_logger - INFO - Saved retrieved contexts to ./Test243_toy_smlp_rag_retrieved_contexts.json
+smlp_logger - INFO - Saved retrieved contexts to ./Test263_toy_smlp_rag_retrieved_contexts.json
 
 smlp_logger - INFO - ======================================================================
 
@@ -72,11 +72,15 @@ smlp_logger - INFO - ===========================================================
 
 smlp_logger - INFO - Running RAG quality evaluation with LLM-as-a-Judge
 
-smlp_logger - INFO - Running LLM judge using model: Qwen/Qwen2.5-1.5B-Instruct
+smlp_logger - INFO - Running LLM judge using model: google/flan-t5-base
 
-smlp_logger - INFO - Judge results for (training): {'summary': {'num_examples': 1, 'num_valid': 1, 'grounded_rate': 1.0, 'grounded_none_count': 0, 'hallucination_rate': 0.0, 'hallucination_none_count': 0, 'avg_score': 5.0}, 'details': [{'grounded': True, 'hallucination': False, 'score': 5, 'explanation': 'The answer is fully supported by the given context. It correctly identifies the developers as Franz, Zurab, and Konstantin, mentions that the manual is available on GitHub, and states that SMLP is an open-source model exploration tool.', 'confidence': 'high'}]}
+smlp_logger - WARNING - Judge attempt 1 failed (score=None), retrying...
 
-smlp_logger - INFO - LLM judge results written to ./Test243_toy_smlp_llm_training_quality.json
+smlp_logger - WARNING - Judge attempt 2 failed (score=None), retrying...
+
+smlp_logger - INFO - Judge results for (training): {'summary': {'num_examples': 1, 'num_valid': 0, 'grounded_rate': None, 'hallucination_rate': None, 'avg_score': None}, 'details': [{'grounded': None, 'hallucination': None, 'score': None, 'explanation': 'Judge parsing failed: No valid JSON found in judge output. Output preview: Franz, Zurab, and Konstantin', 'raw_output': 'Franz, Zurab, and Konstantin', 'confidence': 'high'}]}
+
+smlp_logger - INFO - LLM judge results written to ./Test263_toy_smlp_llm_training_quality.json
 
 smlp_logger - INFO - Running SMLP in mode "rag": End
 

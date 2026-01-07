@@ -11,7 +11,35 @@ smlp_logger - INFO - Generated text: !
 
 smlp_logger - INFO - Saving generated text into ./Test261_toy_llm_from_scratch_llm_generated.txt
 
+smlp_logger - INFO - Generated text: 
+
+smlp_logger - INFO - Saving generated text into ./Test261_toy_llm_from_scratch_llm_generated.txt
+
+smlp_logger - INFO - Generated text: 
+
+smlp_logger - INFO - Saving generated text into ./Test261_toy_llm_from_scratch_llm_generated.txt
+
+smlp_logger - INFO - Generated text: 
+
+smlp_logger - INFO - Saving generated text into ./Test261_toy_llm_from_scratch_llm_generated.txt
+
+smlp_logger - INFO - Judge results for (training): {'summary': {'num_examples': 4, 'num_valid': 4, 'grounded_rate': 0.0, 'grounded_none_count': 0, 'hallucination_rate': 1.0, 'hallucination_none_count': 0, 'avg_score': 1.0}, 'details': [{'grounded': False, 'hallucination': True, 'score': 1, 'explanation': "The model's response ('! !') is entirely disconnected from the provided context and does not offer any factual support.", 'confidence': 'high'}, {'grounded': False, 'hallucination': True, 'score': 1, 'explanation': 'Empty answer provided', 'confidence': 'high'}, {'grounded': False, 'hallucination': True, 'score': 1, 'explanation': 'Empty answer provided', 'confidence': 'high'}, {'grounded': False, 'hallucination': True, 'score': 1, 'explanation': 'Empty answer provided', 'confidence': 'high'}]}
+
+smlp_logger - INFO - LLM judge results written to ./Test261_toy_llm_from_scratch_llm_training_quality.json
+
+smlp_logger - INFO - Generated text: !
+
+smlp_logger - INFO - Saving generated text into ./Test261_toy_llm_from_scratch_llm_generated.txt
+
 smlp_logger - INFO - Generated: !
+
+smlp_logger - WARNING - Judge attempt 1 failed (score=None), retrying...
+
+smlp_logger - WARNING - Judge attempt 2 failed (score=None), retrying...
+
+smlp_logger - INFO - Judge results for (generation): {'summary': {'num_examples': 1, 'num_valid': 0, 'grounded_rate': None, 'hallucination_rate': None, 'avg_score': None}, 'details': [{'grounded': False, 'hallucination': False, 'score': None, 'explanation': "The response begins with '!' without providing any relevant context, thus failing to meet the criteria for being grounded.", 'confidence': 'high'}]}
+
+smlp_logger - INFO - LLM judge results written to ./Test261_toy_llm_from_scratch_llm_generation_quality.json
 
 smlp_logger - INFO - Running SMLP in mode "llm": End
 

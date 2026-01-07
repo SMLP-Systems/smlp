@@ -9,6 +9,10 @@ smlp_logger - INFO - Saving generated text into ./Test260_toy_llm_from_scratch_l
 
 smlp_logger - INFO - Generated: Once upon a time, where was a kingdom where the knight thought Slot Slot Slot Slot Slot Slot Slot Slot Slot Slot Slot Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk Dusk thermal thermal brill Hex Contra tumultuous tumultuous tumultuous tumultuous tumultuous tumultuous
 
+smlp_logger - INFO - Judge results for (generation): {'summary': {'num_examples': 1, 'num_valid': 1, 'grounded_rate': 0.0, 'grounded_none_count': 0, 'hallucination_rate': 1.0, 'hallucination_none_count': 0, 'avg_score': 1.0}, 'details': [{'grounded': False, 'hallucination': True, 'score': 1, 'explanation': 'The model has produced entirely new and unrelated content that does not align with any part of the provided context.', 'confidence': 'high'}]}
+
+smlp_logger - INFO - LLM judge results written to ./Test260_toy_llm_from_scratch_llm_generation_quality.json
+
 smlp_logger - INFO - Running SMLP in mode "llm": End
 
 smlp_logger - INFO - Executing run_smlp.py script: End

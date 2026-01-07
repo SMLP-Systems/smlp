@@ -1,0 +1,20 @@
+{
+  "summary": {
+    "num_examples": 1,
+    "num_valid": 1,
+    "grounded_rate": 1.0,
+    "grounded_none_count": 0,
+    "hallucination_rate": 0.0,
+    "hallucination_none_count": 0,
+    "avg_score": 3.0
+  },
+  "details": [
+    {
+      "grounded": true,
+      "hallucination": false,
+      "score": 3,
+      "explanation": "The answer is well-grounded, but some minor incompleteness. The answer contains some fabricated facts, but none that are hallucinatory.",
+      "confidence": "high"
+    }
+  ]
+}

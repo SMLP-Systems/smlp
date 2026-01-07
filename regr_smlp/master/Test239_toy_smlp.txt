@@ -15,7 +15,7 @@ smlp_logger - INFO - Computing embedding and indexing
 
 smlp_logger - INFO - Creating RAG chain for training
 
-smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at rag_base_url http://localhost:11434
+smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at http://localhost:11434
 
 smlp_logger - INFO - Saving RAG artifacts in directory: ./test239_model
 
@@ -29,7 +29,7 @@ smlp_logger - INFO - Saved RAG artifacts to: ./test239_model
 
 smlp_logger - INFO - Creating RAG chain for answering question(s)
 
-smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at rag_base_url http://localhost:11434
+smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at http://localhost:11434
 
 smlp_logger - INFO - Answering questions...
 
@@ -44,17 +44,41 @@ SMLP manual is available at Git Hub.
 -----
 
 smlp_logger - INFO - Answer: <think>
-Alright, so I need to figure out who developed SMLP based on the provided context. Let me read through the context carefully.
+Okay, so I need to figure out who developed the SMLP tool. The question is straightforward: "Who developed SMLP?" 
 
-The first sentence says, "SMLP was developed by Franz, Zurab and Konstantin." That seems straightforward—three people are mentioned as developers of the tool. Then there's information about a paper published in CAV 2025 and that the manual is available on Git Hub. But these seem like general details about SMLP, not its developer.
+Looking at the context provided, it says that SMLP was developed by Franz, Zurab, and Konstantin. That's pretty direct. There are other details about the paper being published in CAV 2025 and the manual being available on Git Hub, but those don't affect who developed the tool itself.
 
-The question is asking who developed SMLP specifically. Since the context only mentions three people as contributors but doesn't specify who developed the tool itself, I can't determine which of them was the original developer. The information provided isn't relevant to identifying the developers of SMLP.
+I should make sure I'm not missing anything else that might suggest a different origin. The context doesn't mention any other contributors or sources related to SMLP's development. So, based solely on what's given in the context, the answer is clear: it was developed by these three individuals.
 </think>
 
-Franz, Zurab, and Konstantin were the three developers of SMLP.
+- Franz  
+- Zurab  
+- Konstantin
 
 
 smlp_logger - INFO - Saving generated text into ./Test239_toy_smlp_rag_generated.txt
+
+smlp_logger - INFO - Saved retrieved contexts to ./Test239_toy_smlp_rag_retrieved_contexts.json
+
+smlp_logger - INFO - ======================================================================
+
+smlp_logger - INFO - MEMORY CLEANUP: Freeing RAG model memory before loading judge
+
+smlp_logger - INFO - ======================================================================
+
+smlp_logger - INFO - Cleaning up LangChain RAG memory...
+
+smlp_logger - INFO - Memory cleanup complete
+
+smlp_logger - INFO - ======================================================================
+
+smlp_logger - INFO - Running RAG quality evaluation with LLM-as-a-Judge
+
+smlp_logger - INFO - Running LLM judge using model: Qwen/Qwen2.5-1.5B-Instruct
+
+smlp_logger - INFO - Judge results for (training): {'summary': {'num_examples': 1, 'num_valid': 1, 'grounded_rate': 1.0, 'grounded_none_count': 0, 'hallucination_rate': 0.0, 'hallucination_none_count': 0, 'avg_score': 5.0}, 'details': [{'grounded': True, 'hallucination': False, 'score': 5, 'explanation': 'The answer is based on the provided context which clearly states that Franz, Zurab, and Konstantin developed SMLP.', 'confidence': 'high'}]}
+
+smlp_logger - INFO - LLM judge results written to ./Test239_toy_smlp_llm_training_quality.json
 
 smlp_logger - INFO - Running SMLP in mode "rag": End
 
