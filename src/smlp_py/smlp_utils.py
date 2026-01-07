@@ -245,10 +245,6 @@ def lists_union_order_preserving_without_duplicates(list_of_lists):
 # for pandas series (and consequently also pandas data frames), these fucntions
 # would give titghter control during object type sam=nity checks and other usages.
 def pd_series_is_numeric(column:Series):
-    #assert column.dtype in [int , float , object , datetime , bool]
-    #print('column.dtype', column.dtype)
-    #res = column.dtype in [int, float]
-    #assert res == (column.dtype.name in ['int64', 'float64'])
     res = column.dtype in [int, float, 'int32', 'float32']
     assert res == (column.dtype.name in ['int32', 'float32', 'int64', 'float64'])
     

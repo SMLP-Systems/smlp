@@ -813,6 +813,7 @@ class SubgroupDiscovery:
     # function to visualize the selected ranges).
     def _smlp_subgroups_single_response(self, feat_df:pd.DataFrame, resp_df:pd.DataFrame, 
             resp_name:str, pos_value:int, qf:str, dim:int, top_n:int):
+        assert pos_value == 0 or pos_value == 1
         #print('smlp_subgroups_single_response: feat_df cols', feat_df.columns.tolist())
         cls_reg_mode = get_response_type(resp_df, resp_name); #print('cls_reg_mode', cls_reg_mode)
         assert cls_reg_mode == CLASSIFICATION or cls_reg_mode == REGRESSION
