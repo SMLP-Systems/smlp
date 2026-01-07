@@ -25,6 +25,7 @@ from smlp_py.smlp_generate import SmlpGenerate
 from smlp_py.smlp_llm import SmlpLlm
 from smlp_py.smlp_finetune import SmlpFinetune
 from smlp_py.smlp_rag import SmlpRag
+from smlp_py.smlp_judge import LlmBaseJudge
 
 # Combining simulation results, optimization, uncertainty analysis, sequential experiments
 # https://foqus.readthedocs.io/en/3.1.0/chapt_intro/index.html
@@ -62,6 +63,7 @@ class SmlpFlows:
         self.llmInst = SmlpLlm()
         self.finetuneInst = SmlpFinetune()
         self.ragInst = SmlpRag()
+        self.judgeInst = LlmBaseJudge()
         
         # get args
         self.args_dict = self.modelInst.model_params_dict | \
@@ -83,8 +85,9 @@ class SmlpFlows:
                     self.solverInst.solver_params_dict | \
                     self.llmInst.llm_params_dict | \
                     self.ragInst.rag_params_dict | \
-                    self.finetuneInst.finetune_config_dict
-                    
+                    self.finetuneInst.finetune_config_dict | \
+                    self.judgeInst.llm_quality_params_dict
+        
         self.args = self.configInst.args_dict_parse(argv, self.args_dict)
         
         self.log_file = self.configInst.report_file_prefix + '.txt'
@@ -110,6 +113,7 @@ class SmlpFlows:
         self.llmInst.set_logger(self.logger)
         self.ragInst.set_logger(self.logger)
         self.finetuneInst.set_logger(self.logger)
+        self.judgeInst.set_logger(self.logger)
         
         # set report. model and wordvec files / file prefixes
         self.psgInst.set_report_file_prefix(self.configInst.report_file_prefix)
@@ -350,7 +354,9 @@ class SmlpFlows:
                 llm_trained_model_path=args.llm_trained_model_path, 
                 llm_train=args.llm_train, llm_generate=args.llm_generate, llm_prompt=args.llm_prompt, 
                 llm_vocab_size=args.llm_vocab_size, llm_block_size=args.llm_block_size, 
-                llm_epochs=args.llm_epochs, llm_batch_size=args.llm_batch_size)
+                llm_epochs=args.llm_epochs, llm_batch_size=args.llm_batch_size,
+                llm_quality_method=args.llm_quality_method, llm_judge_model=args.llm_judge_model, 
+                llm_judge_max_examples=args.llm_judge_max_examples, llm_judge_prompt=args.llm_judge_prompt)
             self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
             self.logger.info('Executing run_smlp.py script: End')
             return None
@@ -370,7 +376,19 @@ class SmlpFlows:
                 rag_eval_strategy=args.rag_eval_strategy, rag_save_steps=args.rag_save_steps, 
                 rag_logging_steps=args.rag_logging_steps, rag_report_to=args.rag_report_to, rag_lr=args.rag_lr,
                 rag_weight_decay=args.rag_weight_decay, rag_save_total_limit=args.rag_save_total_limit,
-                rag_compute_device=args.rag_compute_device)
+                rag_compute_device=args.rag_compute_device,  llm_quality_method=args.llm_quality_method, 
+                llm_judge_model=args.llm_judge_model, llm_judge_max_examples=args.llm_judge_max_examples,
+                llm_judge_prompt=args.llm_judge_prompt, llm_judge_do_sample=args.llm_judge_do_sample,
+                llm_judge_temperature=args.llm_judge_temperature, llm_judge_top_p=args.llm_judge_top_p,
+                llm_judge_repetition_penalty=args.llm_judge_repetition_penalty,
+                llm_judge_max_new_tokens=args.llm_judge_max_new_tokens,
+                llm_judge_max_input_length=args.llm_judge_max_input_length,
+                llm_judge_retry_attempts=args.llm_judge_retry_attempts,
+                llm_judge_validate_consistency=args.llm_judge_validate_consistency,
+                llm_judge_strip_cot=args.llm_judge_strip_cot, 
+                llm_judge_debug_logging=args.llm_judge_debug_logging,
+                llm_judge_load_in_8bit=args.llm_judge_load_in_8bit, 
+                llm_judge_load_in_4bit=args.llm_judge_load_in_4bit)
             self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
             self.logger.info('Executing run_smlp.py script: End')
             return None
@@ -392,7 +410,9 @@ class SmlpFlows:
                 finetune_save_strategy=args.finetune_save_strategy, finetune_sample=args.finetune_sample, 
                 finetune_temperature=args.finetune_temperature,finetune_num_beams=args.finetune_num_beams,
                 finetune_top_k=args.finetune_top_k, finetune_top_p=args.finetune_top_p, 
-                finetune_repetition_penalty=args.finetune_repetition_penalty)
+                finetune_repetition_penalty=args.finetune_repetition_penalty, 
+                llm_quality_method=args.llm_quality_method, llm_judge_model=args.llm_judge_model, 
+                llm_judge_max_examples=args.llm_judge_max_examples, llm_judge_prompt=args.llm_judge_prompt)
             self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
             self.logger.info('Executing run_smlp.py script: End')
             return None

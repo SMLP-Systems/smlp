@@ -4,6 +4,7 @@ from typing import Callable, Any, Union, Tuple, Optional
 import json
 
 from smlp_py.smlp_utils import str_to_bool
+from smlp_py.smlp_judge import SmlpScratchJudge
 
 # Ensures determinizm in training -- at least, reduces randomness in training: CPU-level
 # ops and PyTorch internals may still introduce non-determinism unless you go further 
@@ -116,6 +117,8 @@ class SmlpLlm:
         self._DEF_LLM_GENERATE = True
         self._DEF_LLM_GENERATE_PROMPT = "Once upon a time"
 
+        self.judge = SmlpScratchJudge()
+        
         ''' TODO !!! add parameters to control LLM training
         | Name                          | Description                                                              |
         | ----------------------------- | ------------------------------------------------------------------------ |
@@ -211,9 +214,11 @@ class SmlpLlm:
 
     def set_logger(self, logger):
         self._llm_logger = logger
+        self.judge.set_logger(logger)
 
     def set_report_file_prefix(self, prefix):
         self.report_file_prefix = prefix
+        self.judge.set_report_file_prefix(prefix)
     
     @property
     def generated_text_file_name(self):
@@ -525,7 +530,6 @@ class SmlpLlm:
                     next_token = torch.argmax(probs, dim=-1, keepdim=True)
 
                 generated_ids = torch.cat([generated_ids, next_token], dim=1)
-                #print('next_token.item()', next_token.item(), 'self.tokenizer.eos_token_id', self.tokenizer.eos_token_id)
                 if next_token.item() == self.tokenizer.eos_token_id:
                     break
 
@@ -574,11 +578,14 @@ class SmlpLlm:
             return generated_text
         else:
             return output_tokens
+        
 
     def smlp_llm(self, llm_text:str=None, llm_model_class=None, llm_trained_model_path=None, llm_prompt:str=None, 
-            llm_train:bool=True, llm_generate:bool=True, llm_vocab_size=None, llm_block_size=None, llm_epochs=None,
-            llm_batch_size=None):
-        # Load text lines from file
+                llm_train:bool=True, llm_generate:bool=True, llm_vocab_size=None, llm_block_size=None, llm_epochs=None,
+                llm_batch_size=None, llm_quality_method=None, llm_judge_model=None, llm_judge_max_examples=None,
+                llm_judge_prompt=None):
+
+        # Load text
         with open(llm_text, 'r', encoding='utf-8') as f:
             lines = [line.strip() for line in f if line.strip()]
         if not lines:
@@ -590,7 +597,8 @@ class SmlpLlm:
         self.output_dir = llm_trained_model_path
         self.tokenizer = None
         self.model = None
-        
+
+        # Training
         if llm_train:
             self.train(
                 texts=lines,
@@ -598,8 +606,39 @@ class SmlpLlm:
                 batch_size=llm_batch_size,
             )
 
+        # Judge after training
+        if llm_train and llm_quality_method == 'judge':
+            self.load_model(llm_trained_model_path)
+
+            # Simple heuristic: generate continuations for training text
+            generated = []
+
+            for text in lines[: llm_judge_max_examples]:
+                gen = self.generate(prompt=text)
+                generated.append(gen)
+            
+            judge_results = self.judge.run(
+                training_texts=lines,
+                generated_texts=generated,
+                llm_judge_model=llm_judge_model,
+                llm_judge_max_examples=llm_judge_max_examples,
+                llm_judge_prompt=llm_judge_prompt,
+                train_vs_gen=True
+            )
+            
+        # Generation
         if llm_generate:
             self.load_model(llm_trained_model_path)
             result = self.generate(prompt=llm_prompt)
             self._llm_logger.info(f"Generated: {result}")
-        
+
+            # Judge after generation
+            if llm_quality_method == 'judge':
+                gen_eval = self.judge.run( #evaluate_generation(
+                    training_texts=llm_prompt,
+                    generated_texts=result,
+                    llm_judge_model=llm_judge_model,
+                    llm_judge_max_examples=llm_judge_max_examples,
+                    llm_judge_prompt=llm_judge_prompt,
+                    train_vs_gen=False
+                )

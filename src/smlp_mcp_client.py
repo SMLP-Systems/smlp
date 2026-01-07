@@ -28,7 +28,7 @@ async def main():
             "log_files_prefix": "TestMCP",
             "labeled_data": "/home/zurabk/smlp/repo/smlp/regr_smlp/data/smlp_toy_num_resp_mult.csv",
             "new_data" : None,
-            "output_directory": "/home/zurabk/smlp/repo/smlp/regr_smlp/code",
+            "output_directory": "/home/zurabk/smlp/repo/smlp/regr_smlp/results",
             "split_test": 0.2,
             "features": "x,p1,p2",
             "response": "y1",

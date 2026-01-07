@@ -1,23 +1,86 @@
 # SPDX-License-Identifier: Apache-2.0
 # This file is part of smlp.
 
-from fastmcp import FastMCP
-from typing import Optional
+# Defines a FastMCP server with one tool: run_smlp_tool.
+# Exposes it via stdio when run directly (mcp.run(transport="stdio")).
+#
+# To test it standlone:
+# 1) Run the server directly (should start and wait for stdio)
+# PYTHONPATH=src python -m smlp_mcp_server
+# 2) Try a bare import from a Python REPL:
+# PYTHONPATH=src python -c "import smlp_py.smlp_flows as m; print('OK', m.__file__)"
+
+
 import logging
 import contextlib
 import sys
 import io
 
+from fastmcp import FastMCP
+#from fastmcp import Server, tool
+
+
+# --- path bootstrap: make sure this script finds modules in src/ ---
+from pathlib import Path
+import sys as _sys
+
+_THIS_FILE = Path(__file__).resolve()
+_SRC_DIR = _THIS_FILE.parent       # .../repo/smlp/src
+if str(_SRC_DIR) not in _sys.path:
+    _sys.path.insert(0, str(_SRC_DIR))
+
 from smlp_py.smlp_flows import SmlpFlows
 
-# Create MCP server instance
-mcp = FastMCP("SmlpServer")
 
 #@mcp.tool()
 #async def add(a: int, b: int) -> int:
 #    """Add two integers."""
 #    return a + b
 
+
+
+# Create MCP server instance
+mcp = FastMCP("SmlpServer")
+
+@mcp.tool()
+async def run_smlp_tool(params: dict) -> dict:
+    """
+    Run SMLP with CLI-style parameters. 
+    Params dict should match CLI args (e.g., {'labeled_data': '...', 'model': 'dt_caret'}).
+    """
+    print('===================run_smlp_tool params', type(run_smlp_tool), run_smlp_tool, file=sys.stderr, flush=True)
+    # Convert dict to CLI-like argv list
+    argv = ["smlp"]
+    for k, v in params.items():
+        flag = f"--{k}"
+        argv.extend([flag, str(v)])
+        #if isinstance(v, bool):
+        #    if v:
+        #        argv.append(flag)
+        #else:
+        #    argv.extend([flag, str(v)])
+    print('argv in run_smlp_tool', argv)
+    
+    try:
+        smlp = SmlpFlows(argv)
+        smlp.smlp_flow()
+        return {"status": "success"}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+if __name__ == "__main__":
+    # No asyncio.run() here — FastMCP manages the loop
+    mcp.run(transport="stdio")
+
+    
+'''
+
+from fastmcp import FastMCP
+from typing import Optional
+
+
+# Create MCP server instance
+mcp = FastMCP("SmlpServer")
 
 @mcp.tool()
 async def run_smlp_tool(
@@ -107,3 +170,4 @@ async def run_smlp_tool(
 if __name__ == "__main__":
     # No asyncio.run() here — FastMCP manages the loop
     mcp.run(transport="stdio")
+'''

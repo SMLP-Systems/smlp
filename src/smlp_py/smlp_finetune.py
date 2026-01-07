@@ -49,12 +49,12 @@ from transformers.trainer import Trainer
 
 
 from peft import LoraConfig
-from trl import SFTTrainer, SFTConfig
+from trl import SFTTrainer, SFTConfig, DPOConfig, DPOTrainer
 from dotenv import load_dotenv
 #import openai
 
 from smlp_py.smlp_utils import str_to_bool
-
+from smlp_py.smlp_judge import SmlpFinetuneJudge
 
 # This class is introduced to be able to define custom function compute_loss 
 # that overrides compute_loss defined within Trainer class in transformers
@@ -120,6 +120,8 @@ class SmlpFinetune:
         self._DEF_FINETUNE_TOP_P = 0.95
         self._DEF_FINETUNE_REPETITION_PENALTY = 1.2
         
+        self._finetune_logger = None
+        self.judge = SmlpFinetuneJudge()
         
         # CLI-compatible config dictionary
         self.finetune_config_dict = {
@@ -318,15 +320,16 @@ class SmlpFinetune:
             },
         }
         
-        self._finetune_logger = None
-    
+
     # set logger from a caller script
     def set_logger(self, logger):
         self._finetune_logger = logger 
-    
+        self.judge.set_logger(logger)
+        
     # report_file_prefix is a string used as prefix in all report files of SMLP
     def set_report_file_prefix(self, report_file_prefix):
         self.report_file_prefix = report_file_prefix
+        self.judge.set_report_file_prefix(report_file_prefix)
     
     @property
     def generated_text_file_name(self):
@@ -474,6 +477,26 @@ class SmlpFinetune:
                 raise ValueError("Summarization requires encoder-decoder model (e.g. T5, BART).")
             return AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
+        elif task_type == "rl_dpo":
+            # Load policy model
+            policy = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                device_map="auto" if not use_cpu else None,
+            )
+            policy.config.use_cache = False
+            policy.config.pretraining_tp = 1
+
+            # Load reference model (frozen)
+            reference = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                device_map="auto" if not use_cpu else None,
+            )
+            reference.eval()
+            for p in reference.parameters():
+                p.requires_grad = False
+
+            return {"policy": policy, "reference": reference}
+
         else:
             raise ValueError(f"Unsupported task type: {task_type}")
 
@@ -557,10 +580,14 @@ class SmlpFinetune:
         finetune_warmup_ratio=0.03,
         finetune_lr_scheduler_type="linear",
         finetune_group_by_length=True,
-        finetune_packing=False):
+        finetune_packing=False,
+        llm_quality_method=None, 
+        llm_judge_model=None, 
+        llm_judge_max_examples=None, 
+        llm_judge_prompt=None):
 
         self._finetune_logger.info(f"Starting fine-tuning: model={finetune_base_model_name}, task={finetune_task_type}")
-
+        
         # --- Tokenizer ---
         tokenizer = AutoTokenizer.from_pretrained(finetune_base_model_name, trust_remote_code=True)
         tokenizer.pad_token = tokenizer.eos_token if tokenizer.pad_token is None else tokenizer.pad_token
@@ -660,6 +687,56 @@ class SmlpFinetune:
                 return model_inputs
 
             dataset = dataset.map(preprocess, remove_columns=dataset.column_names)
+        
+        elif finetune_task_type == "rl_dpo":
+            print("HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+            # --- Load policy model ---
+            policy_model = AutoModelForCausalLM.from_pretrained(
+                finetune_base_model_name,
+                device_map="auto" if not finetune_use_cpu else None
+            )
+            policy_model.config.use_cache = False
+            policy_model.config.pretraining_tp = 1
+
+            # --- Load reference model (frozen) ---
+            reference_model = AutoModelForCausalLM.from_pretrained(
+                finetune_base_model_name,
+                device_map="auto" if not finetune_use_cpu else None
+            )
+            reference_model.eval()
+            for param in reference_model.parameters():
+                param.requires_grad = False
+
+            # --- DPO config ---
+            dpo_config = DPOConfig(
+                output_dir=finetune_trained_model_path,
+                per_device_train_batch_size=finetune_per_device_train_batch_size,
+                num_train_epochs=finetune_num_train_epochs,
+                beta=0.1,
+            )
+
+            # --- Create trainer ---
+            trainer = DPOTrainer(
+                model=policy_model,
+                ref_model=reference_model,
+                processing_class=tokenizer,
+                args=dpo_config,
+                train_dataset=dataset,
+            )
+
+            # ---- Train / Save (same as SFT branch) ----
+            self._finetune_logger.info("Training started...")
+            trainer.train()
+
+            trainer.save_model(finetune_trained_model_path)
+            tokenizer.save_pretrained(finetune_trained_model_path)
+
+            self._finetune_logger.info(
+                f"Training finished. Model saved to {finetune_trained_model_path}"
+            )
+
+            return  # ❗ Prevent falling into the Seq2SeqTrainer block
         else:
             raise ValueError(f"Unsupported task: {finetune_task_type}")
 
@@ -814,6 +891,24 @@ class SmlpFinetune:
         trainer.save_model(finetune_trained_model_path)
         tokenizer.save_pretrained(finetune_trained_model_path)
         self._finetune_logger.info(f"Training finished. Model saved to {finetune_trained_model_path}")
+        
+        if llm_quality_method == "judge":
+            self._finetune_logger.info("Running LLM-as-a-Judge on finetuning data")
+
+            judge_results = self.judge.run(
+                dataset=dataset,
+                task_type=finetune_task_type,
+                llm_judge_model=llm_judge_model,
+                llm_judge_max_examples=llm_judge_max_examples,
+                llm_judge_prompt=llm_judge_prompt,
+                train_vs_gen=False
+            )
+
+            with open(
+                os.path.join(finetune_trained_model_path, "finetune_judge.json"),
+                "w"
+            ) as f:
+                json.dump(judge_results, f, indent=2)
 
     
     def llm_generate(self, model, tokenizer=None, prompt=None, context='', task_type=None,
@@ -953,7 +1048,8 @@ class SmlpFinetune:
     
     def generate(self, finetune_trained_model_path=None, finetune_prompt=None, finetune_context=None, 
             finetune_max_new_tokens=None, finetune_task_type=None, finetune_sample=None, finetune_temperature=None, 
-            finetune_num_beams=None, finetune_top_k=None, finetune_top_p=None, finetune_repetition_penalty=None):
+            finetune_num_beams=None, finetune_top_k=None, finetune_top_p=None, finetune_repetition_penalty=None,
+            llm_quality_method=None, llm_judge_model=None, llm_judge_max_examples=None, llm_judge_prompt=None):
         output_text = self.llm_generate(
             model=finetune_trained_model_path,
             prompt=finetune_prompt,
@@ -976,6 +1072,22 @@ class SmlpFinetune:
         with open(self.generated_text_file_name, "w") as file:
             file.write(output_text)
         
+        if llm_quality_method == "judge":
+            judge_input = [{
+                "question": question or prompt,
+                "answer": output_text,
+                "context": context or judge_context or "",
+            }]
+            # TODO !!! why hard coded task_type="qa" is used?
+            judge_results = self.judge.run(
+                dataset=judge_input,
+                task_type="qa",  # semantic check
+                llm_judge_model=llm_judge_model,
+                llm_judge_max_examples=llm_judge_max_examples,
+                llm_judge_prompt=llm_judge_prompt,
+                train_vs_gen=True
+            )
+
         return output_text
 
     # Small models that can be used without a restriction:
@@ -987,10 +1099,12 @@ class SmlpFinetune:
             finetune_use_4bit=None, finetune_lora_r=None, finetune_lora_alpha=None, finetune_lora_dropout=None,
             finetune_fp16=None, finetune_bf16=None, finetune_max_seq_length=None, finetune_save_steps=None, 
             finetune_save_strategy=None, finetune_sample=None, finetune_temperature=None, finetune_num_beams=None,
-            finetune_top_k=None, finetune_top_p=None, finetune_repetition_penalty=None):
+            finetune_top_k=None, finetune_top_p=None, finetune_repetition_penalty=None, 
+            llm_quality_method=None, llm_judge_model=None, llm_judge_max_examples=None, 
+            llm_judge_prompt=None):
         
         # perform sanity checks that model type 
-        SUPPORTED_TASKS = {'text-generation', 'qa', 'summarization'}
+        SUPPORTED_TASKS = {'text-generation', 'qa', 'summarization', 'rl_dpo'}
         if finetune_task_type not in SUPPORTED_TASKS:
             raise ValueError(f"[ERROR] Invalid finetuning task: '{finetune_task_type}'. Must be one of {SUPPORTED_TASKS}")
 
@@ -1026,7 +1140,9 @@ class SmlpFinetune:
                 finetune_per_device_train_batch_size=finetune_per_device_train_batch_size, finetune_use_4bit=finetune_use_4bit, 
                 finetune_lora_r=finetune_lora_r, finetune_lora_alpha=finetune_lora_alpha, finetune_lora_dropout=finetune_lora_dropout,
                 finetune_fp16=finetune_fp16, finetune_bf16=finetune_bf16, finetune_max_seq_length=finetune_max_seq_length, 
-                finetune_save_steps=finetune_save_steps, finetune_save_strategy=finetune_save_strategy)
+                finetune_save_steps=finetune_save_steps, finetune_save_strategy=finetune_save_strategy,
+                llm_quality_method=None, llm_judge_model=None, llm_judge_max_examples=None,
+                llm_judge_prompt=None)
         
         if finetune_eval:
             self._finetune_logger.info("Running model generation (inference).")
@@ -1035,5 +1151,7 @@ class SmlpFinetune:
                 finetune_task_type=finetune_task_type, finetune_sample=finetune_sample, 
                 finetune_temperature=finetune_temperature, finetune_num_beams=finetune_num_beams,
                 finetune_top_k=finetune_top_k, finetune_top_p=finetune_top_p, 
-                finetune_repetition_penalty=finetune_repetition_penalty)
+                finetune_repetition_penalty=finetune_repetition_penalty,
+                llm_quality_method=None, llm_judge_model=None, llm_judge_max_examples=None,
+                llm_judge_prompt=None)
         

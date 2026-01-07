@@ -4,11 +4,22 @@
 import os
 import warnings
 import json
+import gc
+import psutil
+import os
+        
+    
+    
+import traceback
+import random
+from pathlib import Path
+
 from dotenv import load_dotenv
 #from docling.document_converter import DocumentConverter
 import pymupdf4llm
 from pathlib import Path
 import faiss
+from elasticsearch import Elasticsearch
 
 from langchain_text_splitters import MarkdownHeaderTextSplitter
 from langchain_ollama import OllamaEmbeddings, ChatOllama
@@ -43,6 +54,7 @@ from transformers import (
     GenerationConfig
 )
 
+from smlp_py.smlp_judge import SmlpRagJudge
 
 # determinizm / reproducibility
 import torch
@@ -408,7 +420,19 @@ class LangChainRag(BaseRAG):
                     '  - "strict_qa": Brief, direct answers without elaboration.\n'
                     '  - "summarizer": Summarize key points related to the question.\n'
                 )
-            }
+            },
+            'rag_temperature': {
+                'abbr': 'rag_temp', 'default': 0.0, 'type': float,
+                'help': 'Temperature for generation. 0.0 for deterministic output.'
+            },
+            'rag_top_p': {
+                'abbr': 'rag_top_p', 'default': 1.0, 'type': float,
+                'help': 'Top-p for nucleus sampling. Use 1.0 for deterministic.'
+            },
+            'rag_seed': {
+                'abbr': 'rag_seed', 'default': 42, 'type': int,
+                'help': 'Random seed for reproducible generation.'
+            },
         }
         
         self._raglc_logger = None
@@ -437,18 +461,31 @@ class LangChainRag(BaseRAG):
         vector_store.add_documents(docs)
         return vector_store
 
-    def create_rag_chain(self, retriever, rag_base_model_name, rag_base_url, rag_prompt_type):
-        self._raglc_logger.info(f"Using rag_base_model_name {rag_base_model_name} at rag_base_url {rag_base_url}")
-        model = ChatOllama(model=rag_base_model_name, base_url=rag_base_url)
-        prompt_template = ChatPromptTemplate.from_template(self.prompt_templates[rag_prompt_type])
-        #self._raglc_logger.info(f"Prompt template: {prompt_template}")
+    def create_rag_chain(self, retriever, rag_base_model_name, rag_base_url, rag_prompt_type, 
+            temperature=0.0, top_p=1.0, seed=42):
+        """Create RAG chain with deterministic generation settings."""
+        self._raglc_logger.info(f"Using rag_base_model_name {rag_base_model_name} at {rag_base_url}")
+
+        model = ChatOllama(
+            model=rag_base_model_name,
+            base_url=rag_base_url,
+            temperature=temperature,  # 0.0 for deterministic
+            top_p=top_p,             # 1.0 or very low for deterministic
+            seed=seed,               # Fixed seed for reproducibility
+            num_predict=256,         # Control max output length
+        )
+
+        prompt_template = ChatPromptTemplate.from_template(
+            self.prompt_templates[rag_prompt_type]
+        )
+
         return (
             {"context": retriever | self.format_docs, "question": RunnablePassthrough()}
             | prompt_template
             | model
             | StrOutputParser()
         )
-
+    
     def format_docs(self, docs):
         return "\n\n".join([doc.page_content for doc in docs])
 
@@ -600,15 +637,19 @@ class LangChainRag(BaseRAG):
             rag_chain = self.create_rag_chain(retriever, rag_base_model_name, rag_base_url, rag_prompt_type)
             
             self._raglc_logger.info("Answering questions...\n")
+            retrieved = []
             for q in rag_questions:
                 self._raglc_logger.info(f"Q: {q}")
                 top_retrieved = retriever.get_relevant_documents(q)
+                q_retrieved = ""
                 #print('top_retrieved type and length', type(top_retrieved), len(top_retrieved), 'top_k_passages', rag_top_k_passages)
                 self._raglc_logger.info(f"Top {rag_top_k_passages} retrieved passages for this question")
                 for i, doc in enumerate(top_retrieved, 1):
                     #print('doc.page_content', doc.page_content)
-                    self._raglc_logger.info(f"[{i}] {doc.page_content}")  # Show first 200 chars for brevity
-                
+                    q_retrieved = f"[{i}] {doc.page_content}"
+                    self._raglc_logger.info(q_retrieved)  # Show first 200 chars for brevity
+                    retrieved.append(q_retrieved)
+  
                 answer = ""
                 for chunk in rag_chain.stream(q):
                     #print(chunk, end="", flush=True)
@@ -616,7 +657,23 @@ class LangChainRag(BaseRAG):
 
                 self._raglc_logger.info(f"Answer: {answer}\n")
 
-                return answer
+                return answer, retrieved
+            
+    def cleanup_memory(self):
+        """
+        Free up memory after LangChain RAG operations.
+        """
+        self._raglc_logger.info("Cleaning up LangChain RAG memory...")
+
+        # LangChain models are typically lighter, but still clean up
+        if hasattr(self, 'rag_chain'):
+            del self.rag_chain
+            self.rag_chain = None
+
+        # Force garbage collection
+        gc.collect()
+
+        self._raglc_logger.info("Memory cleanup complete")
 
 # Seq2SeqTrainer is designed for encoder-decoder models (which RAG uses under the hood: BERT + BART)
 # Note: HuggingFace RagModel is calling CosineRetriever.__call__() method with a prefix keyword argument.
@@ -852,7 +909,6 @@ class CosineRetriever(RagRetriever):
         }
 
     def save_pretrained(self, save_directory):
-        import os, json, torch
         os.makedirs(save_directory, exist_ok=True)
 
         torch.save(self.passage_embeddings, os.path.join(save_directory, "passage_embeddings.pt"))
@@ -866,7 +922,6 @@ class CosineRetriever(RagRetriever):
 
     @classmethod
     def from_pretrained(cls, load_directory, question_encoder, tokenizer):
-        import os, json, torch
         passage_embeddings = torch.load(os.path.join(load_directory, "passage_embeddings.pt"))
         with open(os.path.join(load_directory, "passages.txt"), "r", encoding="utf-8") as f:
             passages = [line.strip() for line in f]
@@ -905,6 +960,7 @@ class HuggingFaceRag(BaseRAG):
         self._DEF_WEIGHT_DECAY = 0.01
         self._DEF_SAVE_TOTAL_LIMIT = 2
         self._DEF_DEVICE = 'cpu'
+        self._DEF_RAG_SEED = 42
         
         self._hf_rag_params = {
             'rag_trust_remote_code': {
@@ -1000,8 +1056,13 @@ class HuggingFaceRag(BaseRAG):
                 'abbr': 'rag_device', 'default': self._DEF_DEVICE, 'type': str,
                 'help': 'Device to use: cpu or gpu (default {}).'.format(self._DEF_DEVICE)
             },
+            'rag_seed': {
+                'abbr': 'rag_seed', 'default': self._DEF_RAG_SEED, 'type': int,
+                'help': 'Random seed for reproducible generation across runs.'
+            },
         }
 
+    
     # set logger from a caller script
     def set_logger(self, logger):
         self._raghf_logger = logger 
@@ -1122,7 +1183,6 @@ class HuggingFaceRag(BaseRAG):
     
     
     def save_rag_model(self, model, tokenizer, retriever, model_dir, rag_index_backend="faiss"):
-        from pathlib import Path
         Path(model_dir).mkdir(parents=True, exist_ok=True)
 
         self._raghf_logger.info(f"[{rag_index_backend.upper()}] Saving model, tokenizer, and retriever")
@@ -1181,7 +1241,7 @@ class HuggingFaceRag(BaseRAG):
         eval_dataset = split_dataset["test"]
         
         #print("1 Train columns:", train_dataset.column_names)
-        #print("1 Eval columns:", eval_dataset.column_names)
+        #print("1 eval columns:", eval_dataset.column_names)
         
         self._raghf_logger.info(f"Loading tokenizer and model {rag_base_model_name}")
         tokenizer = RagTokenizer.from_pretrained(rag_base_model_name, trust_remote_code=rag_trust_remote_code)
@@ -1242,7 +1302,7 @@ class HuggingFaceRag(BaseRAG):
             self._raghf_logger.info('FAISS passages and retriever created')
         elif rag_index_backend == "elastic":
             self._raghf_logger.info("Preparing passages and retriever for ELSER")
-            from elasticsearch import Elasticsearch
+            
             '''
             -- Your Elasticsearch server is version 8.x (from Docker).
             -- But your Python client (elasticsearch-py) is sending headers indicating v9 compatibility, 
@@ -1306,7 +1366,6 @@ class HuggingFaceRag(BaseRAG):
 
             inputs = safe_tokenize(tokenizer.question_encoder, passages, rag_max_input_length, rag_compute_device)
             #print('tokenizer.question_encoder.model_max_length =', tokenizer.question_encoder.model_max_length)
-
             #print("input_ids shape:", inputs["input_ids"].shape)
             #print("attention_mask shape:", inputs["attention_mask"].shape)
 
@@ -1542,31 +1601,153 @@ class HuggingFaceRag(BaseRAG):
         self.rag_trained_model.to(rag_compute_device)
         self._raghf_logger.info("Model, retriever, and tokenizer loaded successfully (cosine)")
 
+    def retrieve_only(self, rag_questions, rag_trained_model_path, rag_index_backend, 
+                  rag_top_k_passages, rag_max_input_length, rag_token, rag_compute_device):
+        """Retrieve passages without generating answers (for debugging)."""
 
-    # TODO !!!! define command line options for num_return_sequences=1, num_beams=1, max_length=64 ???
+        if isinstance(rag_questions, str):
+            rag_questions = [rag_questions]
+
+        # Load model
+        if rag_index_backend == 'faiss':
+            self.load_model_faiss(
+                model_dir=rag_trained_model_path, 
+                rag_top_k_passages=rag_top_k_passages, 
+                rag_compute_device=rag_compute_device
+            )
+        elif rag_index_backend == 'cosine':
+            self.load_model_cosine(
+                model_dir=rag_trained_model_path, 
+                rag_token=rag_token, 
+                rag_top_k_passages=rag_top_k_passages, 
+                rag_compute_device=rag_compute_device, 
+                rag_max_input_length=rag_max_input_length
+            )
+        else:
+            raise ValueError(f"Unsupported rag_index_backend: {rag_index_backend}")
+
+        tokenizer = self.tokenizer
+        model = self.rag_trained_model
+        device = model.device
+
+        results = []
+        for question in rag_questions:
+            self._raghf_logger.info(f"Retrieving for question: {question}")
+
+            # Tokenize and encode question
+            inputs = tokenizer.question_encoder(
+                [question],
+                return_tensors="pt",
+                padding=True,
+                truncation=True,
+                max_length=rag_max_input_length
+            ).to(device)
+
+            # Encode question
+            with torch.no_grad():
+                outputs = model.question_encoder(**inputs)
+                hidden_states = outputs[0]
+                attention_mask = inputs["attention_mask"].unsqueeze(-1).float()
+                masked = hidden_states * attention_mask
+                summed = masked.sum(dim=1)
+                count = attention_mask.sum(dim=1)
+                question_hidden_states = summed / count
+                question_hidden_states = question_hidden_states.cpu().numpy()
+
+            # Retrieve documents
+            if rag_index_backend == "cosine":
+                retrieved_docs = model.retriever(
+                    input_ids=None,
+                    attention_mask=None,
+                    question_hidden_states=question_hidden_states,
+                    prefix=model.generator.config.prefix,
+                    n_docs=model.config.n_docs,
+                    return_tensors="pt"
+                )
+                passages = retrieved_docs["retrieved_passages"][0]
+            else:  # faiss or elastic
+                retrieved_doc_embeds, doc_ids, doc_dicts = model.retriever.retrieve(
+                    question_hidden_states=question_hidden_states,
+                    n_docs=model.config.n_docs
+                )
+
+                if isinstance(doc_dicts, list):
+                    if isinstance(doc_dicts[0], str):
+                        passages = doc_dicts
+                    elif isinstance(doc_dicts[0], dict) and "text" in doc_dicts[0]:
+                        passages = [doc["text"] for doc in doc_dicts]
+                    elif isinstance(doc_dicts[0], list):
+                        passages = [doc["text"] for sublist in doc_dicts for doc in sublist]
+                    else:
+                        passages = [str(d) for d in doc_dicts]
+                else:
+                    passages = [str(doc_dicts)]
+
+            results.append({
+                "question": question,
+                "retrieved_passages": passages[:rag_top_k_passages]
+            })
+
+            self._raghf_logger.info(f"Retrieved {len(passages[:rag_top_k_passages])} passages")
+
+        return results
+        
+    def generate_batched(self, rag_questions, batch_size=4, **kwargs):
+        """Process multiple questions in batches for efficiency."""
+        all_answers = []
+        all_retrieved = []
+
+        for i in range(0, len(rag_questions), batch_size):
+            batch = rag_questions[i:i+batch_size]
+            answers, retrieved = self.generate(rag_questions=batch, **kwargs)
+            all_answers.extend(answers)
+            all_retrieved.extend(retrieved)
+
+        return all_answers, all_retrieved
+
+    # TODO !!!! define command line options for num_return_sequences=1, num_beams=1, max_length=64 ???    
     def generate(self, rag_questions=None, rag_trained_model_path=None, rag_index_backend=None, 
-            rag_top_k_passages=None, rag_max_input_length=None, rag_max_new_tokens=None, rag_token=None, rag_sample=None,
-            num_return_sequences=1, num_beams=1, rag_compute_device=None):
+            rag_top_k_passages=None, rag_max_input_length=None, rag_max_new_tokens=None, 
+            rag_token=None, rag_sample=None, num_return_sequences=1, num_beams=1, 
+            rag_compute_device=None, seed=42):
         """
         Generate answers using cosine similarity retriever and RAG model.
+        Now supports multiple questions with deterministic generation.
+
+        Args:
+            rag_questions: Single question (str) or list of questions
+            seed: Random seed for reproducible generation (default: 42)
+            ... (other args as before)
+
+        Returns:
+            Tuple of (answers, retrieved_passages) where each is a list
         """
+        # Set seeds for reproducibility
+        if seed is not None:
+            torch.manual_seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(seed)
+            np.random.seed(seed)
+            random.seed(seed)
+            self._raghf_logger.info(f"Set random seed to {seed} for deterministic generation")
+
         # TODO !!!! although loading saved model is OK also with in-memory flow
         # (meaning, generation in the same session when training was performed), it is
         # best to investigate why pure in-memory generation (when model is not loaded from disk)
         # is not working correctly -- maybe some of the parameters in saved model are not
-        # refected properly in self object, causing in-memory and from-disk generation to diverge.
+        # reflected properly in self object, causing in-memory and from-disk generation to diverge.
         self._raghf_logger.info(f"Loading RAG trained model from: {rag_trained_model_path}")
         config_path = os.path.join(rag_trained_model_path, "rag_smlp_config.json")
         if os.path.exists(config_path):
             with open(config_path) as f:
                 config = json.load(f)
             rag_token_from_config = config.get("rag_token", False)  # Default to False if not found
-            self._raghf_logger.info(f"rag_token loaded from config: {rag_token}")
+            self._raghf_logger.info(f"rag_token loaded from config: {rag_token_from_config}")
         else:
             #print("[WARNING] Config file not found. Using default rag_token:", rag_token)
             raise Exception('Config file not found. Cannot read value of rag_token')
 
-        assert rag_token == rag_token_from_config, f"Genration was launched with wrong rag_token value {rag_token}"
+        assert rag_token == rag_token_from_config, f"Generation was launched with wrong rag_token value {rag_token}"
 
         if rag_index_backend == 'faiss':
             self.load_model_faiss(model_dir=rag_trained_model_path, rag_top_k_passages=rag_top_k_passages, 
@@ -1577,221 +1758,214 @@ class HuggingFaceRag(BaseRAG):
         elif rag_index_backend == 'elastic':
             assert False, "elastic based RAG is not yet supported"
         else:
-            assert False, ("Unexpected index backand " + str(rag_index_backend))
+            assert False, ("Unexpected index backend " + str(rag_index_backend))
 
-
+        # Ensure questions is a list
         if isinstance(rag_questions, str):
             rag_questions = [rag_questions]
+            single_question = True
+        else:
+            single_question = False
 
         tokenizer = self.tokenizer
         model = self.rag_trained_model
         device = model.device
 
-        #print('rag_max_input_length used in inputs = tokenizer.question_encoder(...)', rag_max_input_length)
-        # Tokenize for question encoder
-        inputs = tokenizer.question_encoder(
-            rag_questions,
-            return_tensors="pt",
-            padding=True,
-            truncation=True,
-            max_length=rag_max_input_length
-        ).to(device)
-        
-        # debug block
-        #print("Inputs:")
-        #print("input_ids:", inputs["input_ids"].shape)
-        #print("Decoded question with skip_special_tokens=True:", 
-        #      tokenizer.question_encoder.decode(inputs["input_ids"][0], skip_special_tokens=True))
-        #print("Decoded question with skip_special_tokens=False:", 
-        #      tokenizer.question_encoder.decode(inputs["input_ids"][0], skip_special_tokens=False))
-       
         self._raghf_logger.info(f"Generating answers for {len(rag_questions)} question(s)")
-        
-        # Encode question
-        with torch.no_grad():
-            outputs = model.question_encoder(**inputs)
-            #print("question_encoder output[0] shape:", outputs[0].shape)
-            #print("Generated token ids -- hidden states shape", outputs[0].shape) # .tolist()
-            hidden_states = outputs[0]  # (B, T, H)
-            attention_mask = inputs["attention_mask"].unsqueeze(-1).float()  # (B, T, 1)
-            masked = hidden_states * attention_mask
-            summed = masked.sum(dim=1)
-            count = attention_mask.sum(dim=1)
-            question_hidden_states = summed / count  # (B, H)
-            question_hidden_states = question_hidden_states.cpu().numpy()
 
-        # Perform retrieval using cosine similarity
-        #print("Retriever class:", type(model.retriever))
-        #print("Retriever index type:", getattr(model.retriever, "index", None))
-        #print('model.config.n_docs', model.config.n_docs)
-        assert model.config.n_docs == rag_top_k_passages
-        
-        if rag_index_backend in ["faiss", "elastic"]:
-            # FAISS or other HuggingFace retrievers
-            retrieved_doc_embeds, doc_ids, doc_dicts = model.retriever.retrieve(
-                question_hidden_states=question_hidden_states,
-                n_docs=model.config.n_docs
-            )
-            
-            # Flatten out the retrieved texts
-            #flat_passages = [doc["text"] for doc_list in doc_dicts for doc in doc_list]
-            # Handles both flat list of strings or nested list of dicts
-            # Sanitize flat_passages
-            if isinstance(doc_dicts, list):
-                if isinstance(doc_dicts[0], str):
-                    flat_passages = doc_dicts
-                elif isinstance(doc_dicts[0], dict) and "text" in doc_dicts[0]:
-                    flat_passages = [doc["text"] for doc in doc_dicts]
-                elif isinstance(doc_dicts[0], list):  # Nested
-                    flat_passages = [doc["text"] for sublist in doc_dicts for doc in sublist]
+        # Storage for all results
+        all_answers = []
+        all_retrieved_passages = []
+
+        # Process each question
+        for question_idx, question in enumerate(rag_questions):
+            try:
+                self._raghf_logger.info(f"{'='*60}")
+                self._raghf_logger.info(f"Processing question {question_idx+1}/{len(rag_questions)}: {question}")
+                self._raghf_logger.info(f"{'='*60}")
+
+                #print('rag_max_input_length used in inputs = tokenizer.question_encoder(...)', rag_max_input_length)
+                # Tokenize for question encoder
+                inputs = tokenizer.question_encoder(
+                    [question],  # Single question as list
+                    return_tensors="pt",
+                    padding=True,
+                    truncation=True,
+                    max_length=rag_max_input_length
+                ).to(device)
+
+                # Encode question
+                with torch.no_grad():
+                    outputs = model.question_encoder(**inputs)
+                    hidden_states = outputs[0]  # (B, T, H)
+                    attention_mask = inputs["attention_mask"].unsqueeze(-1).float()  # (B, T, 1)
+                    masked = hidden_states * attention_mask
+                    summed = masked.sum(dim=1)
+                    count = attention_mask.sum(dim=1)
+                    question_hidden_states = summed / count  # (B, H)
+                    question_hidden_states = question_hidden_states.cpu().numpy()
+
+                if rag_index_backend in ["faiss", "elastic"]:
+                    # FAISS or other HuggingFace retrievers
+                    retrieved_doc_embeds, doc_ids, doc_dicts = model.retriever.retrieve(
+                        question_hidden_states=question_hidden_states,
+                        n_docs=model.config.n_docs
+                    )
+
+                    # Flatten out the retrieved texts
+                    #flat_passages = [doc["text"] for doc_list in doc_dicts for doc in doc_list]
+                    # Handles both flat list of strings or nested list of dicts
+                    # Sanitize flat_passages
+                    if isinstance(doc_dicts, list):
+                        if isinstance(doc_dicts[0], str):
+                            flat_passages = doc_dicts
+                        elif isinstance(doc_dicts[0], dict) and "text" in doc_dicts[0]:
+                            flat_passages = [doc["text"] for doc in doc_dicts]
+                        elif isinstance(doc_dicts[0], list):  # Nested
+                            flat_passages = [doc["text"] for sublist in doc_dicts for doc in sublist]
+                        else:
+                            raise ValueError(f"Unexpected doc_dicts[0] structure: {type(doc_dicts[0])}")
+                    elif isinstance(doc_dicts, str):
+                        flat_passages = [doc_dicts]
+                    else:
+                        raise ValueError(f"Unexpected doc_dicts type: {type(doc_dicts)}")
+
+                    # FIX HERE — ensure tokenizer input is flat list of strings
+                    if isinstance(flat_passages[0], list):
+                        flat_passages = [p for sublist in flat_passages for p in sublist]
+
+                    #print("flat_passages:", flat_passages)
+                    #print("flat_passages[0]:", flat_passages[0])
+                    #print("len(flat_passages):", len(flat_passages))
+
+                    # Tokenize retrieved docs
+                    tokenized = tokenizer.generator(
+                        flat_passages,
+                        padding="max_length",
+                        truncation=True,
+                        max_length=rag_max_input_length or model.config.max_length,
+                        return_tensors="pt"
+                    )
+
+                    context_input_ids = tokenized["input_ids"]
+                    context_attention_mask = tokenized["attention_mask"]
+
+                    # Wrap it into a dictionary so rest of the code can proceed
+                    retrieved_docs = {
+                        "context_input_ids": context_input_ids,
+                        "context_attention_mask": context_attention_mask,
+                        "retrieved_doc_embeds": torch.tensor(retrieved_doc_embeds)
+                    }
+
+                    #self._raghf_logger.info("Top Retrieved Documents:")
+                    #for i, doc_text in enumerate(flat_passages[:model.config.n_docs]):
+                    #    self._raghf_logger.info(f"  {i+1}. {doc_text.strip()[:200]}...")
+
+                elif rag_index_backend == "cosine":
+                    # CosineRetriever: use question_hidden_states directly
+                    #question_hidden_states = question_hidden_states.cpu().numpy()
+                    retrieved_docs = model.retriever(
+                        input_ids=None,
+                        attention_mask=None,
+                        question_hidden_states=question_hidden_states,
+                        prefix=model.generator.config.prefix,
+                        n_docs=model.config.n_docs,
+                        return_tensors="pt"
+                    )
                 else:
-                    raise ValueError(f"Unexpected doc_dicts[0] structure: {type(doc_dicts[0])}")
-            elif isinstance(doc_dicts, str):
-                flat_passages = [doc_dicts]
-            else:
-                raise ValueError(f"Unexpected doc_dicts type: {type(doc_dicts)}")
+                    raise ValueError("Unexpected index_backend " + str(rag_index_backend)) 
 
-            # FIX HERE — ensure tokenizer input is flat list of strings
-            if isinstance(flat_passages[0], list):
-                flat_passages = [p for sublist in flat_passages for p in sublist]
-            
-            #print("flat_passages:", flat_passages)
-            #print("flat_passages[0]:", flat_passages[0])
-            #print("len(flat_passages):", len(flat_passages))
+                retrieved_passages = None
+                if rag_index_backend in ["faiss", "elastic"]:  # FAISS flow
+                    # Do not expect 'retrieved_passages' key in FAISS
+                    retrieved_passages = flat_passages[:model.config.n_docs]
+                elif rag_index_backend == "cosine":  # CosineRetriever or custom
+                    retrieved_passages = retrieved_docs.get("retrieved_passages", [])
+                else:
+                    raise ValueError("Unexpected index_backend " + str(rag_index_backend)) 
 
-            # Tokenize retrieved docs
-            tokenized = tokenizer.generator(
-                flat_passages,
-                padding="max_length",
-                truncation=True,
-                max_length=rag_max_input_length or model.config.max_length,
-                return_tensors="pt"
-            )
+                # Print top passages (robust for both retrievers)
+                #print("Top Retrieved Documents -- original text:")
+                self._raghf_logger.info("Top Retrieved Passages:")
+                q_retrieved = ""
+                if isinstance(retrieved_passages[0], list):  # Cosine may return nested
+                    for i, passage in enumerate(retrieved_passages[0]):
+                        q_retrieved = q_retrieved + '  ' + passage
+                        self._raghf_logger.info(f"  {i+1}. {passage[:200]}...")
+                else:  # FAISS
+                    for i, passage in enumerate(retrieved_passages):
+                        q_retrieved = q_retrieved + '  ' + passage
+                        self._raghf_logger.info(f"  {i+1}. {passage[:200]}...")
 
-            context_input_ids = tokenized["input_ids"]
-            context_attention_mask = tokenized["attention_mask"]
-            
-            #print("context_input_ids:", context_input_ids.shape)
-            #print("Decoded context with kip_special_tokens=True:", 
-            #      tokenizer.generator.batch_decode(context_input_ids, skip_special_tokens=True))
-            #print("Decoded context with kip_special_tokens=False:", 
-            #      tokenizer.generator.batch_decode(context_input_ids, skip_special_tokens=False))
-            # If the first token is a [CLS] or </s> or <pad>, try trimming or customizing decoder_start_token_id
-            #print("context_input_ids[0]:", context_input_ids[0].tolist())
-            #print("First few decoded tokens:", tokenizer.generator.convert_ids_to_tokens(context_input_ids[0][:10]))
-            #
-            #print("Context input decoded:")
-            #for i, ids in enumerate(context_input_ids):
-            #    print(f"  skip_special_tokens=True {i+1}.", tokenizer.generator.decode(ids, skip_special_tokens=True))
-            #    print(f"  skip_special_tokens=False {i+1}.", tokenizer.generator.decode(ids, skip_special_tokens=False))
-            
-            # Wrap it into a dictionary so rest of the code can proceed
-            retrieved_docs = {
-                "context_input_ids": context_input_ids,
-                "context_attention_mask": context_attention_mask,
-                "retrieved_doc_embeds": torch.tensor(retrieved_doc_embeds)
-            }
+                if model.config.decoder_start_token_id is None:
+                    model.config.decoder_start_token_id = tokenizer.generator.bos_token_id
 
-            self._raghf_logger.info("Top Retrieved Documents:")
-            for i, doc_text in enumerate(flat_passages):
-                self._raghf_logger.info(f"  {i+1}. {doc_text.strip()}")
-        elif rag_index_backend == "cosine":
-            # CosineRetriever: use question_hidden_states directly
-            #question_hidden_states = question_hidden_states.cpu().numpy()
-            retrieved_docs = model.retriever(
-                input_ids=None,
-                attention_mask=None,
-                question_hidden_states=question_hidden_states,
-                prefix=model.generator.config.prefix,
-                n_docs=model.config.n_docs,
-                return_tensors="pt"
-            )
-        else:
-            raise ValueError("Unexpected index_backand " + str(rag_index_backend)) 
-        
-        #context_input_ids = retrieved_docs["context_input_ids"]
-        #print("Top Retrieved Documents -- re-tokenized IDs:")
-        #for i, doc_input_ids in enumerate(context_input_ids):
-        #    doc_text = tokenizer.generator.decode(doc_input_ids, skip_special_tokens=True)
-        #    print(f"  with skip_special_tokens=True {i+1}. {doc_text.strip()}")
-        #    doc_text_f = tokenizer.generator.decode(doc_input_ids, skip_special_tokens=False)
-        #    print(f"  with skip_special_tokens=False {i+1}. {doc_text.strip()}")
-        #
-        #print("Top Retrieved Documents -- original test:")
-        retrieved_passages = None
-        if rag_index_backend in ["faiss", "elastic"]:  # FAISS flow
-            # Do not expect 'retrieved_passages' key in FAISS
-            retrieved_passages = flat_passages[:model.config.n_docs]
-        elif rag_index_backend == "cosine":  # CosineRetriever or custom
-            retrieved_passages = retrieved_docs.get("retrieved_passages", [])
-        else:
-            raise ValueError("Unexpected index_backand " + str(rag_index_backend)) 
-        
-        # Print top passages (robust for both retrievers)
-        #print("Top Retrieved Documents -- original text:")
-        self._raghf_logger.info("Top Retrieved Passages:\n")
-        if isinstance(retrieved_passages[0], list):  # Cosine may return nested
-            for i, passage in enumerate(retrieved_passages[0]):
-                self._raghf_logger.info(f"  {i+1}. {passage}")
-        else:  # FAISS
-            for i, passage in enumerate(retrieved_passages):
-                self._raghf_logger.info(f"  {i+1}. {passage}")
+                # Generate final answers
+                generate_kwargs = {
+                    "input_ids": inputs["input_ids"],
+                    "attention_mask": inputs["attention_mask"],
+                    "context_input_ids": retrieved_docs["context_input_ids"].to(device),
+                    "context_attention_mask": retrieved_docs["context_attention_mask"].to(device),
+                    "max_new_tokens": rag_max_new_tokens,
+                    "num_beams": num_beams,
+                    "num_return_sequences": num_return_sequences,
+                    "do_sample": rag_sample,
+                    "forced_bos_token_id": model.config.decoder_start_token_id,
+                    "decoder_start_token_id": model.config.decoder_start_token_id,
+                }
 
-        #print("Question:", tokenizer.question_encoder.decode(inputs["input_ids"][0], skip_special_tokens=True))
-        #for i, ids in enumerate(retrieved_docs["context_input_ids"]):
-        #    print(f"Context {i+1}:", tokenizer.generator.decode(ids, skip_special_tokens=True))
-            
-        if model.config.decoder_start_token_id is None:
-            model.config.decoder_start_token_id = tokenizer.generator.bos_token_id
-        #print('model.config.decoder_start_token_id', model.config.decoder_start_token_id)
-        #print("Decoder start token:", tokenizer.generator.decode([model.config.decoder_start_token_id]))
-        
-        # Generate final answers
-        generate_kwargs = {
-            "input_ids": inputs["input_ids"],
-            "attention_mask": inputs["attention_mask"],
-            "context_input_ids": retrieved_docs["context_input_ids"],
-            "context_attention_mask": retrieved_docs["context_attention_mask"],
-            "max_new_tokens": rag_max_new_tokens,
-            "num_beams": num_beams,
-            "num_return_sequences": num_return_sequences,
-            "do_sample": rag_sample,
-            "forced_bos_token_id": model.config.decoder_start_token_id,
-            "decoder_start_token_id": model.config.decoder_start_token_id,
-        }
+                # Only include doc_scores if available -- that is, for cosine similarity index backend
+                doc_scores = retrieved_docs.get("doc_scores")
+                if rag_index_backend == 'cosine':
+                    assert doc_scores is not None, "doc_scores are required for cosine similarity based RAG flow"
+                    generate_kwargs["doc_scores"] = doc_scores.to(model.device)
+                elif rag_index_backend in ['faiss', 'elastic']:
+                    assert doc_scores is None, "doc_scores are irrelevant for FAISS/elastic based RAG flow"
 
-        # Only include doc_scores if available -- that is, for cosine similarity index backend
-        doc_scores = retrieved_docs.get("doc_scores")
-        if rag_index_backend == 'cosine':
-            assert doc_scores is not None, "doc_scores are required for cosine similarity based RAG flow"
-            generate_kwargs["doc_scores"] = doc_scores.to(model.device)
-        elif rag_index_backend in ['faiss', 'elastic']:
-            assert doc_scores is None, "doc_scores are irrelevant for cosine similarity based RAG flow"
-        
-        if rag_sample:
-            generate_kwargs.update({
-                "top_p": 0.9,
-                "top_k": 50,
-                "no_repeat_ngram_size": 3,
-            })
-        else:
-            generate_kwargs["early_stopping"] = True
-        
-        # Final call
-        with torch.no_grad():
-            outputs = model.generate(**generate_kwargs)
-        #print("Raw output token IDs:", outputs)
+                if rag_sample:
+                    generate_kwargs.update({
+                        "temperature": 0.1,  # Low temperature for more determinism
+                        "top_p": 0.9,
+                        "top_k": 50,
+                        "no_repeat_ngram_size": 3,
+                    })
+                    # Add generator for reproducible sampling
+                    if seed is not None:
+                        generator = torch.Generator(device=device)
+                        generator.manual_seed(seed + question_idx)  # Different seed per question
+                        generate_kwargs["generator"] = generator
+                else:
+                    generate_kwargs["early_stopping"] = True
 
-        decoded_outputs = tokenizer.batch_decode(outputs, skip_special_tokens=True)
-        #for i, ids in enumerate(outputs):
-        #    print(f"Decoded output with skip_special_tokens=True {i+1}:", tokenizer.decode(ids, skip_special_tokens=True))
-        #    print(f"Decoded output with skip_special_tokens=False {i+1}:", tokenizer.decode(ids, skip_special_tokens=False))
+                # Final call
+                with torch.no_grad():
+                    outputs = model.generate(**generate_kwargs)
 
-        self._raghf_logger.info("Generated Answer(s):")
-        for q, a in zip(rag_questions, decoded_outputs):
-            self._raghf_logger.info(f"\n\tQ: {q}\n\tA: {a}")
+                decoded_output = tokenizer.batch_decode(outputs, skip_special_tokens=True)[0]
 
-        return decoded_outputs
+                self._raghf_logger.info(f"Generated Answer: {decoded_output}")
+
+                all_answers.append(decoded_output)
+                all_retrieved_passages.append(q_retrieved)
+
+            except Exception as e:
+                self._raghf_logger.error(f"Failed to process question {question_idx+1}: {question}")
+                self._raghf_logger.error(f"Error: {str(e)}")
+                self._raghf_logger.error(traceback.format_exc())
+
+                # Append error placeholders so we don't lose track of questions
+                all_answers.append(f"[ERROR: {str(e)}]")
+                all_retrieved_passages.append("")
+
+        # Summary log
+        self._raghf_logger.info(f"{'='*60}")
+        self._raghf_logger.info(f"Generation complete. Processed {len(rag_questions)} questions.")
+        self._raghf_logger.info(f"Successful: {sum(1 for a in all_answers if not a.startswith('[ERROR'))}")
+        self._raghf_logger.info(f"Failed: {sum(1 for a in all_answers if a.startswith('[ERROR'))}")
+        self._raghf_logger.info(f"{'='*60}\n")
+
+        # Return in same format as before
+        return all_answers, all_retrieved_passages
 
     def run(self, rag_questions=None, rag_text=None, rag_base_model_name=None, rag_trained_model_path=None, 
             rag_top_k_passages=None, rag_index_backend=None, rag_max_input_length=None, 
@@ -1799,11 +1973,7 @@ class HuggingFaceRag(BaseRAG):
             rag_trust_remote_code=None, rag_train=None, rag_eval=None, rag_batch_size=None, rag_epochs=None,
             rag_question_column=None, rag_context_column=None, 
             rag_eval_strategy=None, rag_save_steps=None,  rag_logging_steps=None, rag_report_to=None, rag_lr=None,
-            rag_weight_decay=None, rag_save_total_limit=None, rag_compute_device=None):   
-        
-        #print('RAG mode with', 'train', rag_train, 'generate', rag_eval)
-        #print('RAG questions', rag_questions); print('rag_text', rag_text); 
-        #print('rag_base_model_name', rag_base_model_name); print('rag_trained_model_path', rag_trained_model_path)
+            rag_weight_decay=None, rag_save_total_limit=None, rag_compute_device=None, rag_seed=42):   
         
         if rag_train:
             self._raghf_logger.info("Starting RAG training")
@@ -1824,8 +1994,39 @@ class HuggingFaceRag(BaseRAG):
             return self.generate(rag_questions=rag_questions, rag_trained_model_path=rag_trained_model_path, 
                 rag_top_k_passages=rag_top_k_passages, rag_index_backend=rag_index_backend, 
                 rag_max_new_tokens=rag_max_new_tokens, rag_token=rag_token, rag_sample=rag_sample, 
-                rag_compute_device=rag_compute_device)
+                rag_compute_device=rag_compute_device, seed=rag_seed)
             
+    def cleanup_memory(self):
+        """
+        Free up GPU/CPU memory after RAG operations.
+        Call this after generation is complete and before loading judge model.
+        """
+        self._raghf_logger.info("Cleaning up RAG model memory...")
+
+        # Delete model and retriever
+        if hasattr(self, 'rag_trained_model') and self.rag_trained_model is not None:
+            del self.rag_trained_model
+            self.rag_trained_model = None
+
+        if hasattr(self, 'retriever') and self.retriever is not None:
+            del self.retriever
+            self.retriever = None
+
+        if hasattr(self, 'tokenizer') and self.tokenizer is not None:
+            del self.tokenizer
+            self.tokenizer = None
+
+        # Clear CUDA cache if using GPU
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.synchronize()
+            self._raghf_logger.info(f"GPU memory freed. Available: {torch.cuda.get_device_properties(0).total_memory - torch.cuda.memory_allocated(0)} bytes")
+
+        # Force garbage collection
+        gc.collect()
+
+        self._raghf_logger.info("Memory cleanup complete")
+        
 
 class SmlpRag:
     def __init__(self, overrides=None):
@@ -1848,31 +2049,105 @@ class SmlpRag:
                     'Ollama provides the LLM endpoint — it’s the model LangChain calls during generation. '
             },
         }
+        
+        self.judge = SmlpRagJudge()
+        
         self.rag_params_dict = rag_type_params | base_params | hf_params | lc_params
-                
+    
+    def _normalize_rag_outputs(self, output_text, retrieved_contexts, rag_questions):
+        """
+        Convert backend-specific outputs to a common format.
+
+        Args:
+            output_text: Generated answers
+            retrieved_contexts: List of retrieved passage strings (one per question)
+            rag_questions: List of questions
+        """
+        normalized = []
+
+        if isinstance(output_text, list):
+            for q, ans, ctx in zip(rag_questions, output_text, retrieved_contexts):
+                normalized.append({
+                    "question": q,
+                    "answer": ans,
+                    "context": ctx  # Retrieved passages for THIS question
+                })
+        else:
+            # Single question case
+            normalized.append({
+                "question": rag_questions[0],
+                "answer": output_text,
+                "context": retrieved_contexts[0]
+            })
+
+        return normalized
+    
     # set logger from a caller script
     def set_logger(self, logger):
         self._rag_logger = logger 
         self.hfragInst.set_logger(logger)
         self.lcragInst.set_logger(logger)
-    
+        self.judge.set_logger(logger)
+        
     # report_file_prefix is a string used as prefix in all report files of SMLP
     def set_report_file_prefix(self, report_file_prefix):
         self.report_file_prefix = report_file_prefix
         self.hfragInst.set_report_file_prefix(report_file_prefix)
         self.lcragInst.set_report_file_prefix(report_file_prefix)
-        
+        self.judge.set_report_file_prefix(report_file_prefix)
+    
     @property
     def generated_text_file_name(self):
         return self.report_file_prefix + '_rag_generated.txt'
     
+    def retrieve_only(self, rag_questions, rag_type, rag_trained_model_path, 
+                      rag_index_backend, rag_top_k_passages, rag_max_input_length, 
+                      rag_token, rag_compute_device):
+        """
+        Retrieve passages without generating answers (debugging/analysis).
+        Only works with HF RAG.
+        """
+        if rag_type != "hf":
+            raise ValueError("retrieve_only is only supported for HuggingFace RAG (rag_type='hf')")
+
+        return self.hfragInst.retrieve_only(
+            rag_questions=rag_questions,
+            rag_trained_model_path=rag_trained_model_path,
+            rag_index_backend=rag_index_backend,
+            rag_top_k_passages=rag_top_k_passages,
+            rag_max_input_length=rag_max_input_length,
+            rag_token=rag_token,
+            rag_compute_device=rag_compute_device
+        )
+    
+    def _log_memory_usage(self, stage: str):
+        """Log current memory usage for debugging."""
+
+        process = psutil.Process(os.getpid())
+        mem_info = process.memory_info()
+
+        self._rag_logger.info(f"[{stage}] Memory usage:")
+        self._rag_logger.info(f"  - RAM: {mem_info.rss / 1024**2:.2f} MB")
+        
+        if torch.cuda.is_available():
+            free_memory = torch.cuda.get_device_properties(0).total_memory - torch.cuda.memory_allocated(0)
+            self._rag_logger.info(f"  - GPU allocated: {torch.cuda.memory_allocated(0) / 1024**2:.2f} MB")
+            self._rag_logger.info(f"  - GPU reserved: {torch.cuda.memory_reserved(0) / 1024**2:.2f} MB")
+            self._rag_logger.info(f"  - GPU free: {free_memory / 1024**2:.2f} MB")
+
     def smlp_rag(self, rag_questions:list[str]=None, rag_text:str=None, rag_type:str=None, rag_base_model_name:str=None, 
             rag_trained_model_path:str=None, rag_index_backend=None, rag_top_k_passages=None, rag_base_url:str=None, 
             rag_embedding_model=None,  rag_prompt_type:str=None, rag_max_input_length=None, rag_max_target_length=None, 
             rag_max_new_tokens=None, rag_trust_remote_code=None, rag_sample=None, rag_token=None, rag_train=None,
             rag_eval=None, rag_batch_size=None, rag_epochs=None, rag_question_column=None, rag_context_column=None, 
             rag_eval_strategy=None, rag_save_steps=None,  rag_logging_steps=None, rag_report_to=None, rag_lr=None,
-            rag_weight_decay=None, rag_save_total_limit=None, rag_compute_device=None):
+            rag_weight_decay=None, rag_save_total_limit=None, rag_compute_device=None,
+            llm_quality_method=None, llm_judge_model=None, llm_judge_max_examples=None, 
+            llm_judge_prompt=None, llm_judge_do_sample=None, llm_judge_temperature=None,
+            llm_judge_top_p=None, llm_judge_repetition_penalty=None, llm_judge_max_new_tokens=None,
+            llm_judge_max_input_length=None, llm_judge_retry_attempts=None, llm_judge_validate_consistency=None,
+            llm_judge_strip_cot=None, llm_judge_debug_logging=None, llm_judge_load_in_8bit=None,
+            llm_judge_load_in_4bit=None):
         self._rag_logger.info('Running RAG with base model ' + str(rag_base_model_name) + ', using ' + \
             ('LangChain' if rag_type == 'lc' else 'HuggingFace') + ' libs.')
         
@@ -1892,11 +2167,8 @@ class SmlpRag:
         if rag_questions is None:
             raise ValueError('RAG questions must be specified using option --rag_questions')
                     
-        #print('RAG mode with', 'train', rag_train, 'generate', rag_eval, 'prag_rompt_type', rag_prompt_type)
-        #print('rag_questions', rag_questions); print('rag_text', rag_text); 
-        #print('rag_base_model_name', rag_base_model_name); print('rag_trained_model_path', rag_trained_model_path)
         if rag_type == "hf":
-            output_text = self.rag_runner.run(rag_questions=rag_questions, rag_text=rag_text, rag_base_model_name=rag_base_model_name,
+            output_text, rag_retrieved = self.rag_runner.run(rag_questions=rag_questions, rag_text=rag_text, rag_base_model_name=rag_base_model_name,
                 rag_trained_model_path=rag_trained_model_path, rag_top_k_passages=rag_top_k_passages, rag_index_backend=rag_index_backend, 
                 rag_max_input_length=rag_max_input_length, rag_max_target_length=rag_max_target_length, 
                 rag_max_new_tokens=rag_max_new_tokens, rag_sample=rag_sample, rag_token=rag_token,
@@ -1908,7 +2180,7 @@ class SmlpRag:
                 rag_weight_decay=rag_weight_decay, rag_save_total_limit=rag_save_total_limit,
                 rag_compute_device=rag_compute_device)
         elif rag_type == "lc":
-            output_text = self.rag_runner.run(rag_questions=rag_questions, rag_text=rag_text, rag_base_model_name=rag_base_model_name,
+            output_text, rag_retrieved = self.rag_runner.run(rag_questions=rag_questions, rag_text=rag_text, rag_base_model_name=rag_base_model_name,
                 rag_trained_model_path=rag_trained_model_path, rag_top_k_passages=rag_top_k_passages, rag_base_url=rag_base_url, 
                 rag_embedding_model=rag_embedding_model, rag_prompt_type=rag_prompt_type, rag_train=rag_train, rag_eval=rag_eval)
         
@@ -1921,6 +2193,70 @@ class SmlpRag:
                     file.write(str(text) + "\n")
             else:
                 raise Exception(f"Unexpected generated text type: {type(output_text)} - {output_text}")
+
+        # Normalize outputs
+        rag_outputs = self._normalize_rag_outputs(
+            output_text=output_text,
+            retrieved_contexts=rag_retrieved,
+            rag_questions=rag_questions
+        )
+
+        # Save retrieved contexts for analysis
+        retrieved_contexts_file = self.report_file_prefix + '_rag_retrieved_contexts.json'
+        with open(retrieved_contexts_file, 'w') as f:
+            json.dump({
+                "questions": rag_questions,
+                "retrieved_contexts": rag_retrieved,
+                "answers": output_text
+            }, f, indent=2)
+
+        self._rag_logger.info(f"Saved retrieved contexts to {retrieved_contexts_file}")
+        
+        # Free up memory before loading judge model
+        self._rag_logger.info("=" * 70)
+        self._rag_logger.info("MEMORY CLEANUP: Freeing RAG model memory before loading judge")
+        self._rag_logger.info("=" * 70)
+
+        # Call cleanup on the RAG runner
+        if hasattr(self.rag_runner, 'cleanup_memory'):
+            self.rag_runner.cleanup_memory()
+
+        # Additional cleanup at this level
+        gc.collect()
+
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            self._rag_logger.info(f"GPU memory after cleanup: {torch.cuda.memory_allocated(0) / 1024**2:.2f} MB used")
+
+        self._rag_logger.info("=" * 70)
+
+        
+        # evaluate RAG quality
+        # Optional judge
+        if llm_quality_method == "judge":
+            #print('rag_outputs:', rag_outputs)    
+            #print('rag_retrieved:', rag_retrieved)    
+            self._rag_logger.info("Running RAG quality evaluation with LLM-as-a-Judge")
+            self.judge.run(
+                rag_outputs=rag_outputs,
+                rag_retrieved=rag_retrieved,
+                llm_quality_method=llm_quality_method,
+                llm_judge_model=llm_judge_model,
+                llm_judge_max_examples=llm_judge_max_examples,
+                llm_judge_prompt=llm_judge_prompt,
+                llm_judge_do_sample=llm_judge_do_sample,
+                llm_judge_temperature=llm_judge_temperature,
+                llm_judge_top_p=llm_judge_top_p,
+                llm_judge_repetition_penalty=llm_judge_repetition_penalty,
+                llm_judge_max_new_tokens=llm_judge_max_new_tokens,
+                llm_judge_max_input_length=llm_judge_max_input_length,
+                llm_judge_retry_attempts=llm_judge_retry_attempts,
+                llm_judge_validate_consistency=llm_judge_validate_consistency,
+                llm_judge_strip_cot=llm_judge_strip_cot,
+                llm_judge_debug_logging=llm_judge_debug_logging,
+                llm_judge_load_in_8bit=llm_judge_load_in_8bit,
+                llm_judge_load_in_4bit=llm_judge_load_in_4bit
+            )
         
         return output_text
 
