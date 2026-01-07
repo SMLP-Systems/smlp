@@ -3,7 +3,7 @@ name: Run Hello Script
 on:
   push:
     branches:
-      - action
+      - actions
 
 jobs:
   run-hello:
