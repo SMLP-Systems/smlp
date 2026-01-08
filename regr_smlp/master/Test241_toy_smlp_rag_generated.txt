@@ -1,0 +1,11 @@
+<think>
+Okay, so I need to figure out who developed SMLP. The question is straightforward: "Who developed SMLP?" And the context provided says that SMLP was developed by Franz, Zurab, and Konstantin.
+
+First, let me read through the context again to make sure I understand it correctly. It mentions that SMLP was developed by these three individuals: Franz, Zurab, and Konstantin. There's also a mention of the SMLP manual being available on Git Hub and that SMLP is an open-source tool.
+
+I don't see any other information about who developed it besides the names listed. So, based solely on the context given, I can conclude that the developers are Franz, Zurab, and Konstantin.
+</think>
+
+- Franz  
+- Zurab  
+- Konstantin

@@ -1,0 +1,84 @@
+
+smlp_logger - INFO - Executing run_smlp.py script: Start
+
+smlp_logger - INFO - Running SMLP in mode "rag": Start
+
+smlp_logger - INFO - Running RAG with base model deepseek-r1:1.5b, using LangChain libs.
+
+smlp_logger - INFO - Starting RAG training
+
+smlp_logger - INFO - Computing passages from input text
+
+smlp_logger - INFO - Number of passages loaded: 4
+
+smlp_logger - INFO - Computing embedding and indexing
+
+smlp_logger - INFO - Creating RAG chain for training
+
+smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at http://localhost:11434
+
+smlp_logger - INFO - Saving RAG artifacts in directory: ./test264_model
+
+smlp_logger - INFO - Saving FAISS index into file ./test264_model/faiss_index
+
+smlp_logger - INFO - Saving model artifacts config into file ./test264_model/rag_config.json
+
+smlp_logger - INFO - {'rag_prompt_type': 'document_focused', 'rag_retriever_top_k': 3, 'rag_embedding_model': 'nomic-embed-text', 'rag_base_url': 'http://localhost:11434', 'rag_base_model_name': 'deepseek-r1:1.5b'}
+
+smlp_logger - INFO - Saved RAG artifacts to: ./test264_model
+
+smlp_logger - INFO - Creating RAG chain for answering question(s)
+
+smlp_logger - INFO - Using rag_base_model_name deepseek-r1:1.5b at http://localhost:11434
+
+smlp_logger - INFO - Answering questions...
+
+
+smlp_logger - INFO - Q: Who developed SMLP?
+
+smlp_logger - INFO - Top 3 retrieved passages for this question
+
+smlp_logger - INFO - [1] SMLP was developed by franz, zurab and konstantin.
+
+smlp_logger - INFO - [2] SMLP manual is available at Git Hub. 
+
+smlp_logger - INFO - [3] SMLP is an open source model exploration tool.
+
+smlp_logger - INFO - Answer: <think>
+Okay, so I need to figure out who developed the SMLP tool. The question is asking for the developer's name or team. Looking at the context provided, it says that SMLP was developed by three people: Franz, Zurab, and Konstantin. So, each of them contributed to its development.
+
+I should make sure I'm not missing anything else in the context. The manual is available on Git Hub, but that's more about how it's accessed rather than who developed it. SMLP being an open-source tool also doesn't change who created it; it just means it's freely available for others to use and contribute.
+
+So, putting it all together, the developers are Franz, Zurab, and Konstantin. I don't see any other names mentioned here.
+</think>
+
+Franz, Zurab, and Konstantin developed SMLP.
+
+
+smlp_logger - INFO - Saving generated text into ./Test264_toy_smlp_rag_generated.txt
+
+smlp_logger - INFO - Saved retrieved contexts to ./Test264_toy_smlp_rag_retrieved_contexts.json
+
+smlp_logger - INFO - ======================================================================
+
+smlp_logger - INFO - MEMORY CLEANUP: Freeing RAG model memory before loading judge
+
+smlp_logger - INFO - ======================================================================
+
+smlp_logger - INFO - Cleaning up LangChain RAG memory...
+
+smlp_logger - INFO - Memory cleanup complete
+
+smlp_logger - INFO - ======================================================================
+
+smlp_logger - INFO - Running RAG quality evaluation with LLM-as-a-Judge
+
+smlp_logger - INFO - Running LLM judge using model: TinyLlama/TinyLlama-1.1B-Chat-v1.0
+
+smlp_logger - INFO - Judge results for (training): {'summary': {'num_examples': 1, 'num_valid': 1, 'grounded_rate': 1.0, 'grounded_none_count': 0, 'hallucination_rate': 0.0, 'hallucination_none_count': 0, 'avg_score': 3.0}, 'details': [{'grounded': True, 'hallucination': False, 'score': 3, 'explanation': 'The answer is well-grounded, but some minor incompleteness. The answer contains some fabricated facts, but none that are hallucinatory.', 'confidence': 'high'}]}
+
+smlp_logger - INFO - LLM judge results written to ./Test264_toy_smlp_llm_training_quality.json
+
+smlp_logger - INFO - Running SMLP in mode "rag": End
+
+smlp_logger - INFO - Executing run_smlp.py script: End

@@ -1,0 +1,11 @@
+{
+  "questions": [
+    "Who developed SMLP?"
+  ],
+  "retrieved_contexts": [
+    "[1] SMLP was developed by franz, zurab and konstantin.",
+    "[2] SMLP manual is available at Git Hub. ",
+    "[3] SMLP is an open source model exploration tool."
+  ],
+  "answers": "<think>\nOkay, so I need to figure out who developed SMLP based on the given context. Let me read through the context again carefully. It says that SMLP was developed by Franz, Zurab, and Konstantin. That seems straightforward. The other parts about the manual being available at Git Hub and SMLP being an open-source tool don't provide any additional information beyond confirming its origin. Since all the relevant information is in the first part of the context, I can confidently say that the developers are Franz, Zurab, and Konstantin.\n</think>\n\n- Franz, Zurab, and Konstantin developed SMLP.\n\nSMLP manual is available at Git Hub.  \nSMLP is an open source model exploration tool."
+}

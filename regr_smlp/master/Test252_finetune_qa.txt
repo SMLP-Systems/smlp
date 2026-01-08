@@ -1,0 +1,18 @@
+
+smlp_logger - INFO - Executing run_smlp.py script: Start
+
+smlp_logger - INFO - Running SMLP in mode "finetune": Start
+
+smlp_logger - INFO - Running model generation (inference).
+
+smlp_logger - INFO - Question: What is SMLP?
+
+smlp_logger - INFO - Context: None
+
+smlp_logger - INFO - Model Output: Social Democratic Party (SMLP)
+
+smlp_logger - INFO - Saving generated text into ./Test252_finetune_qa_finetuned_generated.txt
+
+smlp_logger - INFO - Running SMLP in mode "finetune": End
+
+smlp_logger - INFO - Executing run_smlp.py script: End

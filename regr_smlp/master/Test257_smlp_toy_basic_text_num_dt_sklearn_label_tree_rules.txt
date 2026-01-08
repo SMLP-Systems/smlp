@@ -1,0 +1,8 @@
+#Forest semantics: majority vote
+#Number of trees: 1
+
+#TREE 0
+if (thor > 0.5) and (loves pizza > 0.5) then (label = 10.3) | based on 1 samples
+if (thor > 0.5) and (loves pizza <= 0.5) then (label = 10.2) | based on 1 samples
+if (thor <= 0.5) and (pizza > 0.5) then (label = 2.3) | based on 1 samples
+if (thor <= 0.5) and (pizza <= 0.5) then (label = 1.8) | based on 1 samples
