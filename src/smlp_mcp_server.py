@@ -52,6 +52,8 @@ async def run_smlp_tool(params: dict) -> dict:
     # Convert dict to CLI-like argv list
     argv = ["smlp"]
     for k, v in params.items():
+        if v is None:
+            continue
         flag = f"--{k}"
         argv.extend([flag, str(v)])
         #if isinstance(v, bool):
