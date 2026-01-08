@@ -13,7 +13,7 @@ lib/libcheck-data.so
 /src/local_paths.py
 /src/process_shai.py
 /src/process_*.py
-
+src/Untitled.ipynb
 # smlp_tmp directory
 /src/smlp_tmp/*
 
