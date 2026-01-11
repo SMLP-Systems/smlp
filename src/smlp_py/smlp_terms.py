@@ -1395,22 +1395,21 @@ class NNKerasTerms: #(SmlpTerms):
         return curr_layer_terms
 
     def _nn_keras_is_sequential(self, model):
-        try:
-            # v2.9 has this API
-            cl = keras.engine.sequential.Sequential
-        except AttributeError:
-            # v2.14+ has this API
-            cl = keras.src.engine.sequential.Sequential
-        return isinstance(model, cl)
+        """
+        Check if a Keras model is Sequential.
+        For Keras 3.x versions.
+        """
+        from keras.models import Sequential
+        return isinstance(model, Sequential)
 
     def _nn_keras_is_functional(self, model):
-        try:
-            # v2.9 has this API
-            cl = keras.engine.functional.Functional
-        except AttributeError:
-            # v2.14+ has this API
-            cl = keras.src.engine.functional.Functional
-        return isinstance(model, cl)
+        """
+        Check if a Keras model is Functional.
+        For Keras 3.x versions.
+        """
+        from keras.models import Model, Sequential
+        # Functional models are Model instances but not Sequential
+        return isinstance(model, Model) and not isinstance(model, Sequential)
     
     # determine the model type -- sequential vs functional
     def get_nn_keras_model_type(self, model):
