@@ -10,6 +10,11 @@ from hashlib import sha256
 import matplotlib.pyplot as plt
 import random
 import os
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(message)s'
+)
 
 def load_shekel_data(csv_file='shekel_meshgrid_26.csv.expected.gz'):
     """
@@ -27,21 +32,21 @@ def load_shekel_data(csv_file='shekel_meshgrid_26.csv.expected.gz'):
     y : numpy array
         Target values (Y)
     """
-    print(f"Loading data from {csv_file}...")
+    logging.info(f"Loading data from {csv_file}...")
     df = pd.read_csv(csv_file)
     
-    print(f"Data shape: {df.shape}")
-    print(f"Columns: {df.columns.tolist()}")
-    print(f"\nFirst few rows:")
-    print(df.head())
+    logging.info(f"Data shape: {df.shape}")
+    logging.info(f"Columns: {df.columns.tolist()}")
+    logging.info(f"\nFirst few rows:")
+    logging.info(df.head())
     
     # Extract features and target
     X = df[['X1', 'X2', 'X3', 'X4']].values
     y = df['Y'].values
     
-    print(f"\nFeatures shape: {X.shape}")
-    print(f"Target shape: {y.shape}")
-    print(f"Target range: [{y.min():.4f}, {y.max():.4f}]")
+    logging.info(f"\nFeatures shape: {X.shape}")
+    logging.info(f"Target shape: {y.shape}")
+    logging.info(f"Target range: [{y.min():.4f}, {y.max():.4f}]")
     
     return X, y
 
@@ -129,8 +134,8 @@ def train_model(csv_file='shekel_meshgrid_26.csv', epochs=100, batch_size=64, te
         X, y, test_size=test_size, random_state=42
     )
     
-    print(f"\nTrain set size: {X_train.shape[0]}")
-    print(f"Test set size: {X_test.shape[0]}")
+    logging.info(f"\nTrain set size: {X_train.shape[0]}")
+    logging.info(f"Test set size: {X_test.shape[0]}")
     
     # Normalize features and target
     scaler_X = StandardScaler()
@@ -143,9 +148,9 @@ def train_model(csv_file='shekel_meshgrid_26.csv', epochs=100, batch_size=64, te
     y_test_scaled = scaler_y.transform(y_test.reshape(-1, 1)).flatten()
     
     # Create model
-    print("\nCreating neural network model...")
+    logging.info("\nCreating neural network model...")
     model = create_shekel_model(input_dim=X_train.shape[1])
-    print(model.summary())
+    logging.info(model.summary())
     
     # Early stopping callback with adjusted patience
     early_stopping = keras.callbacks.EarlyStopping(
@@ -187,8 +192,8 @@ def train_model(csv_file='shekel_meshgrid_26.csv', epochs=100, batch_size=64, te
     )
     
     # Train model
-    print("\nTraining model...")
-    print("Initial learning rate: 0.005 (using Nadam optimizer with cosine annealing)")
+    logging.info("\nTraining model...")
+    logging.info("Initial learning rate: 0.005 (using Nadam optimizer with cosine annealing)")
     history = model.fit(
         X_train_scaled, y_train_scaled,
         epochs=epochs,
@@ -245,7 +250,7 @@ def plot_correlation(y_true, y_pred, rootpath: str = "."):
     
     plt.tight_layout()
     plt.savefig(rootpath + '/correlation_plot.png', dpi=150)
-    print("\nCorrelation plot saved as 'correlation_plot.png'")
+    logging.info("\nCorrelation plot saved as 'correlation_plot.png'")
     plt.close()
 
 
@@ -293,7 +298,7 @@ def plot_training_history(history, rootpath: str = "."):
     
     plt.tight_layout()
     plt.savefig(rootpath + '/training_history.png', dpi=150)
-    print("\nTraining history plot saved as 'training_history.png'")
+    logging.info("\nTraining history plot saved as 'training_history.png'")
     plt.close()
 
 
@@ -314,7 +319,7 @@ def save_model(model, scaler_X, scaler_y, rootpath=".", model_path='shekel_model
     """
     # Save model
     model.save(rootpath + "/" + model_path)
-    print(f"\nModel saved to {model_path}")
+    logging.info(f"\nModel saved to {model_path}")
     
     # Save scalers
     import pickle
@@ -322,7 +327,7 @@ def save_model(model, scaler_X, scaler_y, rootpath=".", model_path='shekel_model
         pickle.dump(scaler_X, f)
     with open(rootpath + '/scaler_y.pkl', 'wb') as f:
         pickle.dump(scaler_y, f)
-    print("Scalers saved to scaler_X.pkl and scaler_y.pkl")
+    logging.info("Scalers saved to scaler_X.pkl and scaler_y.pkl")
 
 
 def load_model(model_path='shekel_model.keras'):
@@ -346,13 +351,13 @@ def load_model(model_path='shekel_model.keras'):
     import pickle
     
     model = keras.models.load_model(model_path)
-    print(f"Model loaded from {model_path}")
+    logging.info(f"Model loaded from {model_path}")
     
     with open('scaler_X.pkl', 'rb') as f:
         scaler_X = pickle.load(f)
     with open('scaler_y.pkl', 'rb') as f:
         scaler_y = pickle.load(f)
-    print("Scalers loaded")
+    logging.info("Scalers loaded")
     
     return model, scaler_X, scaler_y
 
@@ -367,8 +372,8 @@ def main(batch_size: int = 512, rootpath: str = ".") -> int:
     # Set Python hash seed for reproducibility
     os.environ['PYTHONHASHSEED'] = str(seed)
     os.environ['CUDA_VISIBLE_DEVICES']='-1'
-    print("Random seeds set for reproducibility (seed={seed})")
-    print("=" * 60)
+    logging.info("Random seeds set for reproducibility (seed={seed})")
+    logging.info("=" * 60)
     # Train model with optimized parameters for faster convergence
     model, scaler_X, scaler_y, history, X_test_scaled, y_test_scaled, y_test = train_model(
         csv_file = rootpath + '/shekel_meshgrid_26.csv.expected.gz',
@@ -378,15 +383,15 @@ def main(batch_size: int = 512, rootpath: str = ".") -> int:
     )
     
     # Evaluate model
-    print("\n" + "=" * 60)
-    print("Model Evaluation:")
+    logging.info("\n" + "=" * 60)
+    logging.info("Model Evaluation:")
     results = model.evaluate(X_test_scaled, y_test_scaled, verbose=0)
     test_loss = results[0]
     test_mae = results[1]
     test_mse = results[2]
-    print(f"Test Loss (MSE): {test_loss:.6f}")
-    print(f"Test MAE: {test_mae:.6f}")
-    print(f"Test MSE: {test_mse:.6f}")
+    logging.info(f"Test Loss (MSE): {test_loss:.6f}")
+    logging.info(f"Test MAE: {test_mae:.6f}")
+    logging.info(f"Test MSE: {test_mse:.6f}")
     
     # Make predictions
     y_pred_scaled = model.predict(X_test_scaled, verbose=0)
@@ -406,18 +411,18 @@ def main(batch_size: int = 512, rootpath: str = ".") -> int:
                            f"R² Score: {r2:.6f}\n" + \
                            f"Correlation Coefficient: {correlation:.6f}"
 
-    print(metrics_pretty_printed)
+    logging.info(metrics_pretty_printed)
     
     # Test prediction at known minimum
-    print("\n" + "=" * 60)
-    print("Testing at known minimum [4, 4, 4, 4]:")
+    logging.info("\n" + "=" * 60)
+    logging.info("Testing at known minimum [4, 4, 4, 4]:")
     test_point = np.array([[4.0, 4.0, 4.0, 4.0]])
     test_point_scaled = scaler_X.transform(test_point)
     pred_scaled = model.predict(test_point_scaled, verbose=0)
     pred = scaler_y.inverse_transform(pred_scaled)
     predicted_pretty_printed= f"Predicted: {pred[0][0]:.4f}"
-    print(predicted_pretty_printed)
-    print(f"Expected: ~-10.5363")
+    logging.info(predicted_pretty_printed)
+    logging.info(f"Expected: ~-10.5363")
     
     # Plot training history
     plot_training_history(history,rootpath)
@@ -427,8 +432,8 @@ def main(batch_size: int = 512, rootpath: str = ".") -> int:
     # Save model
     save_model(model, scaler_X, scaler_y, rootpath)
     
-    print("\n" + "=" * 60)
-    print("Training complete!")
+    logging.info("\n" + "=" * 60)
+    logging.info("Training complete!")
     results_summary = metrics_pretty_printed + '\n' + predicted_pretty_printed
     return sha256(results_summary.encode()).hexdigest()
     
