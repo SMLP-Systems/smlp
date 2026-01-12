@@ -4,7 +4,7 @@ import pytest
 def pytest_collection_modifyitems(items):
     for item in items:
         # Check if test is in this directory
-        if "z3" in str(item.fspath):
+        if "z3" in str(item.fspath) or "keras" in str(item.fspath):
             item.add_marker(pytest.mark.forked)
 
 # Configure logging for forked tests
