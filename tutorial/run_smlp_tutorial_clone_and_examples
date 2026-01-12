@@ -14,6 +14,6 @@ cd tutorial/examples
 set cmd="env PYTHONDONTWRITEBYTECODE=1 /usr/bin/pytest -v --forked -m forked $PWD"
 echo $cmd |& tee -a $log
 $cmd |& tee -a $log
-set cmd="env CUDA_VISIBLE_DEVICES=-1 PYTHONDONTWRITEBYTECODE=1 /usr/bin/pytest -v -s -m 'not forked' $PWD"
+set cmd="env PYTHONDONTWRITEBYTECODE=1 /usr/bin/pytest -v -s -m 'not forked' $PWD"
 echo $cmd | tr '\047' '"' |& tee -a $log
 echo $cmd | tr '\047' '"' | source /dev/stdin |& tee -a $log
