@@ -6,7 +6,10 @@ from sklearn.preprocessing import StandardScaler
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
+from hashlib import sha256
 import matplotlib.pyplot as plt
+import random
+import os
 
 def load_shekel_data(csv_file='shekel_meshgrid_26.csv.expected.gz'):
     """
@@ -195,55 +198,11 @@ def train_model(csv_file='shekel_meshgrid_26.csv', epochs=100, batch_size=64, te
         verbose=2  # Show one line per epoch
     )
     
-    # Evaluate model
-    print("\n" + "=" * 60)
-    print("Model Evaluation:")
-    results = model.evaluate(X_test_scaled, y_test_scaled, verbose=0)
-    test_loss = results[0]
-    test_mae = results[1]
-    test_mse = results[2]
-    print(f"Test Loss (MSE): {test_loss:.6f}")
-    print(f"Test MAE: {test_mae:.6f}")
-    print(f"Test MSE: {test_mse:.6f}")
     
-    # Make predictions
-    y_pred_scaled = model.predict(X_test_scaled, verbose=0)
-    y_pred = scaler_y.inverse_transform(y_pred_scaled)
-    
-    # Calculate metrics on original scale
-    mse = np.mean((y_test - y_pred.flatten())**2)
-    mae = np.mean(np.abs(y_test - y_pred.flatten()))
-    rmse = np.sqrt(mse)
-    r2 = 1 - (np.sum((y_test - y_pred.flatten())**2) / np.sum((y_test - np.mean(y_test))**2))
-    correlation = np.corrcoef(y_test, y_pred.flatten())[0, 1]
-    
-    print(f"\nMetrics on original scale:")
-    print(f"MSE: {mse:.6f}")
-    print(f"RMSE: {rmse:.6f}")
-    print(f"MAE: {mae:.6f}")
-    print(f"R² Score: {r2:.6f}")
-    print(f"Correlation Coefficient: {correlation:.6f}")
-    
-    # Test prediction at known minimum
-    print("\n" + "=" * 60)
-    print("Testing at known minimum [4, 4, 4, 4]:")
-    test_point = np.array([[4.0, 4.0, 4.0, 4.0]])
-    test_point_scaled = scaler_X.transform(test_point)
-    pred_scaled = model.predict(test_point_scaled, verbose=0)
-    pred = scaler_y.inverse_transform(pred_scaled)
-    print(f"Predicted: {pred[0][0]:.6f}")
-    print(f"Expected: ~-10.5363")
-    
-    # Plot training history
-    plot_training_history(history)
-    
-    # Plot correlation
-    plot_correlation(y_test, y_pred.flatten())
-    
-    return model, scaler_X, scaler_y, history
+    return model, scaler_X, scaler_y, history, X_test, y_test, y_test_scaled
 
 
-def plot_correlation(y_true, y_pred):
+def plot_correlation(y_true, y_pred, rootpath: str = "."):
     """
     Plot correlation between actual and predicted values.
     
@@ -285,12 +244,12 @@ def plot_correlation(y_true, y_pred):
     plt.ylim(min_val, max_val)
     
     plt.tight_layout()
-    plt.savefig('correlation_plot.png', dpi=150)
+    plt.savefig(rootpath + '/correlation_plot.png', dpi=150)
     print("\nCorrelation plot saved as 'correlation_plot.png'")
     plt.close()
 
 
-def plot_training_history(history):
+def plot_training_history(history, rootpath: str = "."):
     """
     Plot training and validation loss over epochs.
     
@@ -333,12 +292,12 @@ def plot_training_history(history):
         plt.grid(True)
     
     plt.tight_layout()
-    plt.savefig('training_history.png', dpi=150)
+    plt.savefig(rootpath + '/training_history.png', dpi=150)
     print("\nTraining history plot saved as 'training_history.png'")
     plt.close()
 
 
-def save_model(model, scaler_X, scaler_y, model_path='shekel_model.keras'):
+def save_model(model, scaler_X, scaler_y, rootpath=".", model_path='shekel_model.keras'):
     """
     Save the trained model and scalers.
     
@@ -354,14 +313,14 @@ def save_model(model, scaler_X, scaler_y, model_path='shekel_model.keras'):
         Path to save the model
     """
     # Save model
-    model.save(model_path)
+    model.save(rootpath + "/" + model_path)
     print(f"\nModel saved to {model_path}")
     
     # Save scalers
     import pickle
-    with open('scaler_X.pkl', 'wb') as f:
+    with open(rootpath + '/scaler_X.pkl', 'wb') as f:
         pickle.dump(scaler_X, f)
-    with open('scaler_y.pkl', 'wb') as f:
+    with open(rootpath + '/scaler_y.pkl', 'wb') as f:
         pickle.dump(scaler_y, f)
     print("Scalers saved to scaler_X.pkl and scaler_y.pkl")
 
@@ -397,46 +356,81 @@ def load_model(model_path='shekel_model.keras'):
     
     return model, scaler_X, scaler_y
 
-
-if __name__ == "__main__":
-    # Set random seeds for reproducibility - more comprehensive
-    import os
-    import random
-    
+def main(batch_size: int = 512, rootpath: str = ".") -> int:
     seed = 42
-    
     # Python random
     random.seed(seed)
-    
     # Numpy random
     np.random.seed(seed)
-    
     # TensorFlow random
     tf.random.set_seed(seed)
-    
     # Set Python hash seed for reproducibility
     os.environ['PYTHONHASHSEED'] = str(seed)
     os.environ['CUDA_VISIBLE_DEVICES']='-1'
-    
-    # Configure TensorFlow for deterministic operations
-    #os.environ['TF_DETERMINISTIC_OPS'] = '1'
-    
-    # For GPU determinism (if using GPU)
-    #tf.config.experimental.enable_op_determinism()
-    
-    print("Random seeds set for reproducibility (seed=42)")
+    print("Random seeds set for reproducibility (seed={seed})")
     print("=" * 60)
-    
     # Train model with optimized parameters for faster convergence
-    model, scaler_X, scaler_y, history = train_model(
-        csv_file='shekel_meshgrid_26.csv.expected.gz',
-        epochs=150,  # Reduced from 200, early stopping will handle it
-        batch_size=512,  # Larger batch for faster, more stable training
-        test_size=0.2
+    model, scaler_X, scaler_y, history, X_test_scaled, y_test_scaled, y_test = train_model(
+        csv_file = rootpath + '/shekel_meshgrid_26.csv.expected.gz',
+        epochs = 150,  # Reduced from 200, early stopping will handle it
+        batch_size = batch_size,  # Larger batch for faster, more stable training
+        test_size = 0.2
     )
     
+    # Evaluate model
+    print("\n" + "=" * 60)
+    print("Model Evaluation:")
+    results = model.evaluate(X_test_scaled, y_test_scaled, verbose=0)
+    test_loss = results[0]
+    test_mae = results[1]
+    test_mse = results[2]
+    print(f"Test Loss (MSE): {test_loss:.6f}")
+    print(f"Test MAE: {test_mae:.6f}")
+    print(f"Test MSE: {test_mse:.6f}")
+    
+    # Make predictions
+    y_pred_scaled = model.predict(X_test_scaled, verbose=0)
+    y_pred = scaler_y.inverse_transform(y_pred_scaled)
+    
+    # Calculate metrics on original scale
+    mse = np.mean((y_test - y_pred.flatten())**2)
+    mae = np.mean(np.abs(y_test - y_pred.flatten()))
+    rmse = np.sqrt(mse)
+    r2 = 1 - (np.sum((y_test - y_pred.flatten())**2) / np.sum((y_test - np.mean(y_test))**2))
+    correlation = np.corrcoef(y_test, y_pred.flatten())[0, 1]
+    
+    metrics_pretty_printed=f"\nMetrics on original scale:\n" + \
+                           f"MSE: {mse:.6f}\n" + \
+                           f"RMSE: {rmse:.6f}\n" + \
+                           f"MAE: {mae:.6f}\n" + \
+                           f"R² Score: {r2:.6f}\n" + \
+                           f"Correlation Coefficient: {correlation:.6f}"
+
+    print(metrics_pretty_printed)
+    
+    # Test prediction at known minimum
+    print("\n" + "=" * 60)
+    print("Testing at known minimum [4, 4, 4, 4]:")
+    test_point = np.array([[4.0, 4.0, 4.0, 4.0]])
+    test_point_scaled = scaler_X.transform(test_point)
+    pred_scaled = model.predict(test_point_scaled, verbose=0)
+    pred = scaler_y.inverse_transform(pred_scaled)
+    predicted_pretty_printed= f"Predicted: {pred[0][0]:.4f}"
+    print(predicted_pretty_printed)
+    print(f"Expected: ~-10.5363")
+    
+    # Plot training history
+    plot_training_history(history,rootpath)
+    
+    # Plot correlation
+    plot_correlation(y_test, y_pred.flatten(),rootpath)
     # Save model
-    save_model(model, scaler_X, scaler_y)
+    save_model(model, scaler_X, scaler_y, rootpath)
     
     print("\n" + "=" * 60)
     print("Training complete!")
+    results_summary = metrics_pretty_printed + '\n' + predicted_pretty_printed
+    return sha256(results_summary.encode()).hexdigest()
+    
+if __name__ == "__main__":
+   print(main())
