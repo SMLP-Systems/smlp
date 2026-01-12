@@ -8,7 +8,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 import matplotlib.pyplot as plt
 
-def load_shekel_data(csv_file='shekel_meshgrid_26.csv'):
+def load_shekel_data(csv_file='shekel_meshgrid_26.csv.expected.gz'):
     """
     Load Shekel function data from CSV file.
     
