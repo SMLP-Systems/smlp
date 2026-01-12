@@ -1,12 +1,15 @@
 #!/usr/bin/python3.12
 import sys
-from shgo_nn import main
 from os import remove, popen
 from os.path import exists, realpath, dirname
 from os import getenv
+from pytest import mark
 import logging
 
+@mark.skipif(sys.version_info >= (3, 14), 
+                   reason="Skipping Keras tests for Python 3.14")
 def test_shgo_nn(monkeypatch, request):
+    from shgo_nn import main
     root_dir = str(request.config.rootpath) + '/'
     with monkeypatch.context() as m:
         logging.disable(logging.CRITICAL)
