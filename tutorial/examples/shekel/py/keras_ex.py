@@ -429,7 +429,7 @@ if __name__ == "__main__":
     
     # Train model with optimized parameters for faster convergence
     model, scaler_X, scaler_y, history = train_model(
-        csv_file='shekel_meshgrid_26.csv',
+        csv_file='shekel_meshgrid_26.csv.expected.gz',
         epochs=150,  # Reduced from 200, early stopping will handle it
         batch_size=512,  # Larger batch for faster, more stable training
         test_size=0.2
