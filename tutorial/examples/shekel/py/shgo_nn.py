@@ -7,8 +7,10 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 import matplotlib.pyplot as plt
+from sys import argv
+from hashlib import sha256
 
-def load_model(model_path='shekel_model_expected.keras'):
+def load_model(rootpath = ".", model_path='shekel_model_expected.keras'):
     """
     Load a saved model and scalers.
     
@@ -28,19 +30,19 @@ def load_model(model_path='shekel_model_expected.keras'):
     """
     import pickle
     
-    model = keras.models.load_model(model_path)
+    model = keras.models.load_model(rootpath + "/" + model_path)
     print(f"Model loaded from {model_path}")
     
-    with open('scaler_X_expected.pkl', 'rb') as f:
+    with open(rootpath + '/scaler_X_expected.pkl', 'rb') as f:
         scaler_X = pickle.load(f)
-    with open('scaler_y_expected.pkl', 'rb') as f:
+    with open(rootpath + '/scaler_y_expected.pkl', 'rb') as f:
         scaler_y = pickle.load(f)
     print("Scalers loaded")
     
     return model, scaler_X, scaler_y
 
 
-def predict_with_model(X, model_path='shekel_model.keras'):
+def predict_with_model(X, rootpath = ".", model_path='shekel_model_expected.keras'):
     """
     Use trained model to make predictions on new data.
     
@@ -57,7 +59,7 @@ def predict_with_model(X, model_path='shekel_model.keras'):
         Predicted values
     """
     # Load model and scalers
-    model, scaler_X, scaler_y = load_model(model_path)
+    model, scaler_X, scaler_y = load_model(rootpath, model_path)
     
     # Convert to numpy array if needed
     X = np.array(X)
@@ -78,7 +80,7 @@ def predict_with_model(X, model_path='shekel_model.keras'):
     return y_pred.flatten()
 
 
-def compare_model_vs_function(test_points, model_path='shekel_model.keras'):
+def compare_model_vs_function(test_points, rootpath=".", model_path='shekel_model_expected.keras'):
     """
     Compare neural network predictions vs actual Shekel function values.
     
@@ -100,7 +102,7 @@ def compare_model_vs_function(test_points, model_path='shekel_model.keras'):
     print("=" * 60)
     
     # Get predictions from model
-    predictions = predict_with_model(test_points, model_path)
+    predictions = predict_with_model(test_points, rootpath, model_path)
     
     # Calculate actual values
     actual_values = np.array([shekel_function(point) for point in test_points])
@@ -129,7 +131,7 @@ def compare_model_vs_function(test_points, model_path='shekel_model.keras'):
     return predictions, actual_values
 
 
-def optimize_with_model(model_path='shekel_model.keras', bounds=None):
+def optimize_with_model(rootpath=".", model_path='shekel_model_expected.keras', bounds=None):
     """
     Optimize the Shekel function using SHGO with the neural network model.
     
@@ -151,7 +153,7 @@ def optimize_with_model(model_path='shekel_model.keras', bounds=None):
         bounds = [(0, 10)] * 4
     
     # Load model and scalers
-    model, scaler_X, scaler_y = load_model(model_path)
+    model, scaler_X, scaler_y = load_model(rootpath, model_path)
     
     # Create objective function using the model
     def model_objective(x):
@@ -180,8 +182,7 @@ def optimize_with_model(model_path='shekel_model.keras', bounds=None):
     
     return result
 
-
-def compare_optimization_results(model_path='shekel_model.keras'):
+def compare_optimization_results(rootpath=".", model_path='shekel_model_expected.keras'):
     """
     Compare SHGO optimization results using actual function vs neural network model.
     
@@ -212,7 +213,7 @@ def compare_optimization_results(model_path='shekel_model.keras'):
     # 2. Optimize using neural network model
     print("\n[2/2] Running SHGO with NEURAL NETWORK model...")
     print("-" * 80)
-    result_model = optimize_with_model(model_path, bounds)
+    result_model = optimize_with_model(rootpath, model_path, bounds)
     
     # 3. Compare results
     print("\n" + "=" * 80)
@@ -264,7 +265,8 @@ def compare_optimization_results(model_path='shekel_model.keras'):
     
     return result_actual, result_model
 
-if __name__ == "__main__":
+
+def main(rootpath: str = ".") -> int:
     # Set random seeds for reproducibility - more comprehensive
     import os
     os.environ['CUDA_VISIBLE_DEVICES']='-1'
@@ -284,6 +286,14 @@ if __name__ == "__main__":
         [6.0, 5.5, 6.2, 5.8]
     ]
     
-    compare_model_vs_function(test_points)
+    compare_model_vs_function(test_points, rootpath)
     # Compare SHGO optimization results
-    compare_optimization_results()
+    result_actual, result_model = compare_optimization_results(rootpath)
+    actual_results = ' '.join(str(item) for item in result_actual.x) + ' ' + str(result_actual.fun)
+    model_results  = ' '.join(str(item) for item in result_model.x) + ' '  + str(result_model.fun)
+    all_results = actual_results + '\n' + model_results
+    return sha256(all_results.encode()).hexdigest()
+
+if __name__ == "__main__":
+    rootpath = "." if len(argv) < 2 else argv[1]
+    print(main(rootpath))
