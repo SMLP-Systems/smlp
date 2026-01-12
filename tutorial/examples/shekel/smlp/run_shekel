@@ -1,0 +1,36 @@
+#!/usr/bin/tcsh -f
+set script_path=`realpath $0 | xargs dirname`
+if($#argv > 0) then
+    if("-clean" == "$argv[1]") then
+        \rm -f Shekel* *.log  >& /dev/null
+        exit(0)
+    endif
+endif
+set csv=Shekel.csv
+set json=`echo $csv:r | tr '[A-Z]' '[a-z]'`.json
+gunzip -c $script_path:h/py/shekel_meshgrid_26.csv.expected.gz > $csv
+$script_path:h:h:h:h/src/run_smlp.py -data $csv \
+    -spec $script_path/$json \
+    -out_dir ./ \
+    -pref $csv:r \
+    -mode optimize \
+    -pareto f \
+    -opt_strategy eager \
+    -resp Y \
+    -feat X1,X2,X3,X4 \
+    -model dt_sklearn \
+    -dt_sklearn_max_depth 16 \
+    -tree_encoding flat \
+    -compress_rules t \
+    -mrmr_pred 0 \
+    -epsilon 0.005 \
+    -delta_rel 0.5 \
+    -save_model t \
+    -model_name $csv:r_model \
+    -save_model_config t \
+    -plots f \
+    -pred_plots f \
+    -resp_plots f \
+    -seed 10 \
+    -log_time f \
+    >& `realpath $0 | xargs basename`.log

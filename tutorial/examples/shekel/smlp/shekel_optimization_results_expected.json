@@ -1,0 +1,21 @@
+{
+	"objective1": {
+		"X1": 1.3999999687075615,
+		"X2": 1.7999999970197678,
+		"X3": 0.7999999821186066,
+		"X4": 1.1999999731779099,
+		"Y": -2.2481997270702783,
+		"objective1_scaled": 0.20728944340706368,
+		"objective1": 2.2481997270702783,
+		"threshold_lo_scaled": 0.20703125,
+		"threshold_lo": 2.2455002188727744,
+		"threshold_up_scaled": 0.2109375,
+		"threshold_up": 2.2863415169385224,
+		"max_in_data": 10.536283726219605,
+		"min_in_data": 0.0809114213881341
+	},
+	"smlp_execution": "completed",
+	"interface_consistent": "true",
+	"model_consistent": "true",
+	"synthesis_feasible": "true"
+}
