@@ -1,0 +1,2 @@
+#!/usr/bin/tcsh -f
+/usr/bin/ninja -C build install
