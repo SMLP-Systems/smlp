@@ -10,11 +10,13 @@ from hashlib import sha256
 import matplotlib.pyplot as plt
 import random
 import os
+keras.config.disable_interactive_logging()
 import logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(message)s'
 )
+
 
 def load_shekel_data(csv_file='shekel_meshgrid_26.csv.expected.gz'):
     """

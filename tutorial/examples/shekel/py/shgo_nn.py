@@ -173,7 +173,9 @@ def optimize_with_model(rootpath=".", model_path='shekel_model_expected.keras', 
     logging.info("=" * 60)
     
     # Run SHGO optimization
+    logging.disable(logging.CRITICAL)
     result = shgo(model_objective, bounds, n=200, iters=5, sampling_method='simplicial', options={ 'ftol': 1e-3, 'minimize_every_iter': False} )
+    logging.disable(logging.DEBUG)
     
     logging.info(f"\nOptimization Results (Model):")
     logging.info(f"Success: {result.success}")
@@ -213,7 +215,9 @@ def compare_optimization_results(rootpath=".", model_path='shekel_model_expected
     # 1. Optimize using actual Shekel function
     logging.info("\n[1/2] Running SHGO with ACTUAL Shekel function...")
     logging.info("-" * 80)
+    logging.disable(logging.CRITICAL)
     result_actual = shgo(shekel_function, bounds, n=200, iters=5)
+    logging.disable(logging.DEBUG)
     
     # 2. Optimize using neural network model
     logging.info("\n[2/2] Running SHGO with NEURAL NETWORK model...")
