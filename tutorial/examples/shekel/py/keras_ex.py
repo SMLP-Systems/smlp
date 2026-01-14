@@ -6,10 +6,8 @@ from sklearn.preprocessing import StandardScaler
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-from hashlib import sha256
 import matplotlib.pyplot as plt
-import random
-import os
+from hashlib import sha256
 keras.config.disable_interactive_logging()
 import logging
 logging.basicConfig(
@@ -17,8 +15,7 @@ logging.basicConfig(
     format='%(message)s'
 )
 
-
-def load_shekel_data(csv_file='shekel_meshgrid_26.csv.expected.gz'):
+def load_shekel_data(csv_file='shekel_meshgrid_26.csv'):
     """
     Load Shekel function data from CSV file.
     
@@ -102,7 +99,7 @@ def create_shekel_model(input_dim=4):
     return model
 
 
-def train_model(csv_file='shekel_meshgrid_26.csv', epochs=100, batch_size=64, test_size=0.2):
+def train_model(rootpath=".",csv_file='shekel_meshgrid_26.csv', epochs=100, batch_size=64, test_size=0.2):
     """
     Train a neural network model on Shekel function data.
     
@@ -205,185 +202,6 @@ def train_model(csv_file='shekel_meshgrid_26.csv', epochs=100, batch_size=64, te
         verbose=2  # Show one line per epoch
     )
     
-    
-    return model, scaler_X, scaler_y, history, X_test, y_test, y_test_scaled
-
-
-def plot_correlation(y_true, y_pred, rootpath: str = "."):
-    """
-    Plot correlation between actual and predicted values.
-    
-    Parameters:
-    -----------
-    y_true : numpy array
-        Actual values
-    y_pred : numpy array
-        Predicted values
-    """
-    # Calculate correlation coefficient and R²
-    correlation = np.corrcoef(y_true, y_pred)[0, 1]
-    r2 = 1 - (np.sum((y_true - y_pred)**2) / np.sum((y_true - np.mean(y_true))**2))
-    
-    plt.figure(figsize=(8, 8))
-    
-    # Scatter plot
-    plt.scatter(y_true, y_pred, alpha=0.5, s=10, edgecolors='none')
-    
-    # Perfect prediction line (y=x)
-    min_val = min(y_true.min(), y_pred.min())
-    max_val = max(y_true.max(), y_pred.max())
-    plt.plot([min_val, max_val], [min_val, max_val], 'r--', linewidth=2, label='Perfect Prediction')
-    
-    # Best fit line
-    z = np.polyfit(y_true, y_pred, 1)
-    p = np.poly1d(z)
-    plt.plot(y_true, p(y_true), 'g-', linewidth=2, alpha=0.7, label=f'Best Fit (y={z[0]:.3f}x+{z[1]:.3f})')
-    
-    plt.xlabel('Actual Values', fontsize=12)
-    plt.ylabel('Predicted Values', fontsize=12)
-    plt.title(f'Predicted vs Actual\nCorrelation: {correlation:.6f}, R²: {r2:.6f}', fontsize=14)
-    plt.legend(fontsize=10)
-    plt.grid(True, alpha=0.3)
-    plt.axis('equal')
-    
-    # Set same limits for both axes
-    plt.xlim(min_val, max_val)
-    plt.ylim(min_val, max_val)
-    
-    plt.tight_layout()
-    plt.savefig(rootpath + '/correlation_plot.png', dpi=150)
-    logging.info("\nCorrelation plot saved as 'correlation_plot.png'")
-    plt.close()
-
-
-def plot_training_history(history, rootpath: str = "."):
-    """
-    Plot training and validation loss over epochs.
-    
-    Parameters:
-    -----------
-    history : keras.callbacks.History
-        Training history
-    """
-    plt.figure(figsize=(15, 4))
-    
-    # Plot loss
-    plt.subplot(1, 3, 1)
-    plt.plot(history.history['loss'], label='Training Loss')
-    plt.plot(history.history['val_loss'], label='Validation Loss')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss (MSE)')
-    plt.title('Training and Validation Loss')
-    plt.legend()
-    plt.grid(True)
-    plt.yscale('log')  # Log scale to see details
-    
-    # Plot MAE
-    plt.subplot(1, 3, 2)
-    plt.plot(history.history['mae'], label='Training MAE')
-    plt.plot(history.history['val_mae'], label='Validation MAE')
-    plt.xlabel('Epoch')
-    plt.ylabel('MAE')
-    plt.title('Training and Validation MAE')
-    plt.legend()
-    plt.grid(True)
-    
-    # Plot learning rate
-    plt.subplot(1, 3, 3)
-    if 'lr' in history.history:
-        plt.plot(history.history['lr'])
-        plt.xlabel('Epoch')
-        plt.ylabel('Learning Rate')
-        plt.title('Learning Rate Schedule')
-        plt.yscale('log')
-        plt.grid(True)
-    
-    plt.tight_layout()
-    plt.savefig(rootpath + '/training_history.png', dpi=150)
-    logging.info("\nTraining history plot saved as 'training_history.png'")
-    plt.close()
-
-
-def save_model(model, scaler_X, scaler_y, rootpath=".", model_path='shekel_model.keras'):
-    """
-    Save the trained model and scalers.
-    
-    Parameters:
-    -----------
-    model : keras.Model
-        Trained model
-    scaler_X : StandardScaler
-        Scaler for input features
-    scaler_y : StandardScaler
-        Scaler for target values
-    model_path : str
-        Path to save the model
-    """
-    # Save model
-    model.save(rootpath + "/" + model_path)
-    logging.info(f"\nModel saved to {model_path}")
-    
-    # Save scalers
-    import pickle
-    with open(rootpath + '/scaler_X.pkl', 'wb') as f:
-        pickle.dump(scaler_X, f)
-    with open(rootpath + '/scaler_y.pkl', 'wb') as f:
-        pickle.dump(scaler_y, f)
-    logging.info("Scalers saved to scaler_X.pkl and scaler_y.pkl")
-
-
-def load_model(model_path='shekel_model.keras'):
-    """
-    Load a saved model and scalers.
-    
-    Parameters:
-    -----------
-    model_path : str
-        Path to the saved model
-    
-    Returns:
-    --------
-    model : keras.Model
-        Loaded model
-    scaler_X : StandardScaler
-        Scaler for input features
-    scaler_y : StandardScaler
-        Scaler for target values
-    """
-    import pickle
-    
-    model = keras.models.load_model(model_path)
-    logging.info(f"Model loaded from {model_path}")
-    
-    with open('scaler_X.pkl', 'rb') as f:
-        scaler_X = pickle.load(f)
-    with open('scaler_y.pkl', 'rb') as f:
-        scaler_y = pickle.load(f)
-    logging.info("Scalers loaded")
-    
-    return model, scaler_X, scaler_y
-
-def main(batch_size: int = 512, rootpath: str = ".") -> int:
-    seed = 42
-    # Python random
-    random.seed(seed)
-    # Numpy random
-    np.random.seed(seed)
-    # TensorFlow random
-    tf.random.set_seed(seed)
-    # Set Python hash seed for reproducibility
-    os.environ['PYTHONHASHSEED'] = str(seed)
-    os.environ['CUDA_VISIBLE_DEVICES']='-1'
-    logging.info("Random seeds set for reproducibility (seed={seed})")
-    logging.info("=" * 60)
-    # Train model with optimized parameters for faster convergence
-    model, scaler_X, scaler_y, history, X_test_scaled, y_test_scaled, y_test = train_model(
-        csv_file = rootpath + '/shekel_meshgrid_26.csv.expected.gz',
-        epochs = 150,  # Reduced from 200, early stopping will handle it
-        batch_size = batch_size,  # Larger batch for faster, more stable training
-        test_size = 0.2
-    )
-    
     # Evaluate model
     logging.info("\n" + "=" * 60)
     logging.info("Model Evaluation:")
@@ -431,13 +249,179 @@ def main(batch_size: int = 512, rootpath: str = ".") -> int:
     
     # Plot correlation
     plot_correlation(y_test, y_pred.flatten(),rootpath)
+    results_summary = metrics_pretty_printed + '\n' + predicted_pretty_printed
+    return model, scaler_X, scaler_y, history, results_summary
+
+
+def plot_correlation(y_true, y_pred,rootpath="."):
+    """
+    Plot correlation between actual and predicted values.
+    
+    Parameters:
+    -----------
+    y_true : numpy array
+        Actual values
+    y_pred : numpy array
+        Predicted values
+    """
+    # Calculate correlation coefficient and R²
+    correlation = np.corrcoef(y_true, y_pred)[0, 1]
+    r2 = 1 - (np.sum((y_true - y_pred)**2) / np.sum((y_true - np.mean(y_true))**2))
+    
+    plt.figure(figsize=(8, 8))
+    
+    # Scatter plot
+    plt.scatter(y_true, y_pred, alpha=0.5, s=10, edgecolors='none')
+    
+    # Perfect prediction line (y=x)
+    min_val = min(y_true.min(), y_pred.min())
+    max_val = max(y_true.max(), y_pred.max())
+    plt.plot([min_val, max_val], [min_val, max_val], 'r--', linewidth=2, label='Perfect Prediction')
+    
+    # Best fit line
+    z = np.polyfit(y_true, y_pred, 1)
+    p = np.poly1d(z)
+    plt.plot(y_true, p(y_true), 'g-', linewidth=2, alpha=0.7, label=f'Best Fit (y={z[0]:.3f}x+{z[1]:.3f})')
+    
+    plt.xlabel('Actual Values', fontsize=12)
+    plt.ylabel('Predicted Values', fontsize=12)
+    plt.title(f'Predicted vs Actual\nCorrelation: {correlation:.6f}, R²: {r2:.6f}', fontsize=14)
+    plt.legend(fontsize=10)
+    plt.grid(True, alpha=0.3)
+    plt.axis('equal')
+    
+    # Set same limits for both axes
+    plt.xlim(min_val, max_val)
+    plt.ylim(min_val, max_val)
+    
+    plt.tight_layout()
+    plt.savefig(f'{rootpath}/correlation_plot.png', dpi=150)
+    logging.info("\nCorrelation plot saved as 'correlation_plot.png'")
+    plt.close()
+
+
+def plot_training_history(history,rootpath="."):
+    """
+    Plot training and validation loss over epochs.
+    
+    Parameters:
+    -----------
+    history : keras.callbacks.History
+        Training history
+    """
+    plt.figure(figsize=(15, 4))
+    
+    # Plot loss
+    plt.subplot(1, 3, 1)
+    plt.plot(history.history['loss'], label='Training Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss (MSE)')
+    plt.title('Training and Validation Loss')
+    plt.legend()
+    plt.grid(True)
+    plt.yscale('log')  # Log scale to see details
+    
+    # Plot MAE
+    plt.subplot(1, 3, 2)
+    plt.plot(history.history['mae'], label='Training MAE')
+    plt.plot(history.history['val_mae'], label='Validation MAE')
+    plt.xlabel('Epoch')
+    plt.ylabel('MAE')
+    plt.title('Training and Validation MAE')
+    plt.legend()
+    plt.grid(True)
+    
+    # Plot learning rate
+    plt.subplot(1, 3, 3)
+    if 'lr' in history.history:
+        plt.plot(history.history['lr'])
+        plt.xlabel('Epoch')
+        plt.ylabel('Learning Rate')
+        plt.title('Learning Rate Schedule')
+        plt.yscale('log')
+        plt.grid(True)
+    
+    plt.tight_layout()
+    plt.savefig(f'{rootpath}/training_history.png', dpi=150)
+    logging.info("\nTraining history plot saved as 'training_history.png'")
+    plt.close()
+
+
+def save_model(model, scaler_X, scaler_y, rootpath=".",model_path='shekel_model.keras'):
+    """
+    Save the trained model and scalers.
+    
+    Parameters:
+    -----------
+    model : keras.Model
+        Trained model
+    scaler_X : StandardScaler
+        Scaler for input features
+    scaler_y : StandardScaler
+        Scaler for target values
+    model_path : str
+        Path to save the model
+    """
     # Save model
-    save_model(model, scaler_X, scaler_y, rootpath)
+    model.save(f"{rootpath}/{model_path}")
+    logging.info(f"\nModel saved to {model_path}")
+    
+    # Save scalers
+    import pickle
+    with open(f'{rootpath}/scaler_X.pkl', 'wb') as f:
+        pickle.dump(scaler_X, f)
+    with open(f'{rootpath}/scaler_y.pkl', 'wb') as f:
+        pickle.dump(scaler_y, f)
+    logging.info("Scalers saved to scaler_X.pkl and scaler_y.pkl")
+
+def main(batch_size: int = 512, rootpath: str = ".") -> int:
+    # Set random seeds for reproducibility - more comprehensive
+    import os
+    import random
+    
+    seed = 42
+    
+    # Python random
+    random.seed(seed)
+    
+    # Numpy random
+    np.random.seed(seed)
+    
+    # TensorFlow random
+    tf.random.set_seed(seed)
+    
+    # Set Python hash seed for reproducibility
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    os.environ['CUDA_VISIBLE_DEVICES']='-1'
+    
+    # Configure TensorFlow for deterministic operations
+    #os.environ['TF_DETERMINISTIC_OPS'] = '1'
+    
+    # For GPU determinism (if using GPU)
+    #tf.config.experimental.enable_op_determinism()
+    
+    logging.info("Random seeds set for reproducibility (seed=42)")
+    logging.info("=" * 60)
+    
+    # Train model with optimized parameters for faster convergence
+    model, scaler_X, scaler_y, history, results_summary = train_model(rootpath,
+        csv_file=f'{rootpath}/shekel_meshgrid_26.csv.expected.gz',
+        epochs=150,  # Reduced from 200, early stopping will handle it
+        batch_size=batch_size,  # Larger batch for faster, more stable training
+        test_size=0.2
+    )
+    
+    # Save model
+    save_model(model, scaler_X, scaler_y,rootpath)
     
     logging.info("\n" + "=" * 60)
     logging.info("Training complete!")
-    results_summary = metrics_pretty_printed + '\n' + predicted_pretty_printed
     return sha256(results_summary.encode()).hexdigest()
-    
+
 if __name__ == "__main__":
-   print(main())
+   import sys
+   rootpath = "." if len(sys.argv) < 2 else sys.argv[1]
+   batch_size = 512 if len(sys.argv) < 3 else int(sys.argv[2])
+   print(main(batch_size, rootpath))
+
