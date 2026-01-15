@@ -2,13 +2,16 @@
 # This file is part of smlp.
 
 # Fitting sklearn regression tree models
+from sklearn.pipeline import Pipeline
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 #from sklearn.tree import _tree
 from sklearn import tree, ensemble
 
 # Fitting sklearn polynomial regression model
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures, RobustScaler, StandardScaler
+from sklearn.linear_model import Ridge, LinearRegression, RidgeCV
+from sklearn.metrics import mean_absolute_error
+from sklearn.preprocessing import MinMaxScaler
 
 # general
 import numpy as np
@@ -377,20 +380,94 @@ class ModelSklearn:
                   'z_min', (df[col].min() - df[col].mean())/df[col].std(), 
                   'z_max', (df[col].max() - df[col].mean())/df[col].std())  
 
-    # train polynomial regression model with sklearn
     def poly_train(self, input_names, resp_names, hparam_dict,
-            X_train, X_test, y_train, y_test, weights):
-        #print('poly_degree', degree); print('weigts', weights);
+               X_train, X_test, y_train, y_test, weights):
+        """
+        Trains a polynomial regression model using dynamically selected polynomial degree.
+        If noise is negligible, a simple Linear Regression is used; otherwise, Ridge Regression 
+        with cross-validated alpha is applied.
+
+        Parameters:
+        ----------
+        self : object
+            Instance of the calling class.
+        input_names : list
+            Names of the input features.
+        resp_names : list
+            Names of the response variables.
+        hparam_dict : dict
+            Hyperparameter dictionary for model configuration.
+        X_train : ndarray or DataFrame
+            Training feature data.
+        X_test : ndarray or DataFrame
+            Testing feature data.
+        y_train : ndarray or Series
+            Target values for training.
+        y_test : ndarray or Series
+            Target values for testing.
+        weights : ndarray
+            Sample weights for weighted regression.
+
+        Returns:
+        -------
+        lin_reg_final : sklearn.linear_model
+            Trained regression model (either Linear Regression or Ridge Regression).
+        poly_reg : sklearn.preprocessing.PolynomialFeatures
+            Polynomial feature transformer with the selected degree.
+        """
+
+        # Extract hyperparameters and remove non-applicable ones
         hparam_dict_local = self._hparam_dict_global_to_local('poly', hparam_dict)
-        degree = hparam_dict_local['degree']
-        hparam_dict_local.pop('degree')
-        poly_reg = PolynomialFeatures(degree)
-        X_train = poly_reg.fit_transform(X_train)
-        X_test = poly_reg.transform(X_test)
-        pol_reg = LinearRegression(**hparam_dict_local)
-        model = pol_reg.fit(X_train, y_train, sample_weight=weights)
-        assert(model == pol_reg)
-        return model, poly_reg #, X_train, X_test
+        hparam_dict_local.pop('degree', None)  
+        hparam_dict_local.pop('n_jobs', None)
+        hparam_dict_local.pop('fit_intercept', None)
+
+        max_degree = 3  # Maximum polynomial degree considered
+
+        # Fit initial Linear Regression model to estimate noise level
+        lin_reg = LinearRegression().fit(X_train, y_train)
+        residuals = np.array(y_train - lin_reg.predict(X_train)).flatten()
+        noise_level = np.std(residuals)  # Measure standard deviation of residuals
+
+        # List to store mean absolute error (MAE) values for different polynomial degrees
+        mae_values = []
+        degrees = range(1, max_degree + 1)
+
+        # Iterate over polynomial degrees and compute MAE
+        for d in degrees:
+            poly = PolynomialFeatures(degree=d, include_bias=True)  # Generate polynomial features
+            X_poly_train = poly.fit_transform(X_train)  # Transform training data
+            model = LinearRegression(**hparam_dict_local).fit(X_poly_train, y_train, sample_weight=weights)  # Train model
+            y_pred = model.predict(X_poly_train)  # Make predictions
+            mae = mean_absolute_error(y_train, y_pred)  # Compute MAE
+            mae_values.append(mae)  # Store MAE for current degree
+
+        # Select the polynomial degree with the lowest MAE
+        best_degree = degrees[np.argmin(mae_values)]
+        poly_reg = PolynomialFeatures(degree=best_degree)
+
+        # If noise level is extremely low, use standard Linear Regression
+        if noise_level < 1e-10:
+            print("\nNo noise in the data! Using Linear Regression")
+            lin_reg_final = LinearRegression(**hparam_dict_local, fit_intercept=False).fit(
+                poly_reg.fit_transform(X_train), y_train, sample_weight=weights
+            )
+        else:
+            # Perform cross-validation to find the best Ridge regularization parameter (alpha)
+            alphas = np.logspace(-6, 1, 50)  # Range of alpha values for RidgeCV
+            ridge_model = RidgeCV(alphas=alphas, store_cv_values=True, scoring='neg_mean_squared_error')
+            ridge_model.fit(poly_reg.fit_transform(X_train), y_train)
+
+            # Extract the best alpha value
+            best_alpha = ridge_model.alpha_
+            print("\nBest alpha found:", best_alpha)
+
+            # Train final Ridge Regression model with optimized alpha
+            lin_reg_final = Ridge(
+                alpha=best_alpha, **hparam_dict_local, solver='svd', fit_intercept=False
+            ).fit(poly_reg.fit_transform(X_train), y_train, sample_weight=weights)
+
+        return lin_reg_final, poly_reg
         
     # model for sklearn poly model is in fact a pair (linear_model, poly_reg), where
     # poly_reg is transformer that creates polynomial terems (like x^2) from the original
@@ -443,7 +520,7 @@ class ModelSklearn:
                 formula_report_file = get_model_file_prefix(None, self._algo_name_local2global(algo)) + '_formula.txt'
                 model_formula = self._instPolyTerms.poly_model_to_term_single_response(feat_names, resp_names, linear_model.coef_, 
                     poly_reg.powers_, resp_id, True, formula_report_file)
-            #print('poly model computed', (linear_model, linear_model.coef_, poly_reg, poly_reg.powers_)) 
+            # print('poly model computed', (linear_model, linear_model.coef_, poly_reg, poly_reg.powers_)) 
             return linear_model, poly_reg #, X_train, X_test
         else:
             raise Exception('Unsupported model type ' + str(algo) + ' in function tree_main')
@@ -453,7 +530,7 @@ class ModelSklearn:
             seed, sample_weights_vect, model_per_response):
         # train a separate models for each response, pack into a dictionary with response names
         # as keys and the correponding models as values
-        #print('sklearn_main: feat_names_dict', feat_names_dict, 'X_train cols', X_train.columns.tolist())
+        # print('sklearn_main: feat_names_dict', feat_names_dict, 'X_train cols', X_train.columns.tolist())
         if model_per_response:
             model = {}
             for rn in resp_names:
