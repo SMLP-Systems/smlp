@@ -165,8 +165,8 @@ def optimize_with_model(rootpath=".", model_path='shekel_model_expected.keras', 
     def model_objective(x):
         """Objective function using neural network predictions."""
         x_scaled = scaler_X.transform(x.reshape(1, -1))
-        y_pred_scaled = model.predict(x_scaled, verbose=0)
-        y_pred = scaler_y.inverse_transform(y_pred_scaled)
+        y_pred_scaled = model(x_scaled, training=False)  # Direct call
+        y_pred = scaler_y.inverse_transform(y_pred_scaled.numpy())
         return y_pred[0, 0]
     
     logging.info("\n" + "=" * 60)
