@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from sys import argv
 from hashlib import sha256
 import logging
-
+import time
 
 logging.basicConfig(
     level=logging.INFO,
@@ -189,10 +189,16 @@ def optimize_with_model(rootpath=".", model_path='shekel_model.onnx', bounds=Non
     logging.info("=" * 60)
     
     # Run SHGO optimization
+    start_cpu_time = time.process_time()
+    start_time = time.time()
     logging.disable(logging.CRITICAL)
     result = shgo(model_objective, bounds, n=200, iters=5, sampling_method='simplicial', 
                   options={'ftol': 1e-3, 'minimize_every_iter': False})
     logging.disable(logging.DEBUG)
+    current_cpu_time = time.process_time()
+    elapsed_cpu_time = current_cpu_time - start_cpu_time
+    elapsed_time = time.time() - start_time
+    logging.info(f"[Elapsed time: {elapsed_time:.3f}] Elapsed CPU time: {elapsed_cpu_time:.3f} seconds")
     
     logging.info(f"\nOptimization Results (ONNX Model):")
     logging.info(f"Success: {result.success}")
