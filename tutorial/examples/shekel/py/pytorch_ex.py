@@ -435,16 +435,16 @@ def save_model(model, scaler_X, scaler_y, rootpath="."):
         Root path for saving
     """
     # Save scalers
-    with open(f'{rootpath}/scaler_X.pkl', 'wb') as f:
+    with open(f'{rootpath}/scaler_X_pytorch.pkl', 'wb') as f:
         pickle.dump(scaler_X, f)
-    with open(f'{rootpath}/scaler_y.pkl', 'wb') as f:
+    with open(f'{rootpath}/scaler_y_pytorch.pkl', 'wb') as f:
         pickle.dump(scaler_y, f)
-    logging.info("\nScalers saved to scaler_X.pkl and scaler_y.pkl")
+    logging.info("\nScalers saved to scaler_X_pytorch.pkl and scaler_y_pytorch.pkl")
     
     # Export to ONNX
     model.eval()
     dummy_input = torch.randn(1, 4)  # Batch size 1, 4 input features
-    onnx_path = f"{rootpath}/shekel_model.onnx"
+    onnx_path = f"{rootpath}/shekel_model.pytorch"
     
     # Export with all data embedded in single file
     import io
