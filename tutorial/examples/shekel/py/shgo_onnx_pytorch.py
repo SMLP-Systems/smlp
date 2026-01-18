@@ -48,7 +48,7 @@ def load_model(rootpath=".", model_path='shekel_model_expected.pytorch'):
     return session, scaler_X, scaler_y
 
 
-def predict_with_model(X, rootpath=".", model_path='shekel_model.onnx'):
+def predict_with_model(X, rootpath=".", model_path='shekel_model_expected.pytorch'):
     """
     Use trained ONNX model to make predictions on new data.
     
@@ -91,7 +91,7 @@ def predict_with_model(X, rootpath=".", model_path='shekel_model.onnx'):
     return y_pred.flatten()
 
 
-def compare_model_vs_function(test_points, rootpath=".", model_path='shekel_model.onnx'):
+def compare_model_vs_function(test_points, rootpath=".", model_path='shekel_model_expected.pytorch'):
     """
     Compare neural network predictions vs actual Shekel function values.
     
@@ -144,7 +144,7 @@ def compare_model_vs_function(test_points, rootpath=".", model_path='shekel_mode
     return predictions, actual_values
 
 
-def optimize_with_model(rootpath=".", model_path='shekel_model.onnx', bounds=None):
+def optimize_with_model(rootpath=".", model_path='shekel_model_expected.pytorch', bounds=None):
     """
     Optimize the Shekel function using SHGO with the ONNX neural network model.
     
@@ -208,7 +208,7 @@ def optimize_with_model(rootpath=".", model_path='shekel_model.onnx', bounds=Non
     return result
 
 
-def compare_optimization_results(rootpath=".", model_path='shekel_model.onnx'):
+def compare_optimization_results(rootpath=".", model_path='shekel_model_expected.pytorch'):
     """
     Compare SHGO optimization results using actual function vs ONNX neural network model.
     

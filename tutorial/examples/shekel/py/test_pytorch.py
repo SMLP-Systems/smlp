@@ -14,7 +14,7 @@ def test_pytorch(monkeypatch, request):
         test_path = dirname(realpath(root_dir + getenv('PYTEST_CURRENT_TEST').split(':')[0]))
         out  = test_path + '/scaler_X_pytorch.pkl'
         out1 = test_path + '/scaler_y_pytorch.pkl'
-        out2 = test_path + '/shekel_model.onnx'
+        out2 = test_path + '/shekel_model.pytorch'
         for o in [out, out1]:
             if exists(out):
                 remove(out)
