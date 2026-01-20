@@ -5,6 +5,8 @@ This directory contains<br>
 - NSGA-II algorithm examples for BNH problem. In these examples Pareto front is created from dataset in csv format
 - BNH pareto front comparison for 3 models: analytical, linear interpolation and decision tree
 - NSGA-II and NSGA-III examples for mixed variables
+- SCIP and IPOPT examples for single objective constrained optimization
+- NSGA-II, SCIP and IPOPT comparison example for multiobjective constrained optimization
 - Linear programming example using GLPK
 
 **Files**<br>
@@ -12,9 +14,11 @@ This directory contains<br>
 - **`bnh_csv_decision_tree.py`**: Uses a decision-tree-based approach to approximate the Pareto front from CSV data 
 - **`bnh_models_comparison.py`**: Comparison plots for NSGA2 algorithm with 3 models: analytical, linear interpolation and decision tree
 - **`glpk.py`**: Script that formulates and solves the optimization problem using GLPK solver
-- **`nsga2.py`**: Example of using NSGA2 solver for multiobjective optimization  problem Pareto front approximation  
+- **`nsga2.py`**: Example of using NSGA2 solver for multiobjective Pareto front approximation problem
 - **`nsga2_mixed.py`**: Example of using NSGA2 solver with mixed variables. Pareto front approximation is created for each categorical variable
 - **`nsga3_mixed.py`**: Example of using NSGA3 solver with mixed variables. Pareto front approximation is created for each categorical variable
+- **scip.py**: Example of using SCIP and IPOPT solvers for single objective constrained optimization
+- **scip_nsga2.py**:  Comparison of SCIP, IPOPT and NSGA2 solvers for multiobjective Pareto front approximation problem
 - **`objectives_data.csv`**: BNH input dataset
 - **`pareto_front_analytical_expected.csv`**: Expected analytical Pareto front (reference) used in tests.
 - **`pareto_front_results_dt_expected.csv`**: Expected results from the decision-tree approach (used by tests).
@@ -29,6 +33,8 @@ This directory contains<br>
     test_nsga2_df.py
     test_nsga2_mixed.py
     test_nsga3_mixed.py
+    test_scip.py
+    test_scip_nsga2.py
 ```
 
 **Requirements**
@@ -90,7 +96,11 @@ pytest -s
 **Example - models comparison for BNH problem**<br><br>
 ![Benchmark results](media/bnh_models_comparison.png)<br><br>
 **Example - NSGAIII result for multiobjective mixed variables Pareto front**<br><br>
-![Benchmark results](media/nsga3_mixed_models_comparison.png)
+![Benchmark results](media/nsga3_mixed_models_comparison.png)<br><br>
+**Example - SCIP and Ipopt comparison for single objective constrained optimization**<br><br>
+![Benchmark results](media/scip_vs_ipopt_comparison.png)<br><br>
+**Example - SCIP, Ipopt and NSGAII Pareto front comparison**<br><br>
+![Benchmark results](media/multi_objective_comparison.png)<br><br>
 
 **References**
 - [Binh and Korn (BNH) Multi-Objective Optimization Problem](https://pymoo.org/problems/multi/bnh.html)
@@ -101,6 +111,9 @@ pytest -s
 - [GLPK Python wrapper](https://pypi.org/project/glpk)
 - [Pyomo](https://pypi.org/project/pyomo)
 - [Das and Dennis method](https://www.researchgate.net/profile/Indraneel-Das/publication/2460803_Normal-Boundary_Intersection_A_New_Method_for_Generating_the_Pareto_Surface_in_Nonlinear_Multicriteria_Optimization_Problems/links/586f927708ae329d6215ffb6/Normal-Boundary-Intersection-A-New-Method-for-Generating-the-Pareto-Surface-in-Nonlinear-Multicriteria-Optimization-Problems.pdf)
+- [Solving Constraint Integer Programs)](https://www.scipopt.org)
+- [Ipopt (Interior Point OPTimizer)](https://github.com/coin-or/Ipopt/blob/stable/3.14/README.md)
+- [Epsilon Constrained Method for ConstrainedMultiobjective Optimization Problems: Some PreliminaryResults](https://dl.acm.org/doi/epdf/10.1145/2598394.2610012)
 
 **Notes & Troubleshooting**
 - Below CSV files are used by pytest - don't change or remove them

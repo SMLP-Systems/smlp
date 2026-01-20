@@ -1,19 +1,19 @@
-Run directory: /tmp/smlp_tutorial_mdmitry_55331
+Run directory: /tmp/smlp_tutorial_mdmitry_90583
 Cloning into 'smlp'...
 Switched to a new branch 'SMLP_TUTORIAL'
 branch 'SMLP_TUTORIAL' set up to track 'origin/SMLP_TUTORIAL'.
-env PYTHONDONTWRITEBYTECODE=1 /usr/bin/pytest -v --forked -m forked /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples
+env PYTHONDONTWRITEBYTECODE=1 /usr/bin/pytest -v --forked -m forked /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples
 /usr/lib/python3/dist-packages/_pytest/config/__init__.py:482: PytestConfigWarning: pytest-catchlog plugin has been merged into the core, please remove it from your requirements.
   warnings.warn(
 ============================= test session starts ==============================
 platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0 -- /usr/bin/python3
 cachedir: .pytest_cache
-rootdir: /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples
+rootdir: /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples
 plugins: anyio-4.12.0, catchlog-1.2.2, typeguard-4.4.4, forked-1.6.0, mock-3.12.0
 collecting ... 
 ----------------------------- live log collection ------------------------------
 NumExpr defaulting to 4 threads.
-collected 29 items / 21 deselected / 8 selected
+collected 30 items / 22 deselected / 8 selected
 
 bnh/py/test_z3.py::test_z3 
 -------------------------------- live log call ---------------------------------
@@ -186,15 +186,15 @@ Constraint Status:
     ∇C1 = [-10.0000,   0.0000]
 
 Sensitivity Analysis:
-  Avg sensitivity (f1): 0.0006
-  Avg sensitivity (f2): 12.3191
+  Avg sensitivity (f1): 0.0005
+  Avg sensitivity (f2): 13.5039
   Max sensitivity (f1): 0.0012
-  Max sensitivity (f2): 14.0389
-  Feasible perturbations tested: 8/20
+  Max sensitivity (f2): 14.1412
+  Feasible perturbations tested: 9/20
 
 Stability Assessment:
   At boundary: True
-  Stability score: 13.2309
+  Stability score: 13.8233
   Classification: MODERATELY STABLE
 
 Solution 2: x = (0.000000, 0.000000)
@@ -209,15 +209,15 @@ Constraint Status:
     ∇C1 = [-10.0000,   0.0000]
 
 Sensitivity Analysis:
-  Avg sensitivity (f1): 0.0003
-  Avg sensitivity (f2): 13.1154
-  Max sensitivity (f1): 0.0005
-  Max sensitivity (f2): 14.1405
-  Feasible perturbations tested: 5/20
+  Avg sensitivity (f1): 0.0005
+  Avg sensitivity (f2): 12.5258
+  Max sensitivity (f1): 0.0010
+  Max sensitivity (f2): 13.9336
+  Feasible perturbations tested: 4/20
 
 Stability Assessment:
   At boundary: True
-  Stability score: 13.6289
+  Stability score: 13.3342
   Classification: MODERATELY STABLE
 
 Solution 3: x = (2.501953, 1.000000)
@@ -231,15 +231,15 @@ Constraint Status:
   C2 active: False (value: -38.528519)
 
 Sensitivity Analysis:
-  Avg sensitivity (f1): 13.5090
-  Avg sensitivity (f2): 5.4232
-  Max sensitivity (f1): 21.4599
-  Max sensitivity (f2): 9.3161
+  Avg sensitivity (f1): 11.5603
+  Avg sensitivity (f2): 5.7306
+  Max sensitivity (f1): 21.5554
+  Max sensitivity (f2): 9.2024
   Feasible perturbations tested: 20/20
 
 Stability Assessment:
   At boundary: False
-  Stability score: 24.9597
+  Stability score: 24.1390
   Classification: WEAKLY STABLE
 
 Solution 4: x = (1.000000, 2.830078)
@@ -253,15 +253,15 @@ Constraint Status:
   C2 active: False (value: -75.289811)
 
 Sensitivity Analysis:
-  Avg sensitivity (f1): 16.5028
-  Avg sensitivity (f2): 6.0956
-  Max sensitivity (f1): 24.0084
-  Max sensitivity (f2): 9.0969
+  Avg sensitivity (f1): 12.9898
+  Avg sensitivity (f2): 5.5269
+  Max sensitivity (f1): 23.9831
+  Max sensitivity (f2): 8.9703
   Feasible perturbations tested: 20/20
 
 Stability Assessment:
   At boundary: False
-  Stability score: 27.8561
+  Stability score: 25.8152
   Classification: WEAKLY STABLE
 
 Solution 5: x = (1.000000, 1.000000)
@@ -275,15 +275,15 @@ Constraint Status:
   C2 active: False (value: -57.300000)
 
 Sensitivity Analysis:
-  Avg sensitivity (f1): 8.9304
-  Avg sensitivity (f2): 8.9305
-  Max sensitivity (f1): 11.3017
-  Max sensitivity (f2): 11.3022
+  Avg sensitivity (f1): 6.1201
+  Avg sensitivity (f2): 6.1201
+  Max sensitivity (f1): 11.2613
+  Max sensitivity (f2): 11.2622
   Feasible perturbations tested: 20/20
 
 Stability Assessment:
   At boundary: False
-  Stability score: 20.2442
+  Stability score: 17.4338
   Classification: WEAKLY STABLE
 
 Solution 6: x = (1.000000, 2.000000)
@@ -297,15 +297,15 @@ Constraint Status:
   C2 active: False (value: -66.300000)
 
 Sensitivity Analysis:
-  Avg sensitivity (f1): 12.4076
-  Avg sensitivity (f2): 7.2332
-  Max sensitivity (f1): 17.8874
-  Max sensitivity (f2): 9.9694
+  Avg sensitivity (f1): 12.1236
+  Avg sensitivity (f2): 7.0050
+  Max sensitivity (f1): 17.8861
+  Max sensitivity (f2): 9.9958
   Feasible perturbations tested: 20/20
 
 Stability Assessment:
   At boundary: False
-  Stability score: 23.7647
+  Stability score: 23.5086
   Classification: WEAKLY STABLE
 
 Solution 7: x = (1.000000, 1.000000)
@@ -319,15 +319,15 @@ Constraint Status:
   C2 active: False (value: -57.300000)
 
 Sensitivity Analysis:
-  Avg sensitivity (f1): 7.7399
-  Avg sensitivity (f2): 7.7396
-  Max sensitivity (f1): 11.3127
-  Max sensitivity (f2): 11.3119
+  Avg sensitivity (f1): 7.2231
+  Avg sensitivity (f2): 7.2232
+  Max sensitivity (f1): 11.2761
+  Max sensitivity (f2): 11.2770
   Feasible perturbations tested: 20/20
 
 Stability Assessment:
   At boundary: False
-  Stability score: 19.0535
+  Stability score: 18.5369
   Classification: WEAKLY STABLE
 
 Solution 8: x = (0.250000, 0.250000)
@@ -341,15 +341,15 @@ Constraint Status:
   C2 active: False (value: -62.925000)
 
 Sensitivity Analysis:
-  Avg sensitivity (f1): 1.7023
-  Avg sensitivity (f2): 8.0865
-  Max sensitivity (f1): 2.8277
-  Max sensitivity (f2): 13.4342
+  Avg sensitivity (f1): 2.0044
+  Avg sensitivity (f2): 9.5210
+  Max sensitivity (f1): 2.8262
+  Max sensitivity (f2): 13.4267
   Feasible perturbations tested: 20/20
 
 Stability Assessment:
   At boundary: False
-  Stability score: 13.0261
+  Stability score: 13.8945
   Classification: MODERATELY STABLE
 
 Solution 9: x = (0.000977, 0.000977)
@@ -363,15 +363,15 @@ Constraint Status:
   C2 active: False (value: -65.290236)
 
 Sensitivity Analysis:
-  Avg sensitivity (f1): 0.0062
-  Avg sensitivity (f2): 7.9813
-  Max sensitivity (f1): 0.0119
-  Max sensitivity (f2): 14.0941
+  Avg sensitivity (f1): 0.0073
+  Avg sensitivity (f2): 9.1001
+  Max sensitivity (f1): 0.0111
+  Max sensitivity (f2): 13.9270
   Feasible perturbations tested: 20/20
 
 Stability Assessment:
   At boundary: True
-  Stability score: 11.0690
+  Stability score: 11.6289
   Classification: MODERATELY STABLE
 
 ============================================================
@@ -379,15 +379,15 @@ STABILITY SUMMARY TABLE
 ============================================================
 Sol   x1         x2         ||∇f1||    ||∇f2||    Score      Class               
 ------------------------------------------------------------
-1     0.0000     0.0000     0.0001     14.1421    13.2309    MODERATELY STABLE   
-2     0.0000     0.0000     0.0001     14.1421    13.6289    MODERATELY STABLE   
-3     2.5020     1.0000     21.5552    9.4319     24.9597    WEAKLY STABLE       
-4     1.0000     2.8301     24.0125    9.1013     27.8561    WEAKLY STABLE       
-5     1.0000     1.0000     11.3138    11.3137    20.2442    WEAKLY STABLE       
-6     1.0000     2.0000     17.8886    10.0000    23.7647    WEAKLY STABLE       
-7     1.0000     1.0000     11.3138    11.3137    19.0535    WEAKLY STABLE       
-8     0.2500     0.2500     2.8285     13.4350    13.0261    MODERATELY STABLE   
-9     0.0010     0.0010     0.0111     14.1394    11.0690    MODERATELY STABLE   
+1     0.0000     0.0000     0.0001     14.1421    13.8233    MODERATELY STABLE   
+2     0.0000     0.0000     0.0001     14.1421    13.3342    MODERATELY STABLE   
+3     2.5020     1.0000     21.5552    9.4319     24.1390    WEAKLY STABLE       
+4     1.0000     2.8301     24.0125    9.1013     25.8152    WEAKLY STABLE       
+5     1.0000     1.0000     11.3138    11.3137    17.4338    WEAKLY STABLE       
+6     1.0000     2.0000     17.8886    10.0000    23.5086    WEAKLY STABLE       
+7     1.0000     1.0000     11.3138    11.3137    18.5369    WEAKLY STABLE       
+8     0.2500     0.2500     2.8285     13.4350    13.8945    MODERATELY STABLE   
+9     0.0010     0.0010     0.0111     14.1394    11.6289    MODERATELY STABLE   
 ============================================================
 
 6. Decision Space, Pareto Front, and Stability Plots Generated
@@ -399,7 +399,7 @@ Found 9 Pareto optimal solutions
 Most stable solution: #9
   x = (0.000977, 0.000977)
   Stability class: MODERATELY STABLE
-  Stability score: 11.0690
+  Stability score: 11.6289
 ============================================================
 PASSED                      [ 25%]
 bnh/py/test_z3_minimax.py::test_z3_minimax 
@@ -667,7 +667,7 @@ shekel/py/test_keras.py::test_keras
 -------------------------------- live log call ---------------------------------
 Random seeds set for reproducibility (seed=42)
 ============================================================
-Loading data from /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples/shekel/py/shekel_meshgrid_26.csv.expected.gz...
+Loading data from /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples/shekel/py/shekel_meshgrid_26.csv.expected.gz...
 Data shape: (456976, 5)
 Columns: ['X1', 'X2', 'X3', 'X4', 'Y']
 
@@ -719,7 +719,7 @@ None
 Training model...
 Initial learning rate: 0.005 (using Nadam optimizer with cosine annealing)
 Epoch 1/150
-715/715 - 5s - 8ms/step - loss: 0.1270 - mae: 0.1686 - mse: 0.1270 - val_loss: 0.1096 - val_mae: 0.2063 - val_mse: 0.1096 - learning_rate: 0.0050 - lr: 0.0050
+715/715 - 7s - 10ms/step - loss: 0.1270 - mae: 0.1686 - mse: 0.1270 - val_loss: 0.1096 - val_mae: 0.2063 - val_mse: 0.1096 - learning_rate: 0.0050 - lr: 0.0050
 
 Epoch 2/150
 715/715 - 2s - 3ms/step - loss: 0.0715 - mae: 0.1208 - mse: 0.0715 - val_loss: 0.0769 - val_mae: 0.1451 - val_mse: 0.0769 - learning_rate: 0.0050 - lr: 0.0050
@@ -728,16 +728,16 @@ Epoch 3/150
 715/715 - 2s - 3ms/step - loss: 0.0642 - mae: 0.1106 - mse: 0.0642 - val_loss: 0.0481 - val_mae: 0.1090 - val_mse: 0.0481 - learning_rate: 0.0050 - lr: 0.0050
 
 Epoch 4/150
-715/715 - 2s - 3ms/step - loss: 0.0594 - mae: 0.1053 - mse: 0.0594 - val_loss: 0.0411 - val_mae: 0.1079 - val_mse: 0.0411 - learning_rate: 0.0050 - lr: 0.0050
+715/715 - 4s - 6ms/step - loss: 0.0594 - mae: 0.1053 - mse: 0.0594 - val_loss: 0.0411 - val_mae: 0.1079 - val_mse: 0.0411 - learning_rate: 0.0050 - lr: 0.0050
 
 Epoch 5/150
-715/715 - 2s - 3ms/step - loss: 0.0607 - mae: 0.1077 - mse: 0.0607 - val_loss: 0.0346 - val_mae: 0.0988 - val_mse: 0.0346 - learning_rate: 0.0050 - lr: 0.0050
+715/715 - 3s - 4ms/step - loss: 0.0607 - mae: 0.1077 - mse: 0.0607 - val_loss: 0.0346 - val_mae: 0.0988 - val_mse: 0.0346 - learning_rate: 0.0050 - lr: 0.0050
 
 Epoch 6/150
-715/715 - 2s - 3ms/step - loss: 0.0584 - mae: 0.1065 - mse: 0.0584 - val_loss: 0.0306 - val_mae: 0.0829 - val_mse: 0.0306 - learning_rate: 0.0050 - lr: 0.0050
+715/715 - 3s - 4ms/step - loss: 0.0584 - mae: 0.1065 - mse: 0.0584 - val_loss: 0.0306 - val_mae: 0.0829 - val_mse: 0.0306 - learning_rate: 0.0050 - lr: 0.0050
 
 Epoch 7/150
-715/715 - 2s - 3ms/step - loss: 0.0559 - mae: 0.1022 - mse: 0.0559 - val_loss: 0.0362 - val_mae: 0.0828 - val_mse: 0.0362 - learning_rate: 0.0050 - lr: 0.0050
+715/715 - 4s - 5ms/step - loss: 0.0559 - mae: 0.1022 - mse: 0.0559 - val_loss: 0.0362 - val_mae: 0.0828 - val_mse: 0.0362 - learning_rate: 0.0050 - lr: 0.0050
 
 Epoch 8/150
 715/715 - 3s - 4ms/step - loss: 0.0536 - mae: 0.1001 - mse: 0.0536 - val_loss: 0.0539 - val_mae: 0.0972 - val_mse: 0.0539 - learning_rate: 0.0050 - lr: 0.0050
@@ -746,7 +746,7 @@ Epoch 9/150
 715/715 - 3s - 4ms/step - loss: 0.0649 - mae: 0.1109 - mse: 0.0649 - val_loss: 0.0355 - val_mae: 0.0897 - val_mse: 0.0355 - learning_rate: 0.0050 - lr: 0.0050
 
 Epoch 10/150
-715/715 - 3s - 4ms/step - loss: 0.0512 - mae: 0.1004 - mse: 0.0512 - val_loss: 0.0444 - val_mae: 0.1036 - val_mse: 0.0444 - learning_rate: 0.0050 - lr: 0.0050
+715/715 - 4s - 5ms/step - loss: 0.0512 - mae: 0.1004 - mse: 0.0512 - val_loss: 0.0444 - val_mae: 0.1036 - val_mse: 0.0444 - learning_rate: 0.0050 - lr: 0.0050
 
 Epoch 11/150
 715/715 - 3s - 4ms/step - loss: 0.0504 - mae: 0.0997 - mse: 0.0504 - val_loss: 0.0332 - val_mae: 0.0880 - val_mse: 0.0332 - learning_rate: 0.0049 - lr: 0.0049
@@ -755,7 +755,7 @@ Epoch 12/150
 715/715 - 3s - 4ms/step - loss: 0.0531 - mae: 0.1004 - mse: 0.0531 - val_loss: 0.0323 - val_mae: 0.0878 - val_mse: 0.0323 - learning_rate: 0.0049 - lr: 0.0049
 
 Epoch 13/150
-715/715 - 3s - 4ms/step - loss: 0.0436 - mae: 0.0930 - mse: 0.0436 - val_loss: 0.0293 - val_mae: 0.0786 - val_mse: 0.0293 - learning_rate: 0.0049 - lr: 0.0049
+715/715 - 4s - 5ms/step - loss: 0.0436 - mae: 0.0930 - mse: 0.0436 - val_loss: 0.0293 - val_mae: 0.0786 - val_mse: 0.0293 - learning_rate: 0.0049 - lr: 0.0049
 
 Epoch 14/150
 715/715 - 3s - 4ms/step - loss: 0.0431 - mae: 0.0915 - mse: 0.0431 - val_loss: 0.0312 - val_mae: 0.0850 - val_mse: 0.0312 - learning_rate: 0.0049 - lr: 0.0049
@@ -764,10 +764,10 @@ Epoch 15/150
 715/715 - 3s - 4ms/step - loss: 0.0440 - mae: 0.0924 - mse: 0.0440 - val_loss: 0.0430 - val_mae: 0.1077 - val_mse: 0.0430 - learning_rate: 0.0049 - lr: 0.0049
 
 Epoch 16/150
-715/715 - 3s - 4ms/step - loss: 0.0450 - mae: 0.0922 - mse: 0.0450 - val_loss: 0.0267 - val_mae: 0.0895 - val_mse: 0.0267 - learning_rate: 0.0049 - lr: 0.0049
+715/715 - 3s - 5ms/step - loss: 0.0450 - mae: 0.0922 - mse: 0.0450 - val_loss: 0.0267 - val_mae: 0.0895 - val_mse: 0.0267 - learning_rate: 0.0049 - lr: 0.0049
 
 Epoch 17/150
-715/715 - 3s - 4ms/step - loss: 0.0425 - mae: 0.0903 - mse: 0.0425 - val_loss: 0.0277 - val_mae: 0.0845 - val_mse: 0.0277 - learning_rate: 0.0049 - lr: 0.0049
+715/715 - 4s - 5ms/step - loss: 0.0425 - mae: 0.0903 - mse: 0.0425 - val_loss: 0.0277 - val_mae: 0.0845 - val_mse: 0.0277 - learning_rate: 0.0049 - lr: 0.0049
 
 Epoch 18/150
 715/715 - 3s - 4ms/step - loss: 0.0427 - mae: 0.0917 - mse: 0.0427 - val_loss: 0.0423 - val_mae: 0.1226 - val_mse: 0.0423 - learning_rate: 0.0048 - lr: 0.0048
@@ -776,7 +776,7 @@ Epoch 19/150
 715/715 - 3s - 4ms/step - loss: 0.0421 - mae: 0.0906 - mse: 0.0421 - val_loss: 0.0275 - val_mae: 0.0912 - val_mse: 0.0275 - learning_rate: 0.0048 - lr: 0.0048
 
 Epoch 20/150
-715/715 - 3s - 4ms/step - loss: 0.0416 - mae: 0.0894 - mse: 0.0416 - val_loss: 0.0359 - val_mae: 0.0939 - val_mse: 0.0359 - learning_rate: 0.0048 - lr: 0.0048
+715/715 - 4s - 5ms/step - loss: 0.0416 - mae: 0.0894 - mse: 0.0416 - val_loss: 0.0359 - val_mae: 0.0939 - val_mse: 0.0359 - learning_rate: 0.0048 - lr: 0.0048
 
 Epoch 21/150
 715/715 - 3s - 4ms/step - loss: 0.0416 - mae: 0.0885 - mse: 0.0416 - val_loss: 0.0382 - val_mae: 0.0810 - val_mse: 0.0382 - learning_rate: 0.0048 - lr: 0.0048
@@ -785,7 +785,7 @@ Epoch 22/150
 715/715 - 3s - 4ms/step - loss: 0.0410 - mae: 0.0874 - mse: 0.0410 - val_loss: 0.0215 - val_mae: 0.0731 - val_mse: 0.0215 - learning_rate: 0.0048 - lr: 0.0048
 
 Epoch 23/150
-715/715 - 3s - 4ms/step - loss: 0.0359 - mae: 0.0855 - mse: 0.0359 - val_loss: 0.0351 - val_mae: 0.0955 - val_mse: 0.0351 - learning_rate: 0.0047 - lr: 0.0047
+715/715 - 4s - 6ms/step - loss: 0.0359 - mae: 0.0855 - mse: 0.0359 - val_loss: 0.0351 - val_mae: 0.0955 - val_mse: 0.0351 - learning_rate: 0.0047 - lr: 0.0047
 
 Epoch 24/150
 715/715 - 3s - 4ms/step - loss: 0.0470 - mae: 0.0931 - mse: 0.0470 - val_loss: 0.0412 - val_mae: 0.1292 - val_mse: 0.0412 - learning_rate: 0.0047 - lr: 0.0047
@@ -794,28 +794,28 @@ Epoch 25/150
 715/715 - 3s - 4ms/step - loss: 0.0386 - mae: 0.0860 - mse: 0.0386 - val_loss: 0.0681 - val_mae: 0.1321 - val_mse: 0.0681 - learning_rate: 0.0047 - lr: 0.0047
 
 Epoch 26/150
-715/715 - 3s - 4ms/step - loss: 0.0377 - mae: 0.0863 - mse: 0.0377 - val_loss: 0.0303 - val_mae: 0.0908 - val_mse: 0.0303 - learning_rate: 0.0047 - lr: 0.0047
+715/715 - 4s - 5ms/step - loss: 0.0377 - mae: 0.0863 - mse: 0.0377 - val_loss: 0.0303 - val_mae: 0.0908 - val_mse: 0.0303 - learning_rate: 0.0047 - lr: 0.0047
 
 Epoch 27/150
 715/715 - 3s - 4ms/step - loss: 0.0431 - mae: 0.0898 - mse: 0.0431 - val_loss: 0.0395 - val_mae: 0.1097 - val_mse: 0.0395 - learning_rate: 0.0046 - lr: 0.0046
 
 Epoch 28/150
-715/715 - 3s - 5ms/step - loss: 0.0381 - mae: 0.0865 - mse: 0.0381 - val_loss: 0.0438 - val_mae: 0.0908 - val_mse: 0.0438 - learning_rate: 0.0046 - lr: 0.0046
+715/715 - 3s - 4ms/step - loss: 0.0381 - mae: 0.0865 - mse: 0.0381 - val_loss: 0.0438 - val_mae: 0.0908 - val_mse: 0.0438 - learning_rate: 0.0046 - lr: 0.0046
 
 Epoch 29/150
 715/715 - 4s - 5ms/step - loss: 0.0415 - mae: 0.0891 - mse: 0.0415 - val_loss: 0.0904 - val_mae: 0.1510 - val_mse: 0.0904 - learning_rate: 0.0046 - lr: 0.0046
 
 Epoch 30/150
-715/715 - 3s - 4ms/step - loss: 0.0376 - mae: 0.0838 - mse: 0.0376 - val_loss: 0.0298 - val_mae: 0.0856 - val_mse: 0.0298 - learning_rate: 0.0046 - lr: 0.0046
+715/715 - 3s - 5ms/step - loss: 0.0376 - mae: 0.0838 - mse: 0.0376 - val_loss: 0.0298 - val_mae: 0.0856 - val_mse: 0.0298 - learning_rate: 0.0046 - lr: 0.0046
 
 Epoch 31/150
 715/715 - 3s - 4ms/step - loss: 0.0375 - mae: 0.0856 - mse: 0.0375 - val_loss: 0.0254 - val_mae: 0.0926 - val_mse: 0.0254 - learning_rate: 0.0045 - lr: 0.0045
 
 Epoch 32/150
-715/715 - 3s - 4ms/step - loss: 0.0373 - mae: 0.0865 - mse: 0.0373 - val_loss: 0.0353 - val_mae: 0.0998 - val_mse: 0.0353 - learning_rate: 0.0045 - lr: 0.0045
+715/715 - 3s - 5ms/step - loss: 0.0373 - mae: 0.0865 - mse: 0.0373 - val_loss: 0.0353 - val_mae: 0.0998 - val_mse: 0.0353 - learning_rate: 0.0045 - lr: 0.0045
 
 Epoch 33/150
-715/715 - 3s - 4ms/step - loss: 0.0366 - mae: 0.0855 - mse: 0.0366 - val_loss: 0.0258 - val_mae: 0.0749 - val_mse: 0.0258 - learning_rate: 0.0045 - lr: 0.0045
+715/715 - 3s - 5ms/step - loss: 0.0366 - mae: 0.0855 - mse: 0.0366 - val_loss: 0.0258 - val_mae: 0.0749 - val_mse: 0.0258 - learning_rate: 0.0045 - lr: 0.0045
 
 Epoch 34/150
 715/715 - 3s - 4ms/step - loss: 0.0352 - mae: 0.0846 - mse: 0.0352 - val_loss: 0.0238 - val_mae: 0.0671 - val_mse: 0.0238 - learning_rate: 0.0044 - lr: 0.0044
@@ -824,7 +824,7 @@ Epoch 35/150
 715/715 - 3s - 4ms/step - loss: 0.0357 - mae: 0.0852 - mse: 0.0357 - val_loss: 0.0341 - val_mae: 0.0851 - val_mse: 0.0341 - learning_rate: 0.0044 - lr: 0.0044
 
 Epoch 36/150
-715/715 - 3s - 4ms/step - loss: 0.0331 - mae: 0.0829 - mse: 0.0331 - val_loss: 0.0312 - val_mae: 0.0793 - val_mse: 0.0312 - learning_rate: 0.0044 - lr: 0.0044
+715/715 - 4s - 5ms/step - loss: 0.0331 - mae: 0.0829 - mse: 0.0331 - val_loss: 0.0312 - val_mae: 0.0793 - val_mse: 0.0312 - learning_rate: 0.0044 - lr: 0.0044
 
 Epoch 37/150
 
@@ -835,7 +835,7 @@ Epoch 38/150
 715/715 - 3s - 4ms/step - loss: 0.0430 - mae: 0.0912 - mse: 0.0430 - val_loss: 0.0435 - val_mae: 0.1235 - val_mse: 0.0435 - learning_rate: 0.0043 - lr: 0.0043
 
 Epoch 39/150
-715/715 - 3s - 4ms/step - loss: 0.0330 - mae: 0.0826 - mse: 0.0330 - val_loss: 0.0385 - val_mae: 0.1258 - val_mse: 0.0385 - learning_rate: 0.0042 - lr: 0.0042
+715/715 - 4s - 5ms/step - loss: 0.0330 - mae: 0.0826 - mse: 0.0330 - val_loss: 0.0385 - val_mae: 0.1258 - val_mse: 0.0385 - learning_rate: 0.0042 - lr: 0.0042
 
 Epoch 40/150
 715/715 - 3s - 4ms/step - loss: 0.0323 - mae: 0.0829 - mse: 0.0323 - val_loss: 0.0315 - val_mae: 0.0910 - val_mse: 0.0315 - learning_rate: 0.0042 - lr: 0.0042
@@ -844,7 +844,7 @@ Epoch 41/150
 715/715 - 3s - 4ms/step - loss: 0.0350 - mae: 0.0855 - mse: 0.0350 - val_loss: 0.0355 - val_mae: 0.1018 - val_mse: 0.0355 - learning_rate: 0.0042 - lr: 0.0042
 
 Epoch 42/150
-715/715 - 3s - 4ms/step - loss: 0.0307 - mae: 0.0816 - mse: 0.0307 - val_loss: 0.0218 - val_mae: 0.0788 - val_mse: 0.0218 - learning_rate: 0.0041 - lr: 0.0041
+715/715 - 4s - 5ms/step - loss: 0.0307 - mae: 0.0816 - mse: 0.0307 - val_loss: 0.0218 - val_mae: 0.0788 - val_mse: 0.0218 - learning_rate: 0.0041 - lr: 0.0041
 
 Epoch 43/150
 715/715 - 3s - 4ms/step - loss: 0.0266 - mae: 0.0800 - mse: 0.0266 - val_loss: 0.0266 - val_mae: 0.0946 - val_mse: 0.0266 - learning_rate: 0.0041 - lr: 0.0041
@@ -853,10 +853,10 @@ Epoch 44/150
 715/715 - 3s - 4ms/step - loss: 0.0307 - mae: 0.0824 - mse: 0.0307 - val_loss: 0.0262 - val_mae: 0.0975 - val_mse: 0.0262 - learning_rate: 0.0041 - lr: 0.0041
 
 Epoch 45/150
-715/715 - 3s - 4ms/step - loss: 0.0302 - mae: 0.0823 - mse: 0.0302 - val_loss: 0.0219 - val_mae: 0.0870 - val_mse: 0.0219 - learning_rate: 0.0040 - lr: 0.0040
+715/715 - 3s - 5ms/step - loss: 0.0302 - mae: 0.0823 - mse: 0.0302 - val_loss: 0.0219 - val_mae: 0.0870 - val_mse: 0.0219 - learning_rate: 0.0040 - lr: 0.0040
 
 Epoch 46/150
-715/715 - 3s - 4ms/step - loss: 0.0285 - mae: 0.0823 - mse: 0.0285 - val_loss: 0.0313 - val_mae: 0.0957 - val_mse: 0.0313 - learning_rate: 0.0040 - lr: 0.0040
+715/715 - 3s - 5ms/step - loss: 0.0285 - mae: 0.0823 - mse: 0.0285 - val_loss: 0.0313 - val_mae: 0.0957 - val_mse: 0.0313 - learning_rate: 0.0040 - lr: 0.0040
 
 Epoch 47/150
 715/715 - 3s - 4ms/step - loss: 0.0258 - mae: 0.0795 - mse: 0.0258 - val_loss: 0.0313 - val_mae: 0.0993 - val_mse: 0.0313 - learning_rate: 0.0039 - lr: 0.0039
@@ -865,7 +865,7 @@ Epoch 48/150
 715/715 - 3s - 4ms/step - loss: 0.0338 - mae: 0.0840 - mse: 0.0338 - val_loss: 0.0346 - val_mae: 0.0913 - val_mse: 0.0346 - learning_rate: 0.0039 - lr: 0.0039
 
 Epoch 49/150
-715/715 - 3s - 4ms/step - loss: 0.0254 - mae: 0.0778 - mse: 0.0254 - val_loss: 0.0244 - val_mae: 0.0852 - val_mse: 0.0244 - learning_rate: 0.0038 - lr: 0.0038
+715/715 - 4s - 5ms/step - loss: 0.0254 - mae: 0.0778 - mse: 0.0254 - val_loss: 0.0244 - val_mae: 0.0852 - val_mse: 0.0244 - learning_rate: 0.0038 - lr: 0.0038
 
 Epoch 50/150
 715/715 - 3s - 4ms/step - loss: 0.0218 - mae: 0.0758 - mse: 0.0218 - val_loss: 0.0242 - val_mae: 0.0764 - val_mse: 0.0242 - learning_rate: 0.0038 - lr: 0.0038
@@ -876,19 +876,19 @@ Epoch 51/150
 Epoch 52/150
 
 Epoch 52: ReduceLROnPlateau reducing learning rate to 0.001852321671321988.
-715/715 - 3s - 4ms/step - loss: 0.0248 - mae: 0.0773 - mse: 0.0248 - val_loss: 0.0360 - val_mae: 0.0993 - val_mse: 0.0360 - learning_rate: 0.0037 - lr: 0.0037
+715/715 - 4s - 5ms/step - loss: 0.0248 - mae: 0.0773 - mse: 0.0248 - val_loss: 0.0360 - val_mae: 0.0993 - val_mse: 0.0360 - learning_rate: 0.0037 - lr: 0.0037
 
 Epoch 53/150
-715/715 - 3s - 4ms/step - loss: 0.0236 - mae: 0.0765 - mse: 0.0236 - val_loss: 0.0193 - val_mae: 0.0752 - val_mse: 0.0193 - learning_rate: 0.0037 - lr: 0.0037
+715/715 - 4s - 5ms/step - loss: 0.0236 - mae: 0.0765 - mse: 0.0236 - val_loss: 0.0193 - val_mae: 0.0752 - val_mse: 0.0193 - learning_rate: 0.0037 - lr: 0.0037
 
 Epoch 54/150
-715/715 - 3s - 4ms/step - loss: 0.0214 - mae: 0.0749 - mse: 0.0214 - val_loss: 0.0294 - val_mae: 0.0865 - val_mse: 0.0294 - learning_rate: 0.0036 - lr: 0.0036
+715/715 - 8s - 11ms/step - loss: 0.0214 - mae: 0.0749 - mse: 0.0214 - val_loss: 0.0294 - val_mae: 0.0865 - val_mse: 0.0294 - learning_rate: 0.0036 - lr: 0.0036
 
 Epoch 55/150
-715/715 - 3s - 4ms/step - loss: 0.0286 - mae: 0.0791 - mse: 0.0286 - val_loss: 0.0308 - val_mae: 0.0969 - val_mse: 0.0308 - learning_rate: 0.0036 - lr: 0.0036
+715/715 - 5s - 7ms/step - loss: 0.0286 - mae: 0.0791 - mse: 0.0286 - val_loss: 0.0308 - val_mae: 0.0969 - val_mse: 0.0308 - learning_rate: 0.0036 - lr: 0.0036
 
 Epoch 56/150
-715/715 - 3s - 4ms/step - loss: 0.0246 - mae: 0.0790 - mse: 0.0246 - val_loss: 0.0379 - val_mae: 0.0864 - val_mse: 0.0379 - learning_rate: 0.0035 - lr: 0.0035
+715/715 - 4s - 6ms/step - loss: 0.0246 - mae: 0.0790 - mse: 0.0246 - val_loss: 0.0379 - val_mae: 0.0864 - val_mse: 0.0379 - learning_rate: 0.0035 - lr: 0.0035
 
 Epoch 57/150
 715/715 - 3s - 4ms/step - loss: 0.0267 - mae: 0.0762 - mse: 0.0267 - val_loss: 0.0276 - val_mae: 0.0735 - val_mse: 0.0276 - learning_rate: 0.0035 - lr: 0.0035
@@ -897,7 +897,7 @@ Epoch 58/150
 715/715 - 3s - 4ms/step - loss: 0.0190 - mae: 0.0728 - mse: 0.0190 - val_loss: 0.0223 - val_mae: 0.0727 - val_mse: 0.0223 - learning_rate: 0.0034 - lr: 0.0034
 
 Epoch 59/150
-715/715 - 3s - 4ms/step - loss: 0.0188 - mae: 0.0726 - mse: 0.0188 - val_loss: 0.0212 - val_mae: 0.0690 - val_mse: 0.0212 - learning_rate: 0.0034 - lr: 0.0034
+715/715 - 4s - 6ms/step - loss: 0.0188 - mae: 0.0726 - mse: 0.0188 - val_loss: 0.0212 - val_mae: 0.0690 - val_mse: 0.0212 - learning_rate: 0.0034 - lr: 0.0034
 
 Epoch 60/150
 715/715 - 3s - 4ms/step - loss: 0.0205 - mae: 0.0734 - mse: 0.0205 - val_loss: 0.0258 - val_mae: 0.0774 - val_mse: 0.0258 - learning_rate: 0.0033 - lr: 0.0033
@@ -906,7 +906,7 @@ Epoch 61/150
 715/715 - 3s - 4ms/step - loss: 0.0231 - mae: 0.0747 - mse: 0.0231 - val_loss: 0.0277 - val_mae: 0.0815 - val_mse: 0.0277 - learning_rate: 0.0033 - lr: 0.0033
 
 Epoch 62/150
-715/715 - 3s - 4ms/step - loss: 0.0250 - mae: 0.0763 - mse: 0.0250 - val_loss: 0.0254 - val_mae: 0.0634 - val_mse: 0.0254 - learning_rate: 0.0032 - lr: 0.0032
+715/715 - 4s - 5ms/step - loss: 0.0250 - mae: 0.0763 - mse: 0.0250 - val_loss: 0.0254 - val_mae: 0.0634 - val_mse: 0.0254 - learning_rate: 0.0032 - lr: 0.0032
 
 Epoch 63/150
 715/715 - 3s - 4ms/step - loss: 0.0211 - mae: 0.0732 - mse: 0.0211 - val_loss: 0.0300 - val_mae: 0.0855 - val_mse: 0.0300 - learning_rate: 0.0032 - lr: 0.0032
@@ -915,7 +915,7 @@ Epoch 64/150
 715/715 - 3s - 4ms/step - loss: 0.0196 - mae: 0.0720 - mse: 0.0196 - val_loss: 0.0234 - val_mae: 0.0697 - val_mse: 0.0234 - learning_rate: 0.0031 - lr: 0.0031
 
 Epoch 65/150
-715/715 - 3s - 4ms/step - loss: 0.0179 - mae: 0.0712 - mse: 0.0179 - val_loss: 0.0319 - val_mae: 0.0894 - val_mse: 0.0319 - learning_rate: 0.0031 - lr: 0.0031
+715/715 - 4s - 6ms/step - loss: 0.0179 - mae: 0.0712 - mse: 0.0179 - val_loss: 0.0319 - val_mae: 0.0894 - val_mse: 0.0319 - learning_rate: 0.0031 - lr: 0.0031
 
 Epoch 66/150
 715/715 - 3s - 4ms/step - loss: 0.0196 - mae: 0.0720 - mse: 0.0196 - val_loss: 0.0230 - val_mae: 0.0693 - val_mse: 0.0230 - learning_rate: 0.0030 - lr: 0.0030
@@ -926,7 +926,7 @@ Epoch 67/150
 Epoch 68/150
 
 Epoch 68: ReduceLROnPlateau reducing learning rate to 0.0014586691977456212.
-715/715 - 3s - 4ms/step - loss: 0.0177 - mae: 0.0708 - mse: 0.0177 - val_loss: 0.0214 - val_mae: 0.0732 - val_mse: 0.0214 - learning_rate: 0.0029 - lr: 0.0029
+715/715 - 4s - 6ms/step - loss: 0.0177 - mae: 0.0708 - mse: 0.0177 - val_loss: 0.0214 - val_mae: 0.0732 - val_mse: 0.0214 - learning_rate: 0.0029 - lr: 0.0029
 
 Epoch 69/150
 715/715 - 3s - 4ms/step - loss: 0.0186 - mae: 0.0713 - mse: 0.0186 - val_loss: 0.0202 - val_mae: 0.0751 - val_mse: 0.0202 - learning_rate: 0.0029 - lr: 0.0029
@@ -935,7 +935,7 @@ Epoch 70/150
 715/715 - 3s - 4ms/step - loss: 0.0250 - mae: 0.0752 - mse: 0.0250 - val_loss: 0.0186 - val_mae: 0.0765 - val_mse: 0.0186 - learning_rate: 0.0028 - lr: 0.0028
 
 Epoch 71/150
-715/715 - 3s - 4ms/step - loss: 0.0234 - mae: 0.0723 - mse: 0.0234 - val_loss: 0.0197 - val_mae: 0.0641 - val_mse: 0.0197 - learning_rate: 0.0028 - lr: 0.0028
+715/715 - 4s - 5ms/step - loss: 0.0234 - mae: 0.0723 - mse: 0.0234 - val_loss: 0.0197 - val_mae: 0.0641 - val_mse: 0.0197 - learning_rate: 0.0028 - lr: 0.0028
 
 Epoch 72/150
 715/715 - 3s - 4ms/step - loss: 0.0206 - mae: 0.0711 - mse: 0.0206 - val_loss: 0.0174 - val_mae: 0.0619 - val_mse: 0.0174 - learning_rate: 0.0027 - lr: 0.0027
@@ -944,22 +944,22 @@ Epoch 73/150
 715/715 - 3s - 4ms/step - loss: 0.0197 - mae: 0.0715 - mse: 0.0197 - val_loss: 0.0249 - val_mae: 0.0687 - val_mse: 0.0249 - learning_rate: 0.0027 - lr: 0.0027
 
 Epoch 74/150
-715/715 - 3s - 4ms/step - loss: 0.0161 - mae: 0.0691 - mse: 0.0161 - val_loss: 0.0204 - val_mae: 0.0715 - val_mse: 0.0204 - learning_rate: 0.0026 - lr: 0.0026
+715/715 - 4s - 5ms/step - loss: 0.0161 - mae: 0.0691 - mse: 0.0161 - val_loss: 0.0204 - val_mae: 0.0715 - val_mse: 0.0204 - learning_rate: 0.0026 - lr: 0.0026
 
 Epoch 75/150
-715/715 - 3s - 4ms/step - loss: 0.0165 - mae: 0.0692 - mse: 0.0165 - val_loss: 0.0176 - val_mae: 0.0626 - val_mse: 0.0176 - learning_rate: 0.0026 - lr: 0.0026
+715/715 - 3s - 5ms/step - loss: 0.0165 - mae: 0.0692 - mse: 0.0165 - val_loss: 0.0176 - val_mae: 0.0626 - val_mse: 0.0176 - learning_rate: 0.0026 - lr: 0.0026
 
 Epoch 76/150
-715/715 - 3s - 4ms/step - loss: 0.0171 - mae: 0.0693 - mse: 0.0171 - val_loss: 0.0234 - val_mae: 0.0710 - val_mse: 0.0234 - learning_rate: 0.0025 - lr: 0.0025
+715/715 - 3s - 5ms/step - loss: 0.0171 - mae: 0.0693 - mse: 0.0171 - val_loss: 0.0234 - val_mae: 0.0710 - val_mse: 0.0234 - learning_rate: 0.0025 - lr: 0.0025
 
 Epoch 77/150
-715/715 - 3s - 4ms/step - loss: 0.0169 - mae: 0.0691 - mse: 0.0169 - val_loss: 0.0188 - val_mae: 0.0682 - val_mse: 0.0188 - learning_rate: 0.0024 - lr: 0.0024
+715/715 - 5s - 7ms/step - loss: 0.0169 - mae: 0.0691 - mse: 0.0169 - val_loss: 0.0188 - val_mae: 0.0682 - val_mse: 0.0188 - learning_rate: 0.0024 - lr: 0.0024
 
 Epoch 78/150
-715/715 - 3s - 4ms/step - loss: 0.0175 - mae: 0.0695 - mse: 0.0175 - val_loss: 0.0207 - val_mae: 0.0680 - val_mse: 0.0207 - learning_rate: 0.0024 - lr: 0.0024
+715/715 - 4s - 6ms/step - loss: 0.0175 - mae: 0.0695 - mse: 0.0175 - val_loss: 0.0207 - val_mae: 0.0680 - val_mse: 0.0207 - learning_rate: 0.0024 - lr: 0.0024
 
 Epoch 79/150
-715/715 - 3s - 4ms/step - loss: 0.0157 - mae: 0.0680 - mse: 0.0157 - val_loss: 0.0176 - val_mae: 0.0592 - val_mse: 0.0176 - learning_rate: 0.0023 - lr: 0.0023
+715/715 - 5s - 7ms/step - loss: 0.0157 - mae: 0.0680 - mse: 0.0157 - val_loss: 0.0176 - val_mae: 0.0592 - val_mse: 0.0176 - learning_rate: 0.0023 - lr: 0.0023
 
 Epoch 80/150
 715/715 - 3s - 4ms/step - loss: 0.0160 - mae: 0.0680 - mse: 0.0160 - val_loss: 0.0190 - val_mae: 0.0587 - val_mse: 0.0190 - learning_rate: 0.0023 - lr: 0.0023
@@ -968,16 +968,16 @@ Epoch 81/150
 715/715 - 3s - 4ms/step - loss: 0.0175 - mae: 0.0687 - mse: 0.0175 - val_loss: 0.0163 - val_mae: 0.0584 - val_mse: 0.0163 - learning_rate: 0.0022 - lr: 0.0022
 
 Epoch 82/150
-715/715 - 3s - 4ms/step - loss: 0.0147 - mae: 0.0670 - mse: 0.0147 - val_loss: 0.0145 - val_mae: 0.0607 - val_mse: 0.0145 - learning_rate: 0.0022 - lr: 0.0022
+715/715 - 4s - 5ms/step - loss: 0.0147 - mae: 0.0670 - mse: 0.0147 - val_loss: 0.0145 - val_mae: 0.0607 - val_mse: 0.0145 - learning_rate: 0.0022 - lr: 0.0022
 
 Epoch 83/150
-715/715 - 3s - 4ms/step - loss: 0.0151 - mae: 0.0671 - mse: 0.0151 - val_loss: 0.0145 - val_mae: 0.0590 - val_mse: 0.0145 - learning_rate: 0.0021 - lr: 0.0021
+715/715 - 3s - 5ms/step - loss: 0.0151 - mae: 0.0671 - mse: 0.0151 - val_loss: 0.0145 - val_mae: 0.0590 - val_mse: 0.0145 - learning_rate: 0.0021 - lr: 0.0021
 
 Epoch 84/150
 715/715 - 3s - 4ms/step - loss: 0.0162 - mae: 0.0675 - mse: 0.0162 - val_loss: 0.0161 - val_mae: 0.0557 - val_mse: 0.0161 - learning_rate: 0.0021 - lr: 0.0021
 
 Epoch 85/150
-715/715 - 3s - 4ms/step - loss: 0.0153 - mae: 0.0669 - mse: 0.0153 - val_loss: 0.0162 - val_mae: 0.0623 - val_mse: 0.0162 - learning_rate: 0.0020 - lr: 0.0020
+715/715 - 4s - 5ms/step - loss: 0.0153 - mae: 0.0669 - mse: 0.0153 - val_loss: 0.0162 - val_mae: 0.0623 - val_mse: 0.0162 - learning_rate: 0.0020 - lr: 0.0020
 
 Epoch 86/150
 715/715 - 3s - 4ms/step - loss: 0.0153 - mae: 0.0669 - mse: 0.0153 - val_loss: 0.0159 - val_mae: 0.0603 - val_mse: 0.0159 - learning_rate: 0.0020 - lr: 0.0020
@@ -986,37 +986,37 @@ Epoch 87/150
 715/715 - 3s - 4ms/step - loss: 0.0139 - mae: 0.0658 - mse: 0.0139 - val_loss: 0.0139 - val_mae: 0.0592 - val_mse: 0.0139 - learning_rate: 0.0019 - lr: 0.0019
 
 Epoch 88/150
-715/715 - 3s - 4ms/step - loss: 0.0138 - mae: 0.0656 - mse: 0.0138 - val_loss: 0.0151 - val_mae: 0.0565 - val_mse: 0.0151 - learning_rate: 0.0019 - lr: 0.0019
+715/715 - 3s - 5ms/step - loss: 0.0138 - mae: 0.0656 - mse: 0.0138 - val_loss: 0.0151 - val_mae: 0.0565 - val_mse: 0.0151 - learning_rate: 0.0019 - lr: 0.0019
 
 Epoch 89/150
-715/715 - 3s - 4ms/step - loss: 0.0146 - mae: 0.0661 - mse: 0.0146 - val_loss: 0.0156 - val_mae: 0.0533 - val_mse: 0.0156 - learning_rate: 0.0018 - lr: 0.0018
+715/715 - 3s - 5ms/step - loss: 0.0146 - mae: 0.0661 - mse: 0.0146 - val_loss: 0.0156 - val_mae: 0.0533 - val_mse: 0.0156 - learning_rate: 0.0018 - lr: 0.0018
 
 Epoch 90/150
 715/715 - 3s - 4ms/step - loss: 0.0144 - mae: 0.0658 - mse: 0.0144 - val_loss: 0.0146 - val_mae: 0.0578 - val_mse: 0.0146 - learning_rate: 0.0018 - lr: 0.0018
 
 Epoch 91/150
-715/715 - 3s - 4ms/step - loss: 0.0143 - mae: 0.0656 - mse: 0.0143 - val_loss: 0.0144 - val_mae: 0.0532 - val_mse: 0.0144 - learning_rate: 0.0017 - lr: 0.0017
+715/715 - 3s - 5ms/step - loss: 0.0143 - mae: 0.0656 - mse: 0.0143 - val_loss: 0.0144 - val_mae: 0.0532 - val_mse: 0.0144 - learning_rate: 0.0017 - lr: 0.0017
 
 Epoch 92/150
-715/715 - 3s - 4ms/step - loss: 0.0135 - mae: 0.0649 - mse: 0.0135 - val_loss: 0.0141 - val_mae: 0.0575 - val_mse: 0.0141 - learning_rate: 0.0017 - lr: 0.0017
+715/715 - 3s - 5ms/step - loss: 0.0135 - mae: 0.0649 - mse: 0.0135 - val_loss: 0.0141 - val_mae: 0.0575 - val_mse: 0.0141 - learning_rate: 0.0017 - lr: 0.0017
 
 Epoch 93/150
 715/715 - 3s - 4ms/step - loss: 0.0131 - mae: 0.0646 - mse: 0.0131 - val_loss: 0.0134 - val_mae: 0.0542 - val_mse: 0.0134 - learning_rate: 0.0016 - lr: 0.0016
 
 Epoch 94/150
-715/715 - 3s - 4ms/step - loss: 0.0130 - mae: 0.0643 - mse: 0.0130 - val_loss: 0.0145 - val_mae: 0.0549 - val_mse: 0.0145 - learning_rate: 0.0016 - lr: 0.0016
+715/715 - 4s - 5ms/step - loss: 0.0130 - mae: 0.0643 - mse: 0.0130 - val_loss: 0.0145 - val_mae: 0.0549 - val_mse: 0.0145 - learning_rate: 0.0016 - lr: 0.0016
 
 Epoch 95/150
-715/715 - 3s - 4ms/step - loss: 0.0133 - mae: 0.0644 - mse: 0.0133 - val_loss: 0.0141 - val_mae: 0.0539 - val_mse: 0.0141 - learning_rate: 0.0015 - lr: 0.0015
+715/715 - 3s - 5ms/step - loss: 0.0133 - mae: 0.0644 - mse: 0.0133 - val_loss: 0.0141 - val_mae: 0.0539 - val_mse: 0.0141 - learning_rate: 0.0015 - lr: 0.0015
 
 Epoch 96/150
 715/715 - 3s - 4ms/step - loss: 0.0135 - mae: 0.0644 - mse: 0.0135 - val_loss: 0.0122 - val_mae: 0.0509 - val_mse: 0.0122 - learning_rate: 0.0015 - lr: 0.0015
 
 Epoch 97/150
-715/715 - 3s - 4ms/step - loss: 0.0131 - mae: 0.0640 - mse: 0.0131 - val_loss: 0.0116 - val_mae: 0.0530 - val_mse: 0.0116 - learning_rate: 0.0014 - lr: 0.0014
+715/715 - 3s - 5ms/step - loss: 0.0131 - mae: 0.0640 - mse: 0.0131 - val_loss: 0.0116 - val_mae: 0.0530 - val_mse: 0.0116 - learning_rate: 0.0014 - lr: 0.0014
 
 Epoch 98/150
-715/715 - 3s - 4ms/step - loss: 0.0127 - mae: 0.0636 - mse: 0.0127 - val_loss: 0.0117 - val_mae: 0.0516 - val_mse: 0.0117 - learning_rate: 0.0014 - lr: 0.0014
+715/715 - 4s - 5ms/step - loss: 0.0127 - mae: 0.0636 - mse: 0.0127 - val_loss: 0.0117 - val_mae: 0.0516 - val_mse: 0.0117 - learning_rate: 0.0014 - lr: 0.0014
 
 Epoch 99/150
 715/715 - 3s - 4ms/step - loss: 0.0125 - mae: 0.0634 - mse: 0.0125 - val_loss: 0.0116 - val_mae: 0.0510 - val_mse: 0.0116 - learning_rate: 0.0013 - lr: 0.0013
@@ -1025,7 +1025,7 @@ Epoch 100/150
 715/715 - 3s - 4ms/step - loss: 0.0125 - mae: 0.0633 - mse: 0.0125 - val_loss: 0.0109 - val_mae: 0.0497 - val_mse: 0.0109 - learning_rate: 0.0013 - lr: 0.0013
 
 Epoch 101/150
-715/715 - 3s - 4ms/step - loss: 0.0121 - mae: 0.0630 - mse: 0.0121 - val_loss: 0.0115 - val_mae: 0.0494 - val_mse: 0.0115 - learning_rate: 0.0013 - lr: 0.0013
+715/715 - 4s - 5ms/step - loss: 0.0121 - mae: 0.0630 - mse: 0.0121 - val_loss: 0.0115 - val_mae: 0.0494 - val_mse: 0.0115 - learning_rate: 0.0013 - lr: 0.0013
 
 Epoch 102/150
 715/715 - 3s - 4ms/step - loss: 0.0123 - mae: 0.0629 - mse: 0.0123 - val_loss: 0.0111 - val_mae: 0.0496 - val_mse: 0.0111 - learning_rate: 0.0012 - lr: 0.0012
@@ -1034,7 +1034,7 @@ Epoch 103/150
 715/715 - 3s - 4ms/step - loss: 0.0122 - mae: 0.0628 - mse: 0.0122 - val_loss: 0.0108 - val_mae: 0.0490 - val_mse: 0.0108 - learning_rate: 0.0012 - lr: 0.0012
 
 Epoch 104/150
-715/715 - 3s - 4ms/step - loss: 0.0120 - mae: 0.0625 - mse: 0.0120 - val_loss: 0.0110 - val_mae: 0.0483 - val_mse: 0.0110 - learning_rate: 0.0011 - lr: 0.0011
+715/715 - 4s - 6ms/step - loss: 0.0120 - mae: 0.0625 - mse: 0.0120 - val_loss: 0.0110 - val_mae: 0.0483 - val_mse: 0.0110 - learning_rate: 0.0011 - lr: 0.0011
 
 Epoch 105/150
 715/715 - 3s - 4ms/step - loss: 0.0118 - mae: 0.0622 - mse: 0.0118 - val_loss: 0.0110 - val_mae: 0.0484 - val_mse: 0.0110 - learning_rate: 0.0011 - lr: 0.0011
@@ -1043,28 +1043,28 @@ Epoch 106/150
 715/715 - 3s - 4ms/step - loss: 0.0119 - mae: 0.0622 - mse: 0.0119 - val_loss: 0.0104 - val_mae: 0.0474 - val_mse: 0.0104 - learning_rate: 0.0010 - lr: 0.0010
 
 Epoch 107/150
-715/715 - 3s - 4ms/step - loss: 0.0115 - mae: 0.0619 - mse: 0.0115 - val_loss: 0.0103 - val_mae: 0.0470 - val_mse: 0.0103 - learning_rate: 9.8930e-04 - lr: 9.8930e-04
+715/715 - 6s - 9ms/step - loss: 0.0115 - mae: 0.0619 - mse: 0.0115 - val_loss: 0.0103 - val_mae: 0.0470 - val_mse: 0.0103 - learning_rate: 9.8930e-04 - lr: 9.8930e-04
 
 Epoch 108/150
-715/715 - 3s - 4ms/step - loss: 0.0115 - mae: 0.0617 - mse: 0.0115 - val_loss: 0.0103 - val_mae: 0.0465 - val_mse: 0.0103 - learning_rate: 9.4794e-04 - lr: 9.4794e-04
+715/715 - 9s - 13ms/step - loss: 0.0115 - mae: 0.0617 - mse: 0.0115 - val_loss: 0.0103 - val_mae: 0.0465 - val_mse: 0.0103 - learning_rate: 9.4794e-04 - lr: 9.4794e-04
 
 Epoch 109/150
-715/715 - 3s - 4ms/step - loss: 0.0114 - mae: 0.0616 - mse: 0.0114 - val_loss: 0.0099 - val_mae: 0.0464 - val_mse: 0.0099 - learning_rate: 9.0726e-04 - lr: 9.0726e-04
+715/715 - 8s - 12ms/step - loss: 0.0114 - mae: 0.0616 - mse: 0.0114 - val_loss: 0.0099 - val_mae: 0.0464 - val_mse: 0.0099 - learning_rate: 9.0726e-04 - lr: 9.0726e-04
 
 Epoch 110/150
 715/715 - 3s - 4ms/step - loss: 0.0114 - mae: 0.0614 - mse: 0.0114 - val_loss: 0.0101 - val_mae: 0.0462 - val_mse: 0.0101 - learning_rate: 8.6728e-04 - lr: 8.6728e-04
 
 Epoch 111/150
-715/715 - 3s - 4ms/step - loss: 0.0113 - mae: 0.0613 - mse: 0.0113 - val_loss: 0.0093 - val_mae: 0.0453 - val_mse: 0.0093 - learning_rate: 8.2801e-04 - lr: 8.2801e-04
+715/715 - 3s - 5ms/step - loss: 0.0113 - mae: 0.0613 - mse: 0.0113 - val_loss: 0.0093 - val_mae: 0.0453 - val_mse: 0.0093 - learning_rate: 8.2801e-04 - lr: 8.2801e-04
 
 Epoch 112/150
-715/715 - 3s - 4ms/step - loss: 0.0113 - mae: 0.0612 - mse: 0.0113 - val_loss: 0.0091 - val_mae: 0.0450 - val_mse: 0.0091 - learning_rate: 7.8947e-04 - lr: 7.8947e-04
+715/715 - 3s - 5ms/step - loss: 0.0113 - mae: 0.0612 - mse: 0.0113 - val_loss: 0.0091 - val_mae: 0.0450 - val_mse: 0.0091 - learning_rate: 7.8947e-04 - lr: 7.8947e-04
 
 Epoch 113/150
-715/715 - 3s - 4ms/step - loss: 0.0111 - mae: 0.0610 - mse: 0.0111 - val_loss: 0.0087 - val_mae: 0.0443 - val_mse: 0.0087 - learning_rate: 7.5169e-04 - lr: 7.5169e-04
+715/715 - 3s - 5ms/step - loss: 0.0111 - mae: 0.0610 - mse: 0.0111 - val_loss: 0.0087 - val_mae: 0.0443 - val_mse: 0.0087 - learning_rate: 7.5169e-04 - lr: 7.5169e-04
 
 Epoch 114/150
-715/715 - 3s - 4ms/step - loss: 0.0111 - mae: 0.0609 - mse: 0.0111 - val_loss: 0.0088 - val_mae: 0.0440 - val_mse: 0.0088 - learning_rate: 7.1468e-04 - lr: 7.1468e-04
+715/715 - 5s - 6ms/step - loss: 0.0111 - mae: 0.0609 - mse: 0.0111 - val_loss: 0.0088 - val_mae: 0.0440 - val_mse: 0.0088 - learning_rate: 7.1468e-04 - lr: 7.1468e-04
 
 Epoch 115/150
 715/715 - 3s - 4ms/step - loss: 0.0110 - mae: 0.0607 - mse: 0.0110 - val_loss: 0.0083 - val_mae: 0.0433 - val_mse: 0.0083 - learning_rate: 6.7844e-04 - lr: 6.7844e-04
@@ -1085,7 +1085,7 @@ Epoch 120/150
 715/715 - 3s - 4ms/step - loss: 0.0106 - mae: 0.0600 - mse: 0.0106 - val_loss: 0.0076 - val_mae: 0.0409 - val_mse: 0.0076 - learning_rate: 5.0957e-04 - lr: 5.0957e-04
 
 Epoch 121/150
-715/715 - 3s - 4ms/step - loss: 0.0106 - mae: 0.0598 - mse: 0.0106 - val_loss: 0.0074 - val_mae: 0.0405 - val_mse: 0.0074 - learning_rate: 4.7836e-04 - lr: 4.7836e-04
+715/715 - 4s - 5ms/step - loss: 0.0106 - mae: 0.0598 - mse: 0.0106 - val_loss: 0.0074 - val_mae: 0.0405 - val_mse: 0.0074 - learning_rate: 4.7836e-04 - lr: 4.7836e-04
 
 Epoch 122/150
 715/715 - 3s - 4ms/step - loss: 0.0105 - mae: 0.0597 - mse: 0.0105 - val_loss: 0.0075 - val_mae: 0.0402 - val_mse: 0.0075 - learning_rate: 4.4804e-04 - lr: 4.4804e-04
@@ -1094,7 +1094,7 @@ Epoch 123/150
 715/715 - 3s - 4ms/step - loss: 0.0104 - mae: 0.0595 - mse: 0.0104 - val_loss: 0.0072 - val_mae: 0.0398 - val_mse: 0.0072 - learning_rate: 4.1861e-04 - lr: 4.1861e-04
 
 Epoch 124/150
-715/715 - 3s - 5ms/step - loss: 0.0104 - mae: 0.0595 - mse: 0.0104 - val_loss: 0.0070 - val_mae: 0.0393 - val_mse: 0.0070 - learning_rate: 3.9010e-04 - lr: 3.9010e-04
+715/715 - 3s - 4ms/step - loss: 0.0104 - mae: 0.0595 - mse: 0.0104 - val_loss: 0.0070 - val_mae: 0.0393 - val_mse: 0.0070 - learning_rate: 3.9010e-04 - lr: 3.9010e-04
 
 Epoch 125/150
 715/715 - 3s - 4ms/step - loss: 0.0103 - mae: 0.0593 - mse: 0.0103 - val_loss: 0.0069 - val_mae: 0.0390 - val_mse: 0.0069 - learning_rate: 3.6252e-04 - lr: 3.6252e-04
@@ -1256,7 +1256,7 @@ Scalers loaded
 ============================================================
 Optimizing with Neural Network Model using SHGO
 ============================================================
-[Elapsed time: 12.404] Elapsed CPU time: 12.377 seconds
+[Elapsed time: 12.114] Elapsed CPU time: 12.097 seconds
 
 Optimization Results (Model):
 Success: True
@@ -1347,7 +1347,7 @@ Scalers loaded
 ============================================================
 Optimizing with ONNX Neural Network Model using SHGO
 ============================================================
-[Elapsed time: 0.444] Elapsed CPU time: 0.522 seconds
+[Elapsed time: 0.460] Elapsed CPU time: 0.539 seconds
 
 Optimization Results (ONNX Model):
 Success: True
@@ -1406,18 +1406,18 @@ shekel/py/test_keras.py::test_keras
 shekel/py/test_keras2onnx.py::test_keras2onnx
 shekel/py/test_shgo_keras.py::test_shgo_nn
 shekel/py/test_shgo_shekel_keras2onnx.py::test_shgo_shekel_onnx
-  /usr/lib/python3/dist-packages/py/_process/forkedfunc.py:45: DeprecationWarning: This process (pid=55450) is multi-threaded, use of fork() may lead to deadlocks in the child.
+  /usr/lib/python3/dist-packages/py/_process/forkedfunc.py:45: DeprecationWarning: This process (pid=90695) is multi-threaded, use of fork() may lead to deadlocks in the child.
     pid = os.fork()
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========== 8 passed, 21 deselected, 9 warnings in 528.60s (0:08:48) ===========
-env PYTHONDONTWRITEBYTECODE=1 /usr/bin/pytest -v -s -m "not forked" /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples
+=========== 8 passed, 22 deselected, 9 warnings in 615.57s (0:10:15) ===========
+env PYTHONDONTWRITEBYTECODE=1 /usr/bin/pytest -v -s -m "not forked" /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples
 /usr/lib/python3/dist-packages/_pytest/config/__init__.py:482: PytestConfigWarning: pytest-catchlog plugin has been merged into the core, please remove it from your requirements.
   warnings.warn(
 ============================= test session starts ==============================
 platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0 -- /usr/bin/python3
 cachedir: .pytest_cache
-rootdir: /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples
+rootdir: /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples
 plugins: anyio-4.12.0, catchlog-1.2.2, typeguard-4.4.4, forked-1.6.0, mock-3.12.0
 collecting ... 
 ----------------------------- live log collection ------------------------------
@@ -1426,7 +1426,7 @@ NumExpr defaulting to 4 threads.
 EXAMPLE 1: Simple Quadratic Optimization
 Minimize (x-1)² + (y-1)² subject to x + y >= 0.5
 ======================================================================
-collected 29 items / 8 deselected / 21 selected
+collected 30 items / 8 deselected / 22 selected
 
 bnh/py/test_nsga2.py::test_nsga2 
 ## Problem definition
@@ -1458,120 +1458,120 @@ bnh/py/test_nsga2.py::test_nsga2
 
 ```
 PASSED
-c3dtlz4/py/test_gpsampler.py::test_gpsampler [I 2026-01-20 12:22:02,699] A new study created in RDB with name: my_study
-[I 2026-01-20 12:22:02,785] Trial 0 finished with values: [1.2569645750397653, 4.4185249455598885e-43] and parameters: {'x0': 0.3745401188473625, 'x1': 0.9507143064099162, 'x2': 0.7319939418114051}.
-[I 2026-01-20 12:22:02,852] Trial 1 finished with values: [1.236662945761789, 1.0145778959154135e-22] and parameters: {'x0': 0.5986584841970366, 'x1': 0.15601864044243652, 'x2': 0.15599452033620265}.
-[I 2026-01-20 12:22:02,915] Trial 2 finished with values: [1.1443092153344159, 4.571144650098741e-124] and parameters: {'x0': 0.05808361216819946, 'x1': 0.8661761457749352, 'x2': 0.6011150117432088}.
-[I 2026-01-20 12:22:02,979] Trial 3 finished with values: [1.4506544962685188, 2.3198580035410804e-15] and parameters: {'x0': 0.7080725777960455, 'x1': 0.020584494295802447, 'x2': 0.9699098521619943}.
-[I 2026-01-20 12:22:03,042] Trial 4 finished with values: [1.1839841387381274, 2.017890472548048e-08] and parameters: {'x0': 0.8324426408004217, 'x1': 0.21233911067827616, 'x2': 0.18182496720710062}.
-[I 2026-01-20 12:22:03,105] Trial 5 finished with values: [1.0389339803486743, 3.578564831812836e-74] and parameters: {'x0': 0.18340450985343382, 'x1': 0.3042422429595377, 'x2': 0.5247564316322378}.
-[I 2026-01-20 12:22:03,167] Trial 6 finished with values: [1.0560963419602245, 5.789891256550866e-37] and parameters: {'x0': 0.43194501864211576, 'x1': 0.2912291401980419, 'x2': 0.6118528947223795}.
-[I 2026-01-20 12:22:03,230] Trial 7 finished with values: [1.0610630040604079, 4.7574085951972936e-86] and parameters: {'x0': 0.13949386065204183, 'x1': 0.29214464853521815, 'x2': 0.3663618432936917}.
-[I 2026-01-20 12:22:03,297] Trial 8 finished with values: [1.171521166079494, 1.4723771522333772e-34] and parameters: {'x0': 0.45606998421703593, 'x1': 0.7851759613930136, 'x2': 0.19967378215835974}.
-[I 2026-01-20 12:22:03,359] Trial 9 finished with values: [1.2142476806598177, 2.491970914729005e-29] and parameters: {'x0': 0.5142344384136116, 'x1': 0.5924145688620425, 'x2': 0.046450412719997725}.
-[I 2026-01-20 12:22:08,313] Trial 10 finished with values: [1.5, 3.249132054563685e-24] and parameters: {'x0': 0.5772920306987445, 'x1': 1.0, 'x2': 1.0}.
-[I 2026-01-20 12:22:08,672] Trial 11 finished with values: [1.4810590572975793, 2.2471687400140787e-21] and parameters: {'x0': 0.616381271404474, 'x1': 0.0, 'x2': 0.9806860277744498}.
-[I 2026-01-20 12:22:09,020] Trial 12 finished with values: [1.3962865006473393, 0.0] and parameters: {'x0': 0.0, 'x1': 0.0, 'x2': 0.8824741829814651}.
-[I 2026-01-20 12:22:09,427] Trial 13 finished with values: [1.4319600251053506, 4.613008316428876e-65] and parameters: {'x0': 0.22548587130879116, 'x1': 0.0, 'x2': 0.9265677262819476}.
-[I 2026-01-20 12:22:09,817] Trial 14 finished with values: [1.4657790846195586, 3.1399921722830447e-18] and parameters: {'x0': 0.6627464371294791, 'x1': 1.0, 'x2': 0.9645202736367473}.
-[I 2026-01-20 12:22:10,355] Trial 15 finished with values: [1.445114846117425, 2.5479755591876564e-80] and parameters: {'x0': 0.1586725240275914, 'x1': 1.0, 'x2': 0.9417180617966907}.
-[I 2026-01-20 12:22:10,768] Trial 16 finished with values: [1.4458575475275077, 6.445293888426763e-57] and parameters: {'x0': 0.2719756187229194, 'x1': 1.0, 'x2': 0.9425579595120934}.
-[I 2026-01-20 12:22:11,377] Trial 17 finished with values: [1.255194971651199, 6.912014307771002e-107] and parameters: {'x0': 0.08618818508327279, 'x1': 0.3403540168938965, 'x2': 0.9792787620261143}.
-[I 2026-01-20 12:22:11,998] Trial 18 finished with values: [1.4448556966461257, 0.0] and parameters: {'x0': 0.0, 'x1': 0.9998164559591163, 'x2': 0.9416324342692624}.
-[I 2026-01-20 12:22:12,643] Trial 19 finished with values: [1.4445869046211222, 4.585494496743527e-44] and parameters: {'x0': 0.36564128475868873, 'x1': 0.0030928341581690846, 'x2': 0.9446011394004309}.
-[I 2026-01-20 12:22:13,206] Trial 20 finished with values: [1.4443633775253015, 3.095705331360937e-36] and parameters: {'x0': 0.43787447810613506, 'x1': 0.9996722436046344, 'x2': 0.941238061024219}.
-[I 2026-01-20 12:22:13,994] Trial 21 finished with values: [1.443408516454606, 4.3094579972876635e-45] and parameters: {'x0': 0.35709941202732837, 'x1': 0.9997098583444072, 'x2': 0.9401120015723482}.
-[I 2026-01-20 12:22:14,635] Trial 22 finished with values: [1.463130590964571, 2.888001049597235e-17] and parameters: {'x0': 0.6776289374052729, 'x1': 0.03833931187010174, 'x2': 1.0}.
-[I 2026-01-20 12:22:15,148] Trial 23 finished with values: [1.443973196351162, 1.7300030254632066e-25] and parameters: {'x0': 0.5608202394978651, 'x1': 0.9994244463105117, 'x2': 0.9410764319010944}.
-[I 2026-01-20 12:22:15,763] Trial 24 finished with values: [1.3849349118817273, 8.362307825117555e-13] and parameters: {'x0': 0.7513594778738962, 'x1': 0.8673348770287508, 'x2': 1.0}.
-[I 2026-01-20 12:22:16,358] Trial 25 finished with values: [1.5, 0.0] and parameters: {'x0': 0.0, 'x1': 1.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:16,991] Trial 26 finished with values: [1.4381781661444666, 5.444554551490792e-68] and parameters: {'x0': 0.21077558233539917, 'x1': 0.9674237804847422, 'x2': 0.03128561406564639}.
-[I 2026-01-20 12:22:17,702] Trial 27 finished with values: [1.4450624040166224, 8.973847889825106e-96] and parameters: {'x0': 0.1111654223264895, 'x1': 0.9718963397733132, 'x2': 0.028432137942827843}.
-[I 2026-01-20 12:22:18,350] Trial 28 finished with values: [1.4545308740819558, 0.0] and parameters: {'x0': 0.0, 'x1': 0.04774910272951829, 'x2': 1.0}.
-[I 2026-01-20 12:22:18,981] Trial 29 finished with values: [1.443456628945614, 1.3257021548609495e-118] and parameters: {'x0': 0.06571571287991912, 'x1': 0.9997015324402695, 'x2': 0.9401761095544151}.
-[I 2026-01-20 12:22:19,578] Trial 30 finished with values: [1.4443394761144561, 1.1982523729722923e-29] and parameters: {'x0': 0.5095978551114642, 'x1': 0.009069976469102108, 'x2': 0.9509181612115531}.
-[I 2026-01-20 12:22:20,122] Trial 31 finished with values: [1.4466735412988014, 6.783807214776015e-54] and parameters: {'x0': 0.2915746955448456, 'x1': 0.05652109261115761, 'x2': 1.0}.
-[I 2026-01-20 12:22:20,806] Trial 32 finished with values: [1.4442558247808832, 1.4721363098379749e-49] and parameters: {'x0': 0.3221972580606223, 'x1': 0.9695064368543467, 'x2': 0.026904311440889787}.
-[I 2026-01-20 12:22:21,405] Trial 33 finished with values: [1.4462906705701832, 4.271496767328079e-15] and parameters: {'x0': 0.7124297492536091, 'x1': 0.9430470297498714, 'x2': 0.9999999999999999}.
-[I 2026-01-20 12:22:22,090] Trial 34 finished with values: [8.874509324427002e-17, 1.449317359193815] and parameters: {'x0': 1.0, 'x1': 0.05355027248993058, 'x2': 0.9999999999999999}.
-[I 2026-01-20 12:22:22,859] Trial 35 finished with values: [1.4421472900270447, 1.8370418696915614e-05] and parameters: {'x0': 0.8893851946560436, 'x1': 0.061653915103546945, 'x2': 0.9999999999999999}.
-[I 2026-01-20 12:22:23,401] Trial 36 finished with values: [1.2860347520190483, 0.00732682699752418] and parameters: {'x0': 0.9453560035560985, 'x1': 0.2333758939789026, 'x2': 0.963645564221677}.
-[I 2026-01-20 12:22:24,029] Trial 37 finished with values: [1.3979215950049932, 0.013402146762977827] and parameters: {'x0': 0.950288740884737, 'x1': 0.0, 'x2': 0.8846892746428605}.
-[I 2026-01-20 12:22:24,593] Trial 38 finished with values: [1.499773926794213, 0.026041668692059296] and parameters: {'x0': 0.9559491578123709, 'x1': 0.0, 'x2': 1.0}.
-[I 2026-01-20 12:22:25,249] Trial 39 finished with values: [1.2507159928328349, 0.10107387451756286] and parameters: {'x0': 0.970742794965871, 'x1': 0.12552098979677392, 'x2': 0.8384654331851219}.
-[I 2026-01-20 12:22:26,216] Trial 40 finished with values: [1.3328017906425575, 0.24152549034686965] and parameters: {'x0': 0.9785294451073929, 'x1': 0.1767211714132525, 'x2': 1.0}.
-[I 2026-01-20 12:22:27,053] Trial 41 finished with values: [1.4328849389260425, 0.14666799744849854] and parameters: {'x0': 0.9730271148458519, 'x1': 0.06368389887687556, 'x2': 1.0}.
-[I 2026-01-20 12:22:27,690] Trial 42 finished with values: [1.333992159994511, 0.2629425225833838] and parameters: {'x0': 0.9793333800058809, 'x1': 0.0, 'x2': 0.8311487010167008}.
-[I 2026-01-20 12:22:28,288] Trial 43 finished with values: [1.412236542216437, 0.5055570678257422] and parameters: {'x0': 0.9849211636388685, 'x1': 0.0, 'x2': 1.0}.
-[I 2026-01-20 12:22:28,974] Trial 44 finished with values: [1.1974161959488412, 0.5105739589446882] and parameters: {'x0': 0.9864893950301072, 'x1': 0.0756990415680327, 'x2': 0.8488480742575549}.
-[I 2026-01-20 12:22:29,724] Trial 45 finished with values: [1.318172221905542, 0.4928733534366517] and parameters: {'x0': 0.9853155741934119, 'x1': 0.040451134193926895, 'x2': 0.942852105669598}.
-[I 2026-01-20 12:22:30,200] Trial 46 finished with values: [1.2613904163758827, 0.6637045325742482] and parameters: {'x0': 0.9883039032603425, 'x1': 0.08125736674161979, 'x2': 1.0}.
-[I 2026-01-20 12:22:30,845] Trial 47 finished with values: [1.354312703621413, 0.539278551869976] and parameters: {'x0': 0.9858812308189343, 'x1': 0.04422311000879493, 'x2': 1.0}.
-[I 2026-01-20 12:22:31,448] Trial 48 finished with values: [1.1762519994276803, 0.7403325974990232] and parameters: {'x0': 0.9897699973990214, 'x1': 0.05972497173503773, 'x2': 0.9427188954676303}.
-[I 2026-01-20 12:22:32,092] Trial 49 finished with values: [1.4086850958794073, 0.014756195786579529] and parameters: {'x0': 0.9511308040150737, 'x1': 0.10155002762709123, 'x2': 1.0}.
-[I 2026-01-20 12:22:32,764] Trial 50 finished with values: [1.5, 5.448261629847529e-09] and parameters: {'x0': 0.8196726952048367, 'x1': 0.0, 'x2': 0.9999999999999999}.
-[I 2026-01-20 12:22:33,380] Trial 51 finished with values: [1.2502094463894986, 3.2056528914080544e-22] and parameters: {'x0': 0.6055195066980048, 'x1': 0.5144722627636019, 'x2': 1.0}.
-[I 2026-01-20 12:22:34,085] Trial 52 finished with values: [1.2397226711499003, 0.160165830969946] and parameters: {'x0': 0.9752753876226731, 'x1': 0.49488554639808036, 'x2': 1.0}.
-[I 2026-01-20 12:22:34,631] Trial 53 finished with values: [0.8925557742864271, 1.172973175213934] and parameters: {'x0': 0.994668248743633, 'x1': 0.026768851874987096, 'x2': 1.0}.
-[I 2026-01-20 12:22:35,325] Trial 54 finished with values: [1.4381504402274703, 0.017328076151746984] and parameters: {'x0': 0.9524628631173203, 'x1': 0.0542626208461052, 'x2': 0.9894619669217432}.
-[I 2026-01-20 12:22:36,425] Trial 55 finished with values: [7.806015666202219e-17, 1.2748191023954125] and parameters: {'x0': 1.0, 'x1': 1.0, 'x2': 0.6575407959717496}.
-[I 2026-01-20 12:22:37,251] Trial 56 finished with values: [7.115937412943625e-17, 1.1621207711314017] and parameters: {'x0': 1.0, 'x1': 0.45467107825829617, 'x2': 0.9000825664598947}.
-[I 2026-01-20 12:22:37,961] Trial 57 finished with values: [8.996755200178027e-17, 1.4692816257621248] and parameters: {'x0': 1.0, 'x1': 0.03172483969131484, 'x2': 0.0}.
-[I 2026-01-20 12:22:38,983] Trial 58 finished with values: [9.184850993605148e-17, 1.5] and parameters: {'x0': 1.0, 'x1': 1.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:39,735] Trial 59 finished with values: [1.4999999999999603, 3.4534186058961785e-07] and parameters: {'x0': 0.8543983104594208, 'x1': 0.0, 'x2': 1.0}.
-[I 2026-01-20 12:22:40,405] Trial 60 finished with values: [1.4999738186944656, 0.008862461912037569] and parameters: {'x0': 0.9457001495716729, 'x1': 1.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:41,079] Trial 61 finished with values: [1.49597040326911, 3.344106942159469e-11] and parameters: {'x0': 0.7789908792292021, 'x1': 0.0, 'x2': 0.9959540334235724}.
-[I 2026-01-20 12:22:41,777] Trial 62 finished with values: [1.4999999999892142, 5.688385951871503e-06] and parameters: {'x0': 0.8786740068618826, 'x1': 1.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:42,611] Trial 63 finished with values: [1.5, 3.1557294531968846e-58] and parameters: {'x0': 0.2637964132348673, 'x1': 0.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:43,462] Trial 64 finished with values: [1.5, 7.480230743629189e-32] and parameters: {'x0': 0.48419136339291113, 'x1': 1.0, 'x2': 0.9999999999999999}.
-[I 2026-01-20 12:22:44,312] Trial 65 finished with values: [1.5, 4.004719557329522e-10] and parameters: {'x0': 0.7985527502075315, 'x1': 1.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:45,059] Trial 66 finished with values: [1.5, 2.5241077370801873e-13] and parameters: {'x0': 0.7418207335935786, 'x1': 0.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:45,731] Trial 67 finished with values: [1.5, 1.3226336189709205e-145] and parameters: {'x0': 0.03527705191526801, 'x1': 0.0, 'x2': 1.0}.
-[I 2026-01-20 12:22:46,669] Trial 68 finished with values: [1.4999999999999991, 5.551585722354227e-08] and parameters: {'x0': 0.8389229187114745, 'x1': 0.9999999999999999, 'x2': 0.0}.
-[I 2026-01-20 12:22:47,429] Trial 69 finished with values: [1.5, 1.3724523623977077e-16] and parameters: {'x0': 0.6881020654125343, 'x1': 1.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:48,191] Trial 70 finished with values: [1.5, 8.983496600899047e-21] and parameters: {'x0': 0.6249026159709564, 'x1': 1.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:49,160] Trial 71 finished with values: [1.336043780977482, 0.124397321047044] and parameters: {'x0': 0.9721117701189588, 'x1': 0.9610055863319994, 'x2': 0.1404219549443894}.
-[I 2026-01-20 12:22:49,970] Trial 72 finished with values: [1.4999999788104759, 0.0002521280861328005] and parameters: {'x0': 0.9126286553499107, 'x1': 1.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:50,792] Trial 73 finished with values: [1.072000874398448, 0.7904366008633232] and parameters: {'x0': 0.9909892833775172, 'x1': 0.9738930081119688, 'x2': 0.17238394272467716}.
-[I 2026-01-20 12:22:51,872] Trial 74 finished with values: [1.5, 1.5695849473508265e-33] and parameters: {'x0': 0.4658388842343704, 'x1': 0.0, 'x2': 1.0}.
-[I 2026-01-20 12:22:52,841] Trial 75 finished with values: [1.5, 5.927498373813773e-54] and parameters: {'x0': 0.2910761373354068, 'x1': 1.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:54,046] Trial 76 finished with values: [1.5, 1.2627738906243954e-26] and parameters: {'x0': 0.5461238517270743, 'x1': 0.0, 'x2': 1.0}.
-[I 2026-01-20 12:22:54,831] Trial 77 finished with values: [1.5, 7.203672798991653e-120] and parameters: {'x0': 0.06380481127393717, 'x1': 0.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:55,882] Trial 78 finished with values: [1.5, 1.663176751155159e-138] and parameters: {'x0': 0.04154198768916644, 'x1': 1.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:56,860] Trial 79 finished with values: [1.5, 1.560279321730471e-39] and parameters: {'x0': 0.4057045815733842, 'x1': 0.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:57,822] Trial 80 finished with values: [1.5, 3.290381459105341e-36] and parameters: {'x0': 0.4379760385622165, 'x1': 0.0, 'x2': 0.0}.
-[I 2026-01-20 12:22:58,985] Trial 81 finished with values: [1.5, 7.585351771336779e-38] and parameters: {'x0': 0.421771903722286, 'x1': 0.0, 'x2': 1.0}.
-[I 2026-01-20 12:22:59,810] Trial 82 finished with values: [1.5, 1.3680269982517941e-77] and parameters: {'x0': 0.16890357243740514, 'x1': 0.0, 'x2': 0.0}.
-[I 2026-01-20 12:23:00,754] Trial 83 finished with values: [1.5, 3.909612633123792e-72] and parameters: {'x0': 0.19151342620137854, 'x1': 0.0, 'x2': 1.0}.
-[I 2026-01-20 12:23:01,519] Trial 84 finished with values: [1.3687430359131785, 6.414029890087453e-74] and parameters: {'x0': 0.18396995062675522, 'x1': 0.8445911140949204, 'x2': 0.0}.
-[I 2026-01-20 12:23:02,424] Trial 85 finished with values: [1.5, 7.819442505506539e-94] and parameters: {'x0': 0.11620094141293441, 'x1': 0.0, 'x2': 0.0}.
-[I 2026-01-20 12:23:03,228] Trial 86 finished with values: [1.379885224505081, 1.0941322233841578e-84] and parameters: {'x0': 0.14355921327533042, 'x1': 0.13960407257422963, 'x2': 1.0}.
-[I 2026-01-20 12:23:04,036] Trial 87 finished with values: [1.2554295222525873, 0.038709388718459053] and parameters: {'x0': 0.961452128574098, 'x1': 0.5776283133241384, 'x2': 0.0}.
-[I 2026-01-20 12:23:04,929] Trial 88 finished with values: [1.4321320512165352, 2.938231920314661e-73] and parameters: {'x0': 0.18670666919912798, 'x1': 0.9267693185041952, 'x2': 1.0}.
-[I 2026-01-20 12:23:05,802] Trial 89 finished with values: [1.5, 4.8262143033342457e-45] and parameters: {'x0': 0.35736659538234455, 'x1': 0.0, 'x2': 0.0}.
-[I 2026-01-20 12:23:06,592] Trial 90 finished with values: [1.5, 4.6056286165763486e-71] and parameters: {'x0': 0.1962956962124501, 'x1': 0.0, 'x2': 0.0}.
-[I 2026-01-20 12:23:07,423] Trial 91 finished with values: [1.5, 6.601783912696714e-62] and parameters: {'x0': 0.24236756614607313, 'x1': 0.9999999999999999, 'x2': 0.0}.
-[I 2026-01-20 12:23:09,245] Trial 92 finished with values: [1.5, 1.950422013946868e-38] and parameters: {'x0': 0.4160822358998056, 'x1': 1.0, 'x2': 0.0}.
-[I 2026-01-20 12:23:10,090] Trial 93 finished with values: [0.20525503916164173, 1.1971236475934526] and parameters: {'x0': 0.9988566226104079, 'x1': 0.692211354047187, 'x2': 0.9214821219840579}.
-[I 2026-01-20 12:23:10,979] Trial 94 finished with values: [1.4599570050671307, 5.603607912891833e-36] and parameters: {'x0': 0.4404332295834488, 'x1': 0.04178934422349951, 'x2': 1.0}.
-[I 2026-01-20 12:23:12,024] Trial 95 finished with values: [0.3191923584352629, 1.2632719324649218] and parameters: {'x0': 0.9982869675896483, 'x1': 0.21187132672016926, 'x2': 0.96899391157699}.
-[I 2026-01-20 12:23:12,953] Trial 96 finished with values: [1.5, 6.401043742659036e-32] and parameters: {'x0': 0.48343756813630157, 'x1': 0.0, 'x2': 0.0}.
-[I 2026-01-20 12:23:14,060] Trial 97 finished with values: [1.5, 1.1721616017060081e-91] and parameters: {'x0': 0.12217089727820314, 'x1': 1.0, 'x2': 1.0}.
-[I 2026-01-20 12:23:15,030] Trial 98 finished with values: [1.5, 5.705075290167587e-12] and parameters: {'x0': 0.7653154880513249, 'x1': 1.0, 'x2': 0.0}.
-[I 2026-01-20 12:23:16,119] Trial 99 finished with values: [1.5, 2.234490778578826e-25] and parameters: {'x0': 0.5620431696261835, 'x1': 1.0, 'x2': 0.0}.
+c3dtlz4/py/test_gpsampler.py::test_gpsampler [I 2026-01-20 18:16:32,830] A new study created in RDB with name: my_study
+[I 2026-01-20 18:16:32,980] Trial 0 finished with values: [1.2569645750397653, 4.4185249455598885e-43] and parameters: {'x0': 0.3745401188473625, 'x1': 0.9507143064099162, 'x2': 0.7319939418114051}.
+[I 2026-01-20 18:16:33,128] Trial 1 finished with values: [1.236662945761789, 1.0145778959154135e-22] and parameters: {'x0': 0.5986584841970366, 'x1': 0.15601864044243652, 'x2': 0.15599452033620265}.
+[I 2026-01-20 18:16:33,256] Trial 2 finished with values: [1.1443092153344159, 4.571144650098741e-124] and parameters: {'x0': 0.05808361216819946, 'x1': 0.8661761457749352, 'x2': 0.6011150117432088}.
+[I 2026-01-20 18:16:33,334] Trial 3 finished with values: [1.4506544962685188, 2.3198580035410804e-15] and parameters: {'x0': 0.7080725777960455, 'x1': 0.020584494295802447, 'x2': 0.9699098521619943}.
+[I 2026-01-20 18:16:33,423] Trial 4 finished with values: [1.1839841387381274, 2.017890472548048e-08] and parameters: {'x0': 0.8324426408004217, 'x1': 0.21233911067827616, 'x2': 0.18182496720710062}.
+[I 2026-01-20 18:16:33,508] Trial 5 finished with values: [1.0389339803486743, 3.578564831812836e-74] and parameters: {'x0': 0.18340450985343382, 'x1': 0.3042422429595377, 'x2': 0.5247564316322378}.
+[I 2026-01-20 18:16:33,597] Trial 6 finished with values: [1.0560963419602245, 5.789891256550866e-37] and parameters: {'x0': 0.43194501864211576, 'x1': 0.2912291401980419, 'x2': 0.6118528947223795}.
+[I 2026-01-20 18:16:33,685] Trial 7 finished with values: [1.0610630040604079, 4.7574085951972936e-86] and parameters: {'x0': 0.13949386065204183, 'x1': 0.29214464853521815, 'x2': 0.3663618432936917}.
+[I 2026-01-20 18:16:33,771] Trial 8 finished with values: [1.171521166079494, 1.4723771522333772e-34] and parameters: {'x0': 0.45606998421703593, 'x1': 0.7851759613930136, 'x2': 0.19967378215835974}.
+[I 2026-01-20 18:16:33,877] Trial 9 finished with values: [1.2142476806598177, 2.491970914729005e-29] and parameters: {'x0': 0.5142344384136116, 'x1': 0.5924145688620425, 'x2': 0.046450412719997725}.
+[I 2026-01-20 18:16:39,339] Trial 10 finished with values: [1.5, 3.249132054563685e-24] and parameters: {'x0': 0.5772920306987445, 'x1': 1.0, 'x2': 1.0}.
+[I 2026-01-20 18:16:39,720] Trial 11 finished with values: [1.4810590572975793, 2.2471687400140787e-21] and parameters: {'x0': 0.616381271404474, 'x1': 0.0, 'x2': 0.9806860277744498}.
+[I 2026-01-20 18:16:40,204] Trial 12 finished with values: [1.3962865006473393, 0.0] and parameters: {'x0': 0.0, 'x1': 0.0, 'x2': 0.8824741829814651}.
+[I 2026-01-20 18:16:40,652] Trial 13 finished with values: [1.4319600251053506, 4.613008316428876e-65] and parameters: {'x0': 0.22548587130879116, 'x1': 0.0, 'x2': 0.9265677262819476}.
+[I 2026-01-20 18:16:41,092] Trial 14 finished with values: [1.4657790846195586, 3.1399921722830447e-18] and parameters: {'x0': 0.6627464371294791, 'x1': 1.0, 'x2': 0.9645202736367473}.
+[I 2026-01-20 18:16:41,593] Trial 15 finished with values: [1.445114846117425, 2.5479755591876564e-80] and parameters: {'x0': 0.1586725240275914, 'x1': 1.0, 'x2': 0.9417180617966907}.
+[I 2026-01-20 18:16:42,095] Trial 16 finished with values: [1.4458575475275077, 6.445293888426763e-57] and parameters: {'x0': 0.2719756187229194, 'x1': 1.0, 'x2': 0.9425579595120934}.
+[I 2026-01-20 18:16:42,630] Trial 17 finished with values: [1.255194971651199, 6.912014307771002e-107] and parameters: {'x0': 0.08618818508327279, 'x1': 0.3403540168938965, 'x2': 0.9792787620261143}.
+[I 2026-01-20 18:16:43,204] Trial 18 finished with values: [1.4448556966461257, 0.0] and parameters: {'x0': 0.0, 'x1': 0.9998164559591163, 'x2': 0.9416324342692624}.
+[I 2026-01-20 18:16:43,902] Trial 19 finished with values: [1.4445869046211222, 4.585494496743527e-44] and parameters: {'x0': 0.36564128475868873, 'x1': 0.0030928341581690846, 'x2': 0.9446011394004309}.
+[I 2026-01-20 18:16:44,454] Trial 20 finished with values: [1.4443633775253015, 3.095705331360937e-36] and parameters: {'x0': 0.43787447810613506, 'x1': 0.9996722436046344, 'x2': 0.941238061024219}.
+[I 2026-01-20 18:16:45,222] Trial 21 finished with values: [1.443408516454606, 4.3094579972876635e-45] and parameters: {'x0': 0.35709941202732837, 'x1': 0.9997098583444072, 'x2': 0.9401120015723482}.
+[I 2026-01-20 18:16:45,852] Trial 22 finished with values: [1.463130590964571, 2.888001049597235e-17] and parameters: {'x0': 0.6776289374052729, 'x1': 0.03833931187010174, 'x2': 1.0}.
+[I 2026-01-20 18:16:46,351] Trial 23 finished with values: [1.443973196351162, 1.7300030254632066e-25] and parameters: {'x0': 0.5608202394978651, 'x1': 0.9994244463105117, 'x2': 0.9410764319010944}.
+[I 2026-01-20 18:16:46,914] Trial 24 finished with values: [1.3849349118817273, 8.362307825117555e-13] and parameters: {'x0': 0.7513594778738962, 'x1': 0.8673348770287508, 'x2': 1.0}.
+[I 2026-01-20 18:16:47,406] Trial 25 finished with values: [1.5, 0.0] and parameters: {'x0': 0.0, 'x1': 1.0, 'x2': 0.0}.
+[I 2026-01-20 18:16:48,078] Trial 26 finished with values: [1.4381781661444666, 5.444554551490792e-68] and parameters: {'x0': 0.21077558233539917, 'x1': 0.9674237804847422, 'x2': 0.03128561406564639}.
+[I 2026-01-20 18:16:48,749] Trial 27 finished with values: [1.4450624040166224, 8.973847889825106e-96] and parameters: {'x0': 0.1111654223264895, 'x1': 0.9718963397733132, 'x2': 0.028432137942827843}.
+[I 2026-01-20 18:16:49,427] Trial 28 finished with values: [1.4545308740819558, 0.0] and parameters: {'x0': 0.0, 'x1': 0.04774910272951829, 'x2': 1.0}.
+[I 2026-01-20 18:16:50,009] Trial 29 finished with values: [1.443456628945614, 1.3257021548609495e-118] and parameters: {'x0': 0.06571571287991912, 'x1': 0.9997015324402695, 'x2': 0.9401761095544151}.
+[I 2026-01-20 18:16:50,648] Trial 30 finished with values: [1.4443394761144561, 1.1982523729722923e-29] and parameters: {'x0': 0.5095978551114642, 'x1': 0.009069976469102108, 'x2': 0.9509181612115531}.
+[I 2026-01-20 18:16:51,329] Trial 31 finished with values: [1.4466735412988014, 6.783807214776015e-54] and parameters: {'x0': 0.2915746955448456, 'x1': 0.05652109261115761, 'x2': 1.0}.
+[I 2026-01-20 18:16:51,926] Trial 32 finished with values: [1.4442558247808832, 1.4721363098379749e-49] and parameters: {'x0': 0.3221972580606223, 'x1': 0.9695064368543467, 'x2': 0.026904311440889787}.
+[I 2026-01-20 18:16:52,491] Trial 33 finished with values: [1.4462906705701832, 4.271496767328079e-15] and parameters: {'x0': 0.7124297492536091, 'x1': 0.9430470297498714, 'x2': 0.9999999999999999}.
+[I 2026-01-20 18:16:53,096] Trial 34 finished with values: [8.874509324427002e-17, 1.449317359193815] and parameters: {'x0': 1.0, 'x1': 0.05355027248993058, 'x2': 0.9999999999999999}.
+[I 2026-01-20 18:16:53,862] Trial 35 finished with values: [1.4421472900270447, 1.8370418696915614e-05] and parameters: {'x0': 0.8893851946560436, 'x1': 0.061653915103546945, 'x2': 0.9999999999999999}.
+[I 2026-01-20 18:16:54,544] Trial 36 finished with values: [1.2860347520190483, 0.00732682699752418] and parameters: {'x0': 0.9453560035560985, 'x1': 0.2333758939789026, 'x2': 0.963645564221677}.
+[I 2026-01-20 18:16:55,066] Trial 37 finished with values: [1.3979215950049932, 0.013402146762977827] and parameters: {'x0': 0.950288740884737, 'x1': 0.0, 'x2': 0.8846892746428605}.
+[I 2026-01-20 18:16:55,554] Trial 38 finished with values: [1.499773926794213, 0.026041668692059296] and parameters: {'x0': 0.9559491578123709, 'x1': 0.0, 'x2': 1.0}.
+[I 2026-01-20 18:16:56,129] Trial 39 finished with values: [1.2507159928328349, 0.10107387451756286] and parameters: {'x0': 0.970742794965871, 'x1': 0.12552098979677392, 'x2': 0.8384654331851219}.
+[I 2026-01-20 18:16:56,942] Trial 40 finished with values: [1.3328017906425575, 0.24152549034686965] and parameters: {'x0': 0.9785294451073929, 'x1': 0.1767211714132525, 'x2': 1.0}.
+[I 2026-01-20 18:16:57,660] Trial 41 finished with values: [1.4328849389260425, 0.14666799744849854] and parameters: {'x0': 0.9730271148458519, 'x1': 0.06368389887687556, 'x2': 1.0}.
+[I 2026-01-20 18:16:58,230] Trial 42 finished with values: [1.333992159994511, 0.2629425225833838] and parameters: {'x0': 0.9793333800058809, 'x1': 0.0, 'x2': 0.8311487010167008}.
+[I 2026-01-20 18:16:58,763] Trial 43 finished with values: [1.412236542216437, 0.5055570678257422] and parameters: {'x0': 0.9849211636388685, 'x1': 0.0, 'x2': 1.0}.
+[I 2026-01-20 18:16:59,364] Trial 44 finished with values: [1.1974161959488412, 0.5105739589446882] and parameters: {'x0': 0.9864893950301072, 'x1': 0.0756990415680327, 'x2': 0.8488480742575549}.
+[I 2026-01-20 18:17:00,024] Trial 45 finished with values: [1.318172221905542, 0.4928733534366517] and parameters: {'x0': 0.9853155741934119, 'x1': 0.040451134193926895, 'x2': 0.942852105669598}.
+[I 2026-01-20 18:17:00,525] Trial 46 finished with values: [1.2613904163758827, 0.6637045325742482] and parameters: {'x0': 0.9883039032603425, 'x1': 0.08125736674161979, 'x2': 1.0}.
+[I 2026-01-20 18:17:01,030] Trial 47 finished with values: [1.354312703621413, 0.539278551869976] and parameters: {'x0': 0.9858812308189343, 'x1': 0.04422311000879493, 'x2': 1.0}.
+[I 2026-01-20 18:17:01,697] Trial 48 finished with values: [1.1762519994276803, 0.7403325974990232] and parameters: {'x0': 0.9897699973990214, 'x1': 0.05972497173503773, 'x2': 0.9427188954676303}.
+[I 2026-01-20 18:17:02,463] Trial 49 finished with values: [1.4086850958794073, 0.014756195786579529] and parameters: {'x0': 0.9511308040150737, 'x1': 0.10155002762709123, 'x2': 1.0}.
+[I 2026-01-20 18:17:03,035] Trial 50 finished with values: [1.5, 5.448261629847529e-09] and parameters: {'x0': 0.8196726952048367, 'x1': 0.0, 'x2': 0.9999999999999999}.
+[I 2026-01-20 18:17:03,547] Trial 51 finished with values: [1.2502094463894986, 3.2056528914080544e-22] and parameters: {'x0': 0.6055195066980048, 'x1': 0.5144722627636019, 'x2': 1.0}.
+[I 2026-01-20 18:17:04,363] Trial 52 finished with values: [1.2397226711499003, 0.160165830969946] and parameters: {'x0': 0.9752753876226731, 'x1': 0.49488554639808036, 'x2': 1.0}.
+[I 2026-01-20 18:17:04,914] Trial 53 finished with values: [0.8925557742864271, 1.172973175213934] and parameters: {'x0': 0.994668248743633, 'x1': 0.026768851874987096, 'x2': 1.0}.
+[I 2026-01-20 18:17:05,571] Trial 54 finished with values: [1.4381504402274703, 0.017328076151746984] and parameters: {'x0': 0.9524628631173203, 'x1': 0.0542626208461052, 'x2': 0.9894619669217432}.
+[I 2026-01-20 18:17:06,603] Trial 55 finished with values: [7.806015666202219e-17, 1.2748191023954125] and parameters: {'x0': 1.0, 'x1': 1.0, 'x2': 0.6575407959717496}.
+[I 2026-01-20 18:17:07,466] Trial 56 finished with values: [7.115937412943625e-17, 1.1621207711314017] and parameters: {'x0': 1.0, 'x1': 0.45467107825829617, 'x2': 0.9000825664598947}.
+[I 2026-01-20 18:17:08,361] Trial 57 finished with values: [8.996755200178027e-17, 1.4692816257621248] and parameters: {'x0': 1.0, 'x1': 0.03172483969131484, 'x2': 0.0}.
+[I 2026-01-20 18:17:09,319] Trial 58 finished with values: [9.184850993605148e-17, 1.5] and parameters: {'x0': 1.0, 'x1': 1.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:10,046] Trial 59 finished with values: [1.4999999999999603, 3.4534186058961785e-07] and parameters: {'x0': 0.8543983104594208, 'x1': 0.0, 'x2': 1.0}.
+[I 2026-01-20 18:17:10,627] Trial 60 finished with values: [1.4999738186944656, 0.008862461912037569] and parameters: {'x0': 0.9457001495716729, 'x1': 1.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:11,318] Trial 61 finished with values: [1.49597040326911, 3.344106942159469e-11] and parameters: {'x0': 0.7789908792292021, 'x1': 0.0, 'x2': 0.9959540334235724}.
+[I 2026-01-20 18:17:12,099] Trial 62 finished with values: [1.4999999999892142, 5.688385951871503e-06] and parameters: {'x0': 0.8786740068618826, 'x1': 1.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:12,751] Trial 63 finished with values: [1.5, 3.1557294531968846e-58] and parameters: {'x0': 0.2637964132348673, 'x1': 0.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:13,700] Trial 64 finished with values: [1.5, 7.480230743629189e-32] and parameters: {'x0': 0.48419136339291113, 'x1': 1.0, 'x2': 0.9999999999999999}.
+[I 2026-01-20 18:17:14,461] Trial 65 finished with values: [1.5, 4.004719557329522e-10] and parameters: {'x0': 0.7985527502075315, 'x1': 1.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:15,166] Trial 66 finished with values: [1.5, 2.5241077370801873e-13] and parameters: {'x0': 0.7418207335935786, 'x1': 0.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:15,851] Trial 67 finished with values: [1.5, 1.3226336189709205e-145] and parameters: {'x0': 0.03527705191526801, 'x1': 0.0, 'x2': 1.0}.
+[I 2026-01-20 18:17:16,702] Trial 68 finished with values: [1.4999999999999991, 5.551585722354227e-08] and parameters: {'x0': 0.8389229187114745, 'x1': 0.9999999999999999, 'x2': 0.0}.
+[I 2026-01-20 18:17:17,446] Trial 69 finished with values: [1.5, 1.3724523623977077e-16] and parameters: {'x0': 0.6881020654125343, 'x1': 1.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:18,125] Trial 70 finished with values: [1.5, 8.983496600899047e-21] and parameters: {'x0': 0.6249026159709564, 'x1': 1.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:19,122] Trial 71 finished with values: [1.336043780977482, 0.124397321047044] and parameters: {'x0': 0.9721117701189588, 'x1': 0.9610055863319994, 'x2': 0.1404219549443894}.
+[I 2026-01-20 18:17:20,024] Trial 72 finished with values: [1.4999999788104759, 0.0002521280861328005] and parameters: {'x0': 0.9126286553499107, 'x1': 1.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:20,991] Trial 73 finished with values: [1.072000874398448, 0.7904366008633232] and parameters: {'x0': 0.9909892833775172, 'x1': 0.9738930081119688, 'x2': 0.17238394272467716}.
+[I 2026-01-20 18:17:22,059] Trial 74 finished with values: [1.5, 1.5695849473508265e-33] and parameters: {'x0': 0.4658388842343704, 'x1': 0.0, 'x2': 1.0}.
+[I 2026-01-20 18:17:23,221] Trial 75 finished with values: [1.5, 5.927498373813773e-54] and parameters: {'x0': 0.2910761373354068, 'x1': 1.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:24,142] Trial 76 finished with values: [1.5, 1.2627738906243954e-26] and parameters: {'x0': 0.5461238517270743, 'x1': 0.0, 'x2': 1.0}.
+[I 2026-01-20 18:17:24,987] Trial 77 finished with values: [1.5, 7.203672798991653e-120] and parameters: {'x0': 0.06380481127393717, 'x1': 0.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:26,041] Trial 78 finished with values: [1.5, 1.663176751155159e-138] and parameters: {'x0': 0.04154198768916644, 'x1': 1.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:26,958] Trial 79 finished with values: [1.5, 1.560279321730471e-39] and parameters: {'x0': 0.4057045815733842, 'x1': 0.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:27,936] Trial 80 finished with values: [1.5, 3.290381459105341e-36] and parameters: {'x0': 0.4379760385622165, 'x1': 0.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:29,044] Trial 81 finished with values: [1.5, 7.585351771336779e-38] and parameters: {'x0': 0.421771903722286, 'x1': 0.0, 'x2': 1.0}.
+[I 2026-01-20 18:17:29,863] Trial 82 finished with values: [1.5, 1.3680269982517941e-77] and parameters: {'x0': 0.16890357243740514, 'x1': 0.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:30,569] Trial 83 finished with values: [1.5, 3.909612633123792e-72] and parameters: {'x0': 0.19151342620137854, 'x1': 0.0, 'x2': 1.0}.
+[I 2026-01-20 18:17:31,382] Trial 84 finished with values: [1.3687430359131785, 6.414029890087453e-74] and parameters: {'x0': 0.18396995062675522, 'x1': 0.8445911140949204, 'x2': 0.0}.
+[I 2026-01-20 18:17:32,147] Trial 85 finished with values: [1.5, 7.819442505506539e-94] and parameters: {'x0': 0.11620094141293441, 'x1': 0.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:32,992] Trial 86 finished with values: [1.379885224505081, 1.0941322233841578e-84] and parameters: {'x0': 0.14355921327533042, 'x1': 0.13960407257422963, 'x2': 1.0}.
+[I 2026-01-20 18:17:33,808] Trial 87 finished with values: [1.2554295222525873, 0.038709388718459053] and parameters: {'x0': 0.961452128574098, 'x1': 0.5776283133241384, 'x2': 0.0}.
+[I 2026-01-20 18:17:34,678] Trial 88 finished with values: [1.4321320512165352, 2.938231920314661e-73] and parameters: {'x0': 0.18670666919912798, 'x1': 0.9267693185041952, 'x2': 1.0}.
+[I 2026-01-20 18:17:35,584] Trial 89 finished with values: [1.5, 4.8262143033342457e-45] and parameters: {'x0': 0.35736659538234455, 'x1': 0.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:36,306] Trial 90 finished with values: [1.5, 4.6056286165763486e-71] and parameters: {'x0': 0.1962956962124501, 'x1': 0.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:37,074] Trial 91 finished with values: [1.5, 6.601783912696714e-62] and parameters: {'x0': 0.24236756614607313, 'x1': 0.9999999999999999, 'x2': 0.0}.
+[I 2026-01-20 18:17:37,842] Trial 92 finished with values: [1.5, 1.950422013946868e-38] and parameters: {'x0': 0.4160822358998056, 'x1': 1.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:38,753] Trial 93 finished with values: [0.20525503916164173, 1.1971236475934526] and parameters: {'x0': 0.9988566226104079, 'x1': 0.692211354047187, 'x2': 0.9214821219840579}.
+[I 2026-01-20 18:17:39,624] Trial 94 finished with values: [1.4599570050671307, 5.603607912891833e-36] and parameters: {'x0': 0.4404332295834488, 'x1': 0.04178934422349951, 'x2': 1.0}.
+[I 2026-01-20 18:17:40,471] Trial 95 finished with values: [0.3191923584352629, 1.2632719324649218] and parameters: {'x0': 0.9982869675896483, 'x1': 0.21187132672016926, 'x2': 0.96899391157699}.
+[I 2026-01-20 18:17:41,512] Trial 96 finished with values: [1.5, 6.401043742659036e-32] and parameters: {'x0': 0.48343756813630157, 'x1': 0.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:42,531] Trial 97 finished with values: [1.5, 1.1721616017060081e-91] and parameters: {'x0': 0.12217089727820314, 'x1': 1.0, 'x2': 1.0}.
+[I 2026-01-20 18:17:43,468] Trial 98 finished with values: [1.5, 5.705075290167587e-12] and parameters: {'x0': 0.7653154880513249, 'x1': 1.0, 'x2': 0.0}.
+[I 2026-01-20 18:17:44,453] Trial 99 finished with values: [1.5, 2.234490778578826e-25] and parameters: {'x0': 0.5620431696261835, 'x1': 1.0, 'x2': 0.0}.
 
-my_study /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples/c3dtlz4/py/example.db 100
+my_study /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples/c3dtlz4/py/example.db 100
 Number of trials = 100
-Trial: 10 [Elapsed time: 14.0] Elapsed CPU time: 10.3 seconds
-Trial: 20 [Elapsed time: 23.3] Elapsed CPU time: 31.5 seconds
-Trial: 30 [Elapsed time: 29.7] Elapsed CPU time: 55.5 seconds
-Trial: 40 [Elapsed time: 35.9] Elapsed CPU time: 79.2 seconds
-Trial: 50 [Elapsed time: 42.8] Elapsed CPU time: 104.7 seconds
-Trial: 60 [Elapsed time: 50.4] Elapsed CPU time: 132.4 seconds
-Trial: 70 [Elapsed time: 58.1] Elapsed CPU time: 159.7 seconds
-Trial: 80 [Elapsed time: 67.5] Elapsed CPU time: 193.3 seconds
-Trial: 90 [Elapsed time: 76.5] Elapsed CPU time: 225.4 seconds
-Trial: 100 [Elapsed time: 86.8] Elapsed CPU time: 260.2 seconds
+Trial: 10 [Elapsed time: 18.6] Elapsed CPU time: 12.8 seconds
+Trial: 20 [Elapsed time: 28.6] Elapsed CPU time: 34.3 seconds
+Trial: 30 [Elapsed time: 34.7] Elapsed CPU time: 57.7 seconds
+Trial: 40 [Elapsed time: 40.8] Elapsed CPU time: 81.0 seconds
+Trial: 50 [Elapsed time: 47.1] Elapsed CPU time: 104.7 seconds
+Trial: 60 [Elapsed time: 54.7] Elapsed CPU time: 132.5 seconds
+Trial: 70 [Elapsed time: 62.1] Elapsed CPU time: 159.3 seconds
+Trial: 80 [Elapsed time: 71.6] Elapsed CPU time: 192.7 seconds
+Trial: 90 [Elapsed time: 80.3] Elapsed CPU time: 223.7 seconds
+Trial: 100 [Elapsed time: 89.1] Elapsed CPU time: 255.9 seconds
 ================================================================================
 DATAFRAME COMPARISON REPORT
 ================================================================================
@@ -2421,7 +2421,7 @@ GENERIC CONSTRAINT FUNCTION GENERATOR FROM JSON
 # ============================================================================
 # GENERATED CONSTRAINT FUNCTIONS FROM JSON ALPHA ATTRIBUTE
 # ============================================================================
-# Source: /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples/pyomo/py/bnh.json
+# Source: /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples/pyomo/py/bnh.json
 # Variables: X1, X2
 # Alpha: (X1-5)*(X1-5)+X2*X2-25 and -(X1-8)*(X1-8)-(X2+3)*(X2+3)+7.7
 # Number of constraints: 2
@@ -2443,7 +2443,7 @@ def constraint_C2(X1, X2):
 
 
 ================================================================================
-✓ Constraints successfully generated and saved to '/tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples/pyomo/py/generated_constraints_claude.py'
+✓ Constraints successfully generated and saved to '/tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples/pyomo/py/generated_constraints_claude.py'
 ================================================================================
 
 ================================================================================
@@ -3339,7 +3339,7 @@ Category D: 35 solutions
   X1= 9.704  →  F1= 10.296, F2=  2.871
   X1= 9.659  →  F1= 10.341, F2=  2.826
   ... and 27 more solutions
-✓ Optimal solutions comparison saved as /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples/pyomo/py/nsga2_mixed_models_comparison.png
+✓ Optimal solutions comparison saved as /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples/pyomo/py/nsga2_mixed_models_comparison.png
 
 ======================================================================
 STATISTICAL SUMMARY
@@ -3686,9 +3686,9 @@ Category D: 9 solutions
   X1= 8.761  →  F1= 20.775, F2= 16.231, F3= 11.799
   X1= 9.150  →  F1= 21.156, F2= 15.530, F3= 12.958
   ... and 1 more solutions
-✓ Optimal solutions comparison saved as /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples/pyomo/py/nsga3_mixed_models_comparison.png
+✓ Optimal solutions comparison saved as /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples/pyomo/py/nsga3_mixed_models_comparison.png
 PASSED
-pyomo/py/test_scip.py::test_scipy 
+pyomo/py/test_scip.py::test_scip 
 
 --- Running with SCIP (Global Optimizer) ---
 SCIP Solution: x=1.000038, y=0.999962
@@ -3748,6 +3748,92 @@ Key Insight: SCIP guarantees global optimum, IPOPT is faster but
 may find different solutions depending on starting point!
 ======================================================================
 PASSED
+pyomo/py/test_scip_nsga2.py::test_scip_nsga2 
+
+======================================================================
+MULTI-OBJECTIVE BIOPROCESS OPTIMIZATION
+======================================================================
+METHOD 1: Weighted Sum (Single Run)
+======================================================================
+Objectives: Maximize Yield AND Minimize Cost
+======================================================================
+
+Testing different weight combinations:
+Weights (yield=0.8, cost=0.2):
+  Glucose: 10.00, Temp: 29.90
+  Yield: 9.999457525513202, Cost: 22.989583453949123
+Weights (yield=0.5, cost=0.5):
+  Glucose: 10.00, Temp: 29.58
+  Yield: 9.99131922859124, Cost: 22.95833290122058
+Weights (yield=0.2, cost=0.8):
+  Glucose: 3.04, Temp: 28.38
+  Yield: 3.0000000223801684, Cost: 8.917778601509964
+
+======================================================================
+METHOD 2: Epsilon-Constraint (Pareto Front Generation)
+======================================================================
+
+Generating Pareto front (varying cost constraint):
+
+-------------------------------- live log call ---------------------------------
+Loading a SolverResults object with a warning status into model.name="Epsilon_Constraint";
+  - termination condition: infeasible
+  - message from solver: Ipopt 3.14.19\x3a Converged to a locally infeasible point. Problem may be infeasible.
+Loading a SolverResults object with a warning status into model.name="Epsilon_Constraint";
+  - termination condition: infeasible
+  - message from solver: Ipopt 3.14.19\x3a Converged to a locally infeasible point. Problem may be infeasible.
+Loading a SolverResults object with a warning status into model.name="Epsilon_Constraint";
+  - termination condition: infeasible
+  - message from solver: Ipopt 3.14.19\x3a Converged to a locally infeasible point. Problem may be infeasible.
+Loading a SolverResults object with a warning status into model.name="Epsilon_Constraint";
+  - termination condition: infeasible
+  - message from solver: Ipopt 3.14.19\x3a Converged to a locally infeasible point. Problem may be infeasible.
+Loading a SolverResults object with a warning status into model.name="Epsilon_Constraint";
+  - termination condition: infeasible
+  - message from solver: Ipopt 3.14.19\x3a Converged to a locally infeasible point. Problem may be infeasible.
+ε=9.5: Yield=3.2745847588235004, Cost=9.473684300168728
+ε=10.4: Yield=3.717538789992287, Cost=10.368421151249251
+ε=11.3: Yield=4.161404668664917, Cost=11.263158002314803
+ε=12.2: Yield=4.605929208078503, Cost=12.157894853375758
+ε=13.1: Yield=5.05094419008997, Cost=13.052631704434383
+ε=13.9: Yield=5.496333755554645, Cost=13.947368555491579
+ε=14.8: Yield=5.942015638591265, Cost=14.842105406547812
+ε=15.7: Yield=6.3879298839916725, Cost=15.7368422576034
+ε=16.6: Yield=6.834031802135927, Cost=16.63157910865851
+ε=17.5: Yield=7.280287422759853, Cost=17.52631595971331
+ε=18.4: Yield=7.726670475532958, Cost=18.421052810767947
+ε=19.3: Yield=8.173160333139313, Cost=19.3157896618226
+ε=20.2: Yield=8.619740578149942, Cost=20.21052651287754
+ε=21.1: Yield=9.066397984260815, Cost=21.10526336393353
+ε=22.0: Yield=9.513121778926397, Cost=22.00000021499397
+
+Found 15 Pareto-optimal solutions
+
+======================================================================
+METHOD 3: pymoo with NSGA-II (Evolutionary Algorithm)
+======================================================================
+
+Running NSGA-II evolutionary algorithm...
+Found 100 Pareto-optimal solutions
+Best yield: 10.00
+Lowest cost: 8.93
+
+======================================================================
+GENERATING COMPREHENSIVE VISUALIZATION
+======================================================================
+
+Visualization saved as 'multi_objective_comparison.png'
+
+======================================================================
+MULTI-OBJECTIVE OPTIMIZATION COMPLETE!
+======================================================================
+
+All three methods successfully demonstrated:
+1. Weighted Sum - Fast single solutions
+2. Epsilon-Constraint - Complete Pareto front
+3. NSGA-II (pymoo) - Evolutionary approach
+======================================================================
+PASSED
 s2_rx_anonym/py/test_s2_rx_anonym.py::test_s2_rx_anonym_csv 
 Data shape: (6809448, 11)
 Columns: ['CH', 'RANK', 'Byte', 'p0', 'p1', 'p2', 'p3', 'p4', 'p5', 'o0', 'o1']
@@ -3792,7 +3878,7 @@ shekel/py/test_pytorch.py::test_pytorch
 Random seeds set for reproducibility (seed=42)
 ============================================================
 Using device: cpu
-Loading data from /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples/shekel/py/shekel_meshgrid_26.csv.expected.gz...
+Loading data from /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples/shekel/py/shekel_meshgrid_26.csv.expected.gz...
 Data shape: (456976, 5)
 Columns: ['X1', 'X2', 'X3', 'X4', 'Y']
 
@@ -4004,8 +4090,8 @@ Ignoring fixed x limits to fulfill fixed data aspect with adjustable data limits
 Correlation plot saved as 'correlation_plot.png'
 
 Scalers saved to scaler_X_pytorch.pkl and scaler_y_pytorch.pkl
-W0120 12:47:19.625000 59917 torch/onnx/_internal/exporter/_compat.py:114] Setting ONNX exporter to use operator set version 18 because the requested opset_version 15 is a lower version than we have implementations for. Automatic version conversion will be performed, which may not be successful at converting to the requested version. If version conversion is unsuccessful, the opset version of the exported model will be kept at 18. Please consider setting opset_version >=18 to leverage latest ONNX features
-W0120 12:47:20.477000 59917 torch/onnx/_internal/exporter/_registration.py:107] torchvision is not installed. Skipping torchvision::nms
+W0120 18:42:59.411000 95423 torch/onnx/_internal/exporter/_compat.py:114] Setting ONNX exporter to use operator set version 18 because the requested opset_version 15 is a lower version than we have implementations for. Automatic version conversion will be performed, which may not be successful at converting to the requested version. If version conversion is unsuccessful, the opset version of the exported model will be kept at 18. Please consider setting opset_version >=18 to leverage latest ONNX features
+W0120 18:43:00.557000 95423 torch/onnx/_internal/exporter/_registration.py:107] torchvision is not installed. Skipping torchvision::nms
 [torch.onnx] Obtain model graph for `ShekelModel([...]` with `torch.export.export(..., strict=False)`...
 [torch.onnx] Obtain model graph for `ShekelModel([...]` with `torch.export.export(..., strict=False)`... ✅
 [torch.onnx] Run decomposition...
@@ -4022,7 +4108,7 @@ No unused functions to remove
 Skipping constant folding for node 'node_Gemm_0' because it is graph input to preserve graph signature
 No unused functions to remove
 PassManager: No more graph changes detected after step 1
-ONNX model exported to /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples/shekel/py/shekel_model.pytorch
+ONNX model exported to /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples/shekel/py/shekel_model.pytorch
 
 ============================================================
 Training complete!
@@ -4058,14 +4144,14 @@ Creating CSV with 456976 points...
 Grid size: 26 points per dimension
 Total points: 456976
 
-CSV file '/tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples/shekel/py/shekel_meshgrid_26.csv' created successfully!
+CSV file '/tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples/shekel/py/shekel_meshgrid_26.csv' created successfully!
 Total rows: 456977 (including header)
 
 Minimum value found in grid:
   X = [4. 4. 4. 4.]
   Y = -10.5362837262
 PASSED
-shekel/py/test_shgo_shekel_pytorch.py::test_shgo_shekel_onnx [0;93m2026-01-20 12:47:41.512069294 [W:onnxruntime:, execution_frame.cc:874 VerifyOutputSizes] Expected shape from model of {1,1} does not match actual shape of {5,1} for output output[m
+shekel/py/test_shgo_shekel_pytorch.py::test_shgo_shekel_onnx [0;93m2026-01-20 18:43:21.492440374 [W:onnxruntime:, execution_frame.cc:874 VerifyOutputSizes] Expected shape from model of {1,1} does not match actual shape of {5,1} for output output[m
 
 
 -------------------------------- live log call ---------------------------------
@@ -4078,7 +4164,7 @@ Scalers loaded
 ============================================================
 Optimizing with ONNX Neural Network Model using SHGO
 ============================================================
-[Elapsed time: 0.472] Elapsed CPU time: 0.548 seconds
+[Elapsed time: 0.433] Elapsed CPU time: 0.508 seconds
 
 Optimization Results (ONNX Model):
 Success: True
@@ -4130,7 +4216,7 @@ PASSED
     import pkg_resources
 
 c3dtlz4/py/test_gpsampler.py::test_gpsampler
-  /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples/c3dtlz4/py/c3dtlz4_ex.py:38: ExperimentalWarning: GPSampler is experimental (supported from v3.6.0). The interface can change in the future.
+  /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples/c3dtlz4/py/c3dtlz4_ex.py:38: ExperimentalWarning: GPSampler is experimental (supported from v3.6.0). The interface can change in the future.
     sampler=optuna.samplers.GPSampler(seed=42, constraints_func=c3dtlz4.constraints_func, deterministic_objective=True),
 
 c3dtlz4/py/test_gpsampler.py::test_gpsampler
@@ -4138,7 +4224,7 @@ c3dtlz4/py/test_gpsampler.py::test_gpsampler
     warnings.warn(
 
 shekel/py/test_pytorch.py::test_pytorch
-  /tmp/smlp_tutorial_mdmitry_55331/smlp/tutorial/examples/shekel/py/pytorch_ex.py:452: UserWarning: # 'dynamic_axes' is not recommended when dynamo=True, and may lead to 'torch._dynamo.exc.UserError: Constraints violated.' Supply the 'dynamic_shapes' argument instead if export is unsuccessful.
+  /tmp/smlp_tutorial_mdmitry_90583/smlp/tutorial/examples/shekel/py/pytorch_ex.py:452: UserWarning: # 'dynamic_axes' is not recommended when dynamo=True, and may lead to 'torch._dynamo.exc.UserError: Constraints violated.' Supply the 'dynamic_shapes' argument instead if export is unsuccessful.
     torch.onnx.export(
 
 shekel/py/test_pytorch.py::test_pytorch
@@ -4146,4 +4232,4 @@ shekel/py/test_pytorch.py::test_pytorch
     return _compat.export_compat(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-========== 21 passed, 8 deselected, 5 warnings in 1555.13s (0:25:55) ===========
+========== 22 passed, 8 deselected, 5 warnings in 1629.61s (0:27:09) ===========
