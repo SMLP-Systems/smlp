@@ -274,10 +274,10 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     matplotlib.use('Qt5Agg')
     from matplotlib import pyplot as plt
     fig = plt.figure(figsize=(18, 12))
-    plt.subplots_adjust(hspace=0.8, wspace=0.3)
+    plt.subplots_adjust(left=0.05, hspace=0.5, wspace=0.5)
     
     # --- Plot 1: Pareto Front Comparison ---
-    ax1 = fig.add_subplot(2, 3, 1)
+    ax1 = fig.add_subplot(3, 3, 1)
     
     # Plot weighted sum solutions
     if weighted_solutions:
@@ -307,7 +307,7 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     ax1.grid(True, alpha=0.3)
     
     # --- Plot 2: Decision Space (Glucose vs Temperature) ---
-    ax2 = fig.add_subplot(2, 3, 2)
+    ax2 = fig.add_subplot(3, 3, 2)
     
     if weighted_solutions:
         ws_glucose = [s['glucose'] for s in weighted_solutions]
@@ -334,7 +334,7 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     ax2.grid(True, alpha=0.3)
     
     # --- Plot 3: Trade-off Surface (3D) ---
-    ax3 = fig.add_subplot(2, 3, 3, projection='3d')
+    ax3 = fig.add_subplot(3, 3, 3, projection='3d')
     
     # Create mesh for surface
     gluc_range = np.linspace(0, 10, 50)
@@ -360,7 +360,7 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     ax3.view_init(elev=20, azim=45)
     
     # --- Plot 4: Weight Sensitivity ---
-    ax4 = fig.add_subplot(2, 3, 4)
+    ax4 = fig.add_subplot(3, 3, 4)
     
     if weighted_solutions:
         weights_yield = [value(s['w_yield']) for s in weighted_solutions]
@@ -382,7 +382,7 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
         ax4.grid(True, alpha=0.3)
     
     # --- Plot 5: Pareto Front Distribution ---
-    ax5 = fig.add_subplot(2, 3, 5)
+    ax5 = fig.add_subplot(3, 3, 5)
     
     if pareto_solutions:
         yields = np.array([value(s['yield']) for s in pareto_solutions])
@@ -401,7 +401,7 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
         ax5.grid(True, alpha=0.3, axis='y')
     
     # --- Plot 6: Summary Table ---
-    ax6 = fig.add_subplot(2, 3, 6)
+    ax6 = fig.add_subplot(3, 3, 6)
     ax6.axis('off')
     
     summary_text = f"""
@@ -418,8 +418,8 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     ✗ May miss non-convex Pareto regions
     
     Best solution: 
-      Yield: {value(max(weighted_solutions, key=lambda x: value(x['yield']))['yield'])}
-      Cost:  {value(min(weighted_solutions, key=lambda x: value(x['cost']))['cost'])}
+      Yield: {value(max(weighted_solutions, key=lambda x: value(x['yield']))['yield']):.2f}
+      Cost:  {value(min(weighted_solutions, key=lambda x: value(x['cost']))['cost']):.2f}
     
     METHOD 2: Epsilon-Constraint
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -452,27 +452,31 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
         summary_text += """✗ Not installed (pip install pymoo)
     """
     
-    summary_text += """
-    ══════════════════════════════════════════════════════════════
+    ax6.text(0.05, 1, summary_text, fontsize=8, family='monospace',
+             verticalalignment='top',
+             bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
     
+    recommendation_text = """
     RECOMMENDATIONS:
-    ───────────────────────────────────────────────────────────────
+    ──────────────────────────────────────────────
     • Quick single solution → Weighted Sum
     • Complete Pareto front → Epsilon-Constraint
     • Complex non-convex → NSGA-II (pymoo)
     • Production use → Epsilon-Constraint + SCIP
     """
+    ax7 = fig.add_subplot(3, 3, 8)
+    ax7.axis('off')
     
-    ax6.text(0.05, 0.95, summary_text, fontsize=9, family='monospace',
+    ax7.text(-0.1, 1, recommendation_text, fontsize=10, family='monospace',
              verticalalignment='top',
              bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
-    
+
     plt.savefig('multi_objective_comparison.png', dpi=150, bbox_inches='tight')
     print("\nVisualization saved as 'multi_objective_comparison.png'")
     if not inf == timeout:
         timer = fig.canvas.new_timer(interval=timeout, callbacks=[(plt.close, [], {})])
         timer.start()
-    plt.tight_layout()
+    #plt.tight_layout()
     plt.show()
     print("\n" + "="*70)
     print("MULTI-OBJECTIVE OPTIMIZATION COMPLETE!")
