@@ -16,7 +16,6 @@ Prerequisites:
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
 from pyomo.environ import *
 from pyomo.environ import minimize as pyo_minimize
 from pymoo.core.problem import Problem
@@ -271,7 +270,11 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
     print("GENERATING COMPREHENSIVE VISUALIZATION")
     print("="*70)
     
-    fig = plt.figure(figsize=(16, 10))
+    import matplotlib
+    matplotlib.use('Qt5Agg')
+    from matplotlib import pyplot as plt
+    fig = plt.figure(figsize=(18, 12))
+    plt.subplots_adjust(hspace=0.8, wspace=0.3)
     
     # --- Plot 1: Pareto Front Comparison ---
     ax1 = fig.add_subplot(2, 3, 1)
@@ -393,7 +396,7 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
                     label=f'Mean: {distances.mean():.3f}')
         ax5.set_xlabel('Solution Index', fontsize=11, fontweight='bold')
         ax5.set_ylabel('Distance to Next Point', fontsize=11, fontweight='bold')
-        ax5.set_title('Pareto Front Spacing\n(Uniformity)', fontsize=12, fontweight='bold')
+        ax5.set_title('Pareto Front Spacing (Uniformity)', fontsize=12, fontweight='bold')
         ax5.legend()
         ax5.grid(True, alpha=0.3, axis='y')
     
@@ -464,12 +467,12 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
              verticalalignment='top',
              bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
     
-    plt.tight_layout()
     plt.savefig('multi_objective_comparison.png', dpi=150, bbox_inches='tight')
     print("\nVisualization saved as 'multi_objective_comparison.png'")
     if not inf == timeout:
         timer = fig.canvas.new_timer(interval=timeout, callbacks=[(plt.close, [], {})])
         timer.start()
+    plt.tight_layout()
     plt.show()
     print("\n" + "="*70)
     print("MULTI-OBJECTIVE OPTIMIZATION COMPLETE!")
