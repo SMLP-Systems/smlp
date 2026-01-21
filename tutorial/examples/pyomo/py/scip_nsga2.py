@@ -102,6 +102,7 @@ def solve_weighted_sum(w_yield=0.5, w_cost=0.5, solver_name='ipopt'):
     # Solve
     solver = SolverFactory(solver_name)
     if solver_name == 'ipopt':
+        solver.options['linear_solver'] = 'mumps'  # Always add this!
         solver.options['max_iter'] = 3000
     
     results = solver.solve(model, tee=False)
