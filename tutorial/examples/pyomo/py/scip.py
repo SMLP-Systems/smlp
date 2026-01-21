@@ -14,7 +14,7 @@ Prerequisites:
     conda install -c conda-forge pyscipopt ipopt
 """
 
-from pyomo.environ import *
+from pyomo.environ import ConcreteModel, Var, Objective, Constraint, SolverFactory, minimize, sin, cos
 import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt

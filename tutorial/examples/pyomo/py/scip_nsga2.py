@@ -16,12 +16,11 @@ Prerequisites:
 """
 
 import numpy as np
-from pyomo.environ import *
-from pyomo.environ import minimize as pyo_minimize
-from pymoo.core.problem import Problem
 from hashlib import sha256
 from math import inf
 from sys import argv
+from pyomo.environ import ConcreteModel, Objective, Constraint, SolverFactory, TerminationCondition, Var, value, maximize, minimize
+from pymoo.core.problem import Problem
 
 # =============================================================================
 # PROBLEM DEFINITION: Bioprocess Optimization Example
