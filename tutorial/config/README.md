@@ -22,6 +22,7 @@ Testing environment for upcoming Ubuntu 26.04 LTS compatibility.
 
 - **Ipopt**: 3.14.19 (Linux x86_64) - Interior Point Optimizer
 - **ASL**: 20231111 - AMPL Solver Library
+- **SCIP**: 10.0.0 - Global optimization for mixed integer programming (MIP) and mixed integer nonlinear programming (MINLP)
 
 ## Ipopt with ASL installation instructions
 ```bash
