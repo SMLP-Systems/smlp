@@ -90,6 +90,7 @@ conda install -c conda-forge ipopt
 - **python-dotenv**: 1.2.1
 - **alembic**: 1.18.1 (Database migrations)
 - **SQLAlchemy**: 2.0.46
+- **greenlet**: 3.3.1 (Lightweight coroutines for in-process concurrent programming.)
 
 ## Python 3.14 Packages
 
@@ -129,7 +130,7 @@ The following packages from Python 3.12 are not yet available in Python 3.14:
 - Various optimization libraries (doepy, pyDOE, moocore)
 - category_encoders, mrmr-selection
 - pandas-datareader, jenkspy
-- pysubgroup, statsmodels, patsy, seaborn
+- pysubgroup, statsmodels, patsy
 
 ### Common Packages (Both Environments)
 - **PyTorch**: 2.10.0 ✅

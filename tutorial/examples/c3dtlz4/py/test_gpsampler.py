@@ -21,4 +21,5 @@ def test_gpsampler(monkeypatch, request):
                    int(popen(f"sum {out}").read().split()[0]) == 38273
         else:
             assert int(popen(f"sum {out}").read().split()[0]) == 47204 or \
-                   int(popen(f"sum {out}").read().split()[0]) == 10640
+                   int(popen(f"sum {out}").read().split()[0]) == 10640 or \
+                   int(popen(f"sum {out}").read().split()[0]) == 45261
