@@ -1,0 +1,9 @@
+cd /tmp
+wget https://sourceforge.net/projects/boost/files/boost/1.83.0/boost_1_83_0.tar.gz
+tar -xvf boost_1_83_0.tar.gz
+cd boost_1_83_0
+./bootstrap.sh --with-python=/usr/bin/python3.11 --with-libraries=python
+./b2 install --prefix=$HOME/boost_py311 --with-python python=3.11
+sudo cp -p $HOME/boost_py311/lib/libboost_python311.a /usr/lib/x86_64-linux-gnu
+sudp cp -p $HOME/boost_py311/lib/libboost_python311.so.1.83.0 /usr/lib/x86_64-linux-gnu
+sudo ln -s /usr/lib/x86_64-linux-gnu/{libboost_python311.so.1.83.0,libboost_python311.so}
