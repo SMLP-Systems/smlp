@@ -23,6 +23,13 @@ Testing environment for upcoming Ubuntu 26.04 LTS compatibility.
 - **Ipopt**: 3.14.19 (Linux x86_64) - Interior Point Optimizer
 - **ASL**: 20231111 - AMPL Solver Library
 
+## Ipopt with ASL installation instructions
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash ./Miniconda3-latest-Linux-x86_64.sh
+conda install -c conda-forge ipopt
+```
+
 ## Python 3.12 Packages
 
 ### Machine Learning & Deep Learning
