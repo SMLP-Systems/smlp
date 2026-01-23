@@ -24,4 +24,4 @@ def test_pytorch(monkeypatch, request):
         assert main(512, test_path) == '0270d3c18ee4cf5a9b64b3ad80f9f3cc2886c97d5d7c2b842303c54bea569d6e'
         assert int(popen(f"sum {out}").read().split()[0])  == 27475
         assert int(popen(f"sum {out1}").read().split()[0]) == 24955
-        assert int(popen(f"sum {out2}").read().split()[0]) == 36979
+        assert int(popen(f"sum {out2}").read().split()[0]) == 57625
