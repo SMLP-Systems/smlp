@@ -67,6 +67,7 @@ jsonschema==4.26.0
 jsonschema-path==0.3.4
 jsonschema-specifications==2025.9.1
 keras==3.13.1
+keras-tuner==1.4.8
 kiwisolver==1.4.9
 language-selector==0.1
 launchpadlib==1.11.0
