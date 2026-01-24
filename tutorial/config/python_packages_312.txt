@@ -168,9 +168,7 @@ pysubgroup==0.9.0
 pytest==7.4.4
 pytest-forked==1.6.0
 pytest-mock==3.12.0
-python-apt==2.7.7+ubuntu5.1
 python-dateutil==2.8.2
-python-debian==0.1.49+ubuntu2
 python-dotenv==1.2.1
 pytz==2024.1
 pyxdg==0.28
@@ -215,8 +213,6 @@ typeguard==4.4.4
 typer==0.21.1
 typing-inspection==0.4.2
 typing_extensions==4.15.0
-ubuntu-drivers-common==0.0.0
-ubuntu-pro-client==8001
 ufw==0.36.2
 unattended-upgrades==0.1
 urllib3==2.6.3

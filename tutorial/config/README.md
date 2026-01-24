@@ -15,6 +15,9 @@ This setup maintains two Python environments to support different package compat
 ### Python 3.12 Environment
 Primary environment for packages requiring mature ecosystem support, particularly TensorFlow.
 
+### Python 3.13 Environment
+Primary environment for SMLP
+
 ### Python 3.14 Environment  
 Testing environment for upcoming Ubuntu 26.04 LTS compatibility.
 
