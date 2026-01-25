@@ -11,7 +11,7 @@ beautifulsoup4==4.12.3
 blinker==1.7.0
 Bottleneck==1.6.0
 Brlapi==0.8.5
-Brotli==1.1.0
+brotli==1.2.0
 category_encoders==2.9.0
 certifi==2026.1.4
 chardet==5.2.0

@@ -2,6 +2,7 @@ Warning!!! Duplicate package metadata found:
 "/usr/lib/python3/dist-packages"
   setuptools                       68.1.2           (using 80.10.1, "/usr/local/lib/python3.12/dist-packages")
   urllib3                          2.0.7            (using 2.6.3, "/usr/local/lib/python3.12/dist-packages")
+  Brotli                           1.1.0            (using 1.2.0, "/usr/local/lib/python3.12/dist-packages")
   PyQt5-sip                        12.13.0          (using 12.18.0, "/usr/local/lib/python3.12/dist-packages")
   wrapt                            1.15.0           (using 2.0.1, "/usr/local/lib/python3.12/dist-packages")
   pandas                           2.1.4+dfsg       (using 2.3.3, "/usr/local/lib/python3.12/dist-packages")
@@ -90,7 +91,7 @@ blinker==1.7.0
 Bottleneck==1.6.0
 └── numpy [required: Any, installed: 1.26.4]
 Brlapi==0.8.5
-Brotli==1.1.0
+brotli==1.2.0
 chardet==5.2.0
 cloud-init==25.2
 colorama==0.4.6
