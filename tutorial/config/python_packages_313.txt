@@ -87,6 +87,7 @@ pandas==2.3.3
 patsy==1.0.2
 pexpect==4.9.0
 pillow==12.1.0
+pipdeptree==2.30.0
 pluggy==1.4.0
 polars==1.37.1
 polars-runtime-32==1.37.1
