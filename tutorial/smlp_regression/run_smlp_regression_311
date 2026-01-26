@@ -1,5 +1,12 @@
 #!/usr/bin/tcsh -f
 set log=$PWD/`realpath $0 | xargs basename`.log
+set rundir=/tmp/smlp_tutorial_${USER}_$$
+echo "Run directory: $rundir" |& tee $log
+\rm -rf $rundir >& /dev/null
+mkdir -p $rundir
+cd $rundir
+git clone ssh://git@github.com/SMLP-Systems/smlp |& tee -a $log 
+cd smlp
 git rev-parse --show-toplevel >& /dev/null
 if($status) then
     echo "\nERROR: Current directory is outside git directory tree\n"
@@ -17,7 +24,7 @@ endif
 cd `git rev-parse --show-toplevel`/regr_smlp/code
 set path=($PWD $path)
 set python_path="$PWD"
-\ln -sf /usr/bin/python3.13 python3
+\ln -sf /usr/bin/python3.11 python3
 echo "Log file: $log"
 env CUDA_VISIBLE_DEVICES=-1 ./smlp_regr.py -w 8 -def n -t all -tol 7 |& tee $log
 \rm -f $python_path/python3

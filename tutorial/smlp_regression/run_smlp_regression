@@ -2,7 +2,7 @@
 set log=$PWD/`realpath $0 | xargs basename`.log
 git rev-parse --show-toplevel >& /dev/null
 if($status) then
-    echo "\nERROR: Current directory s outside git directory tree\n"
+    echo "\nERROR: Current directory is outside git directory tree\n"
     exit(1)
 endif
 if($#argv > 0) then
