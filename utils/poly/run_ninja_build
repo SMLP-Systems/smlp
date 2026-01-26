@@ -1,2 +1,16 @@
 #!/usr/bin/tcsh -f
-env PYTHONPATH=/usr/local/lib/python3.11/site-packages /usr/bin/ninja -C build install
+set script_path=`realpath $0 | xargs dirname`
+set package_dist_path=${HOME}/.local_smlp/lib/python3/dist-packages
+/usr/bin/ninja -C build install
+if(0 == $status) then
+    echo -n "smlp package location: "
+    echo 'import smlp;print(smlp.__file__)' | env PYTHONPATH=$package_dist_path /usr/bin/python3.11 | sed 's@/__init__.py@@'
+else
+    echo "\nERROR: smlp build failed\n"
+endif
+if( 1 == `env PYTHONPATH=$package_dist_path /usr/bin/python3.11 $script_path:h:h/src/run_smlp.py -h |& grep -c ^usage`) then
+    echo "\nSMLP installation succeeded\n"
+else
+    echo "\nSMLP installation failed\n"
+    exit(1)
+endif
