@@ -7,6 +7,7 @@ mkdir -p $rundir
 cd $rundir
 git clone ssh://git@github.com/SMLP-Systems/smlp |& tee -a $log 
 cd smlp
+\rm -rf ../external/mathsat-5.6.8-linux-x86_64-reentrant >& /dev/null
 git rev-parse --show-toplevel >& /dev/null
 if($status) then
     echo "\nERROR: Current directory is outside git directory tree\n"
@@ -21,6 +22,10 @@ if($#argv > 0) then
         exit(0)
     endif
 endif
+wget https://mathsat.fbk.eu/release/mathsat-5.6.8-linux-x86_64-reentrant.tar.gz
+tar -xvf mathsat-5.6.8-linux-x86_64-reentrant.tar.gz
+mkdir -p `git rev-parse --show-toplevel`/../external/mathsat-5.6.8-linux-x86_64-reentrant/bin
+cp -p mathsat-5.6.8-linux-x86_64-reentrant/bin/mathsat `git rev-parse --show-toplevel`/../external/mathsat-5.6.8-linux-x86_64-reentrant/bin
 cd `git rev-parse --show-toplevel`/regr_smlp/code
 set path=($PWD $path)
 set python_path="$PWD"
