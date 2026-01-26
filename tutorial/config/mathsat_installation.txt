@@ -1,0 +1,4 @@
+wget https://mathsat.fbk.eu/release/mathsat-5.6.8-linux-x86_64-reentrant.tar.gz
+tar -xvf mathsat-5.6.8-linux-x86_64-reentrant.tar.gz
+mkdir -p `git rev-parse --show-toplevel`/../external/mathsat-5.6.8-linux-x86_64-reentrant/bin
+cp -p mathsat-5.6.8-linux-x86_64-reentrant/bin/mathsat `git rev-parse --show-toplevel`/../external/mathsat-5.6.8-linux-x86_64-reentrant/bin
