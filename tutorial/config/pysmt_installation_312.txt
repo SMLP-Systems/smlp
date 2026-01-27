@@ -5,4 +5,4 @@ cd mathsat-5.6.15-linux-x86_64/python
 python3.12 setup.py build
 sudo mkdir -p /usr/local/lib/python3.12/dist-packages/mathsat
 sudo cp -p mathsat.py /usr/local/lib/python3.12/dist-packages
-sudo cp -p build/lib.linux-x86_64-cpython-312/_mathsat.cpython-312-x86_64-linux-gnu.so /usr/local/lib/python3.12/dist-packages/mathsat
+sudo cp -p build/lib.linux-x86_64-cpython-312/_mathsat.cpython-312-x86_64-linux-gnu.so /usr/local/lib/python3.12/dist-packages/mathsat/_mathsat.so
