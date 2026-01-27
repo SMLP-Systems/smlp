@@ -1,5 +1,8 @@
 #!/usr/bin/tcsh -f
-set log=$PWD/`realpath $0 | xargs basename`.log
+set script_path=`realpath $0 | xargs dirname`
+set script_name=`realpath $0 | xargs basename`
+set log=$PWD/${script_name}.log
+set diff_report=$log:h/${script_name}_diff_report.log
 set rundir=/tmp/smlp_tutorial_${USER}_$$
 echo "Run directory: $rundir" |& tee $log
 \rm -rf $rundir >& /dev/null
@@ -7,29 +10,19 @@ mkdir -p $rundir
 cd $rundir
 git clone ssh://git@github.com/SMLP-Systems/smlp |& tee -a $log 
 cd smlp
-\rm -rf ../external/mathsat-5.6.8-linux-x86_64-reentrant >& /dev/null
-git rev-parse --show-toplevel >& /dev/null
-if($status) then
-    echo "\nERROR: Current directory is outside git directory tree\n"
-    exit(1)
-endif
-if($#argv > 0) then
-    if("-clean" == "$argv[1]") then
-        cd `git rev-parse --show-toplevel`
-        \rm -f regr_smlp/models/test{63,101}_model_y*_smlp_*
-        \rm -rf regr_smlp/code/*{test,Test}*
-        \rm -rf regr_smlp/code/{__pycache__,all_log.txt,logs.log,_doe.csv}
-        exit(0)
-    endif
-endif
-wget https://mathsat.fbk.eu/release/mathsat-5.6.8-linux-x86_64-reentrant.tar.gz
-tar -xvf mathsat-5.6.8-linux-x86_64-reentrant.tar.gz
-mkdir -p `git rev-parse --show-toplevel`/../external/mathsat-5.6.8-linux-x86_64-reentrant/bin
-cp -p mathsat-5.6.8-linux-x86_64-reentrant/bin/mathsat `git rev-parse --show-toplevel`/../external/mathsat-5.6.8-linux-x86_64-reentrant/bin
-cd `git rev-parse --show-toplevel`/regr_smlp/code
+set git_root=`git rev-parse --show-toplevel`
+set mathsat=mathsat-5.6.8-linux-x86_64-reentrant
+set mathsat_bin_dir=$git_root:h/external/$mathsat/bin
+\rm -rf $mathsat_bin_dir >& /dev/null
+wget https://mathsat.fbk.eu/release/${mathsat}.tar.gz
+tar -xvf $mathsat.tar.gz
+mkdir -p $mathsat_bin_dir
+cp -p $mathsat/bin/mathsat $mathsat_bin_dir  
+cd $git_root/regr_smlp/code
 set path=($PWD $path)
 set python_path="$PWD"
 \ln -sf /usr/bin/python3.11 python3
 echo "Log file: $log"
 env CUDA_VISIBLE_DEVICES=-1 ./smlp_regr.py -w 8 -def n -t all -tol 7 |& tee $log
 \rm -f $python_path/python3
+${script_path}/create_diff_report >& $diff_report
