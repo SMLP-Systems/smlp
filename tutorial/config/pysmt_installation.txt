@@ -1,0 +1,7 @@
+pip3.12 install pysmt --target /usr/local/lib/python3.12/dist-packages
+wget https://mathsat.fbk.eu/release/mathsat-5.6.15-linux-x86_64.tar.gz
+tar -xvf mathsat-5.6.15-linux-x86_64.tar.gz
+cd mathsat-5.6.15-linux-x86_64/python
+python3.12 setup.py build
+sudo cp -p build/lib.linux-x86_64-cpython-312/_mathsat.cpython-312-x86_64-linux-gnu.so /usr/local/lib/python3.12/dist-packages/_mathsat.so
+sudo cp -p mathsat.py /usr/local/lib/python3.12/dist-packages

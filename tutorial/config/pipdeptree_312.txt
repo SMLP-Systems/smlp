@@ -91,7 +91,6 @@ blinker==1.7.0
 Bottleneck==1.6.0
 └── numpy [required: Any, installed: 1.26.4]
 Brlapi==0.8.5
-brotli==1.2.0
 chardet==5.2.0
 cloud-init==25.2
 colorama==0.4.6
@@ -412,6 +411,7 @@ PyQtWebEngine==5.15.7
     └── PyQt5-Qt5 [required: >=5.15.2,<5.16.0, installed: 5.15.18]
 pyrsistent==0.20.0
 pyserial==3.5
+PySMT==0.9.6
 pysubgroup==0.9.0
 ├── pandas [required: >=0.24.0, installed: 2.3.3]
 │   ├── numpy [required: >=1.26.0, installed: 1.26.4]
@@ -535,8 +535,9 @@ tasepy==0.2.2
 ├── PyYAML [required: ~=6.0.3, installed: 6.0.1]
 ├── typeguard [required: ~=4.4.4, installed: 4.4.4]
 │   └── typing_extensions [required: >=4.14.0, installed: 4.15.0]
-└── beautifulsoup4 [required: ~=4.13.5, installed: 4.12.3]
-    └── soupsieve [required: >1.2, installed: 2.8.3]
+├── beautifulsoup4 [required: ~=4.13.5, installed: 4.12.3]
+│   └── soupsieve [required: >1.2, installed: 2.8.3]
+└── brotli [required: ~=1.2.0, installed: 1.2.0]
 tensorflow==2.20.0
 ├── absl-py [required: >=1.0.0, installed: 2.3.1]
 ├── astunparse [required: >=1.6.0, installed: 1.6.3]
