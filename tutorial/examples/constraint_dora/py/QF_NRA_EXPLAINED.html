@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QF_NRA Logic Explained</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Garamond', serif;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+        }
+        
+        h1 {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 50px 40px;
+        }
+        
+        h2 {
+            font-size: 2em;
+            color: #667eea;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            font-weight: 600;
+        }
+        
+        h3 {
+            font-size: 1.5em;
+            color: #764ba2;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border-left: 5px solid #e17055;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border-left: 5px solid #00cec9;
+        }
+        
+        .code-block {
+            background: #2d3436;
+            color: #dfe6e9;
+            padding: 25px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .code-comment {
+            color: #74b9ff;
+            font-style: italic;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e8eef5;
+            transition: background-color 0.3s ease;
+        }
+        
+        .checkmark {
+            color: #00b894;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .crossmark {
+            color: #d63031;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .warning {
+            color: #fdcb6e;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        ul, ol {
+            margin: 20px 0 20px 30px;
+        }
+        
+        li {
+            margin: 10px 0;
+            font-size: 1.05em;
+        }
+        
+        .math-formula {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            text-align: center;
+            border: 2px solid #dfe6e9;
+        }
+        
+        footer {
+            background: #2d3436;
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            margin: 10px 5px;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .section {
+            animation: slideIn 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+            
+            header {
+                padding: 40px 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>QF_NRA Logic</h1>
+            <p class="subtitle">Quantifier-Free Nonlinear Real Arithmetic Explained</p>
+        </header>
+        
+        <div class="content">
+            <div class="section">
+                <h2>What is QF_NRA?</h2>
+                <p><strong>QF_NRA</strong> stands for <strong>Quantifier-Free Nonlinear Real Arithmetic</strong>. It's a logical theory used in SMT (Satisfiability Modulo Theories) solvers to describe and solve problems involving real numbers and nonlinear constraints.</p>
+                
+                <div class="highlight-box">
+                    <h3>Breaking Down the Acronym:</h3>
+                    <ul>
+                        <li><strong>QF (Quantifier-Free):</strong> No ∀ (for all) or ∃ (there exists) quantifiers</li>
+                        <li><strong>N (Nonlinear):</strong> Variables can multiply: x·y, x², x³</li>
+                        <li><strong>R (Real):</strong> Real numbers (3.14, -2.5, √2), not just integers</li>
+                        <li><strong>A (Arithmetic):</strong> Operations like +, -, ×, ÷, &lt;, ≤, =</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Your Optimization Problem</h2>
+                <p>Your constrained optimization problem is a perfect example of QF_NRA:</p>
+                
+                <div class="math-formula">
+                    <strong>Minimize:</strong> (x₁ - 2)² + (x₂ - 1)²<br>
+                    <strong>Subject to:</strong> x₁² + x₂² ≤ 1
+                </div>
+                
+                <div class="success-box">
+                    <p><strong>Why this is QF_NRA:</strong></p>
+                    <ul>
+                        <li><span class="checkmark">✓</span> Real variables (x₁, x₂ ∈ ℝ)</li>
+                        <li><span class="checkmark">✓</span> Nonlinear (squaring: x₁², x₂²)</li>
+                        <li><span class="checkmark">✓</span> No quantifiers (no ∀ or ∃)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Examples in QF_NRA</h2>
+                
+                <h3>Example 1: Circle Constraint</h3>
+                <div class="code-block">
+x² + y² ≤ 1
+<span class="code-comment">; All points inside or on a unit circle</span>
+                </div>
+                
+                <h3>Example 2: Polynomial Constraint</h3>
+                <div class="code-block">
+x³ - 2x² + x - 5 ≤ 0
+<span class="code-comment">; A cubic polynomial constraint</span>
+                </div>
+                
+                <h3>Example 3: Product Constraint</h3>
+                <div class="code-block">
+x·y ≥ 10 ∧ x + y ≤ 20
+<span class="code-comment">; Product of two variables with linear constraint</span>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>What QF_NRA Can Express</h2>
+                
+                <h3><span class="checkmark">✓</span> Supported Operations</h3>
+                <ul>
+                    <li><strong>Basic Arithmetic:</strong> x + y, x - y, x · y, x / y, x²</li>
+                    <li><strong>Comparisons:</strong> x &lt; y, x ≤ y, x &gt; y, x ≥ y, x = y, x ≠ y</li>
+                    <li><strong>Boolean Logic:</strong> AND (∧), OR (∨), NOT (¬)</li>
+                </ul>
+                
+                <h3><span class="crossmark">✗</span> Not Supported</h3>
+                <ul>
+                    <li><strong>Transcendental Functions:</strong> sin(x), cos(x), exp(x), log(x)</li>
+                    <li><strong>Integer Constraints:</strong> x ∈ ℤ (would need QF_NIA)</li>
+                    <li><strong>Quantifiers:</strong> ∀x, φ(x) (would need NRA without QF)</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>Comparison of SMT Logics</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Logic</th>
+                            <th>Name</th>
+                            <th>Variables Multiply?</th>
+                            <th>Number Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>QF_LRA</strong></td>
+                            <td>Linear Real Arithmetic</td>
+                            <td><span class="crossmark">✗</span> No</td>
+                            <td>ℝ (reals)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>QF_NRA</strong></td>
+                            <td>Nonlinear Real Arithmetic</td>
+                            <td><span class="checkmark">✓</span> Yes</td>
+                            <td>ℝ (reals)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>QF_LIA</strong></td>
+                            <td>Linear Integer Arithmetic</td>
+                            <td><span class="crossmark">✗</span> No</td>
+                            <td>ℤ (integers)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>QF_NIA</strong></td>
+                            <td>Nonlinear Integer Arithmetic</td>
+                            <td><span class="checkmark">✓</span> Yes</td>
+                            <td>ℤ (integers)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="section">
+                <h2>Why It Matters for Your Problem</h2>
+                
+                <div class="info-box">
+                    <h3>The Issue with MathSAT</h3>
+                    <p>Your MathSAT installation only supports <strong>QF_LRA</strong> (linear arithmetic), not <strong>QF_NRA</strong> (nonlinear). This is why you got the error:</p>
+                    <div class="code-block">
+pysmt.exceptions.NonLinearError: ((x2 + -1.0) * (x2 + -1.0))
+                    </div>
+                    <p>To support QF_NRA, MathSAT needs to be compiled with the MPFR library.</p>
+                </div>
+                
+                <div class="success-box">
+                    <h3>Z3 to the Rescue!</h3>
+                    <p><strong>Z3 supports QF_NRA natively</strong>, which is why it works perfectly for your problem. Z3 uses sophisticated techniques including:</p>
+                    <ul>
+                        <li>Interval arithmetic for variable bounds</li>
+                        <li>Cylindrical algebraic decomposition (CAD) for exact solutions</li>
+                        <li>Numerical methods for approximations</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>SMT-LIB Example</h2>
+                <p>Here's how your problem looks in SMT-LIB 2.0 format:</p>
+                
+                <div class="code-block">
+<span class="code-comment">; Declare we're using QF_NRA logic</span>
+(set-logic QF_NRA)
+
+<span class="code-comment">; Declare real variables</span>
+(declare-fun x1 () Real)
+(declare-fun x2 () Real)
+
+<span class="code-comment">; Constraint: x1² + x2² ≤ 1</span>
+(assert (&lt;= (+ (* x1 x1) (* x2 x2)) 1.0))
+
+<span class="code-comment">; Check if objective can be ≤ 1.6</span>
+(assert (&lt;= (+ (* (- x1 2.0) (- x1 2.0)) 
+               (* (- x2 1.0) (- x2 1.0))) 
+            1.6))
+
+(check-sat)
+(get-model)
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Key Takeaways</h2>
+                
+                <div class="highlight-box">
+                    <p><strong>QF_NRA</strong> = Quantifier-Free Nonlinear Real Arithmetic</p>
+                    <ul>
+                        <li><span class="checkmark">✓</span> Perfect for your optimization problem</li>
+                        <li><span class="checkmark">✓</span> Z3 supports it natively</li>
+                        <li><span class="warning">⚠</span> MathSAT needs MPFR library for QF_NRA</li>
+                        <li><span class="warning">⚠</span> More complex than linear problems</li>
+                        <li><span class="warning">⚠</span> Solutions may be approximate</li>
+                    </ul>
+                </div>
+                
+                <p><strong>The solution for your problem:</strong> x₁ ≈ 0.894427, x₂ ≈ 0.447214, f(x) ≈ 1.527864</p>
+                <p>This represents the point on the unit circle closest to (2, 1).</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p><strong>QF_NRA Logic Explanation</strong></p>
+            <p>Created for Constrained Optimization Project</p>
+            <p style="margin-top: 15px; opacity: 0.7;">Your optimization problem is a textbook example of QF_NRA!</p>
+        </footer>
+    </div>
+</body>
+</html>
