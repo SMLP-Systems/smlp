@@ -5,7 +5,7 @@ from os import getenv
 from pytest import mark
 
 @mark.skipif(sys.version_info >= (3, 14), 
-                   reason="Skipping Keras tests for Python 3.14")
+                   reason="Skipping ONNX tests for Python 3.14")
 def test_shgo_shekel_onnx(monkeypatch, request):
     from shgo_onnx_pytorch import main
     root_dir = str(request.config.rootpath) + '/'

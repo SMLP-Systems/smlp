@@ -1,3 +1,3 @@
 #!/usr/bin/tcsh -f
 set log=`realpath $0 | xargs dirname`/run_smlp_tutorial_clone_and_examples_expected.log
-egrep -A9 "^Optimizing with Neural Network Model using SHGO|^Optimizing with ONNX Neural Network Model using SHGO" $log
+egrep -A9 "^Optimizing with Neural Network Model using SHGO|^Optimizing with ONNX Neural Network Model using SHGO" $log | egrep "^Optimizing|Elapsed"

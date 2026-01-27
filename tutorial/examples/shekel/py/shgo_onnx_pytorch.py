@@ -180,7 +180,7 @@ def optimize_with_model(rootpath=".", model_path='shekel_model_expected.pytorch'
         return y_pred[0, 0]
     
     logging.info("\n" + "=" * 60)
-    logging.info("Optimizing with ONNX Neural Network Model using SHGO")
+    logging.info("Optimizing with PyTorch ONNX Neural Network Model using SHGO")
     logging.info("=" * 60)
     
     # Run SHGO optimization

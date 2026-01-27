@@ -81,15 +81,21 @@ f(2/√5, 1/√5) = (2/√5 - 2)² + (1/√5 - 1)²
 ## Installation
 
 ```bash
-pip install z3-solver scipy numpy
+pip install z3-solver scipy numpy pysmt
 ```
 
 ## Usage
 
-Run the Python script to see all three solutions:
+Run the Python script to see all three solutions (Z3 usage is not optimized):
 
 ```bash
 python constraint_dora_z3.py
+```
+
+Run the Python script to see pysmt interface with optimized Z3 usage:
+
+```bash
+python constraint_dora_pysmt_z3.py
 ```
 
 ## Expected Output
