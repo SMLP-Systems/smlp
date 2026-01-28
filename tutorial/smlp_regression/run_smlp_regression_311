@@ -23,6 +23,6 @@ set path=($PWD $path)
 set python_path="$PWD"
 \ln -sf /usr/bin/python3.11 python3
 echo "Log file: $log"
-env CUDA_VISIBLE_DEVICES=-1 ./smlp_regr.py -w 8 -def n -t all -tol 7 |& tee $log
+echo n | env CUDA_VISIBLE_DEVICES=-1 ./smlp_regr.py -w 8 -def n -t all -tol 7 -g |& tee $log
 \rm -f $python_path/python3
 ${script_path}/create_diff_report >& $diff_report
