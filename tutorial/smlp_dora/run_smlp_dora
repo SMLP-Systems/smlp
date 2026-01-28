@@ -16,6 +16,7 @@ else
     echo "\nSMLP installation failed\n"
     exit(1)
 endif
+cd $script_path
 $script_path:h:h/src/run_smlp.py \
     -data ${test}.csv \
     -out_dir ./ \
