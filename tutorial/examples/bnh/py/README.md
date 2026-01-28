@@ -36,3 +36,5 @@
 ### Expected Z3 minimax-stable results (2 flavors):
 ![ResultsImage](media/BNH_Z3.stable_minimax_flavor1.png)<br><br>
 ![ResultsImage](media/BNH_Z3.stable_minimax_flavor2.png)
+### Expected PySMT Z3 minimax-stable results:
+![ResultsImage](media/BNH_pysmt_minimax.png)
