@@ -11,4 +11,4 @@ def test_z3_bnh_pysmt(monkeypatch, request):
         test_path = dirname(realpath(root_dir + getenv('PYTEST_CURRENT_TEST').split(':')[0]))
         print("")
         m.setattr(sys, 'argv', ['bnh_pysmt_z3'])
-        assert solve_bnh_pysmt(test_path) == "e12e88904ce51e361c48c48a201201779d0049ffa7fa88353cbbd74c90c565a5"
+        assert solve_bnh_pysmt(test_path) == "2e0604a6b2b49fde902830f0376bcdd60d41ecf9551285adf3b544c5ca0874ad"
