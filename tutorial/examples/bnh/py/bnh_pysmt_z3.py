@@ -144,19 +144,21 @@ def solve_bnh_pysmt(rootpath: str = ".", timeout: float=5000) -> str:
     most_robust_idx = min(range(len(minimax_results)), 
                          key=lambda i: minimax_results[i]['worst_case_score'])
     robust_solution = pareto_solutions[most_robust_idx]
-    logging.info(f"\nMost Robust Solution: #{most_robust_idx + 1}")
-    logging.info(f"  Method: {robust_solution[4]}")
-    logging.info(f"  x = ({robust_solution[0]:.6f}, {robust_solution[1]:.6f})")
-    logging.info(f"  Worst-case score: {minimax_results[most_robust_idx]['worst_case_score']:.6f}")
-    logging.info(f"  Class: {minimax_results[most_robust_idx]['robustness_class']}")
-    logging.info("=" * 70)
+    robust_solution_pprint = f"\nMost Robust Solution: #{most_robust_idx + 1}\n" + \
+                             f"  Method: {robust_solution[4]}\n" + \
+                             f"  x = ({robust_solution[0]:.6f}, {robust_solution[1]:.6f})\n" + \
+                             f"  Worst-case score: {minimax_results[most_robust_idx]['worst_case_score']:.6f}\n" + \
+                             f"  Class: {minimax_results[most_robust_idx]['robustness_class']}\n" + \
+                             "=" * 70
+    logging.info(robust_solution_pprint)
     
     # Plot Pareto front
     plot_results(pareto_solutions, minimax_results, timeout)
 
-    solution_string = ' '.join(str(item[:4]) for item in pareto_solutions)
-    logging.info(solution_string)
-    return sha256(solution_string.encode()).hexdigest()
+    solutions_string = ' '.join(str(item[:4]) for item in pareto_solutions)
+    logging.info(solutions_string)
+    result_string = solutions_string + robust_solution_pprint
+    return sha256(result_string.encode()).hexdigest()
 
 
 def get_constraints(x1, x2):
@@ -725,8 +727,8 @@ def plot_results(solutions, minimax_results, timeout):
     
     ax1.contourf(X1, X2, feasible.astype(int), levels=[0.5, 1.5], 
                  colors=['lightblue'], alpha=0.3)
-    ax1.contour(X1, X2, C1, levels=[25], colors='blue', linewidths=2, label='C1 boundary')
-    ax1.contour(X1, X2, C2, levels=[7.7], colors='purple', linewidths=2, label='C2 boundary')
+    ax1.contour(X1, X2, C1, levels=[25], colors='blue', linewidths=2)
+    ax1.contour(X1, X2, C2, levels=[7.7], colors='purple', linewidths=2)
     
     # Plot solutions with uncertainty circles
     for i, (x1, x2, mm) in enumerate(zip(x1_vals, x2_vals, minimax_results)):
