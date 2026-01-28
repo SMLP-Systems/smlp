@@ -102,6 +102,7 @@ nvidia-driver-535/noble-updates,now 535.288.01-0ubuntu0.24.04.1 amd64 [installed
 onlyoffice-desktopeditors/squeeze,now 9.2.1-43 amd64 [installed]
 openssh-server/noble-updates,now 1:9.6p1-3ubuntu13.14 amd64 [installed]
 p7zip-full/noble,noble,now 16.02+transitional.1 all [installed]
+python-is-python3/noble,noble,now 3.11.4-1 all [installed]
 python3-dev/noble-updates,noble-security,now 3.12.3-0ubuntu2.1 amd64 [installed]
 python3-git/noble,noble,now 3.1.37-3 all [installed]
 python3-github/noble,noble,now 2.2.0-1 all [installed]
