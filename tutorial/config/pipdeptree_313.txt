@@ -219,6 +219,7 @@ pygraphviz==1.7
 PyQt5==5.15.10
 └── PyQt5-sip [required: >=12.13,<13, installed: 12.13.0]
 pyserial==3.5
+PySMT==0.9.6
 pysubgroup==0.9.0
 ├── pandas [required: >=0.24.0, installed: 2.3.3]
 │   ├── numpy [required: >=1.26.0, installed: 2.4.1]
