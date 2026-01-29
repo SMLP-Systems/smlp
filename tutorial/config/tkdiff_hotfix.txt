@@ -1,5 +1,0 @@
-Hotfix for: tkcvs/noble,noble,now 8.2.3-1.2
-Replace line 3717:
-    set factor [expr {$mapheight / $lines}]
-With:
-    set factor [expr {$lines > 0 ? $mapheight / double($lines) : 1.0}]
