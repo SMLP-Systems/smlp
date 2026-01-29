@@ -744,28 +744,57 @@ class ModelKeras:
         if sequential_api:
             if weights_coef is not None:
                 sample_weights_df = pd.DataFrame.from_dict(weights_coef)
-                sample_weights = np.array(list(sample_weights_df.agg('mean', axis=1)))
+                sample_weights = np.array(list(sample_weights_df.agg('mean', axis=1)), dtype=np.float32)
             else:
                 sample_weights = None
         else:
-            # For functional API, convert to numpy arrays
+            # CRITICAL FIX: For functional API with multiple outputs, sample_weight 
+            # must be a LIST in the same order as outputs, NOT a dictionary
+            sample_weights = None
             if weights_coef is not None:
-                sample_weights = {}
-                for k, v in weights_coef.items():
-                    if isinstance(v, pd.Series):
-                        sample_weights[k] = v.to_numpy()
-                    elif isinstance(v, (list, np.ndarray)):
-                        sample_weights[k] = np.array(v)
+                # Get the output names from the model
+                output_names = [output.name.split('/')[0] for output in best_model.outputs]
+                
+                # Get the number of training samples
+                n_samples = len(X_train_array)
+                
+                # Create a list of sample weights in the same order as model outputs
+                sample_weights_list = []
+                for output_name in output_names:
+                    if output_name in weights_coef:
+                        weight_data = weights_coef[output_name]
+                        # Convert to numpy array with explicit dtype
+                        if isinstance(weight_data, pd.Series):
+                            sample_weights_list.append(weight_data.to_numpy().astype(np.float32))
+                        elif isinstance(weight_data, (list, np.ndarray)):
+                            sample_weights_list.append(np.array(weight_data, dtype=np.float32))
+                        else:
+                            sample_weights_list.append(weight_data)
                     else:
-                        sample_weights[k] = v
+                        # If weight not provided for this output, use array of ones
+                        # Keras does NOT accept None in a list, must be an actual array
+                        sample_weights_list.append(np.ones(n_samples, dtype=np.float32))
+                
+                sample_weights = sample_weights_list
+        
+        # For functional API with multiple outputs, y must also be a list
+        if not sequential_api and len(best_model.outputs) > 1:
+            # Split y_train into list of arrays, one per output
+            if isinstance(y_train_array, np.ndarray) and y_train_array.ndim == 2:
+                y_train_list = [y_train_array[:, i:i+1] for i in range(y_train_array.shape[1])]
+                y_test_list = [y_test_array[:, i:i+1] for i in range(y_test_array.shape[1])]
             else:
-                sample_weights = None
+                y_train_list = y_train_array
+                y_test_list = y_test_array
+        else:
+            y_train_list = y_train_array
+            y_test_list = y_test_array
         
         history = best_model.fit(
             x=X_train_array,
-            y=y_train_array,
+            y=y_train_list,
             epochs=epochs,
-            validation_data=(X_test_array, y_test_array),
+            validation_data=(X_test_array, y_test_list),
             batch_size=best_batch_size,
             sample_weight=sample_weights,
             callbacks=None,

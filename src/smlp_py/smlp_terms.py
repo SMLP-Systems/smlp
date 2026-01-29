@@ -2447,8 +2447,25 @@ class ModelTerms(ScalerTerms):
                         continue
                     else:
                         curr_layer_nodes_count = getattr(layer, 'units', None); #print('curr_layer_nodes_count', curr_layer_nodes_count)
-                        #print('layer', l, 'is internal layer with weights', len(list(layer.weights[1])), 'nodes', curr_layer_nodes_count)
-                        assert curr_layer_nodes_count == len(list(layer.weights[1])); 
+                        
+                        # Get weights properly using get_weights() method
+                        # This returns [weight_matrix, bias_vector] if layer has bias, or [weight_matrix] if not
+                        layer_weights_list = layer.get_weights()
+                        
+                        if len(layer_weights_list) >= 2:
+                            # Layer has biases - use bias vector length
+                            biases = layer_weights_list[1]
+                            #print('layer', l, 'is internal layer with weights', len(biases), 'nodes', curr_layer_nodes_count)
+                            assert curr_layer_nodes_count == len(biases)
+                        elif len(layer_weights_list) == 1:
+                            # Layer has no biases - use weight matrix output dimension
+                            weights_matrix = layer_weights_list[0]
+                            #print('layer', l, 'is internal layer with weights', weights_matrix.shape[1], 'nodes', curr_layer_nodes_count)
+                            assert curr_layer_nodes_count == weights_matrix.shape[1]
+                        else:
+                            # Layer has no weights at all - skip it
+                            continue
+                            
                         for node in range(curr_layer_nodes_count):
                             #print('domain', self._nnKerasTermsInst._nn_keras_node_name(resp_name, l, node))
                             domain_dict[self._nnKerasTermsInst._nn_keras_node_name(resp_name, l, node)] = smlp.component(self.smlp_real)
