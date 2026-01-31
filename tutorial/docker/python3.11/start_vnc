@@ -1,0 +1,7 @@
+#!/usr/bin/tcsh -f
+Xvfb :99 -screen 0 1024x768x16 >& Xvfb.log &
+sleep 2
+x11vnc -display :99 -forever -nopw -shared -rfbport 5900 >& x11nc.log &
+autocutsel -selection CLIPBOARD -fork
+autocutsel -selection PRIMARY -fork
+xterm -fn 12x24 &

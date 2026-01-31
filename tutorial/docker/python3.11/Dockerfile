@@ -34,6 +34,19 @@ RUN apt-get update && apt-get install -y \
     libboost-python-dev \
     libgmp-dev \
     tk \
+    tkcvs \
+    libx11-6 \
+    libxext6 \
+    libxrender1 \
+    libxtst6 \
+    libxi6 \
+    x11-apps \
+    x11-xserver-utils \
+    tkcvs \
+    x11vnc \
+    xvfb \
+    vim-gtk3 \
+    autocutsel \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -76,5 +89,8 @@ COPY tkagg_patch.sh .
 RUN chmod +x tkagg_patch.sh
 RUN ./tkagg_patch.sh
 #
+#VNC
+COPY start_vnc .
+RUN chmod +x start_vnc
 ## Default command
 CMD ["/bin/tcsh"]
