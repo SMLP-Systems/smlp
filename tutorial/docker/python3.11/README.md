@@ -25,7 +25,27 @@ docker pull mdmitry1/python311-dev:latest
 docker run -it -p 5900:5900 mdmitry1/python311-dev:latest
 ```
 
-## Setting Up GUI Support
+## Setting Up GUI Support using socat
+
+1. Install `socat`, if it is not installed
+
+```
+sudo apt install socat
+```
+
+2. Run command
+
+```bash
+pkill socat
+```
+
+3. Run command
+
+```bash
+enter_released_container_x11_forwarding
+```
+
+## Setting Up GUI Support using VNC
 
 Once inside the container, set up the virtual display and VNC server:
 
