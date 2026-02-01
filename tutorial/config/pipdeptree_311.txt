@@ -602,6 +602,7 @@ PyQt5==5.15.10
 └── PyQt5-sip [required: >=12.13,<13, installed: 12.13.0]
 pyrsistent==0.20.0
 pyserial==3.5
+PySMT==0.9.6
 pysubgroup==0.8.0
 ├── pandas [required: >=0.24.0, installed: 2.1.4]
 │   ├── numpy [required: >=1.23.2,<2, installed: 1.26.4]
