@@ -25,7 +25,7 @@ docker pull mdmitry1/python311-dev:latest
 docker run -it -p 5900:5900 mdmitry1/python311-dev:latest
 ```
 
-## Setting Up GUI Support using socat
+## Setting Up GUI Support using for X11 using socat
 
 1. Install `socat`, if it is not installed
 
@@ -43,6 +43,12 @@ pkill socat
 
 ```bash
 enter_released_container_x11_forwarding
+```
+
+## Setting Up GUI Support using for WSL2 with wslg installed
+
+```
+enter_released_container_wslg
 ```
 
 ## Setting Up GUI Support using VNC
