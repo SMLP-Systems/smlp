@@ -1,0 +1,20 @@
+#!/usr/bin/tcsh -f
+set script_path=`realpath $0 | xargs dirname`
+\rm -f bnh_p*_optimization_results.json >& /dev/null
+${script_path}/run_bnh_poly -clean
+foreach v (X1 X2 F1 F2) 
+    \rm -f bnh_pareto_$v.txt >& /dev/null
+end
+if($#argv > 0) then
+    if("-clean" == "$argv[1]") then
+        exit(0)
+    endif
+endif
+foreach p (`seq 1 6`)
+    run_bnh_poly_p${p}
+end
+foreach v (X1 X2 F1 F2) 
+    grep -h $v bnh_p*_optimization_results.json | cut -d: -f2 | tr -d ' ,' > bnh_pareto_$v.txt
+end
+paste bnh_pareto_X1.txt bnh_pareto_X2.txt | timeout 5 xgraph -P -nl -x X1 -y X2 -geometry +700+50 /dev/stdin &
+paste bnh_pareto_F1.txt bnh_pareto_F2.txt | timeout 5 xgraph -P -nl -x F1 -y F2 -geometry +50+50 /dev/stdin &
