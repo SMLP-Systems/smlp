@@ -11,7 +11,7 @@ if($#argv > 0) then
     endif
 endif
 foreach p (`seq 1 6`)
-    run_bnh_poly_p${p}
+    ${script_path}/run_bnh_poly_p${p}
 end
 foreach v (X1 X2 F1 F2) 
     grep -h $v bnh_p*_optimization_results.json | cut -d: -f2 | tr -d ' ,' > bnh_pareto_$v.txt
