@@ -1,7 +1,6 @@
 #!/usr/bin/tcsh -f
 set script_path=`realpath $0 | xargs dirname`
-\rm -f bnh_p*_optimization_results.json >& /dev/null
-${script_path}/run_bnh_poly -clean
+\rm -f bnh_p*_optimization_results.json BNH* *.log >& /dev/null
 foreach v (X1 X2 F1 F2) 
     \rm -f bnh_pareto_$v.txt >& /dev/null
 end
