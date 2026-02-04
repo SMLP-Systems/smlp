@@ -1,2 +1,2 @@
 #!/usr/bin/tcsh -f
-docker run -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:rw  -v /mnt/wslg:/mnt/wslg:rw mdmitry1/python311-dev:latest
+docker run -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:rw  -v /mnt/wslg:/mnt/wslg:rw mdmitry1/python311-dev:latest $*

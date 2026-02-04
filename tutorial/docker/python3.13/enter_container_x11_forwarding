@@ -3,4 +3,4 @@ mkdir -p $HOME/shared
 set ip=`hostname -I | tr ' ' '\n' | egrep -v '^172|^127|:|^$'`
 set display=`echo $DISPLAY | cut -d: -f2`
 socat TCP4-LISTEN:600${display},bind=$ip,reuseaddr,fork UNIX-CONNECT:/tmp/.X11-unix/X${display} &
-docker run -e DISPLAY=${ip}:${display} --network host -v $HOME/shared:/shared -it python313-dev
+docker run -e DISPLAY=${ip}:${display} --network host -v $HOME/shared:/shared -it python313-dev $*
