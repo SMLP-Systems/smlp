@@ -46,6 +46,7 @@ RUN apt-get update && apt-get install -y \
     xvfb \
     vim-gtk3 \
     autocutsel \
+    locales \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -88,6 +89,15 @@ COPY tkagg_patch.sh .
 RUN chmod +x tkagg_patch.sh
 RUN ./tkagg_patch.sh
 #
+#Mathsat
+COPY run_mathsat_build .
+RUN chmod +x run_mathsat_build
+RUN ./run_mathsat_build
+#UTF-8 fonts
+RUN locale-gen en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 #VNC
 COPY start_vnc .
 RUN chmod +x start_vnc
