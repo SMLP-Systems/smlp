@@ -9,3 +9,8 @@ By:
 ```tcl
     set factor [expr {$lines > 0 ? $mapheight / double($lines) : 1.0}]
 ```
+
+One line command:
+```tcsh
+sudo sed -i.bak 's@set factor \[expr {$mapheight / $lines}\]@set factor [expr {$lines > 0 ? $mapheight / double($lines) : 1.0}]@' /usr/bin/tkdiff
+```
