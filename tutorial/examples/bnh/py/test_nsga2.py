@@ -2,7 +2,7 @@ import sys
 from bnh import main
 from os import remove, popen
 from os.path import exists, realpath, dirname
-from sys import version
+from sys import version_info
 from os import getenv
 
 def test_nsga2(monkeypatch, request):
@@ -18,7 +18,7 @@ def test_nsga2(monkeypatch, request):
         print("")
         m.setattr(sys, 'argv', ['bnh'])
         assert main(test_path) == 0
-        if version.split()[0] == '3.14.2':
+        if version_info.minor == 14:
             assert int(popen(f"sum {out}").read().split()[0]) == 19751
         else:
             assert int(popen(f"sum {out}").read().split()[0]) == 43431

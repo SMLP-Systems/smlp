@@ -2,7 +2,7 @@ import sys
 from nsga2 import main
 from os import remove, popen
 from os.path import exists, realpath, dirname
-from sys import version
+from sys import version_info
 from os import getenv
 
 def test_nsga2(monkeypatch, request):
@@ -18,7 +18,7 @@ def test_nsga2(monkeypatch, request):
         assert exists(out) == False
         print("")
         m.setattr(sys, 'argv', ['nsga2'])
-        if version.split()[0] == '3.14.2':
+        if version_info.minor == 14:
             assert main(test_path) == "9278384310665b7de7e71662e0c4a7daba2e1323f512e86cddc8278e7f9bc37c"
         else:
             assert main(test_path) == "133c4021bb720a6d087a313a0f3138c255b5e2d9d152058a62f9e06cf16d4f23"
