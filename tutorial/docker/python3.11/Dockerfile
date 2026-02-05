@@ -46,6 +46,8 @@ RUN apt-get update && apt-get install -y \
     x11vnc \
     xvfb \
     vim-gtk3 \
+    libcanberra-gtk-module \
+    libcanberra-gtk3-module \
     autocutsel \
     locales \
     && rm -rf /var/lib/apt/lists/*
