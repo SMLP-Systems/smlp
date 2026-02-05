@@ -1,2 +1,2 @@
 #!/usr/bin/tcsh -f
-docker run -e DISPLAY=:99 -p 5900:5900 -it python313-dev
+docker run -e DISPLAY=:99 -p 5900:5900 -it python313-dev $*
