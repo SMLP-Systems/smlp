@@ -45,7 +45,6 @@ class SmlpSolver:
         
     def set_solver_path(self, solver_path:str):
         if solver_path is not None:
-            #print({'inc_solver_cmd': solver_path}); 
             smlp.options({'inc_solver_cmd': solver_path})
         
         

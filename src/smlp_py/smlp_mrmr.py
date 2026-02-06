@@ -40,7 +40,7 @@ class SmlpMrmr:
         mrmr_scores_df.reset_index(inplace=True)
         mrmr_scores_df.columns = ['Feature', 'Score']
         mrmr_scores_df = mrmr_scores_df.sort_values('Score', ascending=False)
-        #print(mrmr_scores_df)
+        
         return mrmr_scores_df
     
     # mrmr feature selection using mrmr-feature package, where y is a numeric variable (pandas.Series)
@@ -53,7 +53,7 @@ class SmlpMrmr:
         
         self._mrmr_logger.info('MRMR feature selection for response ' + y.name + ' : start')
         
-        ctg_features = self._get_df_categorical_feat_names(X); #print('ctg_features', ctg_features)
+        ctg_features = self._get_df_categorical_feat_names(X)
         mrmr_res = mrmr_regression(X, y, K, relevance, redundancy, denominator,
             ctg_features, cat_encoding, only_same_domain, return_scores, n_jobs, show_progress)
         
@@ -77,7 +77,7 @@ class SmlpMrmr:
         
         self._mrmr_logger.info('MRMR feature selection for response ' + y.name + ' : start')
         
-        ctg_features = self._get_df_categorical_feat_names(X); #print('ctg_features', ctg_features)
+        ctg_features = self._get_df_categorical_feat_names(X)
         mrmr_res = mrmr_classif(X, y, K, relevance, redundancy, denominator,
             ctg_features, cat_encoding, only_same_domain, return_scores, n_jobs, show_progress)
         
@@ -91,7 +91,6 @@ class SmlpMrmr:
     
     def smlp_mrmr(self, X:pd.DataFrame, y:pd.Series, #resp_type:str, #"numeric", 
             feat_cnt:int):
-        #print('smlp_mrmr: X\n', X, '\ny\n', y, 'feat_cnt', feat_cnt)
         if pd_series_is_binary_int(y) or pd_series_is_binary_categorical(y):
             mrmr_res_pair = self._mrmr_class(X, y, feat_cnt, relevance='f', redundancy='c', 
                 denominator='mean', cat_encoding='leave_one_out', only_same_domain=False,
@@ -102,6 +101,6 @@ class SmlpMrmr:
                 return_scores=True, n_jobs=-1, show_progress=False)
         else:
             raise Exception('Response of unsupported type ' + y.dtype.name + ' in function smlp_mrmr')
-        #print('mrmr_res_pair\n', mrmr_res_pair)
+        
         return mrmr_res_pair
             
