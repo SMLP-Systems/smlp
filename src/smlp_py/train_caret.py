@@ -115,7 +115,6 @@ class ModelCaret:
     # the global name is obtained from local name, say 'max_depth', by prefixing it
     # with the global name of the algorithm, which results in 'dt_sklearn_max_depth'
     def _hparam_name_local_to_global(self, hparam, algo):
-        #print('hparam global name', hparam, algo)
         return self._algo_name_local2global(algo) + '_' + hparam
         
     # given training algo name like dt and the hyper parameter dictionary param_dict  
@@ -124,15 +123,11 @@ class ModelCaret:
     # (where sklearn is the name of the package used) to the parameter name and its
     # correponding abbriviated name in param_dict.
     def _param_dict_with_func_name(self, param_dict, func):
-        #print('param_dict', param_dict)
         result_dict = {}
         for k, v in param_dict.items():
             v_updated = v.copy()
             v_updated['abbr'] = self._hparam_name_local_to_global(v['abbr'], func)
-            #print('updated abbrv', v_updated['abbr'])
-            #print('updated key', self._hparam_name_local_to_global(k, func))
             result_dict[self._hparam_name_local_to_global(k, func)] = v_updated
-        #raise Exception('tmp')
         return result_dict
     
     # predictions for single response using models supported in caret package
@@ -152,14 +147,13 @@ class ModelCaret:
         perform_cv = folds > 1 # whether to perform cross-validation
         df_train = pd.concat([X_train, y_train], axis=1)
 
-        #print('df_train\n', df_train); print(resp_name)
         exp_clf = setup(df_train, target=resp_name, session_id=seed, data_split_shuffle=data_split_shuffle)
 
         # create multiple models to find best (this step is optional, useful but time consuming)
         if models_compare:
             eslf._caret_logger.info('compare models')
             best_model = compare_models(cross_validation=perform_cv, fold=max(2,folds), 
-                fit_kwargs={'sample_weight': sample_weights_vect}, n_select=1) ; #print('best model\n', best_model)
+                fit_kwargs={'sample_weight': sample_weights_vect}, n_select=1)
         
         # Uses the default hyperparameters to train the model; need to pass it the required algo
         # since otherwise the best model found by compare models will be used (if it was run)
@@ -170,7 +164,6 @@ class ModelCaret:
         else:
             model = create_model(algo, cross_validation=perform_cv, fold=max(2,folds))
         self._caret_logger.info('Creating {} model: end'.format(algo))
-        #print('created model\n', model)
 
         # Tunes the hyperparameters using a default grid RandomGridSearch()
         # One can aslo pass a customized custom_grid to tune_model() function.
@@ -220,8 +213,6 @@ class ModelCaret:
         elif algo == 'lightgbm':
             final_model.booster_.dump_model()
             lgbm_trees = final_model.booster_.trees_to_dataframe()
-            #print(final_model._Booster.dump_model()["tree_info"])
-            #print(lgbm_trees)
             raise Exception('Conversion of light GBM model to tree rules is not implemented yet')
         else:
             raise Exception('Algo ' + str(algo) + ' is not supported in model to formula conversion')
