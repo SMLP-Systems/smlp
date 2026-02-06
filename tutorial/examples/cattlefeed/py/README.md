@@ -7,27 +7,26 @@ This is a classic non-linear optimization problem from Hock and Schittkowski's t
 ## Mathematical Formulation
 
 ### Objective Function
-Minimize: `f(x) = 24.55x₁ + 26.75x₂ + 39x₃ + 40.50x₄`
+Minimize:<br> `f(x) = 24.55x₁ + 26.75x₂ + 39x₃ + 40.50x₄`
 
 ### Constraints
 
-**Linear Constraints:**
-1. `2.3x₁ + 5.6x₂ + 11.1x₃ + 1.3x₄ - 5 ≥ 0`
-2. `12x₁ + 11.9x₂ + 41.8x₃ + 52.1x₄ - 21 ≥ 0`
+**Linear Constraint:**<br>
+`2.3x₁ + 5.6x₂ + 11.1x₃ + 1.3x₄ - 5 ≥ 0`
 
-**Non-linear Constraint:**
-3. `-1.645√(0.28x₁² + 0.19x₂² + 20.5x₃² + 0.62x₄²) ≥ 0`
+**Non-linear Constraint:**<br>
+`12x₁ + 11.9x₂ + 41.8x₃ + 52.1x₄ - 1.645√(0.28x₁² + 0.19x₂² + 20.5x₃² + 0.62x₄²) - 21 ≥ 0`
 
-**Equality Constraint:**
-4. `x₁ + x₂ + x₃ + x₄ - 1 = 0`
+**Equality Constraint:**<br>
+`x₁ + x₂ + x₃ + x₄ - 1 = 0`
 
-**Bounds:**
-5. `0 ≤ xᵢ ≤ 1` for all i ∈ {1, 2, 3, 4}
+**Bounds:**<br>
+`0 ≤ xᵢ ≤ 1` for all i ∈ {1, 2, 3, 4}
 
 ## Problem Context
 
 This problem represents a cattle feed mixture optimization where:
-- **Decision variables (x₁, x₂, x₃, x₄)**: Proportions of four different feed ingredients
+- **Decision variables (x₁, x₂, x₃, x₄)**: proportions of four different feed ingredients
 - **Objective**: Minimize the total cost of the feed mixture
 - **Constraints**: Ensure nutritional requirements are met while maintaining mixture proportions
 
