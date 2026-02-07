@@ -16,7 +16,7 @@ from threading import Timer
 # from difflib import ndiff, context_diff
 
 TUI_DIFF = 'diff'
-GUI_DIFF = 'tkdiff'
+GUI_DIFF = 'kdiff3' # 'tkdiff'
 TREE_PATH = '../' # Path to regression location (where data, code, specs, master and model directories are located)
 SOLVERS_PATH = '../../../external' # Path to external solvers
     

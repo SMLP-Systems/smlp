@@ -89,12 +89,10 @@ class SmlpDiscretize:
         self._discr_logger = logger 
 
     def _report_discretization_table(self, feat_df_discr, result_type):
-        cat_dtypes = feat_df_discr.dtypes; #print('cat_dtypes', type(cat_dtypes), '\n', cat_dtypes)
-        cat_dtypes_dict = dict(cat_dtypes); #print('cat_dtypes_dict\n', cat_dtypes_dict)
+        cat_dtypes = feat_df_discr.dtypes
+        cat_dtypes_dict = dict(cat_dtypes)
         cat_types_dict = {}
         for k, v in cat_dtypes_dict.items():
-            #print('===============', k, 'type', type(v), type(v).name, feat_df_discr[k].dtype)
-            #print('feat_df_discr[k].dtype', feat_df_discr[k].dtype, 'name', feat_df_discr[k].dtype.name)
             if feat_df_discr[k].dtype == 'category':
                 assert isinstance(v, pd.core.dtypes.dtypes.CategoricalDtype)
                 assert result_type in [self._DISCRETIZATION_TYPE_ORDERED, self._DISCRETIZATION_TYPE_CATEGORY]
@@ -109,10 +107,9 @@ class SmlpDiscretize:
                 cat_types_dict[k] = self._DISCRETIZATION_TYPE_INTEGER
             else:
                 raise Exception('Unexpected data type ' + str(feat_df_discr[k].dtype) + ' in discretized column')
-        #print('cat_types_dict', cat_types_dict)
+        
         cat_types_series = pd.Series(cat_types_dict)
         cat_types_df = cat_types_series.to_frame(name='type')
-        #print('cat_types_df\n', cat_types_df); 
         
         def col_levels(col):
             if feat_df_discr[col].dtype == 'category':
@@ -120,7 +117,6 @@ class SmlpDiscretize:
             else:
                 return sorted(feat_df_discr[col].unique())
         cat_types_df['levels'] = [col_levels(col) for col in feat_df_discr.columns ]
-        #print('cat_types_df\n', cat_types_df); 
         self._discr_logger.info('data after discretization\n' + str(feat_df_discr)) 
         self._discr_logger.info('feature data types\n' + str(cat_types_df))  
     
@@ -137,7 +133,6 @@ class SmlpDiscretize:
     # the defaults in function smlp_discretize_df? Usage of say self._DEF_DISCRETIZATION_ALGO as default 
     # value in the function causes error "NameError: name 'self' is not defined"
     def smlp_discretize_feature(self, feat, algo='uniform', bins=10, labels=True, result_type='object'):
-        #print('labels', labels)
         assert isinstance(feat, pd.Series)
         assert result_type in self._DISCRETIZATION_TYPES
         
@@ -162,27 +157,25 @@ class SmlpDiscretize:
                 if result_type in [self._DISCRETIZATION_TYPE_ORDERED, self._DISCRETIZATION_TYPE_CATEGORY]:
                     levels = [self._label_prefix + str(l) for l in levels]
         elif algo == self._DISCRETIZATION_ALGO_JENKS:
-            breaks = jenkspy.jenks_breaks(feat, n_classes=bins_count); #print('breaks', breaks)
+            breaks = jenkspy.jenks_breaks(feat, n_classes=bins_count)
             # Changing the samllest break point to -inf as in some cases this break point can 
             # be equal to next one, and pd.cut() does not accept break points with repitition.
             # changing the highest great point to inf is not strictly necessary if these
             # break points are not used to discretize the feature in new data.
-            breaks[0] = float(-np.inf); breaks[-1] = float(np.inf); #print('breaks', breaks)
+            breaks[0] = float(-np.inf); breaks[-1] = float(np.inf)
             if not labels: # or result_type == self._DISCRETIZATION_TYPE_INTEGER:
                 pd_cut_labels = False
             else: 
                 pd_cut_labels = [self._label_prefix+str(n) for n in range(len(breaks)-1)]; 
-                #print('pd_cut_labels', pd_cut_labels)
+                
             feat_discr = pd.cut(feat, bins=list_unique_ordered(breaks), labels=pd_cut_labels); 
-            #print('jenks feat_discr', feat_discr.name, type(feat_discr))
             if result_type in [self._DISCRETIZATION_TYPE_ORDERED, self._DISCRETIZATION_TYPE_CATEGORY]:
                 levels = range(len(breaks)-1)
                 if labels:
                     levels = [self._label_prefix + str(l) for l in levels]
         elif algo == self._DISCRETIZATION_ALGO_ORDINALS:
-            #print('feat.unique()', feat.unique())
-            sorted_unique_vals = sorted(feat.unique()); #print('sorted_unique_vals', sorted_unique_vals)
-            target_vals = range(len(feat.unique())); #print('target_vals', target_vals)
+            sorted_unique_vals = sorted(feat.unique())
+            target_vals = range(len(feat.unique()))
             feat_discr = feat.replace(to_replace=sorted_unique_vals, value=range(len(sorted_unique_vals)),
                 inplace=False).astype(int); 
             if labels:
@@ -193,7 +186,7 @@ class SmlpDiscretize:
                     levels = [self._label_prefix + str(l) for l in levels]
             #feat_discr = feat_discr.to_frame(name=feat.name)
         elif algo == self._DISCRETIZATION_ALGO_RANKS:
-            feat_df = feat.to_frame(name=feat.name); #print('feat_df\n', feat_df)
+            feat_df = feat.to_frame(name=feat.name)
             feat_discr = feat_df.rank(axis=0, method='max', numeric_only=True, na_option='keep', 
                 ascending=True, pct=False)[feat.name].astype(int)
             if labels:
@@ -203,19 +196,16 @@ class SmlpDiscretize:
         else:
             raise Exception('Unsupported discretization algorithm ' + str(algo))
         
-        #print('feat_discr as object\n', feat_discr); print('type = ', type(feat_discr))
         assert isinstance(feat_discr, pd.Series)
 
         if result_type in [self._DISCRETIZATION_TYPE_ORDERED, self._DISCRETIZATION_TYPE_CATEGORY]:
-            #print('levels---------', levels)
             category_type = pd.api.types.CategoricalDtype(categories=levels, ordered=result_type=='ordered')
-            #print('category_type', category_type)
             feat_discr = feat_discr.astype(category_type)
         elif result_type == self._DISCRETIZATION_TYPE_OBJECT: 
             feat_discr = feat_discr.astype(str)
         elif result_type == self._DISCRETIZATION_TYPE_INTEGER:
             feat_discr = feat_discr.astype(int)
-        #print('feat_discr as category\n', feat_discr)
+        
         assert isinstance(feat_discr, pd.Series)
         return feat_discr
 
@@ -253,7 +243,7 @@ class SmlpDiscretize:
     # the defaults in function smlp_discretize_df? Usage of say self._DEF_DISCRETIZATION_ALGO as default value
     # in the function causes error "NameError: name 'self' is not defined"
     def smlp_discretize_df(self, feat_df, algo='uniform', bins=10, labels=True, result_type='object'):
-        numeric_cols = feat_df.select_dtypes(include=['int', 'float']).columns.tolist(); #print('numeric_cols', numeric_cols)
+        numeric_cols = feat_df.select_dtypes(include=['int', 'float']).columns.tolist()
         feat_df_discr = []
         for col in feat_df.columns:
             if not col in numeric_cols:
@@ -263,7 +253,6 @@ class SmlpDiscretize:
                 feat_df_discr.append(feat_discr)
                     
         feat_df_discr = pd.concat(feat_df_discr, axis=1)
-        #print('feat_df_discr\n', feat_df_discr.dtypes, '\n', feat_df_discr)
 
         # log discretization info
         self._report_discretization_table(feat_df_discr, result_type)

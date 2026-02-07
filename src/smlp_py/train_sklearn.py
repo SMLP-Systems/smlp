@@ -262,14 +262,12 @@ class ModelSklearn:
     # the global name is obtained from local name, say 'max_depth', by prefixing it
     # with the global name of the algorithm, which results in 'dt_sklearn_max_depth'
     def _hparam_name_local_to_global(self, hparam, algo):
-        #print('hparam global name', hparam, algo)
         return self._algo_name_local2global(algo) + '_' + hparam
     
     # Inverse to function _hparam_name_local_to_global:
     # Convert global name of hyper parameter to local name; the latter is the name used
     # in sklearn package, while the global name is local name prefixed by algo+'_sklearn_'.
     def _hparam_name_global_to_local(self, algo, hparam):
-        #print('algo', algo, 'hparam', hparam, 'prefix', self._algo_name_local2global(algo))
         if not hparam.startswith(self._algo_name_local2global(algo)):
             return None
         return hparam.removeprefix(self._algo_name_local2global(algo)+'_')
@@ -287,7 +285,6 @@ class ModelSklearn:
     # dt_sklearn (where sklearn is the name of the package used) to the parameter name 
     # and its correponding abbriviated name in param_dict).
     def _param_dict_with_algo_name(self, param_dict, algo):
-        #print('param_dict', param_dict)
         result_dict = {}
         for k, v in param_dict.items():
             v_updated = v.copy()
@@ -318,7 +315,6 @@ class ModelSklearn:
             else:
                 is_classification = False
                 break
-        #print('is_classification', is_classification); assert False
         '''
         hparam_dict_local = self._hparam_dict_global_to_local(algo, hparam_dict)
         hparam_dict_local['random_state'] = seed
@@ -328,7 +324,6 @@ class ModelSklearn:
 
         # print text representation of the tree model
         text_representation = tree.export_text(model)
-        #print(text_representation)
 
         '''
         # visualaize tree TODO !!!!!!!!!!!! does not work 
@@ -380,7 +375,6 @@ class ModelSklearn:
     # train polynomial regression model with sklearn
     def poly_train(self, input_names, resp_names, hparam_dict,
             X_train, X_test, y_train, y_test, weights):
-        #print('poly_degree', degree); print('weigts', weights);
         hparam_dict_local = self._hparam_dict_global_to_local('poly', hparam_dict)
         degree = hparam_dict_local['degree']
         hparam_dict_local.pop('degree')
@@ -403,7 +397,6 @@ class ModelSklearn:
     def _sklearn_train_multi_response(self, get_model_file_prefix, feat_names, resp_names, algo,
             X_train, X_test, y_train, y_test, hparam_dict, interactive_plots, 
             seed, sample_weights_vect):
-        #print('feat_names', feat_names, 'X_train\n', X_train)
         
         # set the seed for reproducibility
         if seed is not None:
@@ -414,12 +407,10 @@ class ModelSklearn:
         
         if algo in ['dt', 'et', 'rf']:
             if algo == 'dt':
-                #print('feat_names', feat_names, 'X_train\n', X_train, '\nX_test\n',  X_test)
                 model = self.dt_regr_train(feat_names, resp_names, algo, hparam_dict,
                     X_train, X_test, y_train, y_test, seed, sample_weights_vect)
                 tree_estimators = [model]
             elif algo == 'rf':
-                #print('hparam_dict', hparam_dict)
                 model = self.rf_regr_train(feat_names, resp_names, algo, hparam_dict,
                     X_train, X_test, y_train, y_test, seed, sample_weights_vect)
                 tree_estimators = model.estimators_
@@ -443,7 +434,6 @@ class ModelSklearn:
                 formula_report_file = get_model_file_prefix(None, self._algo_name_local2global(algo)) + '_formula.txt'
                 model_formula = self._instPolyTerms.poly_model_to_term_single_response(feat_names, resp_names, linear_model.intercept_, linear_model.coef_, 
                     poly_reg.powers_, resp_id, True, formula_report_file)
-            #print('poly model computed', (linear_model, linear_model.coef_, poly_reg, poly_reg.powers_)) 
             return linear_model, poly_reg #, X_train, X_test
         else:
             raise Exception('Unsupported model type ' + str(algo) + ' in function tree_main')
@@ -453,7 +443,6 @@ class ModelSklearn:
             seed, sample_weights_vect, model_per_response):
         # train a separate models for each response, pack into a dictionary with response names
         # as keys and the correponding models as values
-        #print('sklearn_main: feat_names_dict', feat_names_dict, 'X_train cols', X_train.columns.tolist())
         if model_per_response:
             model = {}
             for rn in resp_names:
