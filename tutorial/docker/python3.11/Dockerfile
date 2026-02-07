@@ -49,6 +49,7 @@ RUN apt-get update && apt-get install -y \
     libcanberra-gtk-module \
     libcanberra-gtk3-module \
     autocutsel \
+    tzdata \
     locales \
     && rm -rf /var/lib/apt/lists/*
 
@@ -96,6 +97,10 @@ RUN ./tkagg_patch.sh
 COPY run_mathsat_build .
 RUN chmod +x run_mathsat_build
 RUN ./run_mathsat_build
+#tkdiff patch for https://bugs.launchpad.net/bugs/2139062
+COPY run_tkdiff_patch .
+RUN chmod +x run_tkdiff_patch
+RUN ./run_tkdiff_patch
 #UTF-8 fonts
 RUN locale-gen en_US.UTF-8
 ENV LANG=en_US.UTF-8

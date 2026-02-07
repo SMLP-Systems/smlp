@@ -1,3 +1,4 @@
 #!/usr/bin/tcsh -f
 mkdir -p $HOME/shared
-docker run -e DISPLAY=:99 -p 5900:5900 -v $HOME/shared:/shared -it mdmitry1/python313-dev:latest $*
+setenv TZ `readlink /etc/localtime | sed 's@/usr/share/zoneinfo/@@'`
+docker run -e DISPLAY=:99 -e TZ=$TZ -p 5900:5900 -v $HOME/shared:/shared -it mdmitry1/python313-dev:latest $*

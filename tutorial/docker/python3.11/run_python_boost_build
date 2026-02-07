@@ -1,5 +1,5 @@
 #!/usr/bin/tcsh -f
-./python-wget.py https://sourceforge.net/projects/boost/files/boost/1.83.0/boost_1_83_0.tar.gz /tmp/boost_1_83_0.tar.gz
+./python-wget.py https://archives.boost.io/release/1.83.0/source/boost_1_83_0.tar.gz /tmp/boost_1_83_0.tar.gz
 cd /tmp
 tar -xvf boost_1_83_0.tar.gz >&  boost_1_83_0.tar.log
 cd boost_1_83_0
