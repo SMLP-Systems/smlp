@@ -441,7 +441,7 @@ class ModelSklearn:
                 X_train, X_test, y_train, y_test, sample_weights_vect)
             for resp_id in range(len(resp_names)):
                 formula_report_file = get_model_file_prefix(None, self._algo_name_local2global(algo)) + '_formula.txt'
-                model_formula = self._instPolyTerms.poly_model_to_term_single_response(feat_names, resp_names, linear_model.coef_, 
+                model_formula = self._instPolyTerms.poly_model_to_term_single_response(feat_names, resp_names, linear_model.intercept_, linear_model.coef_, 
                     poly_reg.powers_, resp_id, True, formula_report_file)
             #print('poly model computed', (linear_model, linear_model.coef_, poly_reg, poly_reg.powers_)) 
             return linear_model, poly_reg #, X_train, X_test
