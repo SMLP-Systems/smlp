@@ -1245,7 +1245,7 @@ class PolyTerms: #(SmlpTerms):
     
     # Create smlp term from polynomial model, returns dictionary with response names as keys
     # and the correponding smlp terms as values, works for single response only
-    def poly_model_to_term_single_response(self, feat_names, resp_names, coefs, powers, resp_id, log, formula_filename):
+    def poly_model_to_term_single_response(self, feat_names, resp_names, intercepts, coefs, powers, resp_id, log, formula_filename):
         #print('Polynomial model coef\n', coefs.shape, '\n', coefs)
         #print('Polynomial model terms\n', powers.shape, '\n', powers)
         #print('Polynomial model inps\n', len(feat_names), feat_names)
@@ -1257,6 +1257,7 @@ class PolyTerms: #(SmlpTerms):
             #print('r', powers[r], 'coef', coefs[0][r])
             if coefs[resp_id][r] == 0:
                 continue
+            
             curr_term_str = str(coefs[resp_id][r])
             curr_term = smlp.Cnst(coefs[resp_id][r])
             for i in range(len(feat_names)):
@@ -1275,9 +1276,7 @@ class PolyTerms: #(SmlpTerms):
                     for p in range(2, powers[r][i]+1):
                         curr_term = curr_term * smlp.Var(feat_names[i])
                     #print('curr_term', curr_term)
-
             #print('curr_term_str', curr_term_str); print('curr_term', curr_term)
-
             if term_str == '':
                 term_str = curr_term_str
                 term = curr_term
@@ -1285,12 +1284,16 @@ class PolyTerms: #(SmlpTerms):
                 term_str = term_str + ' + ' + curr_term_str
                 term = term + curr_term
 
+        # add the intercepts
+        term_str = f"{intercepts[resp_id]} + " + term_str
+        term = smlp.Cnst(intercepts[resp_id]) + term
+        
         # add the response name
         formula_str = resp_names[resp_id] + ' == ' + term_str
 
         if log:
             print('formula', formula_str)
-
+        
         # save formula into file
         if formula_filename is not None:
             model_file = open(formula_filename, "w")
@@ -1303,11 +1306,11 @@ class PolyTerms: #(SmlpTerms):
     # and the correponding smlp terms as values. Arguments model_feat_names and model_resp_names are
     # feature and response names, respectively possibly suffixed by '_scaled' in case features and/or 
     # responses have been scaled prior to training
-    def poly_model_to_term(self, model_feat_names, model_resp_names, coefs, powers, log, formula_filename):
+    def poly_model_to_term(self, model_feat_names, model_resp_names, intercepts, coefs, powers, log, formula_filename):
         poly_model_terms_dict = {}
         for resp_id, resp_name in enumerate(model_resp_names):
             poly_model_terms_dict[resp_name] = self.poly_model_to_term_single_response(
-                model_feat_names, model_resp_names, coefs, powers, 
+                model_feat_names, model_resp_names, intercepts, coefs, powers, 
                 resp_id, log, formula_filename)[resp_name]; #print('poly_model_terms_dict', poly_model_terms_dict)
         return poly_model_terms_dict
             
@@ -1736,7 +1739,6 @@ class ScalerTerms(SmlpTerms):
             self.smlp_cnst(orig_min))
         #return (smlp.Cnst(const) * smlp.Cnst(orig_max - orig_min)) + smlp.Cnst(orig_min)
 
-
 class ModelTerms(ScalerTerms):
     def __init__(self):
         self._scalerTermsInst = ScalerTerms()
@@ -1744,7 +1746,6 @@ class ModelTerms(ScalerTerms):
         self._polyTermsInst = PolyTerms()
         #self._smlpTermsInst = SmlpTerms
         self._nnKerasTermsInst = NNKerasTerms()
-        
         #self._cache_terms = False
         
         self.report_file_prefix = None
@@ -1906,7 +1907,7 @@ class ModelTerms(ScalerTerms):
                 model_resp_names, feat_names, resp_names) 
         elif algo == 'poly_sklearn':
             model_term_dict = self._polyTermsInst.poly_model_to_term(model_feat_names, model_resp_names, 
-                model[0].coef_, model[1].powers_, False, None)
+                model[0].intercept_, model[0].coef_, model[1].powers_, False, None)
         elif algo in self._treeTermsInst.supported_algos:
             model_term_dict = self._treeTermsInst.tree_models_to_term(model, algo, model_feat_names, model_resp_names)
         else:
@@ -1945,7 +1946,7 @@ class ModelTerms(ScalerTerms):
 
         model_term_dict = self._compute_pure_model_terms(algo, model, model_feat_names, model_resp_names, 
             feat_names, resp_names); ###print('model_term_dict', model_term_dict)
-        
+
         model_full_term_dict = model_term_dict;
         tree_flat_encoding = self._treeTermsInst.tree_encoding_flat(algo)
         tree_branched_encoding = self._treeTermsInst.tree_encoding_branched(algo)
@@ -2037,6 +2038,7 @@ class ModelTerms(ScalerTerms):
         resp_name = resp_names[0] if len(resp_names) == 1 else None
         with open(self.smlp_model_term_file(resp_name, True), 'w') as f:
             json.dump(str(model_full_term_dict), f, indent='\t', cls=np_JSONEncoder)
+        
         return model_full_term_dict
 
     # Computes a dictionary with response names as keys and an smlp term corresponding to the model for that

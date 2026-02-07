@@ -434,7 +434,10 @@ class SmlpOptimize:
         assert len(P) > 0
         #print('P', P)
         l_res = max([tup[3] for tup in P_eager]); #print('l_res', l_res, 'threshold_lo', P[-1]['threshold_lo'])
-        assert l_res == P[-1]['threshold_lo_scaled']
+        if scale_objectives or objv_bounds is None:
+            assert l_res == P[-1]['threshold_lo_scaled']
+        else:
+            assert l_res == P[-1]['threshold_lo']
         #print('optimize_single_objective_eager and with l_res', l_res, flush=True)
         self._opt_logger.info('Optimize single objective with eager strategy ' + str(objv_name) + ': end')
         return P[-1] # l_res
@@ -621,7 +624,7 @@ class SmlpOptimize:
                     objv_bounds_dict, None, sat_approx=True, sat_precision=64, save_trace=False);
             else:
                 raise Exception('Unsupported optimization strategy ' + str(strategy))
-                
+        
         self.mode_status_dict['smlp_execution'] = 'completed'
         with open(self.optimization_results_file+'.json', 'w') as f:
             json.dump(opt_conf | self.mode_status_dict, f, indent='\t', cls=np_JSONEncoder)
@@ -768,6 +771,7 @@ class SmlpOptimize:
             s_origin = s
             s_scaled = [self.scale_constant_val(objv_bounds_dict, objv_name, b) 
                 for (objv_name, b) in zip(objv_names,s)]; #print('s_unscaled', s_unscaled)
+        
         s_scaled_str = ["%.6f" % e for e in s_scaled]; #print('s_scaled_str', s_scaled_str)
         s_origin_str = ["%.6f" % e for e in s_origin]; #print('s_origin_str', s_origin_str)
         s_scaled_dict = dict(zip(objv_names, s_scaled_str))
