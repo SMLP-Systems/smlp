@@ -393,8 +393,13 @@ class SmlpOptimize:
         
         # compute and return max value of l_stab within P
         assert len(P) > 0
-        l_res = max([tup[3] for tup in P_eager])
-        assert l_res == P[-1]['threshold_lo_scaled']
+        #print('P', P)
+        l_res = max([tup[3] for tup in P_eager]); #print('l_res', l_res, 'threshold_lo', P[-1]['threshold_lo'])
+        if scale_objectives or objv_bounds is None:
+            assert l_res == P[-1]['threshold_lo_scaled']
+        else:
+            assert l_res == P[-1]['threshold_lo']
+        #print('optimize_single_objective_eager and with l_res', l_res, flush=True)
         self._opt_logger.info('Optimize single objective with eager strategy ' + str(objv_name) + ': end')
         
         return P[-1] # l_res
@@ -567,7 +572,7 @@ class SmlpOptimize:
                     objv_bounds_dict, None, sat_approx=True, sat_precision=64, save_trace=False);
             else:
                 raise Exception('Unsupported optimization strategy ' + str(strategy))
-                
+        
         self.mode_status_dict['smlp_execution'] = 'completed'
         with open(self.optimization_results_file+'.json', 'w') as f:
             json.dump(opt_conf | self.mode_status_dict, f, indent='\t', cls=np_JSONEncoder)
