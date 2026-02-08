@@ -45,7 +45,7 @@ pkill socat
 enter_released_container_x11_forwarding
 ```
 
-## Setting Up GUI Support using for WSL2 with wslg installed
+## Setting Up GUI Support for WSL2 with wslg installed
 
 ```
 enter_released_container_wslg
