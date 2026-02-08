@@ -43,6 +43,37 @@ SMLP has successfully been run without a container or VM on Ubuntu,
 Suse Linux Enterprise Server 15, and Gentoo. The following section provides
 instruction for the installation on Ubuntu.
 
+## Docker support
+
+- Entering Docker container with optional VNC support
+```
+bin/enter
+```
+
+Starting VNC server within container:
+```
+./start_vnc
+```
+Recommended VNC client: `remmina`
+
+- Entering Docker container with X11 support on native Linux
+```
+bin/enter_x11
+```
+
+Dependencies: `socat`
+
+- Entering Docker container with X11 support on wslg
+```
+bin/enter_wslg
+```
+
+Dependencies: `WSL2` with `WSLG` enabled
+
+- Installation test:
+```
+bin/test_install
+```
 
 ## Installation on a stock Ubuntu-22.04
 
@@ -76,9 +107,32 @@ instruction for the installation on Ubuntu.
 
 ## Quick instructions on testing whether the tool works
 
+- Option 1: Native tool installation
+```
     cd $HOME/smlp/regr_smlp/code
+```
 
-    # first the tool itself
+- Option 2: Docker container installation
+
+1. Pull Docker container:
+
+```
+    docker pull mdmitry1/python311-dev:latest
+```
+
+2.  Start Docker container:
+```
+    bin/enter
+```
+3. Within Docker container:
+```
+    ./start_vnc
+    cd smlp/regr_smlp/code
+```
+*Note: Above `./start_vnc` command is needed, although GUI is not used*
+
+4. First run tool itself
+```
     ../../src/run_smlp.py -data "../data/smlp_toy_num_resp_mult" \
     -out_dir ./ -pref Test83 -mode optimize -pareto t \
     -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 \
@@ -87,10 +141,12 @@ instruction for the installation on Ubuntu.
     -objv_exprs "(y1+y2)/2;y1/2-y2;y2" -epsilon 0.05 -delta_rel 0.01 \
     -save_model_config f -mrmr_pred 0 -plots f -seed 10 -log_time f \
     -spec ../specs/smlp_toy_num_resp_mult_free_inps.spec
+```
 
-    # then the regression script
+4. Then the regression script
+```
     ./smlp_regr.py -w 1 -def n -t 88 -tol 5
-
+```
 
 # Running the regression suite
 
