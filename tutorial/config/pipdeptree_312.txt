@@ -1,0 +1,673 @@
+Warning!!! Duplicate package metadata found:
+"/usr/lib/python3/dist-packages"
+  setuptools                       68.1.2           (using 80.10.1, "/usr/local/lib/python3.12/dist-packages")
+  urllib3                          2.0.7            (using 2.6.3, "/usr/local/lib/python3.12/dist-packages")
+  Brotli                           1.1.0            (using 1.2.0, "/usr/local/lib/python3.12/dist-packages")
+  PyQt5-sip                        12.13.0          (using 12.18.0, "/usr/local/lib/python3.12/dist-packages")
+  wrapt                            1.15.0           (using 2.0.1, "/usr/local/lib/python3.12/dist-packages")
+  pandas                           2.1.4+dfsg       (using 2.3.3, "/usr/local/lib/python3.12/dist-packages")
+  certifi                          2023.11.17       (using 2026.1.4, "/usr/local/lib/python3.12/dist-packages")
+  cryptography                     41.0.7           (using 41.0.7, "/usr/lib/python3/dist-packages")
+  MarkupSafe                       2.1.5            (using 3.0.3, "/usr/local/lib/python3.12/dist-packages")
+  jsonschema                       4.10.3           (using 4.26.0, "/usr/local/lib/python3.12/dist-packages")
+  SciPy                            1.11.4           (using 1.16.3, "/usr/local/lib/python3.12/dist-packages")
+  PyQt5                            5.15.10          (using 5.15.11, "/usr/local/lib/python3.12/dist-packages")
+  Jinja2                           3.1.2            (using 3.1.6, "/usr/local/lib/python3.12/dist-packages")
+  Bottleneck                       1.3.5            (using 1.6.0, "/usr/local/lib/python3.12/dist-packages")
+  typing_extensions                4.10.0           (using 4.15.0, "/usr/local/lib/python3.12/dist-packages")
+  soupsieve                        2.5              (using 2.8.3, "/usr/local/lib/python3.12/dist-packages")
+  requests                         2.31.0           (using 2.32.5, "/usr/local/lib/python3.12/dist-packages")
+  idna                             3.6              (using 3.11, "/usr/local/lib/python3.12/dist-packages")
+NOTE: This warning isn't a failure warning.
+------------------------------------------------------------------------
+Warning!!! Possibly conflicting dependencies found:
+* alive-progress==3.3.0
+ - about-time [required: ==4.2.1, installed: ?]
+ - graphemeu [required: ==0.7.2, installed: ?]
+* Deprecated==1.2.14
+ - wrapt [required: >=1.10,<2, installed: 2.0.1]
+* keras==3.13.1
+ - namex [required: Any, installed: ?]
+* keras-tuner==1.4.8
+ - kt-legacy [required: Any, installed: ?]
+ - protobuf [required: Any, installed: ?]
+* matplotlib==3.10.8
+ - fonttools [required: >=4.22.0, installed: ?]
+* moocore==0.2.0
+ - cffi [required: >=1.17.1, installed: ?]
+* onnx==1.20.1
+ - protobuf [required: >=4.25.1, installed: ?]
+* onnxruntime==1.23.2
+ - coloredlogs [required: Any, installed: ?]
+ - protobuf [required: Any, installed: ?]
+* openapi-schema-validator==0.6.3
+ - rfc3339-validator [required: Any, installed: ?]
+* pandas==2.3.3
+ - tzdata [required: >=2022.7, installed: ?]
+* pendulum==3.1.0
+ - tzdata [required: >=2020.1, installed: ?]
+* pipdeptree==2.30.0
+ - packaging [required: >=25, installed: 24.0]
+ - pip [required: >=25.2, installed: 24.0]
+* pymoo==0.6.1.6
+ - autograd [required: >=1.4, installed: ?]
+ - cma [required: >=3.2.2, installed: ?]
+* PyNaCl==1.5.0
+ - cffi [required: >=1.4.1, installed: ?]
+* scikit-learn==1.8.0
+ - threadpoolctl [required: >=3.2.0, installed: 3.1.0]
+* scikit-optimize==0.10.2
+ - pyaml [required: >=16.9, installed: ?]
+* shgo==1.0.0
+ - pytest-cov [required: Any, installed: ?]
+* tables==3.9.2
+ - blosc2 [required: >=2.3.0, installed: ?]
+* tasepy==0.2.2
+ - PyYAML [required: ~=6.0.3, installed: 6.0.1]
+ - beautifulsoup4 [required: ~=4.13.5, installed: 4.12.3]
+* tensorboard==2.20.0
+ - markdown [required: >=2.6.8, installed: ?]
+ - protobuf [required: >=3.19.6,!=4.24.0, installed: ?]
+ - werkzeug [required: >=1.0.1, installed: ?]
+* tensorflow==2.20.0
+ - libclang [required: >=13.0.0, installed: ?]
+ - protobuf [required: >=5.28.0, installed: ?]
+* tf2onnx==1.16.1
+ - protobuf [required: ~=3.20, installed: ?]
+* typer==0.21.1
+ - shellingham [required: >=1.3.0, installed: ?]
+------------------------------------------------------------------------
+arxiv==2.4.0
+├── feedparser [required: ~=6.0.10, installed: 6.0.12]
+│   └── sgmllib3k [required: Any, installed: 1.0.0]
+└── requests [required: ~=2.32.0, installed: 2.32.5]
+    ├── charset-normalizer [required: >=2,<4, installed: 3.4.4]
+    ├── idna [required: >=2.5,<4, installed: 3.11]
+    ├── urllib3 [required: >=1.21.1,<3, installed: 2.6.3]
+    └── certifi [required: >=2017.4.17, installed: 2026.1.4]
+Babel==2.10.3
+bcc==0.29.1
+blinker==1.7.0
+Bottleneck==1.6.0
+└── numpy [required: Any, installed: 1.26.4]
+Brlapi==0.8.5
+chardet==5.2.0
+cloud-init==25.2
+colorama==0.4.6
+command-not-found==0.3
+configobj==5.0.8
+cryptography==41.0.7
+cssselect==1.2.0
+cupshelpers==1.0
+Cython==3.0.8
+dbus-python==1.3.2
+deap==1.4.3
+└── numpy [required: Any, installed: 1.26.4]
+decorator==5.1.1
+defer==1.0.6
+defusedxml==0.7.1
+distro==1.9.0
+distro-info==1.7+build1
+doepy==0.0.1
+├── pyDOE [required: Any, installed: 0.3.8]
+│   ├── numpy [required: Any, installed: 1.26.4]
+│   └── scipy [required: Any, installed: 1.16.3]
+│       └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+├── numpy [required: Any, installed: 1.26.4]
+├── pandas [required: Any, installed: 2.3.3]
+│   ├── numpy [required: >=1.26.0, installed: 1.26.4]
+│   ├── python-dateutil [required: >=2.8.2, installed: 2.8.2]
+│   ├── pytz [required: >=2020.1, installed: 2024.1]
+│   └── tzdata [required: >=2022.7, installed: ?]
+└── diversipy [required: Any, installed: 0.9]
+    ├── numpy [required: Any, installed: 1.26.4]
+    └── scipy [required: Any, installed: 1.16.3]
+        └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+dotenv==0.9.9
+└── python-dotenv [required: Any, installed: 1.2.1]
+et-xmlfile==1.0.1
+graphviz==0.20.2
+html5lib==1.1
+jenkspy==0.4.1
+└── numpy [required: Any, installed: 1.26.4]
+jsonpatch==1.32
+jsonpointer==2.0
+keras-tuner==1.4.8
+├── keras [required: Any, installed: 3.13.1]
+│   ├── absl-py [required: Any, installed: 2.3.1]
+│   ├── numpy [required: Any, installed: 1.26.4]
+│   ├── rich [required: Any, installed: 13.7.1]
+│   │   ├── markdown-it-py [required: >=2.2.0, installed: 3.0.0]
+│   │   │   └── mdurl [required: ~=0.1, installed: 0.1.2]
+│   │   └── Pygments [required: >=2.13.0,<3.0.0, installed: 2.17.2]
+│   ├── namex [required: Any, installed: ?]
+│   ├── h5py [required: Any, installed: 3.15.1]
+│   │   └── numpy [required: >=1.21.2, installed: 1.26.4]
+│   ├── optree [required: Any, installed: 0.18.0]
+│   │   └── typing_extensions [required: >=4.6.0, installed: 4.15.0]
+│   ├── ml_dtypes [required: Any, installed: 0.5.4]
+│   │   ├── numpy [required: >=1.21, installed: 1.26.4]
+│   │   ├── numpy [required: >=1.21.2, installed: 1.26.4]
+│   │   ├── numpy [required: >=1.23.3, installed: 1.26.4]
+│   │   └── numpy [required: >=1.26.0, installed: 1.26.4]
+│   └── packaging [required: Any, installed: 24.0]
+├── packaging [required: Any, installed: 24.0]
+├── requests [required: Any, installed: 2.32.5]
+│   ├── charset-normalizer [required: >=2,<4, installed: 3.4.4]
+│   ├── idna [required: >=2.5,<4, installed: 3.11]
+│   ├── urllib3 [required: >=1.21.1,<3, installed: 2.6.3]
+│   └── certifi [required: >=2017.4.17, installed: 2026.1.4]
+├── kt-legacy [required: Any, installed: ?]
+├── grpcio [required: Any, installed: 1.76.0]
+│   └── typing_extensions [required: ~=4.12, installed: 4.15.0]
+└── protobuf [required: Any, installed: ?]
+language-selector==0.1
+launchpadlib==1.11.0
+├── httplib2 [required: Any, installed: 0.20.4]
+│   └── pyparsing [required: >=2.4.2,<4,!=3.0.3,!=3.0.2,!=3.0.1,!=3.0.0, installed: 3.1.1]
+├── lazr.restfulclient [required: >=0.14.2, installed: 0.14.6]
+├── lazr.uri [required: Any, installed: 1.0.6]
+└── six [required: Any, installed: 1.16.0]
+loguru==0.7.3
+louis==3.29.0
+meson==1.10.1
+mrmr-selection==0.2.8
+├── category_encoders [required: Any, installed: 2.9.0]
+│   ├── numpy [required: >=1.14.0, installed: 1.26.4]
+│   ├── pandas [required: >=1.0.5, installed: 2.3.3]
+│   │   ├── numpy [required: >=1.26.0, installed: 1.26.4]
+│   │   ├── python-dateutil [required: >=2.8.2, installed: 2.8.2]
+│   │   ├── pytz [required: >=2020.1, installed: 2024.1]
+│   │   └── tzdata [required: >=2022.7, installed: ?]
+│   ├── patsy [required: >=0.5.1, installed: 1.0.2]
+│   │   └── numpy [required: >=1.4, installed: 1.26.4]
+│   ├── scikit-learn [required: >=1.6.0, installed: 1.8.0]
+│   │   ├── numpy [required: >=1.24.1, installed: 1.26.4]
+│   │   ├── scipy [required: >=1.10.0, installed: 1.16.3]
+│   │   │   └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+│   │   ├── joblib [required: >=1.3.0, installed: 1.3.2]
+│   │   └── threadpoolctl [required: >=3.2.0, installed: 3.1.0]
+│   ├── scipy [required: >=1.0.0, installed: 1.16.3]
+│   │   └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+│   └── statsmodels [required: >=0.9.0, installed: 0.14.6]
+│       ├── numpy [required: >=1.22.3,<3, installed: 1.26.4]
+│       ├── scipy [required: >=1.8,!=1.9.2, installed: 1.16.3]
+│       │   └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+│       ├── pandas [required: >=1.4,!=2.1.0, installed: 2.3.3]
+│       │   ├── numpy [required: >=1.26.0, installed: 1.26.4]
+│       │   ├── python-dateutil [required: >=2.8.2, installed: 2.8.2]
+│       │   ├── pytz [required: >=2020.1, installed: 2024.1]
+│       │   └── tzdata [required: >=2022.7, installed: ?]
+│       ├── patsy [required: >=0.5.6, installed: 1.0.2]
+│       │   └── numpy [required: >=1.4, installed: 1.26.4]
+│       └── packaging [required: >=21.3, installed: 24.0]
+├── Jinja2 [required: Any, installed: 3.1.6]
+│   └── MarkupSafe [required: >=2.0, installed: 3.0.3]
+├── tqdm [required: Any, installed: 4.67.1]
+├── joblib [required: Any, installed: 1.3.2]
+├── pandas [required: >=1.0.3, installed: 2.3.3]
+│   ├── numpy [required: >=1.26.0, installed: 1.26.4]
+│   ├── python-dateutil [required: >=2.8.2, installed: 2.8.2]
+│   ├── pytz [required: >=2020.1, installed: 2024.1]
+│   └── tzdata [required: >=2022.7, installed: ?]
+├── numpy [required: >=1.18.1, installed: 1.26.4]
+├── scikit-learn [required: Any, installed: 1.8.0]
+│   ├── numpy [required: >=1.24.1, installed: 1.26.4]
+│   ├── scipy [required: >=1.10.0, installed: 1.16.3]
+│   │   └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+│   ├── joblib [required: >=1.3.0, installed: 1.3.2]
+│   └── threadpoolctl [required: >=3.2.0, installed: 3.1.0]
+├── scipy [required: Any, installed: 1.16.3]
+│   └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+└── polars [required: >=0.12.5, installed: 1.37.1]
+    └── polars-runtime-32 [required: ==1.37.1, installed: 1.37.1]
+natsort==8.4.0
+netaddr==0.8.0
+netifaces==0.11.0
+oauthlib==3.2.2
+odfpy==1.4.2
+olefile==0.46
+onnxruntime==1.23.2
+├── coloredlogs [required: Any, installed: ?]
+├── flatbuffers [required: Any, installed: 25.12.19]
+├── numpy [required: >=1.21.6, installed: 1.26.4]
+├── packaging [required: Any, installed: 24.0]
+├── protobuf [required: Any, installed: ?]
+└── sympy [required: Any, installed: 1.14.0]
+    └── mpmath [required: >=1.1.0,<1.4, installed: 1.3.0]
+onnxscript==0.5.7
+├── ml_dtypes [required: Any, installed: 0.5.4]
+│   ├── numpy [required: >=1.21, installed: 1.26.4]
+│   ├── numpy [required: >=1.21.2, installed: 1.26.4]
+│   ├── numpy [required: >=1.23.3, installed: 1.26.4]
+│   └── numpy [required: >=1.26.0, installed: 1.26.4]
+├── numpy [required: Any, installed: 1.26.4]
+├── onnx-ir [required: >=0.1.12,<2, installed: 0.1.15]
+│   ├── numpy [required: Any, installed: 1.26.4]
+│   ├── onnx [required: >=1.16, installed: 1.20.1]
+│   │   ├── numpy [required: >=1.23.2, installed: 1.26.4]
+│   │   ├── protobuf [required: >=4.25.1, installed: ?]
+│   │   ├── typing_extensions [required: >=4.7.1, installed: 4.15.0]
+│   │   └── ml_dtypes [required: >=0.5.0, installed: 0.5.4]
+│   │       ├── numpy [required: >=1.21, installed: 1.26.4]
+│   │       ├── numpy [required: >=1.21.2, installed: 1.26.4]
+│   │       ├── numpy [required: >=1.23.3, installed: 1.26.4]
+│   │       └── numpy [required: >=1.26.0, installed: 1.26.4]
+│   ├── typing_extensions [required: >=4.10, installed: 4.15.0]
+│   └── ml_dtypes [required: >=0.5.0, installed: 0.5.4]
+│       ├── numpy [required: >=1.21, installed: 1.26.4]
+│       ├── numpy [required: >=1.21.2, installed: 1.26.4]
+│       ├── numpy [required: >=1.23.3, installed: 1.26.4]
+│       └── numpy [required: >=1.26.0, installed: 1.26.4]
+├── onnx [required: >=1.16, installed: 1.20.1]
+│   ├── numpy [required: >=1.23.2, installed: 1.26.4]
+│   ├── protobuf [required: >=4.25.1, installed: ?]
+│   ├── typing_extensions [required: >=4.7.1, installed: 4.15.0]
+│   └── ml_dtypes [required: >=0.5.0, installed: 0.5.4]
+│       ├── numpy [required: >=1.21, installed: 1.26.4]
+│       ├── numpy [required: >=1.21.2, installed: 1.26.4]
+│       ├── numpy [required: >=1.23.3, installed: 1.26.4]
+│       └── numpy [required: >=1.26.0, installed: 1.26.4]
+├── packaging [required: Any, installed: 24.0]
+└── typing_extensions [required: >=4.10, installed: 4.15.0]
+openapi-spec-validator==0.7.2
+├── jsonschema [required: >=4.18.0,<5.0.0, installed: 4.26.0]
+│   ├── attrs [required: >=22.2.0, installed: 23.2.0]
+│   ├── jsonschema-specifications [required: >=2023.03.6, installed: 2025.9.1]
+│   │   └── referencing [required: >=0.31.0, installed: 0.36.2]
+│   │       ├── attrs [required: >=22.2.0, installed: 23.2.0]
+│   │       ├── rpds-py [required: >=0.7.0, installed: 0.30.0]
+│   │       └── typing_extensions [required: >=4.4.0, installed: 4.15.0]
+│   ├── referencing [required: >=0.28.4, installed: 0.36.2]
+│   │   ├── attrs [required: >=22.2.0, installed: 23.2.0]
+│   │   ├── rpds-py [required: >=0.7.0, installed: 0.30.0]
+│   │   └── typing_extensions [required: >=4.4.0, installed: 4.15.0]
+│   └── rpds-py [required: >=0.25.0, installed: 0.30.0]
+├── jsonschema-path [required: >=0.3.1,<0.4.0, installed: 0.3.4]
+│   ├── PyYAML [required: >=5.1, installed: 6.0.1]
+│   ├── pathable [required: >=0.4.1,<0.5.0, installed: 0.4.4]
+│   ├── referencing [required: <0.37.0, installed: 0.36.2]
+│   │   ├── attrs [required: >=22.2.0, installed: 23.2.0]
+│   │   ├── rpds-py [required: >=0.7.0, installed: 0.30.0]
+│   │   └── typing_extensions [required: >=4.4.0, installed: 4.15.0]
+│   └── requests [required: >=2.31.0,<3.0.0, installed: 2.32.5]
+│       ├── charset-normalizer [required: >=2,<4, installed: 3.4.4]
+│       ├── idna [required: >=2.5,<4, installed: 3.11]
+│       ├── urllib3 [required: >=1.21.1,<3, installed: 2.6.3]
+│       └── certifi [required: >=2017.4.17, installed: 2026.1.4]
+├── lazy-object-proxy [required: >=1.7.1,<2.0.0, installed: 1.12.0]
+└── openapi-schema-validator [required: >=0.6.0,<0.7.0, installed: 0.6.3]
+    ├── jsonschema [required: >=4.19.1,<5.0.0, installed: 4.26.0]
+    │   ├── attrs [required: >=22.2.0, installed: 23.2.0]
+    │   ├── jsonschema-specifications [required: >=2023.03.6, installed: 2025.9.1]
+    │   │   └── referencing [required: >=0.31.0, installed: 0.36.2]
+    │   │       ├── attrs [required: >=22.2.0, installed: 23.2.0]
+    │   │       ├── rpds-py [required: >=0.7.0, installed: 0.30.0]
+    │   │       └── typing_extensions [required: >=4.4.0, installed: 4.15.0]
+    │   ├── referencing [required: >=0.28.4, installed: 0.36.2]
+    │   │   ├── attrs [required: >=22.2.0, installed: 23.2.0]
+    │   │   ├── rpds-py [required: >=0.7.0, installed: 0.30.0]
+    │   │   └── typing_extensions [required: >=4.4.0, installed: 4.15.0]
+    │   └── rpds-py [required: >=0.25.0, installed: 0.30.0]
+    ├── jsonschema-specifications [required: >=2023.5.2, installed: 2025.9.1]
+    │   └── referencing [required: >=0.31.0, installed: 0.36.2]
+    │       ├── attrs [required: >=22.2.0, installed: 23.2.0]
+    │       ├── rpds-py [required: >=0.7.0, installed: 0.30.0]
+    │       └── typing_extensions [required: >=4.4.0, installed: 4.15.0]
+    └── rfc3339-validator [required: Any, installed: ?]
+openpyxl==3.1.2
+optproblems==1.3
+optunahub==0.4.0
+├── optuna [required: Any, installed: 4.7.0]
+│   ├── alembic [required: >=1.5.0, installed: 1.18.1]
+│   │   ├── SQLAlchemy [required: >=1.4.0, installed: 2.0.46]
+│   │   │   ├── greenlet [required: >=1, installed: 3.3.1]
+│   │   │   └── typing_extensions [required: >=4.6.0, installed: 4.15.0]
+│   │   ├── Mako [required: Any, installed: 1.3.10]
+│   │   │   └── MarkupSafe [required: >=0.9.2, installed: 3.0.3]
+│   │   └── typing_extensions [required: >=4.12, installed: 4.15.0]
+│   ├── colorlog [required: Any, installed: 6.10.1]
+│   ├── numpy [required: Any, installed: 1.26.4]
+│   ├── packaging [required: >=20.0, installed: 24.0]
+│   ├── SQLAlchemy [required: >=1.4.2, installed: 2.0.46]
+│   │   ├── greenlet [required: >=1, installed: 3.3.1]
+│   │   └── typing_extensions [required: >=4.6.0, installed: 4.15.0]
+│   ├── tqdm [required: Any, installed: 4.67.1]
+│   └── PyYAML [required: Any, installed: 6.0.1]
+├── GitPython [required: Any, installed: 3.1.37]
+│   └── gitdb [required: >=4.0.1,<5, installed: 4.0.11]
+└── PyGithub [required: >=1.59, installed: 2.2.0]
+    ├── Deprecated [required: Any, installed: 1.2.14]
+    │   └── wrapt [required: >=1.10,<2, installed: 2.0.1]
+    ├── PyJWT [required: >=2.4.0, installed: 2.7.0]
+    ├── PyNaCl [required: >=1.4.0, installed: 1.5.0]
+    │   └── cffi [required: >=1.4.1, installed: ?]
+    ├── requests [required: >=2.14.0, installed: 2.32.5]
+    │   ├── charset-normalizer [required: >=2,<4, installed: 3.4.4]
+    │   ├── idna [required: >=2.5,<4, installed: 3.11]
+    │   ├── urllib3 [required: >=1.21.1,<3, installed: 2.6.3]
+    │   └── certifi [required: >=2017.4.17, installed: 2026.1.4]
+    ├── typing_extensions [required: >=4.0.0, installed: 4.15.0]
+    └── urllib3 [required: >=1.26.0, installed: 2.6.3]
+pandas-datareader==0.10.0
+├── lxml [required: Any, installed: 5.2.1]
+├── pandas [required: >=0.23, installed: 2.3.3]
+│   ├── numpy [required: >=1.26.0, installed: 1.26.4]
+│   ├── python-dateutil [required: >=2.8.2, installed: 2.8.2]
+│   ├── pytz [required: >=2020.1, installed: 2024.1]
+│   └── tzdata [required: >=2022.7, installed: ?]
+└── requests [required: >=2.19.0, installed: 2.32.5]
+    ├── charset-normalizer [required: >=2,<4, installed: 3.4.4]
+    ├── idna [required: >=2.5,<4, installed: 3.11]
+    ├── urllib3 [required: >=1.21.1,<3, installed: 2.6.3]
+    └── certifi [required: >=2017.4.17, installed: 2026.1.4]
+pendulum==3.1.0
+├── python-dateutil [required: >=2.6, installed: 2.8.2]
+└── tzdata [required: >=2020.1, installed: ?]
+pexpect==4.9.0
+pipdeptree==2.30.0
+├── packaging [required: >=25, installed: 24.0]
+└── pip [required: >=25.2, installed: 24.0]
+psutil==5.9.8
+ptyprocess==0.7.0
+pycairo==1.25.1
+pycups==2.0.1
+PyGObject==3.48.2
+pygraphviz==1.7
+pymoo==0.6.1.6
+├── numpy [required: >=1.19.3, installed: 1.26.4]
+├── scipy [required: >=1.1, installed: 1.16.3]
+│   └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+├── moocore [required: >=0.1.7, installed: 0.2.0]
+│   ├── cffi [required: >=1.17.1, installed: ?]
+│   ├── numpy [required: >=1.24, installed: 1.26.4]
+│   └── platformdirs [required: Any, installed: 4.5.1]
+├── autograd [required: >=1.4, installed: ?]
+├── cma [required: >=3.2.2, installed: ?]
+├── matplotlib [required: >=3, installed: 3.10.8]
+│   ├── contourpy [required: >=1.0.1, installed: 1.3.3]
+│   │   └── numpy [required: >=1.25, installed: 1.26.4]
+│   ├── cycler [required: >=0.10, installed: 0.12.1]
+│   ├── fonttools [required: >=4.22.0, installed: ?]
+│   ├── kiwisolver [required: >=1.3.1, installed: 1.4.9]
+│   ├── numpy [required: >=1.23, installed: 1.26.4]
+│   ├── packaging [required: >=20.0, installed: 24.0]
+│   ├── pillow [required: >=8, installed: 10.2.0]
+│   ├── pyparsing [required: >=3, installed: 3.1.1]
+│   └── python-dateutil [required: >=2.7, installed: 2.8.2]
+├── alive-progress [required: Any, installed: 3.3.0]
+│   ├── about-time [required: ==4.2.1, installed: ?]
+│   └── graphemeu [required: ==0.7.2, installed: ?]
+└── Deprecated [required: Any, installed: 1.2.14]
+    └── wrapt [required: >=1.10,<2, installed: 2.0.1]
+pynauty==2.8.8.1
+pyomo==6.9.5
+└── ply [required: Any, installed: 3.11]
+PyQtWebEngine==5.15.7
+├── PyQt5_sip [required: >=12.13,<13, installed: 12.18.0]
+├── PyQtWebEngine-Qt5 [required: >=5.15.0,<5.16.0, installed: 5.15.18]
+└── PyQt5 [required: >=5.15.4, installed: 5.15.11]
+    ├── PyQt5_sip [required: >=12.15,<13, installed: 12.18.0]
+    └── PyQt5-Qt5 [required: >=5.15.2,<5.16.0, installed: 5.15.18]
+pyrsistent==0.20.0
+pyserial==3.5
+PySMT==0.9.6
+pysubgroup==0.9.0
+├── pandas [required: >=0.24.0, installed: 2.3.3]
+│   ├── numpy [required: >=1.26.0, installed: 1.26.4]
+│   ├── python-dateutil [required: >=2.8.2, installed: 2.8.2]
+│   ├── pytz [required: >=2020.1, installed: 2024.1]
+│   └── tzdata [required: >=2022.7, installed: ?]
+├── scipy [required: Any, installed: 1.16.3]
+│   └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+├── numpy [required: <2.0.0, installed: 1.26.4]
+├── matplotlib [required: Any, installed: 3.10.8]
+│   ├── contourpy [required: >=1.0.1, installed: 1.3.3]
+│   │   └── numpy [required: >=1.25, installed: 1.26.4]
+│   ├── cycler [required: >=0.10, installed: 0.12.1]
+│   ├── fonttools [required: >=4.22.0, installed: ?]
+│   ├── kiwisolver [required: >=1.3.1, installed: 1.4.9]
+│   ├── numpy [required: >=1.23, installed: 1.26.4]
+│   ├── packaging [required: >=20.0, installed: 24.0]
+│   ├── pillow [required: >=8, installed: 10.2.0]
+│   ├── pyparsing [required: >=3, installed: 3.1.1]
+│   └── python-dateutil [required: >=2.7, installed: 2.8.2]
+├── scikit-learn [required: >=1.7.1, installed: 1.8.0]
+│   ├── numpy [required: >=1.24.1, installed: 1.26.4]
+│   ├── scipy [required: >=1.10.0, installed: 1.16.3]
+│   │   └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+│   ├── joblib [required: >=1.3.0, installed: 1.3.2]
+│   └── threadpoolctl [required: >=3.2.0, installed: 3.1.0]
+└── statsmodels [required: >=0.14.5, installed: 0.14.6]
+    ├── numpy [required: >=1.22.3,<3, installed: 1.26.4]
+    ├── scipy [required: >=1.8,!=1.9.2, installed: 1.16.3]
+    │   └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+    ├── pandas [required: >=1.4,!=2.1.0, installed: 2.3.3]
+    │   ├── numpy [required: >=1.26.0, installed: 1.26.4]
+    │   ├── python-dateutil [required: >=2.8.2, installed: 2.8.2]
+    │   ├── pytz [required: >=2020.1, installed: 2024.1]
+    │   └── tzdata [required: >=2022.7, installed: ?]
+    ├── patsy [required: >=0.5.6, installed: 1.0.2]
+    │   └── numpy [required: >=1.4, installed: 1.26.4]
+    └── packaging [required: >=21.3, installed: 24.0]
+pytest-forked==1.6.0
+├── py [required: Any, installed: 1.11.0]
+└── pytest [required: >=3.10, installed: 7.4.4]
+    ├── iniconfig [required: Any, installed: 1.1.1]
+    ├── packaging [required: Any, installed: 24.0]
+    └── pluggy [required: >=0.12,<2.0, installed: 1.4.0]
+pytest-mock==3.12.0
+python-apt==2.7.7+ubuntu5.1
+python-debian==0.1.49+ubuntu2
+pyxdg==0.28
+quads==1.1.0
+questionary==2.1.1
+└── prompt_toolkit [required: >=2.0,<4.0, installed: 3.0.52]
+    └── wcwidth [required: Any, installed: 0.3.2]
+schwifty==2025.9.0
+├── pycountry [required: Any, installed: 24.6.1]
+└── rstr [required: Any, installed: 3.2.2]
+scikit-optimize==0.10.2
+├── joblib [required: >=0.11, installed: 1.3.2]
+├── pyaml [required: >=16.9, installed: ?]
+├── numpy [required: >=1.20.3, installed: 1.26.4]
+├── scipy [required: >=1.1.0, installed: 1.16.3]
+│   └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+├── scikit-learn [required: >=1.0.0, installed: 1.8.0]
+│   ├── numpy [required: >=1.24.1, installed: 1.26.4]
+│   ├── scipy [required: >=1.10.0, installed: 1.16.3]
+│   │   └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+│   ├── joblib [required: >=1.3.0, installed: 1.3.2]
+│   └── threadpoolctl [required: >=3.2.0, installed: 3.1.0]
+└── packaging [required: >=21.3, installed: 24.0]
+screen-resolution-extra==0.0.0
+seaborn==0.13.2
+├── numpy [required: >=1.20,!=1.24.0, installed: 1.26.4]
+├── pandas [required: >=1.2, installed: 2.3.3]
+│   ├── numpy [required: >=1.26.0, installed: 1.26.4]
+│   ├── python-dateutil [required: >=2.8.2, installed: 2.8.2]
+│   ├── pytz [required: >=2020.1, installed: 2024.1]
+│   └── tzdata [required: >=2022.7, installed: ?]
+└── matplotlib [required: >=3.4,!=3.6.1, installed: 3.10.8]
+    ├── contourpy [required: >=1.0.1, installed: 1.3.3]
+    │   └── numpy [required: >=1.25, installed: 1.26.4]
+    ├── cycler [required: >=0.10, installed: 0.12.1]
+    ├── fonttools [required: >=4.22.0, installed: ?]
+    ├── kiwisolver [required: >=1.3.1, installed: 1.4.9]
+    ├── numpy [required: >=1.23, installed: 1.26.4]
+    ├── packaging [required: >=20.0, installed: 24.0]
+    ├── pillow [required: >=8, installed: 10.2.0]
+    ├── pyparsing [required: >=3, installed: 3.1.1]
+    └── python-dateutil [required: >=2.7, installed: 2.8.2]
+shgo==1.0.0
+├── scipy [required: Any, installed: 1.16.3]
+│   └── numpy [required: >=1.25.2,<2.6, installed: 1.26.4]
+├── numpy [required: Any, installed: 1.26.4]
+├── pytest [required: Any, installed: 7.4.4]
+│   ├── iniconfig [required: Any, installed: 1.1.1]
+│   ├── packaging [required: Any, installed: 24.0]
+│   └── pluggy [required: >=0.12,<2.0, installed: 1.4.0]
+└── pytest-cov [required: Any, installed: ?]
+simplejson==3.19.2
+smmap==6.0.0
+ssh-import-id==5.11
+systemd-python==235
+tables==3.9.2
+├── blosc2 [required: >=2.3.0, installed: ?]
+├── numexpr [required: >=2.6.2, installed: 2.9.0]
+│   └── numpy [required: >=1.13.3, installed: 1.26.4]
+├── numpy [required: >=1.19.0, installed: 1.26.4]
+├── packaging [required: Any, installed: 24.0]
+└── py-cpuinfo [required: Any, installed: 9.0.0]
+tasepy==0.2.2
+├── requests [required: ~=2.32.5, installed: 2.32.5]
+│   ├── charset-normalizer [required: >=2,<4, installed: 3.4.4]
+│   ├── idna [required: >=2.5,<4, installed: 3.11]
+│   ├── urllib3 [required: >=1.21.1,<3, installed: 2.6.3]
+│   └── certifi [required: >=2017.4.17, installed: 2026.1.4]
+├── pydantic [required: ~=2.12.5, installed: 2.12.5]
+│   ├── annotated-types [required: >=0.6.0, installed: 0.7.0]
+│   ├── pydantic_core [required: ==2.41.5, installed: 2.41.5]
+│   │   └── typing_extensions [required: >=4.14.1, installed: 4.15.0]
+│   ├── typing_extensions [required: >=4.14.1, installed: 4.15.0]
+│   └── typing-inspection [required: >=0.4.2, installed: 0.4.2]
+│       └── typing_extensions [required: >=4.12.0, installed: 4.15.0]
+├── PyYAML [required: ~=6.0.3, installed: 6.0.1]
+├── typeguard [required: ~=4.4.4, installed: 4.4.4]
+│   └── typing_extensions [required: >=4.14.0, installed: 4.15.0]
+├── beautifulsoup4 [required: ~=4.13.5, installed: 4.12.3]
+│   └── soupsieve [required: >1.2, installed: 2.8.3]
+└── brotli [required: ~=1.2.0, installed: 1.2.0]
+tensorflow==2.20.0
+├── absl-py [required: >=1.0.0, installed: 2.3.1]
+├── astunparse [required: >=1.6.0, installed: 1.6.3]
+│   ├── wheel [required: >=0.23.0,<1.0, installed: 0.42.0]
+│   └── six [required: >=1.6.1,<2.0, installed: 1.16.0]
+├── flatbuffers [required: >=24.3.25, installed: 25.12.19]
+├── gast [required: >=0.2.1,!=0.5.2,!=0.5.1,!=0.5.0, installed: 0.7.0]
+├── google-pasta [required: >=0.1.1, installed: 0.2.0]
+│   └── six [required: Any, installed: 1.16.0]
+├── libclang [required: >=13.0.0, installed: ?]
+├── opt_einsum [required: >=2.3.2, installed: 3.4.0]
+├── packaging [required: Any, installed: 24.0]
+├── protobuf [required: >=5.28.0, installed: ?]
+├── requests [required: >=2.21.0,<3, installed: 2.32.5]
+│   ├── charset-normalizer [required: >=2,<4, installed: 3.4.4]
+│   ├── idna [required: >=2.5,<4, installed: 3.11]
+│   ├── urllib3 [required: >=1.21.1,<3, installed: 2.6.3]
+│   └── certifi [required: >=2017.4.17, installed: 2026.1.4]
+├── setuptools [required: Any, installed: 80.10.1]
+├── six [required: >=1.12.0, installed: 1.16.0]
+├── termcolor [required: >=1.1.0, installed: 3.3.0]
+├── typing_extensions [required: >=3.6.6, installed: 4.15.0]
+├── wrapt [required: >=1.11.0, installed: 2.0.1]
+├── grpcio [required: >=1.24.3,<2.0, installed: 1.76.0]
+│   └── typing_extensions [required: ~=4.12, installed: 4.15.0]
+├── tensorboard [required: ~=2.20.0, installed: 2.20.0]
+│   ├── absl-py [required: >=0.4, installed: 2.3.1]
+│   ├── grpcio [required: >=1.48.2, installed: 1.76.0]
+│   │   └── typing_extensions [required: ~=4.12, installed: 4.15.0]
+│   ├── markdown [required: >=2.6.8, installed: ?]
+│   ├── numpy [required: >=1.12.0, installed: 1.26.4]
+│   ├── packaging [required: Any, installed: 24.0]
+│   ├── pillow [required: Any, installed: 10.2.0]
+│   ├── protobuf [required: >=3.19.6,!=4.24.0, installed: ?]
+│   ├── setuptools [required: >=41.0.0, installed: 80.10.1]
+│   ├── tensorboard-data-server [required: >=0.7.0,<0.8.0, installed: 0.7.2]
+│   └── werkzeug [required: >=1.0.1, installed: ?]
+├── keras [required: >=3.10.0, installed: 3.13.1]
+│   ├── absl-py [required: Any, installed: 2.3.1]
+│   ├── numpy [required: Any, installed: 1.26.4]
+│   ├── rich [required: Any, installed: 13.7.1]
+│   │   ├── markdown-it-py [required: >=2.2.0, installed: 3.0.0]
+│   │   │   └── mdurl [required: ~=0.1, installed: 0.1.2]
+│   │   └── Pygments [required: >=2.13.0,<3.0.0, installed: 2.17.2]
+│   ├── namex [required: Any, installed: ?]
+│   ├── h5py [required: Any, installed: 3.15.1]
+│   │   └── numpy [required: >=1.21.2, installed: 1.26.4]
+│   ├── optree [required: Any, installed: 0.18.0]
+│   │   └── typing_extensions [required: >=4.6.0, installed: 4.15.0]
+│   ├── ml_dtypes [required: Any, installed: 0.5.4]
+│   │   ├── numpy [required: >=1.21, installed: 1.26.4]
+│   │   ├── numpy [required: >=1.21.2, installed: 1.26.4]
+│   │   ├── numpy [required: >=1.23.3, installed: 1.26.4]
+│   │   └── numpy [required: >=1.26.0, installed: 1.26.4]
+│   └── packaging [required: Any, installed: 24.0]
+├── numpy [required: >=1.26.0, installed: 1.26.4]
+├── h5py [required: >=3.11.0, installed: 3.15.1]
+│   └── numpy [required: >=1.21.2, installed: 1.26.4]
+└── ml_dtypes [required: >=0.5.1,<1.0.0, installed: 0.5.4]
+    ├── numpy [required: >=1.21, installed: 1.26.4]
+    ├── numpy [required: >=1.21.2, installed: 1.26.4]
+    ├── numpy [required: >=1.23.3, installed: 1.26.4]
+    └── numpy [required: >=1.26.0, installed: 1.26.4]
+tf2onnx==1.16.1
+├── numpy [required: >=1.14.1, installed: 1.26.4]
+├── onnx [required: >=1.4.1, installed: 1.20.1]
+│   ├── numpy [required: >=1.23.2, installed: 1.26.4]
+│   ├── protobuf [required: >=4.25.1, installed: ?]
+│   ├── typing_extensions [required: >=4.7.1, installed: 4.15.0]
+│   └── ml_dtypes [required: >=0.5.0, installed: 0.5.4]
+│       ├── numpy [required: >=1.21, installed: 1.26.4]
+│       ├── numpy [required: >=1.21.2, installed: 1.26.4]
+│       ├── numpy [required: >=1.23.3, installed: 1.26.4]
+│       └── numpy [required: >=1.26.0, installed: 1.26.4]
+├── requests [required: Any, installed: 2.32.5]
+│   ├── charset-normalizer [required: >=2,<4, installed: 3.4.4]
+│   ├── idna [required: >=2.5,<4, installed: 3.11]
+│   ├── urllib3 [required: >=1.21.1,<3, installed: 2.6.3]
+│   └── certifi [required: >=2017.4.17, installed: 2026.1.4]
+├── six [required: Any, installed: 1.16.0]
+├── flatbuffers [required: >=1.12, installed: 25.12.19]
+└── protobuf [required: ~=3.20, installed: ?]
+torch==2.10.0
+├── filelock [required: Any, installed: 3.20.3]
+├── typing_extensions [required: >=4.10.0, installed: 4.15.0]
+├── setuptools [required: Any, installed: 80.10.1]
+├── sympy [required: >=1.13.3, installed: 1.14.0]
+│   └── mpmath [required: >=1.1.0,<1.4, installed: 1.3.0]
+├── networkx [required: >=2.5.1, installed: 3.6.1]
+├── Jinja2 [required: Any, installed: 3.1.6]
+│   └── MarkupSafe [required: >=2.0, installed: 3.0.3]
+├── fsspec [required: >=0.8.5, installed: 2026.1.0]
+├── cuda-bindings [required: ==12.9.4, installed: 12.9.4]
+│   └── cuda-pathfinder [required: ~=1.1, installed: 1.3.3]
+├── nvidia-cuda-nvrtc-cu12 [required: ==12.8.93, installed: 12.8.93]
+├── nvidia-cuda-runtime-cu12 [required: ==12.8.90, installed: 12.8.90]
+├── nvidia-cuda-cupti-cu12 [required: ==12.8.90, installed: 12.8.90]
+├── nvidia-cudnn-cu12 [required: ==9.10.2.21, installed: 9.10.2.21]
+│   └── nvidia-cublas-cu12 [required: Any, installed: 12.8.4.1]
+├── nvidia-cublas-cu12 [required: ==12.8.4.1, installed: 12.8.4.1]
+├── nvidia-cufft-cu12 [required: ==11.3.3.83, installed: 11.3.3.83]
+│   └── nvidia-nvjitlink-cu12 [required: Any, installed: 12.8.93]
+├── nvidia-curand-cu12 [required: ==10.3.9.90, installed: 10.3.9.90]
+├── nvidia-cusolver-cu12 [required: ==11.7.3.90, installed: 11.7.3.90]
+│   ├── nvidia-cublas-cu12 [required: Any, installed: 12.8.4.1]
+│   ├── nvidia-nvjitlink-cu12 [required: Any, installed: 12.8.93]
+│   └── nvidia-cusparse-cu12 [required: Any, installed: 12.5.8.93]
+│       └── nvidia-nvjitlink-cu12 [required: Any, installed: 12.8.93]
+├── nvidia-cusparse-cu12 [required: ==12.5.8.93, installed: 12.5.8.93]
+│   └── nvidia-nvjitlink-cu12 [required: Any, installed: 12.8.93]
+├── nvidia-cusparselt-cu12 [required: ==0.7.1, installed: 0.7.1]
+├── nvidia-nccl-cu12 [required: ==2.27.5, installed: 2.27.5]
+├── nvidia-nvshmem-cu12 [required: ==3.4.5, installed: 3.4.5]
+├── nvidia-nvtx-cu12 [required: ==12.8.90, installed: 12.8.90]
+├── nvidia-nvjitlink-cu12 [required: ==12.8.93, installed: 12.8.93]
+├── nvidia-cufile-cu12 [required: ==1.13.1.3, installed: 1.13.1.3]
+└── triton [required: ==3.6.0, installed: 3.6.0]
+typer==0.21.1
+├── click [required: >=8.0.0, installed: 8.1.6]
+├── typing_extensions [required: >=3.7.4.3, installed: 4.15.0]
+├── shellingham [required: >=1.3.0, installed: ?]
+└── rich [required: >=10.11.0, installed: 13.7.1]
+    ├── markdown-it-py [required: >=2.2.0, installed: 3.0.0]
+    │   └── mdurl [required: ~=0.1, installed: 0.1.2]
+    └── Pygments [required: >=2.13.0,<3.0.0, installed: 2.17.2]
+ubuntu-drivers-common==0.0.0
+ubuntu-pro-client==8001
+ufw==0.36.2
+unattended-upgrades==0.1
+wadllib==1.3.6
+webencodings==0.5.1
+xdg==5
+xkit==0.0.0

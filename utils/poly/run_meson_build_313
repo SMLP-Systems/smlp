@@ -1,0 +1,11 @@
+#!/usr/bin/tcsh -f
+set script_path=`realpath $0 | xargs dirname`
+set build_dir=$script_path/build
+set output_dir=$HOME/.local_smlp
+set kay_dir=$output_dir/kay
+\rm -rf $build_dir $output_dir >& /dev/null
+git clone ssh://git@github.com/fbrausse/kay $kay_dir
+/usr/local/lib/python3.13/dist-packages/bin/meson setup \
+    --wipe \
+    -Dkay-prefix=$kay_dir \
+    --prefix $output_dir $build_dir

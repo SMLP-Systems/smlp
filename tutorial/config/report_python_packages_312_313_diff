@@ -1,0 +1,9 @@
+#!/usr/bin/tcsh -f
+set script_path=`realpath $0 | xargs dirname`
+foreach p ( `cut -d= -f1 $script_path/python_packages_313.txt` )
+    set s12=`grep ^${p}= $script_path/python_packages_312.txt`
+    set s13=`grep ^${p}= $script_path/python_packages_313.txt`
+    if( "" == "$s12" ) set s12="NONE"
+    if( "" == "$s13" ) set s13="NONE"
+    if ( "$s12" != "$s13" ) echo $s12 $s13
+end

@@ -1,0 +1,15 @@
+{
+  "version": "1.2",
+  "variables": [
+    {"label":"X0", "interface":"knob", "type":"real", "range":[0,1], "rad-abs": 0.0},
+    {"label":"X1", "interface":"knob", "type":"real", "range":[0,1], "rad-abs": 0.0},
+    {"label":"X2", "interface":"knob", "type":"real", "range":[0,1], "rad-abs": 0.0},
+    {"label":"F1", "interface":"output", "type":"real"},
+    {"label":"F2", "interface":"output", "type":"real"}
+  ],
+  "beta": "F1*0.75+1.0-F1**2-F2**2<=0 and F2*0.75+1.0-F1**2-F2**2<=0",
+  "objectives": {
+    "objective1": "-F1",
+    "objective2": "-F2"
+  }
+}

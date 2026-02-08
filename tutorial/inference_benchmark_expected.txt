@@ -1,0 +1,32 @@
+Optimizing with Neural Network Model using SHGO
+============================================================
+[Elapsed time: 12.339] Elapsed CPU time: 12.324 seconds
+
+Optimization Results (Model):
+Success: True
+Message: Optimization terminated successfully.
+
+Optimal solution (x*):
+  x = [3.75      3.75      3.7497237 3.75     ]
+--
+Optimizing with ONNX Neural Network Model using SHGO
+============================================================
+[Elapsed time: 0.430] Elapsed CPU time: 0.503 seconds
+
+Optimization Results (ONNX Model):
+Success: True
+Message: Optimization terminated successfully.
+
+Optimal solution (x*):
+  x = [3.75      3.75      3.7499218 3.75     ]
+--
+Optimizing with ONNX Neural Network Model using SHGO
+============================================================
+[Elapsed time: 0.443] Elapsed CPU time: 0.508 seconds
+
+Optimization Results (ONNX Model):
+Success: True
+Message: Optimization terminated successfully.
+
+Optimal solution (x*):
+  x = [3.75       3.75       3.75179509 3.75      ]

@@ -1,0 +1,19 @@
+{
+	"objective1": {
+		"X1": 0.89453125,
+		"X2": 0.4470043182373047,
+		"Y1": -16.97213211372402,
+		"objective1_scaled": 1.9174128063166218,
+		"objective1": 16.97213211372402,
+		"threshold_lo_scaled": 1.9174127578735352,
+		"threshold_lo": 16.97213121752704,
+		"threshold_up_scaled": 1.9174132347106934,
+		"threshold_up": 16.972140039013272,
+		"max_in_data": -2.5050075100120686e-06,
+		"min_in_data": -18.5
+	},
+	"smlp_execution": "completed",
+	"interface_consistent": "true",
+	"model_consistent": "true",
+	"synthesis_feasible": "true"
+}

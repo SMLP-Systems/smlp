@@ -1,0 +1,21 @@
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash ./Miniconda3-latest-Linux-x86_64.sh
+conda install -c conda-forge ipopt scip
+Ipopt==3.14.19 (Linux x86_64), ASL(20231111)
+SCIP==10.0.0 [precision: 8 byte] [memory: block] [mode: optimized] [LP solver: SoPlex 8.0.0] [GitHash: 0c80fdd8e9]
+  External libraries: 
+    SoPlex 8.0.0         Linear programming solver developed at Zuse Institute Berlin (soplex.zib.de) [GitHash: 2207cfb2]
+    CppAD 20180000.0     Algorithmic Differentiation of C++ algorithms developed by B. Bell (github.com/coin-or/CppAD)
+    ZLIB 1.3.1           General purpose compression library by J. Gailly and M. Adler (zlib.net)
+    MPFR 4.2.1           GNU Multiple Precision Floating-Point Reliable Library (mpfr.org)
+    Boost 1.88.0         Boost C++ Libraries (boost.org)
+    TinyCThread 1.2      small portable implementation of the C11 threads API (tinycthread.github.io)
+    GMP 6.3.0            GNU Multiple Precision Arithmetic Library developed by T. Granlund (gmplib.org)
+    ZIMPL 3.7.0          Zuse Institute Mathematical Programming Language developed by T. Koch (zimpl.zib.de)
+    AMPL/MP 4.0.3        AMPL .nl file reader library (github.com/ampl/mp)
+    PaPILO 3.0.0         parallel presolve for integer and linear optimization (github.com/scipopt/papilo) (built with TBB) [GitHash: 4cbdc327]
+    Nauty 2.8.8          Computing Graph Automorphism Groups by Brendan D. McKay (users.cecs.anu.edu.au/~bdm/nauty)
+    sassy 2.0            Symmetry preprocessor by Markus Anders (github.com/markusa4/sassy)
+    Ipopt 3.14.19        Interior Point Optimizer developed by A. Waechter et.al. (github.com/coin-or/Ipopt)
+    Compiler: gcc 14.3.0
+  

@@ -6,17 +6,19 @@ import numpy as np
 import pickle
 import json
 import os
+from sys import version_info
 
 from sklearn.metrics import mean_squared_error, r2_score
-from pycaret.regression import predict_model as caret_predict_model
-from pycaret.regression import save_model as caret_save_model
-from pycaret.regression import load_model as caret_load_model
+if version_info.major < 4 and version_info.minor < 12:
+    from pycaret.regression import predict_model as caret_predict_model
+    from pycaret.regression import save_model as caret_save_model
+    from pycaret.regression import load_model as caret_load_model
+    from smlp_py.train_caret import ModelCaret 
 
 from keras.models import load_model as keras_load_model
 
 from smlp_py.smlp_plots import evaluate_prediction
 from smlp_py.train_keras import ModelKeras 
-from smlp_py.train_caret import ModelCaret 
 from smlp_py.train_sklearn import ModelSklearn
 from smlp_py.smlp_utils import str_to_bool
 
@@ -75,18 +77,23 @@ class SmlpModels:
         }
         self._instKeras = ModelKeras()
         self._instSklearn = ModelSklearn()
-        self._instCaret = ModelCaret()
+        if version_info.major < 4 and version_info.minor < 12:
+            self._instCaret = ModelCaret()
+            self._caret_dict = self._instCaret.get_caret_hparam_default_dict()
         self._sklearn_dict = self._instSklearn.get_sklearn_hparam_default_dict()
-        self._caret_dict = self._instCaret.get_caret_hparam_default_dict()
         self._keras_dict = self._instKeras.get_keras_hparam_default_dict()
-        self.model_params_dict = self._model_params_common_dict | self._keras_dict | self._sklearn_dict | self._caret_dict
+        if version_info.major < 4 and version_info.minor < 12:
+            self.model_params_dict = self._model_params_common_dict | self._keras_dict | self._sklearn_dict | self._caret_dict 
+        else:
+            self.model_params_dict = self._model_params_common_dict | self._keras_dict | self._sklearn_dict
     
     # report_file_prefix is a string used as prefix in all report files of SMLP
     def set_report_file_prefix(self, report_file_prefix):
         self.report_file_prefix = report_file_prefix
         self._instKeras.report_file_prefix = report_file_prefix
         self._instSklearn.report_file_prefix = report_file_prefix
-        self._instCaret.report_file_prefix = report_file_prefix
+        if version_info.major < 4 and version_info.minor < 12:
+            self._instCaret.report_file_prefix = report_file_prefix
         
     # model_file_prefix is a string used as prefix in all outut files of SMLP that are used to 
     # save a trained ML model and to re-run the model on new data (without need for re-training)
@@ -94,7 +101,8 @@ class SmlpModels:
         self.model_file_prefix = model_file_prefix
         self._instKeras.model_file_prefix = model_file_prefix
         self._instSklearn.model_file_prefix = model_file_prefix
-        self._instCaret.model_file_prefix = model_file_prefix
+        if version_info.major < 4 and version_info.minor < 12:
+            self._instCaret.model_file_prefix = model_file_prefix
     
     # required for generating file names of the reports containing model prediction results;
     # might cover multiple models (algorithms like NN, DT, RF) as well as multiple responses
@@ -263,7 +271,8 @@ class SmlpModels:
     def set_logger(self, logger):
         self._model_logger = logger 
         self._instKeras.set_logger(logger)
-        self._instCaret.set_logger(logger)
+        if version_info.major < 4 and version_info.minor < 12:
+            self._instCaret.set_logger(logger)
         self._instSklearn.set_logger(logger)
     
     # generate out_dir/prefix_data_{train/test/labeled/new/}_prediction_precision.csv and 

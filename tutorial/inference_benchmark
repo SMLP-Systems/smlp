@@ -1,0 +1,11 @@
+#!/usr/bin/tcsh -f
+set log=`realpath $0 | xargs dirname`/run_smlp_tutorial_clone_and_examples_expected.log
+set s1="Optimizing with Neural Network Model using SHGO"
+set s2="Optimizing with Keras ONNX Neural Network Model using SHGO"
+set s3="Optimizing with PyTorch ONNX Neural Network Model using SHGO"
+set t1=`grep -A9 "^$s1" $log | grep Elapsed | awk '{print $7}'`
+set t2=`grep -A9 "^$s2" $log | grep Elapsed | awk '{print $7}'`
+set t3=`grep -A9 "^$s3" $log | grep Elapsed | awk '{print $7}'`
+echo "$s1 :              CPU time = $t1"
+echo "$s2 :   CPU time = $t2, speedup = `echo '' | awk -v t1=$t1 -v t2=$t2 '{print(t1/t2)}'`"
+echo "$s3 : CPU time = $t3, speedup = `echo '' | awk -v t1=$t1 -v t3=$t3 '{print(t1/t3)}'`"

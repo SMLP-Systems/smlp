@@ -155,7 +155,7 @@ smlp_logger - INFO - Preparing training data for modeling: end
 
 smlp_logger - INFO - Saving data bounds into file:./Test128_smlp_toy_ctg_num_resp_data_bounds.json
 
-smlp_logger - INFO - {'x': {'min': 9.0, 'max': 12.0}, 'p1': {'min': 2.0, 'max': 4.0}, 'p2': {'min': 3.0, 'max': 8.0}, 'y1': {'min': 5.0, 'max': 9.0}, 'y2': {'min': 5.0, 'max': 9.0}}
+smlp_logger - INFO - {'x': {'min': np.float64(9.0), 'max': np.float64(12.0)}, 'p1': {'min': np.float64(2.0), 'max': np.float64(4.0)}, 'p2': {'min': np.float64(3.0), 'max': np.float64(8.0)}, 'y1': {'min': np.float64(5.0), 'max': np.float64(9.0)}, 'y2': {'min': np.float64(5.0), 'max': np.float64(9.0)}}
 
 smlp_logger - INFO - TRAIN MODEL
 
@@ -259,9 +259,9 @@ smlp_logger - INFO - Input and knob interface constraints are consistent
 
 smlp_logger - INFO - Building model terms: Start
 
-smlp_logger - INFO - Model operator counts for y1: {'add': 10, 'mul': 31, 'const': 42, 'sub': 15, 'var': 15}
+smlp_logger - INFO - Model operator counts for y1: {'add': 11, 'mul': 31, 'const': 43, 'sub': 15, 'var': 15}
 
-smlp_logger - INFO - Model operator counts for y2: {'add': 10, 'mul': 31, 'const': 42, 'sub': 15, 'var': 15}
+smlp_logger - INFO - Model operator counts for y2: {'add': 11, 'mul': 31, 'const': 43, 'sub': 15, 'var': 15}
 
 smlp_logger - INFO - Building model terms: End
 
@@ -297,9 +297,7 @@ smlp_logger - INFO - Witness to query query_stable_witness is stable for radii {
 smlp_logger - INFO - Certifying stability of witness for query query_unstable_witness:
    {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}
 
-smlp_logger - INFO - Witness to query query_unstable_witness is a valid witness; checking its stability
-
-smlp_logger - INFO - Witness to query query_unstable_witness is not stable for radii {'p1': {'rad-abs': None, 'rad-rel': Fraction(1, 10)}, 'p2': {'rad-abs': Fraction(1, 5), 'rad-rel': None}}
+smlp_logger - INFO - Witness to query query_unstable_witness is not a valid witness (even without stability requirements)
 
 smlp_logger - INFO - Certifying stability of witness for query query_infeasible_witness:
    {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}

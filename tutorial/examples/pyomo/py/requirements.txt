@@ -1,0 +1,8 @@
+# Minimal Python dependencie for the examples and tests in this directorys
+matplotlib
+pandas
+pymoo
+pyomo
+pytest
+scikit-learn
+torch

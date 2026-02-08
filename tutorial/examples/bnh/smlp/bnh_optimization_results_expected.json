@@ -1,0 +1,46 @@
+{
+	"objective1": {
+		"value_in_config": -4.062950000000001,
+		"threshold_scaled": 0.9986305236816406,
+		"threshold": -4.062995910644531,
+		"max_in_data": -4.0,
+		"min_in_data": -50.0
+	},
+	"X1": {
+		"value_in_config": 4.9375
+	},
+	"X2": {
+		"value_in_config": 2.9375
+	},
+	"F1": {
+		"value_in_config": 133.65179999999998
+	},
+	"F2": {
+		"value_in_config": 4.062950000000001
+	},
+	"objective1_scaled": {
+		"value_in_config": 0.9986315217391304
+	},
+	"threshold_lo_scaled": {
+		"value_in_config": 0.9986305236816406
+	},
+	"threshold_lo": {
+		"value_in_config": 0.9986305236816406
+	},
+	"threshold_up_scaled": {
+		"value_in_config": 0.9986343383789062
+	},
+	"threshold_up": {
+		"value_in_config": 0.9986343383789062
+	},
+	"max_in_data": {
+		"value_in_config": 1.0
+	},
+	"min_in_data": {
+		"value_in_config": 0.0
+	},
+	"smlp_execution": "completed",
+	"interface_consistent": "true",
+	"model_consistent": "true",
+	"synthesis_feasible": "true"
+}
