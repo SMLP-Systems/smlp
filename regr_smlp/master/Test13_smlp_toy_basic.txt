@@ -97,7 +97,7 @@ smlp_logger - INFO - Preparing training data for modeling: end
 
 smlp_logger - INFO - Saving data bounds into file:./Test13_smlp_toy_basic_data_bounds.json
 
-smlp_logger - INFO - {'x1': {'min': -0.8218, 'max': 9.546}, 'x2': {'min': -1.0, 'max': 1.0}, 'p1': {'min': 0.1, 'max': 10.0}, 'p2': {'min': 3.0, 'max': 7.0}, 'y1': {'min': 0.24, 'max': 10.7007}, 'y2': {'min': 1.12, 'max': 12.02}}
+smlp_logger - INFO - {'x1': {'min': np.float64(-0.8218), 'max': np.float64(9.546)}, 'x2': {'min': np.float64(-1.0), 'max': np.float64(1.0)}, 'p1': {'min': np.float64(0.1), 'max': np.float64(10.0)}, 'p2': {'min': np.float64(3.0), 'max': np.float64(7.0)}, 'y1': {'min': np.float64(0.24), 'max': np.float64(10.7007)}, 'y2': {'min': np.float64(1.12), 'max': np.float64(12.02)}}
 
 smlp_logger - INFO - TRAIN MODEL
 
@@ -123,42 +123,41 @@ smlp_logger - INFO - output layer of size 1
 
 smlp_logger - INFO - model summary: start
 
-smlp_logger - INFO - Model: "model"
-__________________________________________________________________________________________________
- Layer (type)                Output Shape                 Param #   Connected to                  
-==================================================================================================
- input_1 (InputLayer)        [(None, 4)]                  0         []                            
-                                                                                                  
- dense (Dense)               (None, 8)                    40        ['input_1[0][0]']             
-                                                                                                  
- dense_1 (Dense)             (None, 4)                    36        ['dense[0][0]']               
-                                                                                                  
- y1 (Dense)                  (None, 1)                    5         ['dense_1[0][0]']             
-                                                                                                  
- y2 (Dense)                  (None, 1)                    5         ['dense_1[0][0]']             
-                                                                                                  
-==================================================================================================
-Total params: 86 (344.00 Byte)
-Trainable params: 86 (344.00 Byte)
-Non-trainable params: 0 (0.00 Byte)
-__________________________________________________________________________________________________
+smlp_logger - INFO - Model: "functional"
+┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Layer (type)        ┃ Output Shape      ┃    Param # ┃ Connected to      ┃
+┡━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ input_layer         │ (None, 4)         │          0 │ -                 │
+│ (InputLayer)        │                   │            │                   │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ dense (Dense)       │ (None, 8)         │         40 │ input_layer[0][0] │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ dense_1 (Dense)     │ (None, 4)         │         36 │ dense[0][0]       │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ y1 (Dense)          │ (None, 1)         │          5 │ dense_1[0][0]     │
+├─────────────────────┼───────────────────┼────────────┼───────────────────┤
+│ y2 (Dense)          │ (None, 1)         │          5 │ dense_1[0][0]     │
+└─────────────────────┴───────────────────┴────────────┴───────────────────┘
+ Total params: 86 (344.00 B)
+ Trainable params: 86 (344.00 B)
+ Non-trainable params: 0 (0.00 B)
 
 
-smlp_logger - INFO - Optimizer: {'name': 'Adam', 'weight_decay': None, 'clipnorm': None, 'global_clipnorm': None, 'clipvalue': None, 'use_ema': False, 'ema_momentum': 0.99, 'ema_overwrite_frequency': None, 'jit_compile': False, 'is_legacy_optimizer': False, 'learning_rate': 0.001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-07, 'amsgrad': False}
+smlp_logger - INFO - Optimizer: {'name': 'adam', 'learning_rate': 0.0010000000474974513, 'weight_decay': None, 'clipnorm': None, 'global_clipnorm': None, 'clipvalue': None, 'use_ema': False, 'ema_momentum': 0.99, 'ema_overwrite_frequency': None, 'loss_scale_factor': None, 'gradient_accumulation_steps': None, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-07, 'amsgrad': False}
 
 smlp_logger - INFO - Learning rate: 0.001
 
 smlp_logger - INFO - Loss function: mse
 
-smlp_logger - INFO - Metrics: ['mse']
+smlp_logger - INFO - Metrics: ['loss', 'compile_metrics']
 
-smlp_logger - INFO - Model configuration: {'name': 'model', 'trainable': True, 'layers': [{'module': 'keras.layers', 'class_name': 'InputLayer', 'config': {'batch_input_shape': (None, 4), 'dtype': 'float32', 'sparse': False, 'ragged': False, 'name': 'input_1'}, 'registered_name': None, 'name': 'input_1', 'inbound_nodes': []}, {'module': 'keras.layers', 'class_name': 'Dense', 'config': {'name': 'dense', 'trainable': True, 'dtype': 'float32', 'units': 8, 'activation': 'relu', 'use_bias': True, 'kernel_initializer': {'module': 'keras.initializers', 'class_name': 'GlorotUniform', 'config': {'seed': None}, 'registered_name': None}, 'bias_initializer': {'module': 'keras.initializers', 'class_name': 'Zeros', 'config': {}, 'registered_name': None}, 'kernel_regularizer': None, 'bias_regularizer': None, 'activity_regularizer': None, 'kernel_constraint': None, 'bias_constraint': None}, 'registered_name': None, 'build_config': {'input_shape': (None, 4)}, 'name': 'dense', 'inbound_nodes': [[['input_1', 0, 0, {}]]]}, {'module': 'keras.layers', 'class_name': 'Dense', 'config': {'name': 'dense_1', 'trainable': True, 'dtype': 'float32', 'units': 4, 'activation': 'relu', 'use_bias': True, 'kernel_initializer': {'module': 'keras.initializers', 'class_name': 'GlorotUniform', 'config': {'seed': None}, 'registered_name': None}, 'bias_initializer': {'module': 'keras.initializers', 'class_name': 'Zeros', 'config': {}, 'registered_name': None}, 'kernel_regularizer': None, 'bias_regularizer': None, 'activity_regularizer': None, 'kernel_constraint': None, 'bias_constraint': None}, 'registered_name': None, 'build_config': {'input_shape': (None, 8)}, 'name': 'dense_1', 'inbound_nodes': [[['dense', 0, 0, {}]]]}, {'module': 'keras.layers', 'class_name': 'Dense', 'config': {'name': 'y1', 'trainable': True, 'dtype': 'float32', 'units': 1, 'activation': 'linear', 'use_bias': True, 'kernel_initializer': {'module': 'keras.initializers', 'class_name': 'GlorotUniform', 'config': {'seed': None}, 'registered_name': None}, 'bias_initializer': {'module': 'keras.initializers', 'class_name': 'Zeros', 'config': {}, 'registered_name': None}, 'kernel_regularizer': None, 'bias_regularizer': None, 'activity_regularizer': None, 'kernel_constraint': None, 'bias_constraint': None}, 'registered_name': None, 'build_config': {'input_shape': (None, 4)}, 'name': 'y1', 'inbound_nodes': [[['dense_1', 0, 0, {}]]]}, {'module': 'keras.layers', 'class_name': 'Dense', 'config': {'name': 'y2', 'trainable': True, 'dtype': 'float32', 'units': 1, 'activation': 'linear', 'use_bias': True, 'kernel_initializer': {'module': 'keras.initializers', 'class_name': 'GlorotUniform', 'config': {'seed': None}, 'registered_name': None}, 'bias_initializer': {'module': 'keras.initializers', 'class_name': 'Zeros', 'config': {}, 'registered_name': None}, 'kernel_regularizer': None, 'bias_regularizer': None, 'activity_regularizer': None, 'kernel_constraint': None, 'bias_constraint': None}, 'registered_name': None, 'build_config': {'input_shape': (None, 4)}, 'name': 'y2', 'inbound_nodes': [[['dense_1', 0, 0, {}]]]}], 'input_layers': [['input_1', 0, 0]], 'output_layers': [['y1', 0, 0], ['y2', 0, 0]]}
+smlp_logger - INFO - Model configuration: {'name': 'functional', 'trainable': True, 'layers': [{'module': 'keras.layers', 'class_name': 'InputLayer', 'config': {'batch_shape': (None, 4), 'dtype': 'float32', 'sparse': False, 'ragged': False, 'name': 'input_layer', 'optional': False}, 'registered_name': None, 'name': 'input_layer', 'inbound_nodes': []}, {'module': 'keras.layers', 'class_name': 'Dense', 'config': {'name': 'dense', 'trainable': True, 'dtype': {'module': 'keras', 'class_name': 'DTypePolicy', 'config': {'name': 'float32'}, 'registered_name': None}, 'units': 8, 'activation': 'relu', 'use_bias': True, 'kernel_initializer': {'module': 'keras.initializers', 'class_name': 'GlorotUniform', 'config': {'seed': None}, 'registered_name': None}, 'bias_initializer': {'module': 'keras.initializers', 'class_name': 'Zeros', 'config': {}, 'registered_name': None}, 'kernel_regularizer': None, 'bias_regularizer': None, 'kernel_constraint': None, 'bias_constraint': None, 'quantization_config': None}, 'registered_name': None, 'build_config': {'input_shape': (None, 4)}, 'name': 'dense', 'inbound_nodes': [{'args': ({'class_name': '__keras_tensor__', 'config': {'shape': (None, 4), 'dtype': 'float32', 'keras_history': ['input_layer', 0, 0]}},), 'kwargs': {}}]}, {'module': 'keras.layers', 'class_name': 'Dense', 'config': {'name': 'dense_1', 'trainable': True, 'dtype': {'module': 'keras', 'class_name': 'DTypePolicy', 'config': {'name': 'float32'}, 'registered_name': None}, 'units': 4, 'activation': 'relu', 'use_bias': True, 'kernel_initializer': {'module': 'keras.initializers', 'class_name': 'GlorotUniform', 'config': {'seed': None}, 'registered_name': None}, 'bias_initializer': {'module': 'keras.initializers', 'class_name': 'Zeros', 'config': {}, 'registered_name': None}, 'kernel_regularizer': None, 'bias_regularizer': None, 'kernel_constraint': None, 'bias_constraint': None, 'quantization_config': None}, 'registered_name': None, 'build_config': {'input_shape': (None, 8)}, 'name': 'dense_1', 'inbound_nodes': [{'args': ({'class_name': '__keras_tensor__', 'config': {'shape': (None, 8), 'dtype': 'float32', 'keras_history': ['dense', 0, 0]}},), 'kwargs': {}}]}, {'module': 'keras.layers', 'class_name': 'Dense', 'config': {'name': 'y1', 'trainable': True, 'dtype': {'module': 'keras', 'class_name': 'DTypePolicy', 'config': {'name': 'float32'}, 'registered_name': None}, 'units': 1, 'activation': 'linear', 'use_bias': True, 'kernel_initializer': {'module': 'keras.initializers', 'class_name': 'GlorotUniform', 'config': {'seed': None}, 'registered_name': None}, 'bias_initializer': {'module': 'keras.initializers', 'class_name': 'Zeros', 'config': {}, 'registered_name': None}, 'kernel_regularizer': None, 'bias_regularizer': None, 'kernel_constraint': None, 'bias_constraint': None, 'quantization_config': None}, 'registered_name': None, 'build_config': {'input_shape': (None, 4)}, 'name': 'y1', 'inbound_nodes': [{'args': ({'class_name': '__keras_tensor__', 'config': {'shape': (None, 4), 'dtype': 'float32', 'keras_history': ['dense_1', 0, 0]}},), 'kwargs': {}}]}, {'module': 'keras.layers', 'class_name': 'Dense', 'config': {'name': 'y2', 'trainable': True, 'dtype': {'module': 'keras', 'class_name': 'DTypePolicy', 'config': {'name': 'float32'}, 'registered_name': None}, 'units': 1, 'activation': 'linear', 'use_bias': True, 'kernel_initializer': {'module': 'keras.initializers', 'class_name': 'GlorotUniform', 'config': {'seed': None}, 'registered_name': None}, 'bias_initializer': {'module': 'keras.initializers', 'class_name': 'Zeros', 'config': {}, 'registered_name': None}, 'kernel_regularizer': None, 'bias_regularizer': None, 'kernel_constraint': None, 'bias_constraint': None, 'quantization_config': None}, 'registered_name': None, 'build_config': {'input_shape': (None, 4)}, 'name': 'y2', 'inbound_nodes': [{'args': ({'class_name': '__keras_tensor__', 'config': {'shape': (None, 4), 'dtype': 'float32', 'keras_history': ['dense_1', 0, 0]}},), 'kwargs': {}}]}], 'input_layers': ['input_layer', 0, 0], 'output_layers': [['y1', 0, 0], ['y2', 0, 0]]}
 
 smlp_logger - INFO - Epochs: 20
 
 smlp_logger - INFO - Batch size: 200
 
-smlp_logger - INFO - Callbacks: ["<class 'keras.src.callbacks.ModelCheckpoint'>"]
+smlp_logger - INFO - Callbacks: ["<class 'keras.src.callbacks.model_checkpoint.ModelCheckpoint'>"]
 
 smlp_logger - INFO - model summary: end
 
@@ -182,9 +181,9 @@ smlp_logger - INFO - Saving predictions summary into file:
 smlp_logger - INFO - Saving prediction precisions into file: 
 ./Test13_smlp_toy_basic_training_prediction_precisions.csv
 
-smlp_logger - INFO - Prediction on training data --  msqe: 41.749
+smlp_logger - INFO - Prediction on training data --  msqe: 38.795
 
-smlp_logger - INFO - Prediction on training data --  r2_score: -10.416
+smlp_logger - INFO - Prediction on training data --  r2_score: -9.102
 
 smlp_logger - INFO - Reporting prediction results: end
 
@@ -202,9 +201,9 @@ smlp_logger - INFO - Saving predictions summary into file:
 smlp_logger - INFO - Saving prediction precisions into file: 
 ./Test13_smlp_toy_basic_test_prediction_precisions.csv
 
-smlp_logger - INFO - Prediction on test data --  msqe: 11.659
+smlp_logger - INFO - Prediction on test data --  msqe: 11.661
 
-smlp_logger - INFO - Prediction on test data --  r2_score: -4.262
+smlp_logger - INFO - Prediction on test data --  r2_score: -4.243
 
 smlp_logger - INFO - Reporting prediction results: end
 
@@ -222,9 +221,9 @@ smlp_logger - INFO - Saving predictions summary into file:
 smlp_logger - INFO - Saving prediction precisions into file: 
 ./Test13_smlp_toy_basic_labeled_prediction_precisions.csv
 
-smlp_logger - INFO - Prediction on labeled data --  msqe: 35.731
+smlp_logger - INFO - Prediction on labeled data --  msqe: 33.368
 
-smlp_logger - INFO - Prediction on labeled data --  r2_score: -3.158
+smlp_logger - INFO - Prediction on labeled data --  r2_score: -2.803
 
 smlp_logger - INFO - Reporting prediction results: end
 
