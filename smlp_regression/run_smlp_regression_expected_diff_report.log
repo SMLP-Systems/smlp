@@ -54,10 +54,10 @@
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled.txt diff report ================================
 =================== Diff report for: Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_new_predictions_summary.csv ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_new_predictions_summary.csv: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_new_predictions_summary.csv: No such file or directory
 =================== End of Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_new_predictions_summary.csv diff report ================================
 =================== Diff report for: Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_new_prediction_precisions.csv ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_new_prediction_precisions.csv: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_new_prediction_precisions.csv: No such file or directory
 =================== End of Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_new_prediction_precisions.csv diff report ================================
 =================== Diff report for: test19_model_rerun_model_config.json ==================================
 73a74,76
@@ -425,7 +425,7 @@ diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test16_Test8_smlp_toy_nu
 > 10.0,7,3.0,0,0
 =================== End of Test33_smlp_toy_num_resp_mult_ranking_resp_feat.csv diff report ================================
 =================== Diff report for: test63_model_rerun_model_config.json ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/test63_model_rerun_model_config.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test63_model_rerun_model_config.json: No such file or directory
 =================== End of test63_model_rerun_model_config.json diff report ================================
 =================== Diff report for: Test66_test65_model.txt ==================================
 0a1,97
@@ -528,7 +528,7 @@ diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/test63_model_rerun_model
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test66_test65_model.txt diff report ================================
 =================== Diff report for: Test66_test65_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test66_test65_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test66_test65_model_verify_results.json: No such file or directory
 =================== End of Test66_test65_model_verify_results.json diff report ================================
 =================== Diff report for: Test68_test67_model.txt ==================================
 0a1,97
@@ -631,7 +631,7 @@ diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test66_test65_model_veri
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test68_test67_model.txt diff report ================================
 =================== Diff report for: Test68_test67_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test68_test67_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test68_test67_model_verify_results.json: No such file or directory
 =================== End of Test68_test67_model_verify_results.json diff report ================================
 =================== Diff report for: Test69_smlp_toy_num_resp_mult_verify_results.json ==================================
 6c6
@@ -644,7 +644,7 @@ diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test68_test67_model_veri
 > 			"y2": 5.078784562647343
 =================== End of Test69_smlp_toy_num_resp_mult_verify_results.json diff report ================================
 =================== Diff report for: test69_model_rerun_model_config.json ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/test69_model_rerun_model_config.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test69_model_rerun_model_config.json: No such file or directory
 =================== End of test69_model_rerun_model_config.json diff report ================================
 =================== Diff report for: Test70_test69_model.txt ==================================
 25a26,82
@@ -707,7 +707,7 @@ diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/test69_model_rerun_model
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test70_test69_model.txt diff report ================================
 =================== Diff report for: Test70_test69_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test70_test69_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test70_test69_model_verify_results.json: No such file or directory
 =================== End of Test70_test69_model_verify_results.json diff report ================================
 =================== Diff report for: Test72_test71_model.txt ==================================
 0a1,84
@@ -797,7 +797,7 @@ diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test70_test69_model_veri
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test72_test71_model.txt diff report ================================
 =================== Diff report for: Test72_test71_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test72_test71_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test72_test71_model_verify_results.json: No such file or directory
 =================== End of Test72_test71_model_verify_results.json diff report ================================
 =================== Diff report for: Test77_test76_model.txt ==================================
 0a1,110
@@ -913,7 +913,7 @@ diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test72_test71_model_veri
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test77_test76_model.txt diff report ================================
 =================== Diff report for: Test77_test76_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test77_test76_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test77_test76_model_verify_results.json: No such file or directory
 =================== End of Test77_test76_model_verify_results.json diff report ================================
 =================== Diff report for: Test87_smlp_toy_num_resp_mult_rerun_model_config.json ==================================
 73a74,76
@@ -944,17 +944,17 @@ diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/Test77_test76_model_veri
 >     "tuner_caret_tuner_verbose": true,
 =================== End of Test92_smlp_toy_num_resp_mult_rerun_model_config.json diff report ================================
 =================== Diff report for: test101_model_rerun_model_config.json ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/test101_model_rerun_model_config.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test101_model_rerun_model_config.json: No such file or directory
 =================== End of test101_model_rerun_model_config.json diff report ================================
 =================== Diff report for: test103_model_rerun_model_config.json ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/test103_model_rerun_model_config.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test103_model_rerun_model_config.json: No such file or directory
 =================== End of test103_model_rerun_model_config.json diff report ================================
 =================== Diff report for: test110_model_poly_sklearn_formula.txt ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/test110_model_poly_sklearn_formula.txt: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test110_model_poly_sklearn_formula.txt: No such file or directory
 =================== End of test110_model_poly_sklearn_formula.txt diff report ================================
 =================== Diff report for: test110_model_rerun_model_config.json ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/test110_model_rerun_model_config.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test110_model_rerun_model_config.json: No such file or directory
 =================== End of test110_model_rerun_model_config.json diff report ================================
 =================== Diff report for: test113_model_rerun_model_config.json ==================================
-diff: /home/mdmitry/github/smlp_tutorial/regr_smlp/code/test113_model_rerun_model_config.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test113_model_rerun_model_config.json: No such file or directory
 =================== End of test113_model_rerun_model_config.json diff report ================================
