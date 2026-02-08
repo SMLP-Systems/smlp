@@ -393,13 +393,13 @@ class SmlpOptimize:
         
         # compute and return max value of l_stab within P
         assert len(P) > 0
-        #print('P', P)
-        l_res = max([tup[3] for tup in P_eager]); #print('l_res', l_res, 'threshold_lo', P[-1]['threshold_lo'])
+        
+        l_res = max([tup[3] for tup in P_eager])
         if scale_objectives or objv_bounds is None:
             assert l_res == P[-1]['threshold_lo_scaled']
         else:
             assert l_res == P[-1]['threshold_lo']
-        #print('optimize_single_objective_eager and with l_res', l_res, flush=True)
+        
         self._opt_logger.info('Optimize single objective with eager strategy ' + str(objv_name) + ': end')
         
         return P[-1] # l_res

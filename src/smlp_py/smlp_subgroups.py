@@ -218,7 +218,6 @@ class SubgroupDiscovery:
             rng_nm = self.unique_level_to_level(rng_tuple)
             rng_ft = (ft == rng_nm).astype(int)
         else:
-            #ft = feat_df[rng_tuple['name']]
             if rng_tuple['hi'] < rng_tuple['lo']:
                 raise Exception('Inverse ranges are currently not supported')  
                 rng_ft = (ft <= rng_tuple['hi']) | (ft >= rng_tuple['lo']) 
