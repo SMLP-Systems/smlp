@@ -1,0 +1,3 @@
+#!/usr/bin/tcsh -f
+if( ! $?TZ ) setenv TZ `readlink /etc/localtime | sed 's@/usr/share/zoneinfo/@@'`
+docker run -e TZ=$TZ -e DISPLAY=:99 -p 5900:5900 -it python311-dev $*
