@@ -259,9 +259,9 @@ smlp_logger - INFO - Input and knob interface constraints are consistent
 
 smlp_logger - INFO - Building model terms: Start
 
-smlp_logger - INFO - Model operator counts for y1: {'add': 10, 'mul': 31, 'const': 42, 'sub': 15, 'var': 15}
+smlp_logger - INFO - Model operator counts for y1: {'add': 11, 'mul': 31, 'const': 43, 'sub': 15, 'var': 15}
 
-smlp_logger - INFO - Model operator counts for y2: {'add': 10, 'mul': 31, 'const': 42, 'sub': 15, 'var': 15}
+smlp_logger - INFO - Model operator counts for y2: {'add': 11, 'mul': 31, 'const': 43, 'sub': 15, 'var': 15}
 
 smlp_logger - INFO - Building model terms: End
 
@@ -297,9 +297,7 @@ smlp_logger - INFO - Witness to query query_stable_witness is stable for radii {
 smlp_logger - INFO - Certifying stability of witness for query query_unstable_witness:
    {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}
 
-smlp_logger - INFO - Witness to query query_unstable_witness is a valid witness; checking its stability
-
-smlp_logger - INFO - Witness to query query_unstable_witness is not stable for radii {'p1': {'rad-abs': None, 'rad-rel': Fraction(1, 10)}, 'p2': {'rad-abs': Fraction(1, 5), 'rad-rel': None}}
+smlp_logger - INFO - Witness to query query_unstable_witness is not a valid witness (even without stability requirements)
 
 smlp_logger - INFO - Certifying stability of witness for query query_infeasible_witness:
    {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}
