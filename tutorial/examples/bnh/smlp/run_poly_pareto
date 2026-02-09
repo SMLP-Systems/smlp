@@ -15,5 +15,4 @@ end
 foreach v (X1 X2 F1 F2) 
     grep -h $v bnh_p*_optimization_results.json | cut -d: -f2 | tr -d ' ,' > bnh_pareto_$v.txt
 end
-paste bnh_pareto_X1.txt bnh_pareto_X2.txt | timeout 5 xgraph -P -nl -x X1 -y X2 -geometry +700+50 /dev/stdin &
-paste bnh_pareto_F1.txt bnh_pareto_F2.txt | timeout 5 xgraph -P -nl -x F1 -y F2 -geometry +50+50 /dev/stdin &
+${script_path}/plot_results.py -timeout 5
