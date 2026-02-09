@@ -1,6 +1,6 @@
 # SMLP Optimization Examples
 
-This repository contains three benchmark optimization problems demonstrating the capabilities of SMLP (Symbolic Machine Learning and Prediction) for solving constrained and multi-objective optimization tasks.
+This repository contains three benchmark optimization problems demonstrating the capabilities of SMLP (Symbolic Machine Learning and Prediction) for solving constrained and multi-objective optimization tasks for **black-box functions**.
 
 ## Overview
 
