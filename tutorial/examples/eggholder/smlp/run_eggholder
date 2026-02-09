@@ -41,3 +41,6 @@ $script_path:h:h:h:h/src/run_smlp.py -data $csv \
     -log_time f \
     >& `realpath $0 | xargs basename`.log
 \rm -f python3
+foreach var (X1 X2 Y1)
+    echo $var = `jq ".objective1.${var}" Eggholder_Eggholder_optimization_results.json`
+end
