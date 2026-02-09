@@ -14,7 +14,7 @@ endif
 set csv=Eggholder.csv
 set json=`echo $csv:r | tr '[A-Z]' '[a-z]'`.json
 ${script_path}/eggholder_dataset.py -timeout 5
-gunzip -c $script_path/dataset.txt.gz | tr ' ' , > $csv
+gunzip -c dataset.txt.gz | tr ' ' , > $csv
 $script_path:h:h:h:h/src/run_smlp.py -data $csv \
     -spec $script_path/$json \
     -out_dir ./ \
