@@ -5,10 +5,13 @@ This repository contains three benchmark optimization problems demonstrating the
 ## Overview
 
 The examples showcase SMLP's ability to:
-- Handle single and multi-objective optimization
+- Handle single and multi-objective optimization of *black-box functions*
 - Manage complex constraints
 - Find global optima in challenging landscapes
 - Generate Pareto fronts for multi-objective problems
+
+Reference:
+[Two decades of blackbox optimization applications](https://optimization-online.org/wp-content/uploads/2020/10/8082.pdf)
 
 ## Examples
 
