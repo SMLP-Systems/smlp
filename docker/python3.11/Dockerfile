@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     && add-apt-repository ppa:deadsnakes/ppa -y \
     && apt-get update && apt-get install -y \
+    wget \
     python3.11-dev \
     python3.11-distutils \
     python3.11-venv \
@@ -65,11 +66,6 @@ RUN python3.11 -m pip install --no-cache-dir setuptools --target /usr/local/lib/
 # Install Python packages including meson
 RUN python3.11 -m pip install --ignore-installed --no-cache-dir -r requirements.txt
 
-# Copy the wget  script
-COPY python-wget.py .
-# Make script executable
-RUN chmod +x python-wget.py
-#
 # Copy the build script
 COPY run_python_boost_build .
 # Make script executable

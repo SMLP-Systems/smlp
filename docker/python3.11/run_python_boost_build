@@ -1,5 +1,5 @@
 #!/usr/bin/tcsh -f
-./python-wget.py https://archives.boost.io/release/1.83.0/source/boost_1_83_0.tar.gz /tmp/boost_1_83_0.tar.gz
+wget --tries=5 --timeout=30 --waitretry=2 https://archives.boost.io/release/1.83.0/source/boost_1_83_0.tar.gz -O /tmp/boost_1_83_0.tar.gz
 cd /tmp
 tar -xvf boost_1_83_0.tar.gz >&  boost_1_83_0.tar.log
 cd boost_1_83_0
