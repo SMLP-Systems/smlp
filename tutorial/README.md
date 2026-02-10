@@ -318,12 +318,12 @@ Refer to SMLP documentation for installation instructions.
 
 2. **Run Optimization**
    ```bash
-   smlp --conf <config_file>.json --data <dataset_file>
+   ../src/run_smlp.py -data <csv_file>  --spec <json_file> <smlp_parameters>
    ```
 
 3. **Visualize Results** (BNH only)
    ```bash
-   python plot_results.py
+   examples/bnh/smlp/plot_results.py
    ```
 
 ### Visualization Options
