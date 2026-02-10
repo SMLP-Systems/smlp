@@ -1,17 +1,29 @@
 # SMLP Optimization Examples
 
-This repository contains three benchmark optimization problems demonstrating the capabilities of SMLP (Symbolic Machine Learning and Prediction) for solving constrained and multi-objective optimization tasks for **black-box functions**.
+This repository contains three benchmark optimization problems demonstrating the capabilities of SMLP (Symbolic Machine Learning and Prediction) for solving constrained and multi-objective optimization tasks for **black-box functions**.<br>
+Black-box function optimization definition used in this document [1]:<br>
+#### *Blackbox optimization (BBO) is the study of design and analysis of algorithms for optimization problems in which the structure of the objective function f and/or the constraints defining the set Ω is unknown, unexploitable or non-existant*<br>
+
+In SMLP:
+- Structure of the objective function of is unknown
+- Constraint defining set is comprised of known functions, which are defined by Python expressions
+
+SMLP optimization flow is comprised of two stages:
+- Model build: input data is converted into the one of 3 types of models:
+  1. Polynomial model
+  2. Decision tree
+  3. Neural network model
+- Optimization: model and constraints are used to find objective function(s) minimum considering input constraints
 
 ## Overview
 
 The examples showcase SMLP's ability to:
-- Handle single and multi-objective optimization of *black-box functions*
+- Handle single and multi-objective optimization
 - Manage complex constraints
 - Find global optima in challenging landscapes
 - Generate Pareto fronts for multi-objective problems
 
-Reference:
-[Two decades of blackbox optimization applications](https://optimization-online.org/wp-content/uploads/2020/10/8082.pdf)
+[1] [Two decades of blackbox optimization applications](https://optimization-online.org/wp-content/uploads/2020/10/8082.pdf)
 
 ## Examples
 
@@ -49,6 +61,7 @@ f(x, y) = -(y + 47) * sin(√|x/2 + (y + 47)|) - x * sin(√|x - (y + 47)|)
 ```bash
 # Generate dataset and vizualize
 examples/eggholder/smlp/eggholder_dataset.py
+```
 
 # Run optimization with SMLP
 ```bash
