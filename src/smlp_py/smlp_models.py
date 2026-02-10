@@ -189,8 +189,6 @@ class SmlpModels:
     # Several of model training packages return prediction results as np.array.
     # This function converts prediction results from np.array to pd.DataFrame.
     def _pred_results_to_df(self, algo, resp_names, resp, pred):
-        #print('pred\n', pred); print('\npred_type', type(pred));
-        #print('resp\n', resp); print('\nresp_type', type(resp));
         predictions_colnames = [rn+'_'+algo for rn in resp_names]
 
         # expecting here pred to be np array (while resp is expected to be a data frames)
@@ -201,11 +199,11 @@ class SmlpModels:
             if not resp is None:
                 if len(pred) != resp.shape[0]:
                     raise Exception('Implementation error in function pred_results_to_df')   
-            pred_ind = resp.index if not resp is None else range(len(pred)); #print('pred_ind', pred_ind)
+            pred_ind = resp.index if not resp is None else range(len(pred))
             predictions_df = pd.DataFrame(pred, index=pred_ind, columns=predictions_colnames)
         else:
             # we have multiple response prediction
-            pred_ind = resp.index if not resp is None else range(pred.shape[0]); #print('pred_ind', pred_ind)
+            pred_ind = resp.index if not resp is None else range(pred.shape[0])
             predictions_df = pd.DataFrame(pred, index=pred_ind, columns=predictions_colnames)
 
         assert type(predictions_df) == type(pd.DataFrame())
@@ -216,12 +214,11 @@ class SmlpModels:
     # compute sample weights per response or mean value of all responses:
     # resp_vals is either a response column or mean of all responses (per sample).
     def _sample_weights_per_response_vals(self, resp_vals, sw_coef, sw_exp, sw_int):
-        #print('resp_vals', resp_vals) ; 
         old = False
         if old:
             mid_range = (resp_vals.max() - resp_vals.min()) / 2
             w_coef = sw_coef / mid_range
-            sw = [w_coef * (v - mid_range) + 1 for v in resp_vals]; #print('sw', sw)
+            sw = [w_coef * (v - mid_range) + 1 for v in resp_vals]
         else:
             mn = resp_vals.min(); mx = resp_vals.max()
             sw = [sw_int + sw_coef *((v - mn)/(mx-mn))**sw_exp for v in resp_vals]
@@ -233,26 +230,20 @@ class SmlpModels:
     # sample weight as the respective values. Required for training with algorithms
     # that can take sample weights per response (e.g., nn_keras).
     def _compute_sample_weights_dict(self, y_train, sw_coef, sw_exp, sw_int):
-        #y_train_weights = y_train.copy()
         if sw_coef == 0:
             return None
         sw_dict = {}
         for resp in y_train.columns.tolist(): 
-            #print('y_train', y_train[outp])
-            sw = y_train[resp].values; #print('sw', len(sw), type(sw))
-            sw = self._sample_weights_per_response_vals(sw, sw_coef, sw_exp, sw_int); #print('sw', len(sw))
+            sw = y_train[resp].values
+            sw = self._sample_weights_per_response_vals(sw, sw_coef, sw_exp, sw_int)
             sw_dict[resp] = sw
-            #y_train_weights[resp+'_weights'] = sw
-        #print('Writing sample weights into file', self.report_file_prefix + '_' + 'training' + '_sample_weights.csv')
-        #y_train_weights.to_csv(self.report_file_prefix + '_' + 'training' + '_sample_weights.csv', index=False); assert False
+
         return sw_dict
 
     # compute sample weights for all responses by applying _sample_weights_per_response_vals
     # to the vector of mean values of all responses (per sample). Required for training
     # for algorithms / packages that cannot take sample weights per response.
     def _compute_sample_weights_vect(self, y_train, sw_coef, sw_exp, sw_int):
-        #print('y_train\n', y_train, '\nsw_coef', sw_coef); 
-        #print(y_train.shape[0]); print([1] * y_train.shape[0])
         if sw_coef == 0:
             return np.array([1] * y_train.shape[0])
         resp_vals = y_train.mean(axis='columns').values;
@@ -274,25 +265,21 @@ class SmlpModels:
     def _report_prediction_results(self, algo:str, resp_names:list[str], resp_df:pd.DataFrame, pred_df:pd.DataFrame,
             mm_scaler_resp, interactive_plots:bool, prediction_plots:bool, data_version:str):
         self._model_logger.info('Reporting prediction results: start')
-        #print('pred\n', pred_df); print('\npred_type', type(pred_df));
-        #print('resp\n', resp_df); print('\nresp_type', type(resp_df));
         pred_colnames = [rn+'_'+algo for rn in resp_names]
         assert pred_df.columns.tolist() == pred_colnames
         
         orig_resp_df = resp_df.copy() if not resp_df is None else None
         orig_pred_df = pred_df.copy(); 
-        #print('orig_pred_df\n', orig_pred_df); print('pred_df\n', pred_df); 
         
         if not mm_scaler_resp is None:
             orig_pred_df[ : ] = mm_scaler_resp.inverse_transform(pred_df)
             if not resp_df is None:
                 orig_resp_df[ : ] = mm_scaler_resp.inverse_transform(resp_df) 
-        #print('orig_resp_df\n', orig_resp_df); print('orig_pred_df\n', orig_pred_df)
+        
         predictions_df = pd.concat([orig_resp_df, orig_pred_df], axis=1) 
         self._model_logger.info('Saving predictions summary into file: \n' + \
                                 str(self.predictions_summary_filename(data_version)))
         predictions_df.to_csv(self.predictions_summary_filename(data_version), index=True)
-        #print('predictions_df\n', predictions_df) 
 
         # generate prediction precisions table / file
         if not resp_df is None:
@@ -328,7 +315,6 @@ class SmlpModels:
         if algo in self._instKeras.SMLP_KERAS_MODELS:
             hparams_dict = dict((k, vars(args)[k]) for k in self._keras_dict.keys())
         elif algo in self._instSklearn.SMLP_SKLEARN_MODELS:
-            #print('sklearn_dict', self._sklearn_dict)
             hparams_dict = dict((k, vars(args)[k]) for k in self._sklearn_dict.keys())
         elif algo in self._instCaret.SMLP_CARET_MODELS:
             hparams_dict = dict((k, vars(args)[k]) for k in self._caret_dict.keys())
@@ -391,7 +377,6 @@ class SmlpModels:
             # (each list within this list of lists correponds to a row in pandas dataframe).
             if algo == 'nn_keras' and len(resp_names) > 1 and isinstance(y_pred, list):
                 # format y_pred as np.array with each column being predction of one response
-                #print('y_pred\n', y_pred)
                 if isinstance(y_pred[0], np.ndarray):
                     y_pred = np.concatenate(y_pred, axis=1)
         elif model_lib == 'caret' or model_per_response:
@@ -399,23 +384,18 @@ class SmlpModels:
             # iterate over all responses and merge all predicitions into one return value y_pred
             y_pred = pd.DataFrame(index=np.arange(X.shape[0]), columns=np.arange(0))
             for rn in model.keys():
-                #print('rn', rn); print('model_dict', model); print('model', model[rn])
                 if model_lib == 'caret':
                     y_pred[rn] = list(caret_predict_model(model[rn], data=X)['prediction_label']); 
                 elif model_lib in ['keras', 'sklearn']:
                     if algo == 'poly_sklearn':
-                        #print('X', X.columns.tolist())
                         y_pred[rn] = self._instSklearn.poly_sklearn_predict(model[rn], X)
                         #rn_model, rn_poly_reg = model[rn] #, rn_X_train, rn_X_test
                         #y_pred[rn] = rn_model.predict(rn_poly_reg.transform(X))
                     else:
-                        #print('model', model); print(' model[rn]',  model[rn])
-                        #print('model[rn].predict(X)', model[rn].predict(X))
                         y_pred[rn] = model[rn].predict(X)
                 else:
                     assert False
-            #print('y_pred df\n', y_pred)
-            y_pred = np.array(y_pred); #print('y_pred array\n', y_pred)
+            y_pred = np.array(y_pred)
         else:
             raise Exception('Unsupported model_lib ' + str(model_lib) + ' in function _model_predict')
         
@@ -449,14 +429,11 @@ class SmlpModels:
                 # caret currently does not support training models with multiple responses 
                 # (or we missed to see in documentation how this is done); thus caret trained
                 # models are always dictionaries with responses as keys and models per response as values
-                #print('model file', [self.model_filename(algo, '', resp_name) for resp_name in resp_names])
                 model = dict([(resp_name, caret_load_model(self.model_filename(algo, '', resp_name))) 
                     for resp_name in resp_names])
             elif model_lib == 'keras':
                 if model_per_response:
                     if model_rerun_config_dict is not None:
-                        #print('model_per_response', model_per_response)
-                        #print(' model_rerun_config_dict[model_per_response]',  model_rerun_config_dict['model_per_response'])
                         assert model_rerun_config_dict['model_per_response'] == model_per_response
                     # models are dictionaries with responses as keys and models per response as values
                     model = dict([(resp_name, keras_load_model(self.model_filename(algo, '.h5', resp_name))) 
@@ -498,22 +475,18 @@ class SmlpModels:
         
         if not X_train is None and not y_train is None:
             self._model_logger.info('PREDICT ON TRAINING DATA')
-            #print('(2)'); print('y\n', y);  print('y_train\n', y_train); print('y_test\n', y_test);
             y_train_pred = self._model_predict(model, X_train, y_train, resp_names, algo, model_per_response)
             self._report_prediction_results(algo, resp_names, y_train, y_train_pred, mm_scaler_resp,
                 plots, pred_plots, 'training')
         
         if not X_test is None and not y_test is None:
             self._model_logger.info('PREDICT ON TEST DATA')
-            #print('(3)'); print('y\n', y);  print('y_train\n', y_train); print('y_test\n', y_test);
             y_test_pred = self._model_predict(model, X_test, y_test, resp_names, algo, model_per_response)
-            #print('(3b)'); print('y\n', y);  print('y_train\n', y_train); print('y_test\n', y_test); 
             self._report_prediction_results(algo, resp_names, y_test, y_test_pred, mm_scaler_resp, 
                 plots, pred_plots, 'test')
 
         if X is not None and y is not None:
             self._model_logger.info('PREDICT ON LABELED DATA')
-            #print('(4)'); print('y\n', y);  print('y_train\n', y_train); print('y_test\n', y_test); 
             # In case a polynomial model was run, polynomial features have been added to X_train and X_test,
             # therefore we need to reconstruct X before evaluating the model on all labeled features. 
             # once X has been updated, we need to update y as well in case X_train/y_train and/or X_test/y_test
@@ -525,16 +498,13 @@ class SmlpModels:
             if not run_on_orig_X:
                 X = np.concatenate((X_train, X_test)); 
                 y = pd.concat([y_train, y_test])
-            #print('(4)'); print('y\n', y)
             y_pred = self._model_predict(model, X, y, resp_names, algo, model_per_response)
             self._report_prediction_results(algo, resp_names, y, y_pred, mm_scaler_resp,
                 plots, pred_plots, 'labeled')
 
         if X_new is not None:
             self._model_logger.info('PREDICT ON NEW DATA')
-            #print('(5)'); print('y_new\n', y_new)
             y_new_pred = self._model_predict(model, X_new, y_new, resp_names, algo, model_per_response)
-            #print('y_new\n', y_new, '\ny_new_pred\n', y_new_pred)
             self._report_prediction_results(algo, resp_names, y_new, y_new_pred, mm_scaler_resp, 
                 plots, pred_plots, 'new')
 

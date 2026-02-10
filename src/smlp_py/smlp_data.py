@@ -367,16 +367,15 @@ class SmlpData:
         if is_labeled_data:
             levels_dict = {}
             for cf in categ_features:
-                lvls = df[cf].unique(); #print('lvls', lvls, sorted(lvls))
+                lvls = df[cf].unique()
                 levels_dict[cf] = list(lvls)
 
         # replace levels with integer values based on levels_dict
         unseen_levels_dict = {}
         for cf in categ_features:
-            #print('cf', cf, '\n', df[cf].values, '\n', df[cf].sort_values())
             lvls = levels_dict[cf] # 
             if not is_labeled_data:
-                lvls_new = df[cf].unique(); #print('lvls', lvls, sorted(lvls))
+                lvls_new = df[cf].unique()
                 unseen_levels = [l for l in lvls_new if not l in lvls]
                 if len(unseen_levels) > 0:
                     unseen_levels_dict[cf] = unseen_levels
@@ -388,7 +387,7 @@ class SmlpData:
             err_msg = err_msg + str(unseen_levels_dict)
             self._data_logger.error(err_msg) #self._data_
             raise Exception(err_msg) 
-        #print('df\n', df)                   
+                           
         return df, levels_dict
 
     # Sanity-check the response names aginst the just loaded input labeled (training) or a new data.
@@ -451,16 +450,13 @@ class SmlpData:
     # both to features and to responses, in training data only (not new data)
     def _drop_constant_features(self, df:pd.DataFrame, keep_feat:list[str], data_name:str):
         constant_cols = []
-        #print('df\n', df)
         for col in df.columns.tolist():
-            #print('col', col, 'df[col]\n', df[col]); print('df[col].dropna()\n', df[col].dropna())
-            unique_vals = df[col].dropna().unique(); #print('col', col, 'unique', unique_vals)
+            unique_vals = df[col].dropna().unique()
             # cover here also case when unique_vals is empty -- when all values are missing in a feature
             if len(unique_vals) <= 1: 
                 constant_cols.append(col)
-        #print('constant_cols', constant_cols, 'keep_feat', keep_feat)
+        
         constant_cols_to_drop = [c for c in constant_cols if c not in keep_feat]
-        #print('constant_cols_to_drop', constant_cols_to_drop)
         df.drop(constant_cols_to_drop, axis=1, inplace=True)
         if len(constant_cols_to_drop) > 0:
             self._data_logger.info('The following constant features have been droped from ' + str(data_name) + ' data:')
@@ -488,14 +484,12 @@ class SmlpData:
         # The placeholder '{}' will be replaced by the column value
         if transformation is None:
             return df
-        transform_lambda = eval('lambda x: ' + transformation.format('x')); #print('transform_lambda', transform_lambda)
+        transform_lambda = eval('lambda x: ' + transformation.format('x'))
 
         # Apply the transformation to each column in resp_names
         for column in resp_names:
             if column in df.columns:
-                #print('col val before', df[column].tolist()[0:2])
                 df[column] = df[column].apply(transform_lambda)
-                #print('col val after', df[column].tolist()[0:2])
             else:
                 raise Exception('Response ' + str(column) + ' does not occur in data')
         
@@ -513,8 +507,8 @@ class SmlpData:
             
             # values in the response of type object are strings -- hence the following line of code:
             resp_val_type = resp_type if resp_type in [int, float] else str
-            pos_val = cast_type(pos_value, resp_val_type); #print('pos_value', pos_value, type(pos_value))
-            neg_val = cast_type(neg_value, resp_val_type); #print('neg_value', neg_value, type(neg_value))
+            pos_val = cast_type(pos_value, resp_val_type)
+            neg_val = cast_type(neg_value, resp_val_type)
             resp_unique_vals = resp_df[resp_name].unique().tolist()
             
             if len(resp_unique_vals) < 2 and is_training:
@@ -557,15 +551,12 @@ class SmlpData:
         # values of pos_value and neg_value.
         if resp_type in [int, float] and resp_to_bool is not None:
             assert pos_value == STAT_POSITIVE_VALUE and neg_value == STAT_NEGATIVE_VALUE
-            #print('resp_to_bool', resp_to_bool, type(resp_to_bool)); print(resp_to_bool is None)
-            df_resp_cond = resp_to_bool; #print('resp_cond', resp_to_bool)
+            df_resp_cond = resp_to_bool
             for resp_name in resp_names:
                 df_resp_cond = df_resp_cond.replace('{}'.format(resp_name), 'resp_df[resp_name]')
-            #print('df_resp_cond', df_resp_cond)
 
-            resp_conds = df_resp_cond.split(self._CONDITION_SEPARATOR); #print('resp_conds', resp_conds)
+            resp_conds = df_resp_cond.split(self._CONDITION_SEPARATOR)
             for resp_name, resp_cond in zip(resp_names, resp_conds):
-                #print(resp_name, resp_cond)
                 # because eval() below is called with global environemnt {} and local environment  
                 # {'resp_name':resp_name, 'resp_df':resp_df}. we limit the variables and functions 
                 # that the evaluated code can access and this way make call to eval() safer.
@@ -631,28 +622,20 @@ class SmlpData:
         
     def _save_data_scaler(self, scale_feat:bool, scale_resp:bool, mm_scaler_feat, mm_scaler_resp, 
             features_scaler_file:str, responses_scaler_file:str):
-        #print('features_scaler_file to save into', features_scaler_file); 
-        #print('responses_scaler_file to save into', responses_scaler_file)
         if scale_feat:
-            #print('mm_scaler_feat as saved', mm_scaler_feat.scale_, mm_scaler_feat.feature_names_in_);
             pickle.dump(mm_scaler_feat, open(features_scaler_file, 'wb'))
         if scale_resp:
-            #print('mm_scaler_resp as saved', mm_scaler_resp.scale_, mm_scaler_resp.feature_names_in_); 
             pickle.dump(mm_scaler_resp, open(responses_scaler_file, 'wb'))
 
     def _load_data_scaler(self, scale_features:bool, scale_responses:bool, features_scaler_file, 
             responses_scaler_file):
-        #print('features_scaler_file to load from', features_scaler_file); 
-        #print('responses_scaler_file to load from', responses_scaler_file)
         if scale_features:
             mm_scaler_feat = pickle.load(open(features_scaler_file, 'rb'))
-            #print('mm_scaler_resp as loaded', mm_scaler_resp.scale_, mm_scaler_resp.feature_names_in_); 
         else:
             mm_scaler_feat = None
         
         if scale_responses:
             mm_scaler_resp = pickle.load(open(responses_scaler_file, 'rb'))
-            #print('mm_scaler_resp as loaded', mm_scaler_resp.scale_, mm_scaler_resp.feature_names_in_); 
         else:
             mm_scaler_resp = None
         return mm_scaler_feat, mm_scaler_resp
@@ -680,36 +663,32 @@ class SmlpData:
             X = X.sample(random_n, replace=selct_with_replacement)
             y = y[y.index.isin(X.index)]
             y = y.reindex(X.index)
-            #print(X.iloc[44832]) ; print(y.iloc[44832])
             # reset index in case of selection with replacement in order to ensure uniquness of indices
             if selct_with_replacement:
                 X.reset_index(inplace=True, drop=True)
                 y.reset_index(inplace=True, drop=True)
-                #print(X.iloc[44832]) ; print(y.iloc[44832])        
         elif uniform_n >= 1:
             # select rows from X and y with repitition to acheive uniform destribution of 
             # values of y in the resumpled training data.
             y_seq = [] ; X_seq = []
             for y_i in y.columns:
-                uniform_n_i = round(uniform_n / y.shape[1]); #print('uniform_n_i', uniform_n_i)
+                uniform_n_i = round(uniform_n / y.shape[1])
                 uniform_n_y_i = np.random.uniform(low=y[y_i].min(), high=y[y_i].max(), size=uniform_n_i) 
                 filter_samples = [(y[y_i] - v).abs().idxmin() for v in uniform_n_y_i]
                 #filter_samples = [(y.mean(axis=1) - v).abs().idxmin() for v in uniform_n_y_i]
                 # takes nearly the same time: filter_samples = list(map(select_closest_row, np.array(uniform_n_y_i)))
-                #print('y', y.shape)
                 # .loc[] is required to sample exactly len(filter_samples) with replacement
                 # cannot use .iloc[] because the indices are not continuous from 0 to k -- [0:k].
                 # cannot use .isin() because it will not perform selection with replacement.
-                #print('y_i', y_i, '\n', y.loc[filter_samples])
                 y_seq.append(y.loc[filter_samples]);  
                 X_seq.append(X.loc[filter_samples]);  
 
             X = pd.concat(X_seq, axis=0)
             y = pd.concat(y_seq, axis=0)
-            #print('y after uniform sampling', y.shape)
+            
             # reset index in case of selection with replacement in order to ensure uniquness of indices
-            X.reset_index(inplace=True, drop=True); #print('X', X.shape)
-            y.reset_index(inplace=True, drop=True); #print('y', y.shape)
+            X.reset_index(inplace=True, drop=True)
+            y.reset_index(inplace=True, drop=True)
 
         self._data_logger.info('Sampling from training data: end')
         return X, y
@@ -720,7 +699,6 @@ class SmlpData:
     # Write out this dictionary as a json file.
     def _compute_missing_values_dict(self, df):
         missing_vals_rows_array,  missing_vals_cols_array = np.where(df.isna()); 
-        #print(missing_vals_rows_array); print(missing_vals_cols_array)
         if len(missing_vals_rows_array) == 0:
             # there are no missing values in df
             return 
@@ -736,7 +714,6 @@ class SmlpData:
         # fill in the missing value row indices for each col that has a missing value
         for ind, col in zip(missing_vals_rows_array, missing_vals_cols_array):
             missing_vals_dict[col].append(ind)
-        #print('missing_values_dict', missing_vals_dict)
         
         # write out missing_vals_dict as json file
         with open(self.missing_values_fname, 'w') as f:
@@ -771,30 +748,26 @@ class SmlpData:
             feat_names = [col for col in data.columns.tolist() if not col in resp_names]
         elif feat_names is None: # not is_training: infer features from feat_names_dict
             assert feat_names_dict is not None
-            #print('feat_names_dict', feat_names_dict)
             feat_names = lists_union_order_preserving_without_duplicates(list(feat_names_dict.values()))
           
         if is_training:
             feat_names_dict = {}
             for rn in resp_names:
                 feat_names_dict[rn] = feat_names
-            #print('feat_names_dict used for feat_names', feat_names_dict)
         
-        #print('data\n', data, '\n', 'feat_names', feat_names, 'resp_names', resp_names)
         # extract the required columns in data -- features and responses
         if is_training or new_labeled:
             data = data[feat_names + resp_names]
         else:
             data = data[feat_names]
-        #print('data 0\n', data)
         
         # in training data, drop all rows where at least one response has a missing value
         if is_training:
             if not impute_resp:
-                data = self._drop_rows_with_na_in_responses(data, resp_names, 'training'); #print('data 1\n', data)
-            data, constant_feat = self._drop_constant_features(data, keep_feat, 'training'); #print('constant_feat', constant_feat); print('data 2\n', data)
-            resp_names = [rn for rn in resp_names if not rn in constant_feat]; #print('resp_names', resp_names)
-            feat_names = [fn for fn in feat_names if not fn in constant_feat]; #print('feat_names', feat_names)
+                data = self._drop_rows_with_na_in_responses(data, resp_names, 'training')
+            data, constant_feat = self._drop_constant_features(data, keep_feat, 'training')
+            resp_names = [rn for rn in resp_names if not rn in constant_feat]
+            feat_names = [fn for fn in feat_names if not fn in constant_feat]
             for rn in feat_names_dict.keys():
                 if not rn in resp_names:
                     del feat_names_dict[rn]
@@ -802,7 +775,7 @@ class SmlpData:
                     for fn in feat_names_dict[rn]:
                         if fn not in feat_names:
                             feat_names_dict[rn].remove(fn)
-            #print('feat_names_dict', feat_names_dict)
+            
         # impute missing values; before doing that, save the missing values location information in 
         # self._missing_values_dict and write it out as json file.
         self._compute_missing_values_dict(data)
@@ -844,9 +817,7 @@ class SmlpData:
                 mm_scaler_resp = self._get_data_scaler(scaler_type) #MinMaxScaler()
                 mm_scaler_resp.fit(y)
                 self._mm_scaler_resp = mm_scaler_resp
-                #print('mm_scaler_feat as computed', mm_scaler_feat.scale_, mm_scaler_feat.feature_names_in_);
-                #print('mm_scaler_resp as computed', mm_scaler_resp.scale_, mm_scaler_resp.feature_names_in_);
-        #print('mm_scaler_feat', mm_scaler_feat); print('mm_scaler_resp', mm_scaler_resp)        
+                
         if scale_feat:
             X = pd.DataFrame(mm_scaler_feat.transform(X), columns= X.columns)
         else:
@@ -867,10 +838,6 @@ class SmlpData:
             self._data_logger.info(data_version_str + ' data after scaling (normalizing) responses\n' + 
                                    str(pd.concat([X,y], axis=1)))
             
-        #if scale:
-        #    print('mm_scaler_feat as returned', mm_scaler_feat.scale_, mm_scaler_feat.feature_names_in_)
-        #    print('mm_scaler_resp as returned', mm_scaler_resp.scale_, mm_scaler_resp.feature_names_in_)
-        
         return X, y, mm_scaler_feat, mm_scaler_resp, #feat_names, resp_names, model_features_dict
     
     
@@ -900,12 +867,9 @@ class SmlpData:
         # for experirmentation: in case we want to see how model performs on a subrange 
         # of the the domain of y, say on samples where y > 0.9 (high values in y)
         if False and y_test is not None:
-            #print(y_test.head()); print(X_test.head())
             filter_test_samples = y_test[resp_names[0]] > 0.9
             y_test = y_test[filter_test_samples]; 
-            #print('y_test with y_test > 0.9', y_test.shape); print(y_test.head())
             X_test = X_test[filter_test_samples]; 
-            #print('X_test with y_test > 0.9', X_test.shape); print(X_test.head())
 
         return X_train, y_train, X_test, y_test
     
@@ -959,16 +923,14 @@ class SmlpData:
         
         # Feature selection / MRMR go here, will refine model_features_dict
         if is_training:
-            #keep_feat = keep_feat + self._specInst.get_spec_constraint_vars(); #print('keep_feat', keep_feat)
-            #print('features before mrmr', feat_names)
+            #keep_feat = keep_feat + self._specInst.get_spec_constraint_vars()
             for rn in resp_names:
-                mrmr_feat, _ = self._mrmrInst.smlp_mrmr(X, y[rn], mrmr_features_n); #print('mrmr_feat', mrmr_feat)
-                model_feat = [ft for ft in feat_names if (ft in mrmr_feat or ft in keep_feat)]; #print(model_feat); 
+                mrmr_feat, _ = self._mrmrInst.smlp_mrmr(X, y[rn], mrmr_features_n)
+                model_feat = [ft for ft in feat_names if (ft in mrmr_feat or ft in keep_feat)] 
                 model_features_dict[rn] = model_feat #mrmr_feat
             feat_names = [ft for ft in feat_names if ft in 
                 lists_union_order_preserving_without_duplicates(list(model_features_dict.values()))]
             X = X[feat_names]
-            #print('features after mrmr', feat_names); print('model_features_dict after MRMR', model_features_dict)
         
         # encode levels of categorical features as integers for model training (in feature selection tasks 
         # it is best to use the original categorical features). 
@@ -976,7 +938,6 @@ class SmlpData:
         self._data_logger.info(data_version_str + ' data after encoding levels of categorical features with integers\n' + 
                                str(pd.concat([X,y], axis=1)))
         
-        #print('X\n', X); print('y\n', y); 
         # feature and response scaling (optional) will be done only on responses and features that occur
         # in model_features_dict. For the optimization task, X and y are saved in self before scaling
         # X, y, mm_scaler_feat, mm_scaler_resp, feat_names, resp_names, model_features_dict = \
@@ -1032,14 +993,11 @@ class SmlpData:
                                    mm_scaler_feat, mm_scaler_resp)
         else:
             assert use_model
-            #print('features_scaler_file before use', self.features_scaler_file); 
-            #print('responses_scaler_file before use', self.responses_scaler_file)
             mm_scaler_feat, mm_scaler_resp = self._load_data_scaler(scale_features, scale_responses, 
                 self.features_scaler_file, self.responses_scaler_file)
             levels_dict = self._load_model_levels(self.model_levels_dict_file)
             model_features_dict = self._load_model_features(self.model_features_dict_file)
             feat_names = lists_union_order_preserving_without_duplicates(list(model_features_dict.values()))
-            #print('model_features_dict loaded', model_features_dict); print('feat_names loaded', feat_names)
             X, y, X_train, y_train, X_test, y_test =  None, None, None, None, None, None 
         
         if new_data_file is not None:

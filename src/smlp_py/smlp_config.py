@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # This file is part of smlp.
 
-#import textwrap
 import os, argparse, json
 from smlp_py.smlp_utils import str_to_bool
 
@@ -127,12 +126,9 @@ class SmlpConfig:
     # sklearm caret, keras -- model_params_dict = keras_dict | sklearn_dict | caret_dict, 
     # as well as data and logger related parameters: data_params_dict and logger_params_dict
     def args_dict_parse(self, argv, args_dict):
-        #print('argv', argv)
         parser = argparse.ArgumentParser(prog=argv[0])
-        #print('parser', parser)
         
         for p, v in args_dict.items():
-            #print('p', p, 'v', v); print('type', v['type'])
             if 'default' in v:
                 parser.add_argument('-'+v['abbr'], '--'+p, default=v['default'], 
                                     type=v['type'], help=v['help'])
@@ -160,7 +156,6 @@ class SmlpConfig:
         # to save configuration only after inst (paths definitions) has been instantiated, as we 
         # need to compute file name for the dumped json file and for this we need function 
         # inst.get_report_name_prefix() from inst to be available
-        #print('args.save_configuration', args.save_configuration)
         if args.save_configuration:
             #args_config_file = inst.get_report_name_prefix() + '_args_config.json'
             args_config_file = self.report_file_prefix + '_args_config.json'
@@ -193,6 +188,6 @@ class SmlpConfig:
             # prefix model_name with the output directory
             model_args['model_name'] = None
             self.model_rerun_config = model_args
-        #print('args', args)
+        
         return args
     

@@ -283,7 +283,6 @@ class SmlpCorrelations:
     # function to check that the correlations that are actually run in mrmr_resp_mi_corr_feat match
     # the correlation names of correlations reported in the txt log file
     def method_to_name_check(self, method_vec, method_name, corr_vs_mim):
-        #print('method_to_name_check: method_vec', method_vec, 'method_name', method_name, 'corr_vs_mim', corr_vs_mim)
         if len(method_vec) == 1:
             failed = (# TODO !!!! fails on tests 226,227 (method_vec[0] == CINDEX and method_name != SOMERSD) or
                       (not corr_vs_mim and method_vec[0] == PEARSON and method_name == PEARSON_SOMERSD) or
@@ -311,7 +310,6 @@ class SmlpCorrelations:
     # pearson, spearman, or kendall.
     # TODO !!! adapt to not use resp_type as the resp.dtype and not as numeric, ordered, ...
     def mim_estimator(self, feat_type, resp_type, cont_est):
-        #print('mim_estimator: feat_type', feat_type, 'resp_type', resp_type, 'cont_est', cont_est)
         ri_for_cv = False # use Rand Index instead of CramersV for binary ordered response and categorical
         # old feat_type_is_numeric = feat_type == "numeric"
         # old feat_type_is_ordered = feat_type == "ordered"
@@ -319,7 +317,7 @@ class SmlpCorrelations:
         resp_type_is_ordered = resp_type == "ordered"
         feat_type_is_numeric = feat_type in ['int16', 'int32', 'int64', 'float32', 'float64']
         feat_type_is_ordered = feat_type in ['object', 'category']
-        #print('feat_type_is_numeric', feat_type_is_numeric, 'feat_type_is_ordered', feat_type_is_ordered)
+        
         if (feat_type_is_numeric and resp_type_is_numeric):
             est = cont_est
         elif feat_type_is_numeric and resp_type_is_ordered:
@@ -348,21 +346,21 @@ class SmlpCorrelations:
     
     def somers_D(self, var1, var2):
         crosstab = np.array(pd.crosstab(var1, var2, rownames=None, colnames=None)) # Cross table building
-        stat = scipy.stats.somersed(crosstab); #print('somersed', stat)
+        stat = scipy.stats.somersed(crosstab)
         stat2 = scipy.stats.somersed(var1, var2)
         assert stat.statistic == stat2.statistic
         return stat.statistic
     
     def pearson_R(self, var1, var2):
-        stat = scipy.stats.pearsonr(var1, var2); #print('pearson', stat, stat.statistic)
+        stat = scipy.stats.pearsonr(var1, var2)
         return stat.statistic
     
     def spearman_R(self, var1, var2):
-        stat = scipy.stats.spearmanr(var1, var2); #print('spearman', stat, stat.statistic)
+        stat = scipy.stats.spearmanr(var1, var2)
         return stat.statistic
     
     def kendall_T(self, var1, var2):
-        stat = scipy.stats.kendalltau(var1, var2); #print('spearman', stat, stat.statistic)
+        stat = scipy.stats.kendalltau(var1, var2)
         return stat.statistic
     
     # This implementation of somersd_via_ktau is borrowed from 
@@ -443,11 +441,11 @@ class SmlpCorrelations:
         loss : A float in the range [-1,1]. A value of 1 indicates perfect agreement
         between the true and the predicted values.
         """
-        #print('y_pred, resp', y_pred.name); print(y_pred); print('y_true, feat', y_true.name); print(y_true)
+        
         if pd_series_is_categorical(y_pred):
-            y_pred = pd.DataFrame(y_pred).codes; #print(y_pred)
+            y_pred = pd.DataFrame(y_pred).codes
         if pd_series_is_categorical(y_true):
-            y_true =  pd.Categorical(y_true).codes; #print('codes'); print(y_true); print('after')
+            y_true =  pd.Categorical(y_true).codes
         #assert False
         cor=np.corrcoef(y_true,y_pred)[0][1]
 
@@ -518,9 +516,9 @@ class SmlpCorrelations:
             feat = feat.astype(str)
         
         # convert feat to numeric type
-        feat_resp_df = pd.concat([feat, resp], axis=1); #print('feat_resp_df\n', feat_resp_df)
-        lookup = feat_resp_df.groupby(feat.name).mean(); #print('lookup\n', lookup); print(dict(lookup[resp.name]))
-        mean_encoded_feat = feat.replace(dict(lookup[resp.name])); #print('mean_encoded_feat categorical\n', mean_encoded_feat)
+        feat_resp_df = pd.concat([feat, resp], axis=1)
+        lookup = feat_resp_df.groupby(feat.name).mean()
+        mean_encoded_feat = feat.replace(dict(lookup[resp.name]))
         assert pd_series_is_numeric(mean_encoded_feat)
         return mean_encoded_feat
 
@@ -530,7 +528,6 @@ class SmlpCorrelations:
     # (instead of using numeric as levels which is a little easier for implementation)
     def mean_encode_categorical_feature_to_ordered(self, feat:pd.Series, resp:pd.Series, reuse_levels=True):
         mean_encoded_feat = self.mean_encode_categorical_feature_to_numeric(feat, resp)
-        #print('mean_encoded_feat input\n', mean_encoded_feat)
         
         if not reuse_levels:
             # use the mean values of response on original levels as the levels in the constructed ordered ctg feature
@@ -541,12 +538,10 @@ class SmlpCorrelations:
             # keep the same levels as in the original feature feat but order based on mean_encoded_feat
             mean_encoded_feat.name = feat.name + '_original'
             feat_mean_feat_df = pd.concat([feat, mean_encoded_feat], axis=1); 
-            #print('feat_mean_feat_df before sort\n', feat_mean_feat_df)
             feat_mean_feat_df = feat_mean_feat_df.sort_values(by=[mean_encoded_feat.name], ascending=True); 
-            #print('feat_mean_feat_df after sort\n', feat_mean_feat_df)
             ordered_type = pd.api.types.CategoricalDtype(categories=feat_mean_feat_df[feat.name].unique().tolist(), ordered=True)
             mean_encoded_feat = feat.astype(ordered_type)
-        #print('mean_encoded_feat output', mean_encoded_feat.tolist());
+        
         return mean_encoded_feat
 
     # This function is only used to determine the names correlation concepts/types when reporting correlation scores.
@@ -554,7 +549,6 @@ class SmlpCorrelations:
     # resp_type = "ordered" correponds to binary response casted into ordered factor 
     # estimator is a continuous estimator to use (if appropriate), such as Pearson, Spearman, etc.
     def mim_correlation_type(self, resp_type, feat_types, estimator, is_bin_resp):
-        #print('mim_correlation_type: resp_type', resp_type, 'feat_types\n', feat_types, '\nestimator', estimator, 'is_bin_resp', is_bin_resp)
         ri_for_cv = False # use Rand Index instead of CramersV for binary ordered response and categorical
         mim_cind_swap_fix = True # for numeric binary response and catagorical feature run CramersV instead of mim().
         assert feat_types is not None
@@ -613,7 +607,6 @@ class SmlpCorrelations:
         return method_name
 
     def correlate_feat_resp(self, feat, resp, corr_method):
-        #print('correlate_feat_resp'); print(feat.name, 'of type', feat.dtype); print(resp.name, 'of type', resp.dtype); print('corr_method', corr_method)
         if corr_method == PEARSON:
             assert pd_series_is_numeric(feat)
             assert pd_series_is_numeric(resp)
@@ -657,13 +650,13 @@ class SmlpCorrelations:
     # mutual probabilites of pairs of variables with repective joint frequences within histograms
     # that approximate distributions of each variable.
     def mutual_info_matrix(self, df, nbins=None, normalized=True):
-        data = df.to_numpy(); #print('mutual_info_matrix: data\n', data)
-        n_variables = data.shape[-1]; #print('n_variables', n_variables)
-        j_entropies = self.joint_entropies(data, nbins); #print('j_entropies\n', j_entropies)
-        entropies = j_entropies.diagonal(); #print('entropies', entropies)
-        entropies_tile = np.tile(entropies, (n_variables, 1)); #print('entropies_tile\n', entropies_tile)
-        sum_entropies = entropies_tile + entropies_tile.T; #print('sum_entropies', sum_entropies)
-        mi_matrix = sum_entropies - j_entropies; #print('mi_matrix', mi_matrix)
+        data = df.to_numpy()
+        n_variables = data.shape[-1]
+        j_entropies = self.joint_entropies(data, nbins)
+        entropies = j_entropies.diagonal()
+        entropies_tile = np.tile(entropies, (n_variables, 1))
+        sum_entropies = entropies_tile + entropies_tile.T
+        mi_matrix = sum_entropies - j_entropies
         # TODO !!!!!! when normalized is True and sum_entropies has 0 values, 
         # NaN-s are produced, something likely is wrong in how normalization is done
         if normalized:
@@ -676,7 +669,7 @@ class SmlpCorrelations:
         # Determine feature types
         all_numeric = all(X.apply(lambda col: pd_series_is_numeric(col)))
         all_factor = all(X.apply(lambda col: pd_series_is_categorical(col)))
-        #print('all_factor', all_factor); print(X)
+        
         if all_factor:
             all_factor = all(X.apply(lambda col: not pd_series_is_ordered_category(col)))
             all_ordered = all(X.apply(lambda col: pd_series_is_ordered_category(col)))
@@ -693,7 +686,7 @@ class SmlpCorrelations:
     # (say even for continuous features, which one of pearson, slearman, kendall is applied?)
     def mrmr_correlate(self, feat:pd.Series, resp:pd.Series):
         _, mrmr_scores_df = self._instMrmr.smlp_mrmr(pd.DataFrame(feat), resp, 1)
-        corr = mrmr_scores_df.iloc[0, 1]; #print('corr', corr)
+        corr = mrmr_scores_df.iloc[0, 1]
         assert corr == mrmr_scores_df['Score'][0]
         return corr
     
@@ -704,7 +697,7 @@ class SmlpCorrelations:
             mi_score = adjusted_mutual_info_score(resp, feat)
         elif mi_method == 'shannon':
             mi_score = mutual_info_score(resp, feat)
-        #print('mi_score', mi_score)
+        
         return mi_score
     
     # numeric vs. numeric Pearson, Spearman, Kendall or concordance index 
@@ -738,11 +731,8 @@ class SmlpCorrelations:
     # TODO !!!! get rid of usage of resp_type, use instead resp.dtype (which is used to define orig_resp_time)
     def mrmr_resp_mi_corr_feat(self, df_feat:pd.DataFrame, resp:pd.Series, resp_type, orig_feat_types:list, 
             estimator:str, mutual_information_method, mode, discretization_algo:str, discretization_bins:int, 
-            discretization_labels:bool, discretization_type:str): #, discret_algo:str
-        #print('== resp_mi_corr_feat: resp ', resp.name, type(resp)); print(resp)
-        #print('orig_feat_types\n', orig_feat_types); print('resp_type', resp_type)
-        
-        colnms = df_feat.columns.tolist(); #print(colnms)
+            discretization_labels:bool, discretization_type:str): #, discret_algo:str        
+        colnms = df_feat.columns.tolist()
         if df_feat.shape[1] == 0: # there are no features, only the response
             assert False  # TODO 
             return pd.DataFrame(colnms)
@@ -752,9 +742,9 @@ class SmlpCorrelations:
         if resp_type == int:
             raise Exception('binary integer response sanity check failed')
         
-        orig_resp_type = resp.dtype; #print('orig_resp_type', orig_resp_type); print(pd_series_is_int(resp))
-        orig_resp_is_int = pd_series_is_int(resp); #print('orig_resp_is_int', orig_resp_is_int)
-        is_bin_resp = pd_series_is_binary_int(resp); #print('is_bin_resp', is_bin_resp)
+        orig_resp_type = resp.dtype
+        orig_resp_is_int = pd_series_is_int(resp)
+        is_bin_resp = pd_series_is_binary_int(resp)
         
         if is_bin_resp and not pd_series_is_int(resp):
             raise Exception("Sanity check for binary responses has failed in function mrmr_resp_mi_corr_feat")
@@ -777,7 +767,6 @@ class SmlpCorrelations:
         unique_feat_types = []
         for feat in df_feat.columns.tolist():
             feat_series = df_feat[feat]
-            #print('feat',  feat, type(feat_series), 'all', df_feat.columns.tolist())
             if pd_series_is_numeric(feat_series):
                 unique_feat_types.append('numeric')
             elif pd_series_is_object(feat_series) or pd_series_is_category(feat_series):
@@ -786,18 +775,17 @@ class SmlpCorrelations:
                  unique_feat_types.append('ordered')
             else:
                 raise Exception('Unexpected response type in ensemble_features_single_response')
-        unique_feat_types = list(set(unique_feat_types)); #print('unique_feat_types', unique_feat_types)
+        unique_feat_types = list(set(unique_feat_types))
             
-        method_name = self.mim_correlation_type(resp_type, unique_feat_types, estimator, is_bin_resp); #print(method_name)
+        method_name = self.mim_correlation_type(resp_type, unique_feat_types, estimator, is_bin_resp)
         
         # required in somers2() and for computing concordance/discordance with concordance_pairs() as well as for MI
-        resp_orig = resp; #print('resp\n', resp)
+        resp_orig = resp
         # TODO !!!!!! casting is not required 
-        #print('casting resp of type', resp.dtype, 'to type', resp_type)
-        #resp = cast_series_type(resp, resp_type); print('casted\n', resp)
+        #resp = cast_series_type(resp, resp_type)
         def corr_mi_cor(feat):
-            nm = feat.name; #print('feature name nm', nm)
-            feat_type = feat.dtype.name; #print('feat_type', feat_type)
+            nm = feat.name
+            feat_type = feat.dtype.name
             cat_inp = feat_type in ["category", "CategoricalDtype", "object"] #"ordered"
             assert cat_inp == pd_series_is_categorical(feat)
 
@@ -814,28 +802,22 @@ class SmlpCorrelations:
             # In this case we use CRAMERSV or SOMERSD (implementation somers2)
             # TODO !!!! fix condition orig_feat_types[ nm ] in ["numeric", "integer"] as it will never hapen
             if pd_series_is_numeric(resp) and is_bin_resp and cat_inp and pd_series_is_numeric(feat):
-                #print('corr_mi_cor, case 1')
                 #som2_res = Hmisc::somers2(as.numeric(feat), resp_orig)
                 corr_method = CRAMERSV
                 corr = self.correlate_feat_resp(feat, resp, corr_method)
                 #corr = self.mrmr_correlate(feat, resp)
             elif resp.nunique() > 2:
-                #print('corr_mi_cor, case 2')
                 # pass method that would be used by mim() and run mim()
                 corr_method = self.mim_estimator(feat_type, resp_type, estimator)
-                #print(c("call 4 to correlate with", corr_method))
-                corr = self.correlate_feat_resp(feat, resp, corr_method); #print('corr 1', corr)
-                #corr = self.mrmr_correlate(feat, resp); print('corr 2', corr); assert False
+                corr = self.correlate_feat_resp(feat, resp, corr_method)
+                #corr = self.mrmr_correlate(feat, resp)
                 #if (corr_method == SOMERSD) corr = corr[1]  #CINDEX
             else:
-                #print('corr_mi_cor, case 3')
                 # TODO: fix likely required here as we call continuous estimator w/o first checking
                 # which correlation is most appropriate; 
-                #print(c("call 5 to correlate with", estimator))
                 corr_method = estimator
                 if feat_use_mean_corr:
-                    #print('corr_mi_cor, case 3.1')
-                    mean_encoded_feat = self.mean_encode_categorical_feature_to_numeric(feat, resp); #print('mean_encoded_feat', mean_encoded_feat.tolist())
+                    mean_encoded_feat = self.mean_encode_categorical_feature_to_numeric(feat, resp)
                     # na_corr_fix <<- T  pearson correlation formula gives NA when one of thefeatures is constant
                     # TODO !!! check for the perason corr implementation used here; also -- why is 0 a good choice?
                     #if len(unique(mean_encoded_feat)) == 1: #na_corr_fix
@@ -851,7 +833,6 @@ class SmlpCorrelations:
                         # TODO !!! need casting?
                         corr = self.correlate_feat_resp(feat, resp, CRAMERSV)
                 else:
-                        #print('corr_mi_cor, case 3.2')
                         corr = self.correlate_feat_resp(feat, resp, estimator)                
                 
             # use corr_ver as correlation from which MI is inferred, and use somers2 as SemersD correlation
@@ -867,25 +848,22 @@ class SmlpCorrelations:
             # ###################### mim()    
             #names(corr) = NULL
             # TODO !!!  definition in next line is not used
-            curr_imp_df = df_feat[nm]; #print(curr_imp_df)
+            curr_imp_df = df_feat[nm]
             if pd_series_is_numeric(resp) and is_bin_resp and not cat_inp: 
-                #print('mim case 1')
                 self.somersd_via_ktau(feat, resp)
                 #som2_res = Hmisc::somers2(feat, resp_orig)
                 #mim_cor = som2_res['Dxy']
-                mim_cor = self.somersd_via_ktau(feat, resp_orig); #print('mim_cor', mim_cor)
+                mim_cor = self.somersd_via_ktau(feat, resp_orig)
                 mim_method = SOMERSD
                 # TODO: compare corr and corr_tmp
                 #corr_res_tmp = unlist(correlate(df_feat[ , nm ], resp, method=CINDEX))
                 #corr_tmp = corr_res_tmp["estimate"]
             elif pd_series_is_numeric(resp) and cat_inp and is_bin_resp:
-                #print('mim case 2')
                 #mim_cor = unlist(mRMRe::correlate(feat, cast_type(resp, "ordered"), method=CRAMERSV)); 
                 # TODO !!! need casting?
                 mim_cor = self.correlate_feat_resp(feat, resp, CRAMERSV)
                 mim_method = CRAMERSV
             else:
-                #print('mim case 3')
                 # case covered here: 
                 # (a) non-binary numeric response (with any type of feature)
                 # (a1) for categorical feature, use its mean encoding like for feat_use_mean_corr, treat 
@@ -897,12 +875,11 @@ class SmlpCorrelations:
                 # (b2) if the feature is numeric ?????
                 # (c) binary numeric response and numeric feature: compute MI for numeric features
                 if feat_use_mean_corr:
-                    #print('case feat_use_mean_corr')
                     if is_bin_resp: # cra_mean_prs and 
                         mim_cor = corr
                     else:
                         mean_encoded_feat = self.mean_encode_categorical_feature_to_ordered(feat, resp)
-                        mean_encoded_feat_df = pd.DataFrame(mean_encoded_feat, dtype='category'); #print(mean_encoded_feat_df); print(nm)
+                        mean_encoded_feat_df = pd.DataFrame(mean_encoded_feat, dtype='category')
                         assert mean_encoded_feat_df.columns.tolist() == [nm]
                         curr_imp_df = pd.concat([resp, mean_encoded_feat_df], axis=1)
                         #mim_cor_df = mim(curr_mrmr_data, 
@@ -910,15 +887,11 @@ class SmlpCorrelations:
                         #    method="cor", continuous_estimator=NULL, bootstrap_count=0, prior_weight=0)
                         ###### mim_cor_df = self.mutual_info_matrix(curr_imp_df, nbins=None, normalized=True)
                         ######### mim_cor_df = mutual_info_classif(mean_encoded_feat_df, resp); 
-                        #print(mim_cor_df)
                         #mim_cor = mim_cor_df[nm, resp.name];
                         mim_cor = self.sklearn_mutual_info_categorical(mean_encoded_feat, resp, 'normalized')
                         if is_bin_resp and not (mim_cor == corr).all().all():
-                            #print(nm, cor, mim_cor) 
                             raise Exception('sanity check for binary responses in function corr_mi_cor has failed')
                 else:
-                    #print('case NOT feat_use_mean_corr')
-                    #print(resp); print(curr_imp_df)
                     curr_imp_df = pd.concat([resp, curr_imp_df], axis=1)
                     if estimator==SPEARMAN and type(resp)=="numeric" and type(feat)=="numeric":
                         mim_cor = corr
@@ -927,7 +900,7 @@ class SmlpCorrelations:
                         #    method="cor", continuous_estimator=estimator, bootstrap_count=0, prior_weight=0)
                         mim_cor_df = self.mutual_info_matrix(curr_imp_df, nbins=None, normalized=False) #TODO !!!! was True
                         mim_cor = mim_cor_df.loc[nm, resp.name];
-                mim_method = self.mim_estimator(feat_type, resp_type, estimator); #print('mim_method', mim_method)
+                mim_method = self.mim_estimator(feat_type, resp_type, estimator)
             
             ################### computation of MI or normalized MI
             # Applying mutual information formula to continuous features does not work as one might expect, see
@@ -936,24 +909,19 @@ class SmlpCorrelations:
             # in case mutual_information_method is "corr", we derive it from a correponding correlation score
             # mim_cor between feat nad response using formula mim_mi = -0.5 * np.log(1 - (mim_cor**2)).
             if (mutual_information_method in ["normalized",  "adjusted", "shannon"]):
-                #print('MI case 1')
                 #is_bin_feat = length(unique(feat)) == 2
                 is_bin_feat = feat.nunique() == 2
                 # both categorical; we run two different versions for normalized MI for 
                 # resp == "ordered" and resp == "numeric" -- this was an arbitrary 
                 # choice which one of these NMI versions to run in which of the two cases
-                #print('is_bin_resp', is_bin_resp, 'orig_resp_type', orig_resp_type, 'cat_inp', cat_inp, 'is_bin_feat', is_bin_feat, 'resp_type', resp_type, 'feat_type', feat_type)
                 if ((is_bin_resp or orig_resp_type in ["category", "CategoricalDtype", "object"]) and (cat_inp or is_bin_feat)):
-                    #print("(is_bin_resp | orig_resp_type == factor) & (cat_inp | is_bin_feat)")
                     # for "ordered" binary response, use normalized MI from entropy package
                     if pd_series_is_ordered_category(resp): # resp has already been casted into one of the categorical types (object, category, ordered)
-                        #print("ordered")
                         #mim_mi = nmi_ctg(feat, resp, mutual_information_method, mutual_information_algo)
                         mim_mi = self.sklearn_mutual_info_categorical(feat, resp, mutual_information_method)
                     # for numeric binary response, use aricode::AMI -- adjusted MI
                     elif pd_series_is_numeric(resp):
                         # aricode treats feat and resp as categorical: "a vector containing the labels of the classification"
-                        #print("numeric")
                         #mim_mi = nmi_ctg(feat, resp, "cluster", "ami")
                         mim_mi = self.sklearn_mutual_info_categorical(feat, resp_orig, mutual_information_method)
                     else:
@@ -965,26 +933,21 @@ class SmlpCorrelations:
                     mim_mi = self.sklearn_mutual_info_categorical(feat, resp_disc, mutual_information_method)
                 elif orig_resp_type in ["category", "CategoricalDtype", "object"] and not cat_inp: # == "factor"
                     # feat can only be a propurly numeric (not binary 0/1 and not two-valued with other values?)
-                    #print("orig_resp_type == factor & !cat_inp")
                     feat_disc = self._instDiscret.smlp_discretize_feature(feat, algo=discretization_algo, 
                         bins=discretization_bins, labels=discretization_labels, result_type=discretization_type)
                     mim_mi = nmi_ctg(feat_disc, resp_orig, mutual_information_method, mutual_information_algo)
                     mim_mi = self.sklearn_mutual_info_categorical(feat_disc, resp_orig, mutual_information_method)
                 elif pd_series_is_numeric(resp_orig) and pd_series_is_numeric(feat) and not is_bin_feat:
                     # here feat can be both proper numeric and binary numeric and response is proper numeric
-                    #print("orig_resp_type == numeric & feat_type == numeric")
                     # binary or numeric response and numeric feature
-                    #print("entropy_ctg")
                     feat_disc = self._instDiscret.smlp_discretize_feature(feat, algo=discretization_algo, 
                         bins=discretization_bins, labels=discretization_labels, result_type=discretization_type)
                     resp_disc = self._instDiscret.smlp_discretize_feature(resp_orig, algo=discretization_algo, 
                         bins=discretization_bins, labels=discretization_labels, result_type=discretization_type)
-                    #print('feat_disc\n', feat_disc);  print('resp_disc\n', resp_disc)
                     #mim_mi = nmi_ctg(feat_disc, resp_disc, mutual_information_method, mutual_information_algo)
                     mim_mi = self.sklearn_mutual_info_categorical(feat_disc, resp_disc, mutual_information_method)
                 elif is_bin_resp and feat_type == "numeric":
                     # here feat can only be proper numeric (not 0/1)
-                    #print("is_bin_resp & feat_type == numeric")
                     feat_disc = smlp_discretize(feat, discret_algo)
                     feat_disc = self._instDiscret.smlp_discretize_feature(feat, algo=discretization_algo, 
                         bins=discretization_bins, labels=discretization_labels, result_type=discretization_type)
@@ -992,7 +955,6 @@ class SmlpCorrelations:
                     mim_mi = self.sklearn_mutual_info_categorical(feat_disc, resp_orig, mutual_information_method)
                 else:
                     raise Exception("Missing case for MI computation")
-                #print('mim_mi', mim_mi)
                 
                 # TODO !!! double check sanity checks below
                 if mutual_information_method == "normalized":
@@ -1009,7 +971,6 @@ class SmlpCorrelations:
                     if mim_mi < 0:
                         raise Exception("mim_mi test for [0,inf] has failed for (the regular) mutual information")
             elif mutual_information_method == 'correlation':
-                #print('MI case 2')
                 # computation of mim_cor is not deterministic because of R's implementation of operations on doubles.
                 # say 2/49*49 does not equal 2.
                 # as a result, doubles that are printed as 1 are not really equal to 1. still the difference is smaller 
@@ -1017,13 +978,11 @@ class SmlpCorrelations:
                 # correlations that are equal to 1 under tolorance smaller than .Machine$double.eps^0.5.
                 # this makes regression tests 234,241,243,245 and many more stable
                 def machineEpsilon(func=float):
-                    #print('func', func, '\nval', func(1))
                     machine_epsilon = machine_epsilon_last = func(1)
                     while func(1)+func(machine_epsilon) != func(1):
                         machine_epsilon_last = machine_epsilon
                         machine_epsilon = func(machine_epsilon) / func(2)
                     return machine_epsilon_last
-                #print('mim_cor', mim_cor);print('mim_mi', mim_mi)
                 if mim_cor is None:
                     mim_mi = np.nan
                 elif abs(1-mim_cor) < (machineEpsilon(float))**0.5: #  .Machine$double.eps^0.5): 
@@ -1034,36 +993,28 @@ class SmlpCorrelations:
             else:
                 raise Exception('Unexpected mutual_information_method ' + str(mutual_information_method))
                       
-            #print([corr_method, mim_method])
-            #print([mim_mi, mim_cor, corr, self._estimator_int_code_dict[corr_method], self._estimator_int_code_dict[mim_method]])
             return([mim_mi, mim_cor, corr, self._estimator_int_code_dict[corr_method], self._estimator_int_code_dict[mim_method]])
             # end of corr_mi_cor
                       
         # We'll use a DataFrame.apply() in Python to apply 'corr_mi_cor' to each column
-        #print('df_feat\n', df_feat)
         importance_tbl = df_feat.apply(corr_mi_cor).T
-        #print("1"); print(importance_tbl)
 
         # Convert the index to a column and reset the index
         importance_tbl = importance_tbl.reset_index()
         importance_tbl.columns = ['names'] + importance_tbl.columns[1:].tolist()
-        #print("2"); print(importance_tbl)
 
         # the last column is the vector of correlations used
         # Extract the last column as a Series and apply 'int_code_to_estimator'
         corr_methods_codes_vec = importance_tbl.iloc[:, 4]
         corr_methods_vec = corr_methods_codes_vec.apply(lambda code: self._int_code_to_estimator_dict[code])
         corr_method_name = self.estimator_vector_to_estimator(corr_methods_vec.unique())
-        #print('corr_methods_vec', corr_methods_vec.tolist()); print('corr_method_name', corr_method_name)
 
         # Extract the next-to-last column as a Series and apply 'int_code_to_estimator'
         mim_methods_codes_vec = importance_tbl.iloc[:, 5]
         mim_methods_vec = mim_methods_codes_vec.apply(lambda code: self._int_code_to_estimator_dict[code])
-        #print('mim_methods_vec', mim_methods_vec.tolist())
 
         # Drop the last two columns from the DataFrame
         importance_tbl = importance_tbl.drop(importance_tbl.columns[[-2, -1]], axis=1)
-        #print("3"); print(importance_tbl); 
         
         if is_bin_resp: #update_corr_names
             corr_name = self.est_colname(method_name, mutual_information_method, "corr", "bin")
@@ -1074,12 +1025,10 @@ class SmlpCorrelations:
             corr2_name = self.est_colname(corr_method_name, mutual_information_method, "corr2", resp_type)
             mi_name = self.est_colname(method_name, mutual_information_method, "mi", resp_type)
         
-        dummy = self.method_to_name_check(list(set(corr_methods_vec)), corr_method_name, True); #print(dummy)
-        dummy = self.method_to_name_check(list(set(mim_methods_vec)), method_name, False); #print(dummy)
+        dummy = self.method_to_name_check(list(set(corr_methods_vec)), corr_method_name, True)
+        dummy = self.method_to_name_check(list(set(mim_methods_vec)), method_name, False)
                                           
-        #print(corr_name, corr2_name, mi_name)
         importance_tbl = importance_tbl.set_axis(["important_features", mi_name, corr_name, corr2_name], axis='columns');
-        #print("4"); print(importance_tbl);
                 
         # Return the correlation result
         return importance_tbl
@@ -1094,7 +1043,6 @@ class SmlpCorrelations:
         mrmr_selection = True # TODO !!!! need command line option
         range_pair_analysis = False # TODO !!!! 
         if (not mrmr_selection and not range_pair_analysis and not corr_and_mi):
-            #print("exit 1 -- skip")
             return None
                 
         # here we cbind the response as the last column, for feature numbers (as column numbers)
@@ -1114,7 +1062,6 @@ class SmlpCorrelations:
             resp, resp_type, orig_feat_types, estimator, mutual_information_method, mode, 
             discretization_algo, discretization_bins, discretization_labels, discretization_type)
         elif mode in ['features', 'levels']:
-            #print('classic_corr_feat_nms', classic_corr_feat_nms)
             importance_df = self.mrmr_resp_mi_corr_feat(feat_df, 
                 resp, resp_type, orig_feat_types, estimator, mutual_information_method, mode, 
                 discretization_algo, discretization_bins, discretization_labels, discretization_type)
@@ -1127,14 +1074,12 @@ class SmlpCorrelations:
             orig_feat_types, continuous_estimators, mutual_information_method, corr_and_mi:bool,
             discretization_algo:str, discretization_bins:int, discretization_labels:bool, discretization_type:str,
             discretize_num_feat, fs_summary_df, mrmr_tbl_incr_feat, mode):
-        #print("Function mrmre_resp_feat_corr_multi_estimators starts")
         #TODO !!!! not checked when True, seems to work but there is a non-determinism in the order in which 
         # the results for particular continuous estimators are combined into single table
         do_parallel_foreach_mrmr = False  # Set this to True if parallel execution is desired. 
         full_mrmr_list = []
 
         if do_parallel_foreach_mrmr and len(continuous_estimators) > 1:
-            #print("[-v-] Running MRMR heuristics in parallel\n")
             with ProcessPoolExecutor() as executor:
                 futures = {executor.submit(self.mrmre_resp_feat_corr, feat_df, resp, resp_type, 
                                            orig_feat_types, estimator, mutual_information_method, corr_and_mi,
@@ -1160,12 +1105,9 @@ class SmlpCorrelations:
         #         return False
         
         for i, importance_df in enumerate(full_mrmr_list):
-            #print('i', i, 'importance_df\n', importance_df)
             if mode in ["features"] and not pd_df_is_empty(importance_df):
-                #print('fs_summary_df before merge\n', fs_summary_df)
                 fs_summary_df = pd.merge(fs_summary_df, importance_df, on="important_features", 
                                         how='outer', suffixes=('', '.x'+str(i)))
-                #print('fs_summary_df after merge\n', fs_summary_df); print('merged cols', fs_summary_df.columns.tolist())
             # if do_parallel_foreach_mrmr and len(continuous_estimators) > 1:
             #     output_file = self.report_file_prefix + '_correlations'
             #     estimator = continuous_estimators[i]
@@ -1175,7 +1117,6 @@ class SmlpCorrelations:
             #         raise Exception("File append failed in mrmre_resp_feat_corr_multi_estimators")
             #     os.remove(output_file_i)
         
-        #print("Function mrmre_resp_feat_corr_multi_estimators exits")
         return fs_summary_df
 
     
@@ -1186,12 +1127,9 @@ class SmlpCorrelations:
     # mrmr_feat_count we select from the firt set mrmr_incr_feat_1 and the other half 
     # from the second set mrmr_incr_feat_2
     def combine_model_features(self, mrmr_incr_feat_1, mrmr_incr_feat_2, mrmr_feat_count):
-        #print("Function combine_model_features starts")
-        #print('mrmr_incr_feat_1, mrmr_incr_feat_2', mrmr_incr_feat_1, mrmr_incr_feat_2)
         # TODO !!!!! limit_model_features is hard-coded
         limit_model_features = False
         if not limit_model_features:
-            #print("Function combine_model_features exits")
             return list(set(mrmr_incr_feat_1).union(set(mrmr_incr_feat_2)))
 
         if not mrmr_incr_feat_1:
@@ -1210,7 +1148,6 @@ class SmlpCorrelations:
         mrmr_incr_feat_1_other = mrmr_incr_diff_feat_1[:min(len(mrmr_incr_diff_feat_1), other_feat_count_each)]
         mrmr_incr_feat_2_other = mrmr_incr_diff_feat_2[:min(len(mrmr_incr_diff_feat_2), other_feat_count_each)]
 
-        #print("Function combine_model_features exits")
         return common_feat + mrmr_incr_feat_1_other + mrmr_incr_feat_2_other
 
     def mrmr_classic(self, X:pd.DataFrame, y:pd.Series, y_type, mrmr_feat_count, mode):
@@ -1223,13 +1160,10 @@ class SmlpCorrelations:
     
         feature_types = X.dtypes
         feature_types_counts = X.dtypes.apply(lambda dtype: dtype.name).value_counts().to_dict()
-        #print('Running mRMR.classic with response type', str(y_type), ", features of type", str(feature_types_counts))
-        #print('Casting ' + y.name + ' from type ' + y.dtype.name + ' to type ' + str(y_type))
-        y_casted = cast_series_type(y, y_type); #print('y\n', y, '\nresp_casted\n', y_casted)
+        y_casted = cast_series_type(y, y_type)
         # TODO !!!!!!!!!!!!!!!! need to use y_casted instead of y in next line
         mrmr_res, mrmr_scores_df = self._instMrmr.smlp_mrmr(X, y, feat_cnt)
         #mrmr_res, mrmr_scores_df = self._instMrmr.smlp_mrmr(X, y_casted, feat_cnt)
-        #print('mrmr_res\n', mrmr_res); print('mrmr_res type', str(type(mrmr_res)), 'length', len(mrmr_res))
         return mrmr_res, mrmr_scores_df
     
     
@@ -1264,22 +1198,18 @@ class SmlpCorrelations:
                 bin_num_ind = [pd_series_is_binary_numeric(num_labeled_features_mrmr[col]) for col in num_labeled_features_mrmr.columns.tolist()]
                 if ctg_labeled_features_mrmr.shape[1] > 0 and num_labeled_features_mrmr.shape[1] > 0:
                     if all(bin_num_ind):
-                        #print("all num features are binary -- join them to ctg_labeled_features_mrmr")
                         ord_labeled_features_mrmr = pd_df_convert_numeric_to_categorical(pd_series_is_binary_numeric)
                         ctg_labeled_features_mrmr = pc.concat([ord_labeled_features_mrmr, ctg_labeled_features_mrmr], axis=1)
                         del ord_labeled_features_mrmr
                         num_labeled_features_mrmr = num_labeled_features_mrmr.drop([num_labeled_features_mrmr.columns.tolist()])
                     else:
-                        #print("NOT all num features are binary -- join them to ctg_labeled_features_mrmr")
                         if all([pd_series_is_binary_categorical(ctg_labeled_features_mrmr[col]) for col in ctg_labeled_features_mrmr.columns.tolist()]):
-                            #print("all ctg features are binary -- join them to num_labeled_features_mrmr")
                             # all ctg features are binary -- join them to num_labeled_features_mrmr
                             num_ctg_labeled_features_mrmr = pd_df_convert_numeric_to_categorical(ctg_labeled_features_mrmr)
                             num_labeled_features_mrmr = pd.concat([num_labeled_features_mrmr, num_ctg_labeled_features_mrmr], axis=1)
                             del num_ctg_labeled_features_mrmr
                             ctg_labeled_features_mrmr = ctg_labeled_features_mrmr[[]]
                         elif any(bin_num_ind):
-                            #print("join to ctg features also binary numeric ones")
                             # join to ctg features also binary numeric ones; otherwise original categorical
                             # features are selected even if their levels have been selected to and are more
                             # important than the original categorical features
@@ -1291,11 +1221,8 @@ class SmlpCorrelations:
                             # num_bin_labeled_features_mrmr = as.data.frame(num_bin_labeled_features_mrmr, stringsAsFactors=T);
                             ctg_labeled_features_mrmr = pd.concat([num_bin_labeled_features_mrmr, ctg_labeled_features_mrmr], axis=1)
                             del num_bin_labeled_features_mrmr
-                #print('num_labeled_features_mrmr\n', num_labeled_features_mrmr);
-                #print('ctg_labeled_features_mrmr\n', ctg_labeled_features_mrmr)
 
                 if num_labeled_features_mrmr.shape[1] > 1:
-                    #print("run mrmr_classic on mumetic features")
                     mrmr_incr_feat_num, mrmr_tbl_num = self.mrmr_classic(num_labeled_features_mrmr, resp, "numeric", 
                            feat_cnt, mode)
                     if for_prediction:
@@ -1306,7 +1233,6 @@ class SmlpCorrelations:
                 del num_labeled_features_mrmr 
 
                 if ctg_labeled_features_mrmr.shape[1] > 1:
-                    #print("run mrmr_classic on categorical features")
                     mrmr_incr_feat_ord, mrmr_tbl_ord = self.mrmr_classic(ctg_labeled_features_mrmr, resp, "ordered", 
                            feat_cnt, mode)
                     if for_prediction:
@@ -1343,7 +1269,6 @@ class SmlpCorrelations:
                    # could be be feature selection or trainingprediction modes. Cannot be levels mode as it passes
                    # to feature selection a binary response even if the original response has three values good, bad, not-sure
                    response_as_ordered_cond = mrmr_resp_as_ord #mrmr_response_as_ordered
-                #print('response_as_ordered_cond', response_as_ordered_cond)
 
                 if response_as_ordered_cond:
                     mrmr_incr_feat_ord, mrmr_tbl_ord = self.mrmr_classic(labeled_features_mrmr, resp, "ordered",
@@ -1356,7 +1281,7 @@ class SmlpCorrelations:
 
         mrmr_incr_feat = self.combine_model_features(mrmr_incr_feat_num, mrmr_incr_feat_ord, feat_cnt)
         mrmr_tbl_incr_feat = {'mrmr_incr_feat_num': mrmr_incr_feat_num, 'mrmr_incr_feat_ord': mrmr_incr_feat_ord,
-            'mrmr_tbl_num': mrmr_tbl_num, 'mrmr_tbl_ord': mrmr_tbl_ord}; #print(mrmr_tbl_incr_feat)
+            'mrmr_tbl_num': mrmr_tbl_num, 'mrmr_tbl_ord': mrmr_tbl_ord}
         
         #if mode in ['train', 'predict']:
         #    if mrmr_incr_feat is None:
@@ -1370,7 +1295,6 @@ class SmlpCorrelations:
     def correlate_filter_methods(self, feat_df:pd.DataFrame, resp:pd.Series, resp_type, continuous_estimators, mrmr_feat_count, 
             fs_summary_df, mode, for_prediction, discretization_algo:str, discretization_bins:int, discretization_labels:bool, discretization_type:str, 
             discretize_numeric_features:bool, mutual_information_method:str, corr_and_mi:bool, non_range_feat):
-        #print("Function correlate_filter_methods starts")
         mrmr_selection = True # TODO !!!! need command line option
         
         # TODO !!! drop resp_type argument and define it here rather than passing from ensemble_features_single_response()
@@ -1379,19 +1303,17 @@ class SmlpCorrelations:
         assert (resp_type == 'ordered') == pd_series_is_ordered_category(resp)
 
         if not (mrmr_selection or corr_and_mi):
-            #print("\nSkipping mRMRe feature selection\n")
             if mode in [PREDICTION, TRAINING, NOVELTY]:  # novelty_fix
                 mrmr_incr_feat = feat_df.columns.tolist()
             else:
                 mrmr_incr_feat = None
-            #print("Function correlate_filter_methods exits")
             return fs_summary_df, mrmr_incr_feat
 
         # feature selection is meaningless for a single value response
         if resp.nunique() == 1:
             raise Exception("Single value response was passed to correlate_filter_methods")
 
-        orig_feat_types = feat_df.dtypes; #print('orig_feat_types\n', orig_feat_types)
+        orig_feat_types = feat_df.dtypes
         #labeled_features_mrmr = feat_df # TODO !!!! changed the implementation
         #del feat_df # TODO !!! does not make sense to introduce labeled_features_mrmr, will just use feat_df
         
@@ -1423,8 +1345,6 @@ class SmlpCorrelations:
         # Discretize numeric features if needed
         if discretize_num_feat:
             self._corr_logger.info('Discretizing numeric features for feature selection using method ' + str(discretization_algo))
-            #print("Treating the response as categorical for MRMR selection")
-            #print(discretization_algo, discretization_bins, discretization_labels, discretization_type); 
             feat_df = self._instDiscret.smlp_discretize_df(feat_df, algo=discretization_algo, 
                 bins=discretization_bins, labels=discretization_labels, result_type=discretization_type)
 
@@ -1432,7 +1352,6 @@ class SmlpCorrelations:
         # TODO !!! just use compute_feature_supertype(), no need to compute feat_type twice
         is_numeric_feat = all(feat_df.apply(lambda col: pd_series_is_numeric(col)))
         is_factor_feat = all(feat_df.apply(lambda col: pd_series_is_categorical(col)))
-        #print('is_factor_feat', is_factor_feat); print(feat_df)
         if is_factor_feat:
             is_factor_feat = all(feat_df.apply(lambda col: not pd_series_is_ordered_category(col)))
             is_ordered_feat = all(feat_df.apply(lambda col: pd_series_is_ordered_category(col)))
@@ -1454,7 +1373,6 @@ class SmlpCorrelations:
         if pd_series_is_categorical(resp):
             # We have three options here
             if feat_type == "numeric":
-                #print("case feat_type == numeric")
                 # TODO !!! not clear why we need to convert the columns to numeric as they should alsready be numeric?
                 #fs_summary_df = self.mrmre_resp_feat_corr_multi_estimators(colwise(as.numeric)(feat_df), 
                 #    resp, resp_name, "numeric", orig_feat_types, estimators, mutual_information_method, discretize_num_feat, fs_summary_df, mrmr_tbl_incr_feat, mode, output_file)
@@ -1463,14 +1381,12 @@ class SmlpCorrelations:
                     discretization_algo, discretization_bins, discretization_labels, discretization_type,
                     discretize_num_feat, fs_summary_df, mrmr_tbl_incr_feat, mode)
             elif feat_type == "factor" or feat_type == "ordered" or feat_type == "mixed":
-                #print("case feat_type in [factor, ordered, mixed], sub-case with numeric")
                 fs_summary_df = self.mrmre_resp_feat_corr_multi_estimators(feat_df, resp, 
                     "numeric", orig_feat_types, estimators, mutual_information_method, corr_and_mi,
                     discretization_algo, discretization_bins, discretization_labels, discretization_type,                
                     discretize_num_feat, fs_summary_df, mrmr_tbl_incr_feat, mode)
                 
                 if mrmr_resp_as_ord:
-                    #print('sub-case with ordered')
                     fs_summary_df = self.mrmre_resp_feat_corr_multi_estimators(feat_df, resp, 
                         "ordered", orig_feat_types, estimators, mutual_information_method, corr_and_mi, 
                         discretization_algo, discretization_bins, discretization_labels, discretization_type,
@@ -1480,20 +1396,17 @@ class SmlpCorrelations:
             # in the past, here we used if-condition (feat_type == "numeric" | feat_type == factor_tp) # feat_type == "factor"
             # this change fixes regression test 323
             if feat_type == "numeric":
-                #print("case (feat_type == numeric | feat_type == factor)")
                 if mrmr_resp_as_ord:
                     fs_summary_df = self.mrmre_resp_feat_corr_multi_estimators(feat_df, resp, 
                         "ordered", orig_feat_types, continuous_estimators, mutual_information_method, corr_and_mi, 
                         discretization_algo, discretization_bins, discretization_labels, discretization_type,          
                         discretize_num_feat, fs_summary_df, mrmr_tbl_incr_feat, mode)
         elif pd_series_is_numeric(resp) and not pd_series_is_int(resp): #resp_type == 'numeric': 
-            #print("case (resp_type == numeric) and not int")
             fs_summary_df = self.mrmre_resp_feat_corr_multi_estimators(feat_df, resp,
                 "numeric", orig_feat_types, continuous_estimators, mutual_information_method, corr_and_mi, 
                 discretization_algo, discretization_bins, discretization_labels, discretization_type,                                                      
-                discretize_num_feat, fs_summary_df, mrmr_tbl_incr_feat, mode); #print(fs_summary_df)
+                discretize_num_feat, fs_summary_df, mrmr_tbl_incr_feat, mode)
         elif pd_series_is_int(resp): #resp_type == 'integer': 
-            #print("case !!!(resp_type == integer)");
             fs_summary_df = self.mrmre_resp_feat_corr_multi_estimators(feat_df, resp, 
                 "numeric", orig_feat_types, continuous_estimators, mutual_information_method, corr_and_mi, 
                 discretization_algo, discretization_bins, discretization_labels, discretization_type,                                                       
@@ -1501,8 +1414,6 @@ class SmlpCorrelations:
         else:
             raise Exception("Unsupported response type " + str(resp_type) + "in feature selection.")
         
-        #print('fs_summary_df\n', fs_summary_df); print('mrmr_incr_feat\n', mrmr_incr_feat)
-        #print("Function correlate_filter_methods exits")
         return fs_summary_df, mrmr_incr_feat
 
     
@@ -1564,7 +1475,6 @@ class SmlpCorrelations:
                 fs_summary_df = drop_identical_features(fs_summary_df, False, False, False)
         
         def scale01sign(col, keep_sign):
-            #print('scale01sign: col\n', col)
             if col.dtype not in ['int64', 'float64']: # TODO -- more types like int16
                 return col
             col = col.fillna(0)
