@@ -1,6 +1,6 @@
 
 smlp_logger - INFO - Model exploration specification:
-{'version': '1.2', 'variables': [{'label': 'y1', 'interface': 'output', 'type': 'real'}, {'label': 'y2', 'interface': 'output', 'type': 'real'}, {'label': 'x', 'interface': 'input', 'type': 'real', 'range': [0, 10]}, {'label': 'p1', 'interface': 'knob', 'type': 'real', 'rad-rel': Fraction(1, 10), 'grid': [2, 4, 7], 'range': [0, 10]}, {'label': 'p2', 'interface': 'knob', 'type': 'real', 'rad-abs': Fraction(1, 5), 'range': [3, 7]}], 'witnesses': {'query_stable_witness': {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(240000002682209, 40000000000000)}, 'query_grid_conflict': {'x': Fraction(31, 5), 'p1': Fraction(3, 1), 'p2': Fraction(240000002682209, 40000000000000)}, 'query_unstable_witness': {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}, 'query_infeasible_witness': {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}}}
+{'version': '1.2', 'variables': [{'label': 'y1', 'interface': 'output', 'type': 'real'}, {'label': 'y2', 'interface': 'output', 'type': 'real'}, {'label': 'x', 'interface': 'input', 'type': 'real', 'range': [0, 10]}, {'label': 'p1', 'interface': 'knob', 'type': 'real', 'rad-rel': Fraction(1, 10), 'grid': [2, 4, 7], 'range': [0, 10]}, {'label': 'p2', 'interface': 'knob', 'type': 'real', 'rad-abs': Fraction(1, 5), 'range': [3, 7]}], 'witnesses': {'query_stable_witness': {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(240000002682209, 40000000000000)}, 'query_grid_conflict': {'x': Fraction(31, 5), 'p1': Fraction(3, 1), 'p2': Fraction(240000002682209, 40000000000000)}, 'query_unstable_witness': {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}, 'query_infeasible_witness': {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}, 'query_poly_intercept_sensitive': {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}}}
 
 smlp_logger - INFO - Executing run_smlp.py script: Start
 
@@ -20,9 +20,11 @@ smlp_logger - INFO - Query query_stable_witness: y2<=90
 
 smlp_logger - INFO - Query query_grid_conflict: y1>=9
 
-smlp_logger - INFO - Query query_unstable_witness: y1>=(-10)
+smlp_logger - INFO - Query query_unstable_witness: y1>=(-13)
 
 smlp_logger - INFO - Query query_infeasible_witness: y1>9
+
+smlp_logger - INFO - Query query_poly_intercept_sensitive: y1>=(-10)
 
 smlp_logger - INFO - Witness to query query_stable_witness
 {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(240000002682209, 40000000000000)}
@@ -34,6 +36,9 @@ smlp_logger - INFO - Witness to query query_unstable_witness
 {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}
 
 smlp_logger - INFO - Witness to query query_infeasible_witness
+{'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}
+
+smlp_logger - INFO - Witness to query query_poly_intercept_sensitive
 {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}
 
 smlp_logger - INFO - PREPARE DATA FOR MODELING
@@ -259,9 +264,9 @@ smlp_logger - INFO - Input and knob interface constraints are consistent
 
 smlp_logger - INFO - Building model terms: Start
 
-smlp_logger - INFO - Model operator counts for y1: {'add': 10, 'mul': 31, 'const': 42, 'sub': 15, 'var': 15}
+smlp_logger - INFO - Model operator counts for y1: {'add': 11, 'mul': 31, 'const': 43, 'sub': 15, 'var': 15}
 
-smlp_logger - INFO - Model operator counts for y2: {'add': 10, 'mul': 31, 'const': 42, 'sub': 15, 'var': 15}
+smlp_logger - INFO - Model operator counts for y2: {'add': 11, 'mul': 31, 'const': 43, 'sub': 15, 'var': 15}
 
 smlp_logger - INFO - Building model terms: End
 
@@ -287,6 +292,11 @@ smlp_logger - INFO - Certifying consistency of witness for query query_infeasibl
 
 smlp_logger - INFO - Input, knob and concrete witness constraints are consistent
 
+smlp_logger - INFO - Certifying consistency of witness for query query_poly_intercept_sensitive:
+   (and (and (= x 7) (= p1 7)) (= p2 6))
+
+smlp_logger - INFO - Input, knob and concrete witness constraints are consistent
+
 smlp_logger - INFO - Certifying stability of witness for query query_stable_witness:
    {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(240000002682209, 40000000000000)}
 
@@ -305,6 +315,11 @@ smlp_logger - INFO - Certifying stability of witness for query query_infeasible_
    {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}
 
 smlp_logger - INFO - Witness to query query_infeasible_witness is not a valid witness (even without stability requirements)
+
+smlp_logger - INFO - Certifying stability of witness for query query_poly_intercept_sensitive:
+   {'x': 7, 'p1': Fraction(7, 1), 'p2': Fraction(6, 1)}
+
+smlp_logger - INFO - Witness to query query_poly_intercept_sensitive is not a valid witness (even without stability requirements)
 
 smlp_logger - INFO - Running SMLP in mode "certify": End
 

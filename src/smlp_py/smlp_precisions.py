@@ -29,30 +29,29 @@ class PrecisionMeasures():
         return {'tp': tp, 'tn': tn, 'fp': fp, 'fn': fn}
 
     
-    #true_pred_df = data.frame(true= bin_true_vec, pred=bin_pred_vec); #pnv(true_pred_df); 
+    #true_pred_df = data.frame(true= bin_true_vec, pred=bin_pred_vec)
     #kappa2_res = kappa2(true_pred_df, "unweighted"); 
     #kappa2_res = kappa2(true_pred_df, "squared"); 
-    #cohen_kappa = kappa2_res$value; #pnv(cohen_kappa); 
+    #cohen_kappa = kappa2_res$value 
     #true_pred_categ_df = data.frame(true=factor(bin_true_vec, levels=c(0,1)), 
-    #          pred=factor(bin_pred_vec, levels=c(0,1))); pnv(true_pred_categ_df); 
+    #          pred=factor(bin_pred_vec, levels=c(0,1))) 
     def compute_cohen_kappa(self, accuracy, predicted_negative, predicted_positive,
             true_negative, TP, samples_count):
-        #pnv(accuracy); pnv(is.nan(accuracy))
         if np.isnan(accuracy): 
             return np.nan
 
         if accuracy == 1:
             cohen_kappa = 1 
         else:
-            #pos_expectation = (predicted_negative/samples_count)*true_negative; pnv(pos_expectation)
-            #neg_expectation = (predicted_positive/samples_count)*TP; pnv(neg_expectation)
+            #pos_expectation = (predicted_negative/samples_count)*true_negative
+            #neg_expectation = (predicted_positive/samples_count)*TP
             pos_expectation = predicted_positive*TP/samples_count; 
             neg_expectation = predicted_negative*true_negative/samples_count; 
             expected_accuracy = (pos_expectation+neg_expectation)/samples_count; 
             if expected_accuracy == 1:
                 raise Exception('Implementation error in computing Kappa statistic')
 
-            cohen_kappa = (accuracy - expected_accuracy)/(1 - expected_accuracy); #pnv(cohen_kappa);
+            cohen_kappa = (accuracy - expected_accuracy)/(1 - expected_accuracy)
         
         # TODO !!! dummy = precision_sanity_check(cohen_kappa, COHEN_KAPPA)
         return cohen_kappa
@@ -63,20 +62,18 @@ class PrecisionMeasures():
     # this function assumes that range analysis isolates positive units (failures)
     # Usage: compute_weighted_relative_accuracy(PosOut, NegOut, PosIn, NegIn)
     def compute_weighted_relative_accuracy(self, FN,TN,TP,FP):
-        #print(c(TN,FN,TP,FP))
         if TN == 0 and FN == 0 and TP == 0 and FP == 0:
             wr_acc = NaN
         else:
             All = TN+FN+TP+FP
             AllIn = FP+TP 
-            wr_acc = (AllIn/All)*(TP/AllIn-(TP+FN)/All); #print(wr_acc)
+            wr_acc = (AllIn/All)*(TP/AllIn-(TP+FN)/All)
             # normalize
             wr_acc = (wr_acc+1)/2
             # TODO !!! dummy = precision_sanity_check(wr_acc, WR_ACC)
         return wr_acc
     
     def compute_false_positive_rate(self, FP,TN):
-        #print(c(TN,FN,TP,FP))
         FPr = 0 if FP == 0 else FP/(FP+TN)
         # TODO !!! dummy = precision_sanity_check(FPr, FALSE_POSITIVE_RATE)
         return FPr
@@ -109,7 +106,7 @@ class PrecisionMeasures():
         return acc
         
     def compute_roc_accuracy_from_rates(self, TPr, FPr):
-        roc = TPr-FPr; #print(roc)
+        roc = TPr-FPr
         # normalize
         roc = (roc+1)/2
         # TODO !!! dummy = precision_sanity_check(roc, ROC_ACC)
@@ -120,7 +117,6 @@ class PrecisionMeasures():
     # of the negative class (i.e., the response has the neg value); 
     # Argument TN = true_negative, FN=false_negative, TP=true_positive, FP=false_positive
     def compute_roc_accuracy(self, TN,FN,TP,FP):
-        #print(c(TN,FN,TP,FP))
         if TN == 0 and FN == 0 and TP == 0 and FP == 0:
             roc_acc = np.nan
             # TODO !!! dummy = precision_sanity_check(roc_acc, ROC_ACC)
@@ -194,9 +190,8 @@ class PrecisionMeasures():
     # The original version is modified here by supporting the cases when there
     # are no positive samples or there are no negative samples.
     def compute_auroc(self, scores, cls, nan_default=np.nan):
-        #pnv(cls); pnv(scores)
         n1 = sum(~cls); 
-        n2 = sum(cls); #pnv(c(n1,n2))
+        n2 = sum(cls)
         assert n2 == len(cls) - n1
         if n1 == 0 or n2 == 0:
             AUCAcc = nan_default
@@ -209,10 +204,10 @@ class PrecisionMeasures():
         # computeAUC is not desired to use since it uses random number genertor and affects results 
         # of subsequent computations -- makes them non-deterministic; desabled as deafult
         if AUC_sanity_check:
-            #pos.scores = pos_prob_vec[bin_true_vec_pos]; pnv(pos.scores); pnv(min(pos.scores))
-            #neg.scores = pos_prob_vec[bin_true_vec_neg]; pnv(neg.scores); pnv(max(neg.scores))
+            #pos.scores = pos_prob_vec[bin_true_vec_pos]
+            #neg.scores = pos_prob_vec[bin_true_vec_neg]
             pos.scores=scores[cls]; neg.scores=scores[~cls]
-            AUCAcc2 = computeAUC(pos.scores, neg.scores, nan_default); #pnv(AUCAcc2); 
+            AUCAcc2 = computeAUC(pos.scores, neg.scores, nan_default)
         if not effectively_equal_numeric(AUCAcc,AUCAcc2, 3): # TODO !!!! undefined function effectively_equal_numeric
             raise Exception ('Implementation error 2 in auc computation in function compute_auroc')
         # TODO !!! dummy = precision_sanity_check(AUCAcc, AUC_ACC)

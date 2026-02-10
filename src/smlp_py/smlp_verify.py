@@ -60,7 +60,7 @@ class SmlpVerify:
         solver_instance.add(alpha)
         solver_instance.add(eta)
         solver_instance.add(self._smlpTermsInst.smlp_not(asrt_form))
-        res = solver_instance.check(); #self.print_result(res)
+        res = solver_instance.check()
         
         if self._modelTermsInst.solver_status_is_unsat(res): #isinstance(res, smlp.unsat):
             status = 'UNSAT' if asrt_name == self._VACUITY_ASSERTION_NAME else 'PASS'
@@ -69,11 +69,10 @@ class SmlpVerify:
         elif self._modelTermsInst.solver_status_is_sat(res): #isinstance(res, smlp.sat):
             status = 'SAT' if asrt_name == self._VACUITY_ASSERTION_NAME else 'FAIL'
             self._verify_logger.info('Completed with result: {}'.format(status)) #SAT 'FAIL (SAT)'
-            witness_vals_dict = self._smlpTermsInst.witness_term_to_const(self._modelTermsInst.get_solver_model(res), #res.model
+            witness_vals_dict = self._smlpTermsInst.witness_term_to_const(self._modelTermsInst.get_solver_model(res),
                 approximate=sat_approx, precision=sat_precision)
-            #print('domain witness_vals_dict', witness_vals_dict)
             # sanity check: the value of the negated assertion in the sat assignment should be true
-            asrt_ce_val = eval(asrt_expr, {},  witness_vals_dict); #print('asrt_ce_val', asrt_ce_val)
+            asrt_ce_val = eval(asrt_expr, {},  witness_vals_dict)
             assert not asrt_ce_val
             asrt_res_dict = {'status':'FAIL', 'asrt': asrt_ce_val, 'model':witness_vals_dict}
         elif self._modelTermsInst.solver_status_is_unknwn(res): #isinstance(res, smlp.unknown):
@@ -87,13 +86,12 @@ class SmlpVerify:
         
     def verify_assertions(self, model_full_term_dict:dict, asrt_names:list, asrt_exprs:list, asrt_forms_dict:dict, 
             domain:smlp.domain, alpha:smlp.form2, beta:smlp.form2, eta:smlp.form2, solver_logic:str, sat_approx=False, sat_precision=64):
-        #print('asrt_forms_dict', asrt_forms_dict)
         assert list(asrt_forms_dict.keys()) == asrt_names
         asrt_res_dict = {}
         for i, (asrt_name, asrt_form) in enumerate(asrt_forms_dict.items()):
             asrt_res_dict[asrt_name] = self.verify_asrt(model_full_term_dict, asrt_name, asrt_exprs[i], asrt_form, 
                 domain, alpha, beta, eta, solver_logic, sat_approx, sat_precision)
-        #print('asrt_res_dict', asrt_res_dict)
+        
         with open(self.assertions_results_file, 'w') as f: #json.dump(asrt_res_dict, f)
             json.dump(asrt_res_dict, f, indent='\t', cls=np_JSONEncoder) #cls= , use_decimal=True
             
@@ -110,13 +108,11 @@ class SmlpVerify:
             syst_expr_dict, algo, model, model_features_dict, feat_names, resp_names, 
             alph_expr, None, None, data_scaler, scale_feat, scale_resp,  
             float_approx, float_precision, data_bounds_json_path)
-        #print('eta', eta); print('alpha', alpha); print('beta',  beta)
         '''
         certify_witness(self, universal:bool, model_full_term_dict:dict, quer_name:str, quer_expr:str, quer:smlp.form2, witn_dict:dict,
             domain:smlp.domain, eta:smlp.form2, alpha:smlp.form2, theta_radii_dict:dict, #beta:smlp.form2, 
             delta:float, solver_logic:str, witn:bool, sat_approx:bool, sat_precision:int)
         '''
-
         asrt_forms_dict = dict([(asrt_name, self._smlpTermsInst.ast_expr_to_term(asrt_expr)) \
                 for asrt_name, asrt_expr in zip(asrt_names, asrt_exprs)])
         for i, form in enumerate(asrt_forms_dict.values()):
