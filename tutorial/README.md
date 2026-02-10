@@ -1,29 +1,36 @@
-# SMLP Optimization Examples
+# SMLP [1] Optimization Examples
 
-This repository contains three benchmark optimization problems demonstrating the capabilities of SMLP (Symbolic Machine Learning and Prediction) for solving constrained and multi-objective optimization tasks for **black-box functions**.<br>
-Black-box function optimization definition used in this document [1]:<br>
+This tutorial contains three benchmark optimization problems demonstrating the capabilities of SMLP (Symbolic Machine Learning Prover) for solving constrained and multi-objective optimization tasks for **black-box functions**.<br>
+Black-box function optimization definition used in this document [2]:<br>
 #### *Blackbox optimization (BBO) is the study of design and analysis of algorithms for optimization problems in which the structure of the objective function f and/or the constraints defining the set Ω is unknown, unexploitable or non-existant*<br>
+*In above definiton Ω is the feasible region : Ω → R* 
 
-In SMLP:
-- Structure of the objective function of is unknown
+### In SMLP:
+- Structure of the objective function *f* is unknown
 - Constraint defining set is comprised of known functions, which are defined by Python expressions
 
-SMLP optimization flow is comprised of two stages:
-- Model build: input data is converted into the one of 3 types of models:
+**SMLP** supports multiple modes: optimization, synthesis, verification and more
+This tutorial focuses on optimization mode. In future in may be extended to other modes.
+
+### SMLP optimization flow is comprised of two stages:
+- Model build: input data is converted into the one of supported model types:
   1. Polynomial model
-  2. Decision tree
+  2. Decision Trees
+  3. Random Forest
+  4. Extremely Randomized Trees
   3. Neural network model
 - Optimization: model and constraints are used to find objective function(s) minimum considering input constraints
 
 ## Overview
 
-The examples showcase SMLP's ability to:
+Examples in this tutorial showcase SMLP's ability to:
 - Handle single and multi-objective optimization
 - Manage complex constraints
 - Find global optima in challenging landscapes
 - Generate Pareto fronts for multi-objective problems
 
-[1] [Two decades of blackbox optimization applications](https://optimization-online.org/wp-content/uploads/2020/10/8082.pdf)
+[1] [Franz Brauße, Zurab Khasidashvili, Konstantin Korovin. SMLP: Symbolic Machine Learning Prover](https://arxiv.org/pdf/2402.01415v1)<br>
+[2] [Stéphane Alarie et al. Two decades of blackbox optimization applications](https://optimization-online.org/wp-content/uploads/2020/10/8082.pdf)
 
 ## Examples
 
@@ -43,7 +50,8 @@ f(x, y) = -(y + 47) * sin(√|x/2 + (y + 47)|) - x * sin(√|x - (y + 47)|)
 
 **Domain:** -512 ≤ x₁, x₂ ≤ 512
 
-**Global Minimum:** f(x*) = -959.6407 at x* = (512, 404.2319)
+**Expected Global Minimum:** f(x*) = -959.6407 at x* = (512, 404.2319)<br>
+**SMLP Results:**            f(x*) = -955.6113 at x* = (511.9, 405.3)
 
 #### Characteristics
 - Highly multi-modal with many local minima
@@ -92,9 +100,8 @@ Using Lagrange multipliers (∇f = λ∇g):
 - From constraint: 5 = (1+λ)²
 - λ = √5 - 1
 
-**Expected Result:**
-- Optimal point: x₁ ≈ 0.894427, x₂ ≈ 0.447214
-- Minimum value: f ≈ 1.527864
+**Expected Results:** x₁ ≈ 0.894427, x₂ ≈ 0.447214, f ≈ 1.527864<br>
+**SMLP Results:**     x₁ = 0.894531, x₂ = 0.447004, f = 1.527865
 
 [Reference: Wolfram Alpha](https://www.wolframalpha.com/input?i=Minimize%3A+f%28x1%2C+x2%29+%3D+%28x1+-+2%29%5E2+%2B+%28x2+-+1%29%5E2+subject+to+x1%5E2+%2B+x2%5E2+-+1+%3C%3D+0)
 
@@ -142,6 +149,34 @@ C₂(x) = (x₁ - 8)² + (x₂ + 3)² ≥ 7.7
 0 ≤ x₁ ≤ 5
 0 ≤ x₂ ≤ 3
 ```
+
+**Expected Results:** 
+
+|  x₁  | x₂ | f₁ | f₂ |
+|---------|-----------|------------|-------------|
+| 0  | 0 | 0 | 50 | 
+| 0.294118 | 0.294118 | 0.692042 | 44.290657  |
+| 0.714286 | 0.714286 | 4.081633 | 36.734694 |
+| 1.363636 | 1.363636 | 14.876033 | 26.446281 |
+| 2.5 | 2.5 | 50 | 12.5 |
+| 5 | 3 | 136 | 4 |
+
+Expected results reproduction:
+```bash
+./examples/bnh/smlp/pareto_analytical.py
+```
+
+**SMLP Results:** 
+
+|  x₁  | x₂ | f₁ | f₂ |
+|---------|-----------|------------|-------------|
+| 0  | 0 | 0 | 50 | 
+| 0.294118 | 0.296875 | 0.698560 | 44.264713  |
+| 0.714286 | 0.718750 | 4.107223 | 36.696449 |
+| 1.363636 | 1.363281 | 14.872160 | 26.448864 |
+| 2.5 | 2.5 | 50 | 12.5 |
+| 5 | 3 | 136 | 4 |
+
 
 [Reference: Test Case 2, Binh and Korn (1997)](https://web.archive.org/web/20190801183649/https://pdfs.semanticscholar.org/cf68/41a6848ca2023342519b0e0e536b88bdea1d.pdf)
 
