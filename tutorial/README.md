@@ -60,12 +60,12 @@ f(x, y) = -(y + 47) * sin(√|x/2 + (y + 47)|) - x * sin(√|x - (y + 47)|)
 #### Usage
 ```bash
 # Generate dataset and vizualize
-examples/eggholder/smlp/eggholder_dataset.py
+./examples/eggholder/smlp/eggholder_dataset.py
 ```
 
 # Run optimization with SMLP
 ```bash
-examples/eggholder/smlp/run_eggholder
+./examples/eggholder/smlp/run_eggholder
 ```
 
 ---
@@ -113,10 +113,10 @@ Using Lagrange multipliers (∇f = λ∇g):
 #### Usage
 ```bash
 # Generate dataset and visualize
-examples/constraint_dora/smlp/constraint_dora_dataset.py
+./examples/constraint_dora/smlp/constraint_dora_dataset.py
 
 # Run optimization with SMLP
-examples/constraint_dora/smlp/run_constraint_dora_poly
+./examples/constraint_dora/smlp/run_constraint_dora_poly
 ```
 
 ---
@@ -180,13 +180,13 @@ Each configuration file (`bnh_p1.json` through `bnh_p6.json`) uses different obj
 #### Usage
 ```bash
 # Generate dataset
-examples/bnh/smlp/run_poly_pareto/bnh_dataset.py
+./examples/bnh/smlp/run_poly_pareto/bnh_dataset.py
 
 # Run optimization for each weighting and plot Pareto front
-examples/bnh/smlp/run_poly_pareto
+./examples/bnh/smlp/run_poly_pareto
 
 # Visualize Pareto front
-examples/bnh/smlp/plot_results.py
+./examples/bnh/smlp/plot_results.py
 ```
 
 ---
@@ -302,8 +302,13 @@ pip install numpy matplotlib pandas seaborn
 ```
 
 ### SMLP Installation
-Refer to SMLP documentation for installation instructions.
 
+See [README.md](https://github.com/SMLP-Systems/smlp/blob/master/README.md)
+
+### SMLP Options
+```bash
+python3.11 $(git rev-parse --show-toplevel)/src/run_smlp.py -h 
+```
 ---
 
 ## Running the Examples
@@ -312,25 +317,26 @@ Refer to SMLP documentation for installation instructions.
 
 1. **Generate Dataset**
    ```bash
-   cd examples/<example_name>/smlp/
-   python <example_name>_dataset.py
+   ./examples/<example_name>/smlp/<example_name>_dataset.py
    ```
 
 2. **Run Optimization**
    ```bash
-   ../src/run_smlp.py -data <csv_file>  --spec <json_file> <smlp_parameters>
+   python3.11 $(git rev-parse --show-toplevel)/src/run_smlp.py -data <csv_file>  --spec <json_file> <smlp_parameters>
    ```
 
 3. **Visualize Results** (BNH only)
    ```bash
-   examples/bnh/smlp/plot_results.py
+   ./examples/bnh/smlp/plot_results.py
    ```
 
-### Visualization Options
+### Datasets visualization Options
 
-Dataset generators support timeout for automated testing:
+Eggholder and Constraint DORA dataset generators support timeout (specified in seconds) for automated testing:
+
 ```bash
-python <dataset_script>.py -timeout 5  # Close window after 5 seconds
+./examples/eggholder/smlp/eggholder_dataset.py -timeout 5
+./examples/constraint_dora/smlp/constraint_dora_dataset.py  -timeout 5 
 ```
 
 ---
