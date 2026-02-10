@@ -148,7 +148,7 @@ def list_intersection(lst1, lst2):
     if not isinstance(lst2, list):
         raise Exception('Argument lst2 of utils.list_intersection() is not a list')
     lst = [value for value in lst1 if value in lst2]
-    #print('lst', lst)
+    
     return(lst)
 
 # Subtraction of two lists. All occurrences of elements of list2 will be dropped from list1.
@@ -172,7 +172,7 @@ def list_intersection_set(lst1, lst2):
     if not isinstance(lst2, list):
         raise Exception('Argument lst2 of utils.list_intersection_set() is not a list')
     lst = list(set.intersection(set(lst1), set(lst2)))
-    #print('lst', lst)
+    
     return(lst)
 
 
@@ -183,9 +183,8 @@ def list_subtraction_set(lst1, lst2):
         raise Exception('Argument lst1 of utils.list_subtraction_set() is not a list')
     if not isinstance(lst2, list):
         raise Exception('Argument lst2 of utils.list_subtraction_set() is not a list')
-    #print('input lst1', lst1, 'lst2', lst2)
     lst = list(set(lst1).difference(set(lst2)))
-    #print('return lst', lst)
+    
     return lst
 
 
@@ -273,8 +272,6 @@ def pd_series_is_categorical(column:Series):
     return pd_series_is_object(column) or pd_series_is_category(column) or pd_series_is_ordered_category(column)
 
 # def pd_series_is_ordered_categorical(column:Series):
-#     print('is_object_dtype', is_object_dtype(column))
-#     print('dtype name', column.dtype.name)
 #     return is_object_dtype(column) and column.cat.ordered
 
 # categorical feature with at most two levels
@@ -352,7 +349,6 @@ def pd_df_convert_numeric_to_categorical(df):
 # this function returns a modified dictionary obtained from param_dictby by 
 # adding algo name to the parameter name and its abbriviated name in param_dict.
 def param_dict_with_algo_name(param_dict, algo):
-    #print('param_dict', param_dict)
     result_dict = {}
     for k, v in param_dict.items():
         v_updated = v.copy()
@@ -369,13 +365,12 @@ def param_dict_with_algo_name(param_dict, algo):
 # and 0 is negative)
 def get_response_type(df:DataFrame, resp_name:str):
     assert resp_name in df.columns.tolist()
-    #print('df.shape', df.shape)
     if df.shape[1] > 1:
         resp_type = df.dtypes[resp_name]
     else:
         resp_type = df.dtypes[0]
-    #print('response dtype', resp_type)
-    resp_vals = set(df[resp_name].tolist()); #print('resp_vals', resp_vals, resp_vals.issubset({0,1}))
+    
+    resp_vals = set(df[resp_name].tolist())
     if resp_type == int and resp_vals.issubset({0,1}):
         return "classification"
     elif resp_type in [int, float]:
@@ -388,9 +383,9 @@ def rows_dict_to_df(rows_dict, colnames, index=True):
     df = None
     for rowname, row in rows_dict.items():
         if index:
-            row_df = DataFrame([row], index=[rowname], columns=colnames);  #print('row_df\n', row_df)
+            row_df = DataFrame([row], index=[rowname], columns=colnames)
         else:
-            row_df = DataFrame([row], columns=colnames);  #print('row_df\n', row_df)
+            row_df = DataFrame([row], columns=colnames)
          
         if df is None:
             df = row_df
@@ -399,7 +394,6 @@ def rows_dict_to_df(rows_dict, colnames, index=True):
     return df
 
 def cast_type(obj, tp):
-    #print('obj', obj, 'source tp', type(obj), 'target tp', tp)
     if tp == int:
         res = int(obj)
     elif tp == float:
@@ -408,7 +402,7 @@ def cast_type(obj, tp):
         res = str(obj)
     else:
         raise Exception('Unsupported type ' + str(tp) + ' in function cast_type')
-    #print('res', type(res), res)
+    
     if tp in [int, float]:
         if np.isnan(res) or res is None:
             raise Exception('Casting of ' + str(obj) + ' to type ' + str(tp) + ' failed')
@@ -420,11 +414,8 @@ def cast_type(obj, tp):
 def cast_series_type(obj:Series, tp_target):
     if tp_target == 'ordered':
         if pd_series_is_numeric(obj):
-            #res = obj.astype(str).astype('category').factorize()[0]
-            #res = obj.astype(str).factorize()[0]
             res = pd.Categorical(obj, categories=obj.unique().tolist().sort(), ordered=True)
         elif pd_series_is_object(obj):
-            #obj.astype('category').factorize()[0]
             res = pd.Categorical(obj, categories=obj.unique().tolist().sort(), ordered=True) 
         elif pd_series_is_category(obj):
             res = pd.Categorical(obj, categories=obj.unique().tolist().sort(), ordered=True) #obj.factorize()[0]
@@ -446,11 +437,9 @@ def cast_series_type(obj:Series, tp_target):
         raise Exception('Casting of series of type ' + str(obj.dtype.name) + ' to type ' + str(tp_target) + ' failed')
     return res
 
-#     tp_source = obj.dtype; #print('tp_source', tp_source, tp_source.name)
-#     print('obj\n', obj, '\nsource tp', tp_source, 'type(obj', type(obj), 'target tp', tp_target)
+#     tp_source = obj.dtypes
 #     if tp_target == "ordered": # TODOD !!!!!!! need ordered
 #         if tp_source in [int, float]:
-#             #print('res\n', obj.astype(str).astype('category'));
 #             return obj.astype(str).astype('category')
 #         elif tp_source == str:
 #             return obj.astype('category')
@@ -463,7 +452,7 @@ def cast_series_type(obj:Series, tp_target):
 #         res = str(obj)
 #     else:
 #         raise Exception('Unsupported type ' + str(tp_target) + ' in function cast_type')
-#     #print('res', type(res), res)
+#     
 #     if tp_target in [int, float]:
 #         if np.isnan(res) or res is None:
 #             raise Exception('Casting of ' + str(obj) + ' to type ' + str(tp_target) + ' failed')
@@ -481,43 +470,4 @@ def get_expression_variables(expression):
         if isinstance(node, ast.Name):
             variables.append(node.id)
     return [v for v in set(variables) if v not in vars(builtins)]
-
-'''
-code to control caching dynamiccally
-import functools
-import smlp
-
-def conditional_cache(use_cache):
-    def decorator(func):
-        if use_cache:
-            return functools.cache(func)
-        else:
-            return func
-    return decorator
-
-class MyClass:
-    def __init__(self, use_cache=True):
-        self.use_cache = use_cache
-
-    @property
-    def smlp_true(self):
-        decorator = conditional_cache(self.use_cache)
-        return decorator(lambda: smlp.true)()
-
-    @property
-    def smlp_false(self):
-        decorator = conditional_cache(self.use_cache)
-        return decorator(lambda: smlp.false)()
-
-# Example usage
-# Enable caching
-my_instance = MyClass(use_cache=True)
-result_true = my_instance.smlp_true
-result_false = my_instance.smlp_false
-
-# Disable caching
-my_instance.use_cache = False
-# Now, the properties will not use cache
-
-'''
 

@@ -1,14 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # This file is part of smlp.
 
-# TODO !!!:  inst actually contains info required for logging, so maybe all feilds and paths/filenames
-# definitions need to be moved into a logger module/class (which does not exist now).
-# TODO !!! code to create argparse from json cnfig file https://gist.github.com/matthewfeickert/3b7d30e408fe4002aac728fc911ced35
-
-
 import os, sys, json
 import logging
-#print(logging.__path__)
 from smlp_py.smlp_utils import str_to_bool
     
 # LOGGER sources:
@@ -78,8 +72,7 @@ class SmlpLogger:
                 formatter = logging.Formatter('%(message)s')
         else:
             raise Exception('Unexpected logger ' + str(logger_name))
-        #formatter = logging.Formatter('[%(asctime)s] %(levelname)8s --- %(message)s ' +
-        #                             '(%(filename)s:%(lineno)s)',datefmt='%Y-%m-%d %H:%M:%S')
+
         fh.setFormatter(formatter)
         ch.setFormatter(formatter)
 

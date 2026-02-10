@@ -382,8 +382,8 @@ class SmlpDoepy:
         if type(doe_spec) == str:
             doe_spec_fname = doe_spec# + '.csv'
             if os.path.isfile(doe_spec_fname):
-                doe_spec_dict = pd.read_csv(doe_spec_fname); #print('doe_spec_df\n', doe_spec_dict)
-                doe_spec_dict = doe_spec_dict.to_dict(orient='list'); #print('doe_spec_df\n', doe_spec_dict)
+                doe_spec_dict = pd.read_csv(doe_spec_fname)
+                doe_spec_dict = doe_spec_dict.to_dict(orient='list')
             else:
                 raise Exception('DOE levels grid file ' + str(doe_spec) + ' does not eist')
         elif type(doe_spec) == dict:
@@ -407,14 +407,13 @@ class SmlpDoepy:
                 assert len(v) == 2 or len(v) == 3
             doe_out_df = build.box_behnken(doe_spec_dict, box_behnken_centers)
         elif doe_algo == self.BOX_WILSON:
-            #print('central_composite_center', type(central_composite_center), central_composite_center)
             assert isinstance(central_composite_center, str)
             # central_composite_center is a string of a form a,b where a and be are integers. 
             # We need to convert this string to 1-by-2 np.ndarray object 
             center_pair = central_composite_center.split(",")
             center_pair = ([int(e) for e in center_pair])
             assert len(center_pair) == 2
-            center_pair = np.array(center_pair); #print(type(center_pair), center_pair)
+            center_pair = np.array(center_pair)
             doe_out_df = build.central_composite(doe_spec_dict, center_pair, 
                 central_composite_alpha, central_composite_face)
         elif doe_algo == self.LATIN_HYPERCUBE:
@@ -432,34 +431,9 @@ class SmlpDoepy:
             doe_out_df = build.uniform_random(doe_spec_dict, num_samples=num_samples)
         else:
             raise Exception('Unsupported DOE algorithm ' + str(doe_algo))
-        #print('doe_out_df\n', doe_out_df); 
+         
         self._doepy_logger.info('DOE table with ' + str(doe_out_df.shape[0]) + ' entries has been generated')
         doe_out_df.to_csv(self.get_doe_results_file_name(report_file_prefix), index=False)
         return doe_out_df
 
-        
-'''
-        doepy_example_dict = {'Pressure':[40, 50, 70], 'Temperature':[290, 320, 350], 'FlowRate':[0.2, 0.3, 0.2], 'Time':[5, 8, 5]}
-        doepy_example_df = pd.DataFrame.from_dict(doepy_example_dict); #print('doepy_example_df\n', doepy_example_df); 
-        doe_out_df = doeInst.sample_doepy(doeInst.LATIN_HYPERCUBE_SPACE_FILLING, doepy_example_dict, num_samples=100); #print('doe_out_df\n', doe_out_df); 
-        doe_out_df = build.space_filling_lhs(doepy_example_dict, num_samples=100); #print('doe_out_df\n', doe_out_df); 
-        assert False
-        ranges_dict = {'a':[5,7], 'b':[-1,1], 'c':[0,1]}
-        ranges_df = pd.DataFrame.from_dict(ranges_dict);
-        ranges_df.to_csv('.../doe_ranges.csv', index=False)
-        doe_ranges_dict = read_write.read_variables_csv('.../doe_ranges.csv')
-        #print('doe_ranges_dict\n', doe_ranges_dict)
-        doe_out_df = build.space_filling_lhs(doe_ranges_dict, num_samples=100); #print('doe_out_df\n', doe_out_df); 
-        assert False
-        #example_ranges_df = read_write.read_variables_csv('ranges.csv'); 
-        read_write.write_csv(
-            build.space_filling_lhs(read_write.read_variables_csv('ranges.csv'),
-            num_samples=100),
-            filename='DOE_table.csv'
-        )
-        ff2n(3)
-        #print(levels)
-        abc = fullfact(levels); #print('abc', abc)
-        assert False
-'''
         
