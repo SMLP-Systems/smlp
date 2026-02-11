@@ -419,7 +419,7 @@ Please refer to the main repository license for usage terms.
 ## Support
 
 For issues or questions:
-- SMLP documentation: [link to docs]
+- [SMLP User Manual](https://arxiv.org/pdf/2405.10215v1)
 - Example-specific issues: See individual example READMEs
 - General optimization questions: Consult the references provided
 
