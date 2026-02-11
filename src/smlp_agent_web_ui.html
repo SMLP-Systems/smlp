@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMLP Agent - RL Enhanced</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .main-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .query-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1em;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .query-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+
+        .btn-tertiary {
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-tertiary:hover {
+            background: #dd6b20;
+        }
+
+        .result-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result-section.active {
+            display: block;
+        }
+
+        .command-box {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .command-box h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .command-json {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .edit-section {
+            margin-top: 20px;
+        }
+
+        .edit-section textarea {
+            width: 100%;
+            min-height: 150px;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border: 2px solid #cbd5e0;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .feedback-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .reward-indicator {
+            background: linear-gradient(90deg, #fc8181 0%, #f6e05e 50%, #68d391 100%);
+            height: 30px;
+            border-radius: 15px;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .reward-marker {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 3px solid #2d3748;
+            border-radius: 50%;
+            top: -5px;
+            transform: translateX(-50%);
+            transition: left 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+
+        .output-section {
+            background: #edf2f7;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .output-section pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1em;
+            color: #718096;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .example-item {
+            background: #f7fafc;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+
+        .example-query {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .example-command {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #4a5568;
+        }
+
+        .example-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+            font-size: 0.85em;
+            color: #718096;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 SMLP Agent</h1>
+            <p>Reinforcement Learning Enhanced Command Generation</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="total-feedback">0</div>
+                <div class="stat-label">Total Feedback</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="avg-reward">0.00</div>
+                <div class="stat-label">Avg Reward</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="recent-reward">0.00</div>
+                <div class="stat-label">Recent Reward</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="num-examples">0</div>
+                <div class="stat-label">Example Pool</div>
+            </div>
+        </div>
+
+        <div class="main-panel">
+            <div class="tab-container">
+                <button class="tab active" onclick="switchTab('query')">Query</button>
+                <button class="tab" onclick="switchTab('examples')">Examples</button>
+                <button class="tab" onclick="switchTab('history')">History</button>
+            </div>
+
+            <!-- Query Tab -->
+            <div id="query-tab" class="tab-content active">
+                <div class="input-section">
+                    <h2>Enter Your Query</h2>
+                    <textarea 
+                        class="query-input" 
+                        id="user-query" 
+                        placeholder="Example: run dataset analysis on sales data with neural network"
+                    ></textarea>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="runQuery()">Generate Command</button>
+                        <button class="btn btn-secondary" onclick="loadStats()">Refresh Stats</button>
+                        <button class="btn btn-tertiary" onclick="saveCheckpoint()">Save Checkpoint</button>
+                    </div>
+                </div>
+
+                <div class="result-section" id="result-section">
+                    <div class="command-box">
+                        <h3>Generated Command</h3>
+                        <div class="command-json" id="generated-command"></div>
+                    </div>
+
+                    <div class="edit-section">
+                        <h3>Edit Command (Optional)</h3>
+                        <textarea id="corrected-command" placeholder="Edit the JSON above if corrections are needed..."></textarea>
+                        
+                        <div class="feedback-controls">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="execution-success">
+                                <span>Execution Successful</span>
+                            </label>
+                            <button class="btn btn-secondary" onclick="submitFeedback()">Submit Feedback</button>
+                        </div>
+                    </div>
+
+                    <div id="reward-display" style="display: none;">
+                        <h3>Feedback Reward</h3>
+                        <div class="reward-indicator">
+                            <div class="reward-marker" id="reward-marker">0.0</div>
+                        </div>
+                    </div>
+
+                    <div class="output-section">
+                        <h3>Execution Output</h3>
+                        <pre id="execution-output">Waiting for execution...</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Examples Tab -->
+            <div id="examples-tab" class="tab-content">
+                <h2>High-Quality Examples</h2>
+                <div id="examples-list">
+                    <div class="loading">Loading examples</div>
+                </div>
+            </div>
+
+            <!-- History Tab -->
+            <div id="history-tab" class="tab-content">
+                <h2>Recent Feedback History</h2>
+                <div id="history-list">
+                    <div class="loading">Loading history</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000';
+        let currentGeneratedCommand = null;
+
+        // Load initial stats
+        loadStats();
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/agent/training_stats`);
+                const stats = await response.json();
+                
+                document.getElementById('total-feedback').textContent = stats.total_feedback || 0;
+                document.getElementById('avg-reward').textContent = (stats.avg_reward || 0).toFixed(2);
+                document.getElementById('recent-reward').textContent = (stats.recent_avg_reward || 0).toFixed(2);
+                document.getElementById('num-examples').textContent = stats.num_examples || 0;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function runQuery() {
+            const query = document.getElementById('user-query').value.trim();
+            if (!query) {
+                alert('Please enter a query');
+                return;
+            }
+
+            // Show result section
+            document.getElementById('result-section').classList.add('active');
+            document.getElementById('execution-output').textContent = 'Generating command...';
+
+            try {
+                const response = await fetch(`${API_BASE}/agent/text_with_feedback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+
+                const data = await response.json();
+                
+                currentGeneratedCommand = data.generated_command;
+                
+                // Display generated command
+                document.getElementById('generated-command').textContent = 
+                    JSON.stringify(data.generated_command, null, 2);
+                
+                // Populate edit box
+                document.getElementById('corrected-command').value = 
+                    JSON.stringify(data.generated_command, null, 2);
+                
+                // Display execution output
+                document.getElementById('execution-output').textContent = data.result || 'No output';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('execution-output').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function submitFeedback() {
+            const query = document.getElementById('user-query').value.trim();
+            const correctedText = document.getElementById('corrected-command').value.trim();
+            const executionSuccess = document.getElementById('execution-success').checked;
+            
+            if (!query || !correctedText || !currentGeneratedCommand) {
+                alert('Please run a query first and provide corrections');
+                return;
+            }
+
+            try {
+                const correctedCommand = JSON.parse(correctedText);
+                
+                const response = await fetch(`${API_BASE}/agent/feedback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_query: query,
+                        generated_command: currentGeneratedCommand,
+                        corrected_command: correctedCommand,
+                        execution_success: executionSuccess
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Display reward
+                const reward = data.reward;
+                const rewardDisplay = document.getElementById('reward-display');
+                const rewardMarker = document.getElementById('reward-marker');
+                
+                rewardDisplay.style.display = 'block';
+                rewardMarker.style.left = `${reward * 100}%`;
+                rewardMarker.textContent = reward.toFixed(2);
+                
+                // Refresh stats
+                await loadStats();
+                
+                alert(`Feedback submitted! Reward: ${reward.toFixed(3)}`);
+                
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        async function saveCheckpoint() {
+            try {
+                const response = await fetch(`${API_BASE}/agent/save_checkpoint`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                alert(data.message);
+            } catch (error) {
+                console.error('Error saving checkpoint:', error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            // Load data for specific tabs
+            if (tabName === 'examples') {
+                loadExamples();
+            } else if (tabName === 'history') {
+                loadHistory();
+            }
+        }
+
+        async function loadExamples() {
+            try {
+                const response = await fetch(`${API_BASE}/agent/high_quality_examples?min_reward=0.7&n=20`);
+                const data = await response.json();
+                
+                const examplesList = document.getElementById('examples-list');
+                examplesList.innerHTML = '';
+                
+                if (data.examples.length === 0) {
+                    examplesList.innerHTML = '<p>No high-quality examples yet. Submit more feedback!</p>';
+                    return;
+                }
+                
+                data.examples.forEach(ex => {
+                    const div = document.createElement('div');
+                    div.className = 'example-item';
+                    div.innerHTML = `
+                        <div class="example-query">${ex.user_query}</div>
+                        <div class="example-command">${JSON.stringify(ex.corrected_command)}</div>
+                        <div class="example-stats">
+                            <span>Reward: ${ex.reward.toFixed(3)}</span>
+                            <span>Success: ${ex.execution_success ? '✓' : '✗'}</span>
+                            <span>${new Date(ex.timestamp).toLocaleString()}</span>
+                        </div>
+                    `;
+                    examplesList.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Error loading examples:', error);
+                document.getElementById('examples-list').innerHTML = '<p>Error loading examples</p>';
+            }
+        }
+
+        async function loadHistory() {
+            try {
+                const response = await fetch(`${API_BASE}/agent/feedback_history?n=20`);
+                const data = await response.json();
+                
+                const historyList = document.getElementById('history-list');
+                historyList.innerHTML = '';
+                
+                if (data.feedback.length === 0) {
+                    historyList.innerHTML = '<p>No feedback history yet.</p>';
+                    return;
+                }
+                
+                data.feedback.forEach(entry => {
+                    const div = document.createElement('div');
+                    div.className = 'example-item';
+                    div.innerHTML = `
+                        <div class="example-query">${entry.user_query}</div>
+                        <div class="example-stats">
+                            <span>Reward: ${entry.reward.toFixed(3)}</span>
+                            <span>Success: ${entry.execution_success ? '✓' : '✗'}</span>
+                            <span>${new Date(entry.timestamp).toLocaleString()}</span>
+                        </div>
+                    `;
+                    historyList.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Error loading history:', error);
+                document.getElementById('history-list').innerHTML = '<p>Error loading history</p>';
+            }
+        }
+
+        // Refresh stats every 30 seconds
+        setInterval(loadStats, 30000);
+    </script>
+</body>
+</html>
