@@ -221,7 +221,6 @@ class ModelKeras:
     # the global name is obtained from local name, say 'epochs', by prefixing it
     # with the global name of the algorithm, which results in 'nn_keras_epochs'
     def _hparam_name_local_to_global(self, hparam, algo):
-        #print('hparam global name', hparam, algo)
         return self._algo_name_local2global(algo) + '_' + hparam
     
     # given training algo name like dt and the hyper parameter dictionary param_dict  
@@ -230,15 +229,11 @@ class ModelKeras:
     # (where keras is the name of the package used) to the parameter name and its
     # correponding abbriviated name in param_dict.
     def _param_dict_with_algo_name(self, param_dict, algo):
-        #print('param_dict', param_dict)
         result_dict = {}
         for k, v in param_dict.items():
             v_updated = v.copy()
             v_updated['abbr'] = self._hparam_name_local_to_global(v['abbr'], algo) # algo + '_' + v['abbr']
-            #print('updated abbrv', v_updated['abbr'])
-            #print('updated key', self._hparam_name_local_to_global(k, algo))
             result_dict[self._hparam_name_local_to_global(k, algo)] = v_updated #algo + '_' + k
-        #raise Exception('tmp')
         return result_dict
     
     # local hyper params dictionary
@@ -280,13 +275,11 @@ class ModelKeras:
             model.add(keras.layers.Dense(n_out, activation=out_activation))
         
         model.compile(optimizer=optimizer, loss=loss_function, metrics=metrics)
-        #print("nn_init_model:model") ; print(model)
         
         return model
 
         
     # In case of a non-deterministic behaviour, one can try to use output_initializer wih a seed (output_initializer = GlorotUniform(seed=42)
-# In case of a non-deterministic behaviour, one can try to use output_initializer with a seed
     def _nn_init_model_functional(self, resp_names:list[str], input_dim:int, optimizer:str, hid_activation:str, out_activation:str, 
             layers_spec_list:list[int], loss_function, metrics):
         self._keras_logger.info('building NN model using Keras Functional API')
@@ -300,8 +293,11 @@ class ModelKeras:
             x = keras.layers.Dense(units=size, activation=hid_activation)(x)
         
         outputs = []
+        # loss = {} -- required if we wanted to use different loss functions for different responses
         for resp in resp_names:
             self._keras_logger.info('output layer of size ' + str(1))
+            # the following line would define a monolothic output layer like this is done for sequential API
+            #outputs = keras.layers.Dense(len(resp_names), activation=out_activation)(x)
             output = keras.layers.Dense(1, name=resp, activation=out_activation)(x)
             outputs.append(output)
         
@@ -318,7 +314,10 @@ class ModelKeras:
             model.compile(optimizer=optimizer, loss=loss_function, metrics=metrics)
         
         return model
-
+    
+    # function for comparing model configurations model.get_config() for sequential vs functional models
+    # it does not compare fields with keys having 'layer' as substring, differnces there are expected, but 
+    # equivalence of the layers architectrures between func vs seq models can be checked in a different way.
     def compare_model_configs_from_files(self, file1, file2):
         # Load the configurations from the JSON files
         with open(file1, 'r') as f1:
@@ -363,7 +362,7 @@ class ModelKeras:
         
         self._keras_logger.info('model summary: start')
         self._keras_logger.info(model_summary)
-
+        
         '''
         # print weights of layers:
         self._keras_logger.info('Layer weights:')
@@ -420,13 +419,13 @@ class ModelKeras:
     def round_model_weights(self, model:keras.Model, num_decimal_places:int):
         for layer in model.layers:
             # Get the current weights of the layer
-            weights = layer.get_weights(); #print('current weights\n', weights)
+            weights = layer.get_weights()
 
             # Round the weights to the specified number of decimal places
             rounded_weights = [np.round(w, num_decimal_places) for w in weights]
 
             # Set the rounded weights back to the layer
-            layer.set_weights(rounded_weights); #print('rounded weights\n', rounded_weights)
+            layer.set_weights(rounded_weights)
     
     # train keras NN model - FIXED for symbolic tensor issues
     def _nn_train(self, model, epochs, batch_size, weights_precision, model_checkpoint_path,
@@ -448,6 +447,7 @@ class ModelKeras:
         if False:
             rlrop = keras.callbacks.ReduceLROnPlateau(
                     monitor=self._DEF_MONITOR,
+                    # XXX: no argument 'lr' in docs; there is 'min_lr', however
                     lr=0.000001, factor=0.1, patience=100)
 
         callbacks = [c for c in (checkpointer,earlyStopping,rlrop) if c is not None]
@@ -533,8 +533,8 @@ class ModelKeras:
             self.round_model_weights(model, int(weights_precision))
         return history
 
+    
     def _report_training_regression(self, history, metrics, epochs, interactive, resp_names, out_prefix=None):
-        #print('history.history', history.history)
         epochs_range = range(epochs)
         
         # the metric argument here is string, the name of a Keras metric
@@ -542,7 +542,6 @@ class ModelKeras:
             #plt.figure() -- commented out since otherwise an extra empty plot was displayed
             #plt.figure(figsize=(12, 5))
             #plt.subplot(1, 2, 1)
-            #print('acc', acc, '\nval_acc', val_acc)
             plt.plot(epochs_range, acc, label='Training {}'.format(metric))
             plt.plot(epochs_range, val_acc, label='Validation {}'.format(metric))
             #plt.legend(loc='upper right')
@@ -550,8 +549,8 @@ class ModelKeras:
             plt.title('Response {} Training and Validation {}'.format(resp_name, metric))
             plt.xlabel('epochs')
             plt.ylabel(metric.upper()) #'MSE'
-            #ind_5 = len(acc)-int(len(acc)/10); #print('ind_5', ind_5)
-            #acc_5 = acc[-ind_5:]; #print('acc_5', acc_5)
+            #ind_5 = len(acc)-int(len(acc)/10)
+            #acc_5 = acc[-ind_5:]
             #plt.ylim(0, max(acc_5))
             #plt.ylim(0, 2000)
             plot('train-reg_{}_{}'.format(resp_name, metric), interactive, out_prefix)
@@ -562,14 +561,11 @@ class ModelKeras:
         # training iterations (this is just a guess...). To address this, below we have a case split
         # based on history_for_all_responses which checks whether specific response related keys occur 
         # in training hstory history.history:
-        #print('history', history.history.keys())
         for metric in metrics:
-            #print(metric in history.history, 'val_'+metric.name in history.history, 'loss' in history.history, 'val_loss' in history.history)
             history_for_all_responses = metric.name in history.history and 'val_'+metric.name in history.history and \
                 'loss' in history.history and 'val_loss' in history.history; 
-            #print('history_for_all_responses', history_for_all_responses);
             if len(resp_names) == 1 or history_for_all_responses:
-                acc = history.history[metric.name]; #print(acc) #self._HIST_MSE
+                acc = history.history[metric.name] #self._HIST_MSE
                 val_acc = history.history['val_'+metric.name] # self._HIST_VAL_MSE
                 loss = history.history['loss']
                 val_loss = history.history['val_loss']
@@ -579,7 +575,7 @@ class ModelKeras:
                     plot_error_convergence(acc, val_acc, 'all_responses', metric.name)
             else:
                 for rn in resp_names:
-                    acc = history.history[rn + '_' + metric.name]; #print(acc)
+                    acc = history.history[rn + '_' + metric.name]
                     val_acc = history.history['val_' + rn + '_' + metric.name]
                     loss = history.history[rn + '_' + 'loss']
                     val_loss = history.history['val_' + rn + '_loss']
@@ -705,9 +701,6 @@ class ModelKeras:
     def search(self, X_train:pd.DataFrame, y_train:pd.DataFrame, X_val:pd.DataFrame, y_val:pd.DataFrame, input_dim:int, resp_names:list[str], sequential_api:bool,
             hid_activation:str, out_activation:str, epochs:int, metrics, layers_grid:list, losses_grid:list, lrates_grid:list, batches_grid:list, tuner_algo:str):
         self._keras_logger.info('Tuning model hyperparameters using Keras Tuner algorithm ' + str(tuner_algo) + ': start')
-        #print('X_train\n', X_train); print('y_train\n', y_train); print('X_val\n', X_val); print('y_val\n', y_val); 
-        #print('input_dim =', input_dim); print('resp_names =', resp_names);
-        #print('hid_activation =', hid_activation); print('out_activation =', out_activation)
         self.initialize_tuner(input_dim, resp_names, sequential_api, hid_activation, out_activation, metrics, layers_grid, losses_grid, lrates_grid, tuner_algo)
         self.tuner.search(
             x=X_train,
@@ -730,7 +723,7 @@ class ModelKeras:
         best_hps = self.tuner.get_best_hyperparameters(num_trials=1)[0]
         best_model = self.tuner.hypermodel.build(best_hps)
         
-        callbacks=[]
+        callbacks=[] #[keras.callbacks.EarlyStopping(patience=5)]
         self._log_model_summary(best_model, epochs, batch_size, weights_coef, callbacks)
         
         best_batch_size = best_hps.get('batch_size')
@@ -802,6 +795,7 @@ class ModelKeras:
         )
         
         return best_model, history
+
     # Function to build NN Keras model using Keras Tuner for hyperparameter tuning. 
     # NN Keras functional API is used for building the models (even if nn_keras_sequential_api is set to True).
     def train_best_model(self, resp_names:list[str], algo:str, X_train, X_test, y_train, y_test, sequential_api:bool,  
@@ -855,12 +849,9 @@ class ModelKeras:
         loss_function = self._loss_functions.get(loss_function_str)
         if not loss_function:
             raise ValueError(f"Unsupported loss function: {loss_function_str}")
-        metrics = [self._metrics.get(metrics_str) for metrics_str in metrics_str_list]; #print('metrics', metrics_str_list, metrics)
+        metrics = [self._metrics.get(metrics_str) for metrics_str in metrics_str_list]
         
         self._keras_logger.info('_keras_train_multi_response: start')
-        #print('layers_spec =', layers_spec, '; seed =', seed, '; weights =', weights_coef)
-        #print('epochs =', epochs, '; batch_size =', batch_size, '; optimizer =', optimizer)
-        #print('hid_activation =', hid_activation, 'out_activation =', out_activation)
 
         # set the seed for reproducibility
         if seed is not None:
@@ -918,9 +909,9 @@ class ModelKeras:
                 initial_learning_rate=learning_rate,
                 decay_steps=10000,
                 decay_rate=0.9)
-            optimizer = Adam(learning_rate=lr_schedule); #print('optimizer', optimizer)
+            optimizer = Adam(learning_rate=lr_schedule)
         else:
-            optimizer = Adam(learning_rate=learning_rate); #print('optimizer', optimizer)
+            optimizer = Adam(learning_rate=learning_rate)
         input_dim = X_train.shape[1] #num_columns
         
         layers_spec_list = [float(x) for x in layers_spec.split(',')] #map(float, layers_spec.split(',')); 
@@ -982,8 +973,6 @@ class ModelKeras:
             X_train:pd.DataFrame, X_test:pd.DataFrame, y_train:pd.DataFrame, y_test:pd.DataFrame, hparam_dict:dict, 
             interactive_plots:bool, seed:float, weights_coef:dict, model_per_response:bool):
         self._keras_logger.info('keras_main: start')
-        #print('resp_names', resp_names)
-        #print('X_train', X_train.shape, 'X_test', X_test.shape, 'y_train', y_train.shape, 'y_test', y_test.shape)
         if model_per_response:
             model = {}
             for rn in resp_names:
