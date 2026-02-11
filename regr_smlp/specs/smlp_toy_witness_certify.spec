@@ -66,6 +66,11 @@
 			"x": 7,
 			"p1": 7.0,
 			"p2": 6.0
+		},
+		"query_poly_intercept_sensitive": {
+			"x": 7,
+			"p1": 7.0,
+			"p2": 6.0
 		}
 	}
 }
