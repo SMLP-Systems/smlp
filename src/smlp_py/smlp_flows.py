@@ -282,7 +282,7 @@ class SmlpFlows:
             doe_out_df = self.doeInst.sample_doepy(args.doe_algo, args.doe_spec_file, args.doe_num_samples, 
                 self.configInst.report_file_prefix, args.doe_prob_distribution, args.doe_design_resolution, 
                 args.doe_central_composite_center, args.doe_central_composite_face, 
-                args.doe_central_composite_alpha, args.doe_box_behnken_centers)
+                args.doe_central_composite_alpha, args.doe_box_behnken_centers) 
             if args.analytics_mode == 'doe':
                 self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
                 self.logger.info('Executing run_smlp.py script: End')
@@ -295,7 +295,7 @@ class SmlpFlows:
                 new_file_path = self.configInst.report_file_prefix + '_doe_data.csv'
                 doe_out_df.to_csv(new_file_path, index=False)
                 self.data_fname = new_file_path
-      
+        
         if args.analytics_mode == 'discretize':
             X, y, feat_names, resp_names, feat_names_dict = self.dataInst.preprocess_data(self.data_fname, 
                 feat_names, resp_names, None, args.keep_features, args.impute_responses, 'training', 
@@ -324,10 +324,9 @@ class SmlpFlows:
             X, y, feat_names, resp_names, feat_names_dict = self.dataInst.preprocess_data(self.data_fname, 
                 feat_names, resp_names, None, args.keep_features, args.impute_responses, 'training', 
                 args.positive_value, args.negative_value, args.response_map, args.response_to_bool)
-            #data = pd.concat([X,y], axis=1); print('data\n',data)
             fs_ranking_df, fs_summary_df, results_dict = self.psgInst.smlp_subgroups(X, y, resp_names, 
                 args.positive_value, args.negative_value, args.psg_quality_target, args.psg_max_dimension, 
-                args.psg_top_ranked, args.interactive_plots); #print('fs_ranking_df\n', fs_ranking_df); 
+                args.psg_top_ranked, args.interactive_plots) 
             self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
             self.logger.info('Executing run_smlp.py script: End')
             return None
@@ -472,7 +471,6 @@ class SmlpFlows:
                         self.dataInst.data_bounds_file, bounds_factor=None, T_resp_bounds_csv_path=None)
                 else:
                     self.verifyInst.smlp_verify(syst_expr_dict, args.model, model, 
-                        #self.dataInst.unscaled_training_features, self.dataInst.unscaled_training_responses, 
                         model_features_dict, feat_names, resp_names, asrt_names, asrt_exprs, alpha_global_expr, 
                         args.solver_logic, args.vacuity_check,
                         args.data_scaler, args.scale_features, args.scale_responses, 
@@ -482,9 +480,7 @@ class SmlpFlows:
                 if witn_dict is None:
                     witness = self.specInst.sanity_check_certification_spec()
                     witn_dict = dict([(quer_name, witness) for quer_name in quer_names])
-                #print('witness', witness, 'witn_dict', witn_dict)
                 self.queryInst.smlp_certify(syst_expr_dict, args.model, model, #False, #universal
-                    #self.dataInst.unscaled_training_features, self.dataInst.unscaled_training_responses, 
                     model_features_dict, feat_names, resp_names, quer_names, quer_exprs, witn_dict,
                     delta_dict, alpha_global_expr, beta_expr, args.eta, theta_radii_dict, 
                     args.solver_logic, args.vacuity_check, 
@@ -539,7 +535,3 @@ class SmlpFlows:
                 
             self.logger.info('Running SMLP in mode "{}": End'.format(args.analytics_mode))
             self.logger.info('Executing run_smlp.py script: End')
-        
-        # print modules loaded during  SMLP execution
-        #import sys
-        #print('modules', sys.modules)

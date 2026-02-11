@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # This file is part of smlp.
 
-#import textwrap
 import os, argparse, json
 from smlp_py.smlp_utils import str_to_bool
 
@@ -158,11 +157,8 @@ class SmlpConfig:
     # sklearm caret, keras -- model_params_dict = keras_dict | sklearn_dict | caret_dict, 
     # as well as data and logger related parameters: data_params_dict and logger_params_dict
     def args_dict_parse(self, argv, args_dict):
-        if not argv:
-            argv = ["run_smlp.py"]
-
         parser = argparse.ArgumentParser(prog=argv[0])
-
+        
         for p, v in args_dict.items():
             if 'default' in v:
                 parser.add_argument('-'+v['abbr'], '--'+p, default=v['default'], 
@@ -186,7 +182,17 @@ class SmlpConfig:
                 args.model_name, args.doe_spec_file, args.text_data, args.wordvec_model
             )
 
-        # Save config if requested
+        # compute and save report_file_prefix and model_file_prefix as part of self
+        self.report_file_prefix, self.model_file_prefix = self.args_get_report_name_prefix(args.labeled_data, 
+            args.log_files_prefix, args.output_directory, args.new_data, args.model_name, args.doe_spec_file) 
+        
+        # Save tool configuration and model rerun configuration
+        # Adapted code from https://micha-feigin.medium.com/on-using-config-files-with-pythons-argparse-8af09d0bdfb9
+        # TODO !!! this is not the right place to save configuration. This is better to do 
+        # within function args_dict_parse called above, but in current implementation we are forced
+        # to save configuration only after inst (paths definitions) has been instantiated, as we 
+        # need to compute file name for the dumped json file and for this we need function 
+        # inst.get_report_name_prefix() from inst to be available
         if args.save_configuration:
             args_config_file = self.report_file_prefix + '_args_config.json'
             tmp_args = vars(args).copy()
@@ -214,5 +220,5 @@ class SmlpConfig:
             # prefix model_name with the output directory
             model_args['model_name'] = None
             self.model_rerun_config = model_args
-
+        
         return args

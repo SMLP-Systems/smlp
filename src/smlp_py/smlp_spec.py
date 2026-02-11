@@ -213,7 +213,7 @@ class SmlpSpec:
                             self._SPEC_INPUTS_BOUNDS, self._SPEC_KNOBS_GRID, 
                             self._SPEC_KNOBS_ABSOLUTE_RADIUS, self._SPEC_KNOBS_RELATIVE_RADIUS]:
                     raise Exception('Unexpected variable specification field ' + '"{}"'.format(str(k)))
-            #print('var_spec', var_spec)
+            
             if self._SPEC_VARIABLE_LABEL not in var_spec.keys():
                 raise Exception('A variable does not have the label (name) declared in spec file')
             if self._SPEC_VARIABLE_TYPE not in var_spec.keys():
@@ -267,19 +267,15 @@ class SmlpSpec:
         with open(spec_file, 'r') as sf: #+'.spec'
             spec_dict = json.load(sf) #, parse_float=Fraction
         spec_new_dict = {}
-        #print('varoiables ?', self._SPEC_DICTIONARY_SPEC)
-        #print('spec tokens dict vals', self._spec_tokens_dict.values())
+        
         def upgrade_token(token):
             for version_vals in self._spec_tokens_dict.values():
-                #print('version_vals', version_vals)
-                token_val_source = version_vals[source_version]; #print('token_val_source', token_val_source)
-                token_val_target = version_vals[target_version]; #print('token_val_target', token_val_target)
+                token_val_source = version_vals[source_version]
+                token_val_target = version_vals[target_version]
                 if token_val_source == token:
-                    #print('match', token)
                     return token_val_target
         
         for k,v in spec_dict.items():
-            #print('k', k, 'v', v)
             if k == self._SPEC_DICTIONARY_VERSION:
                 spec_new_dict[self._SPEC_DICTIONARY_VERSION] = target_version
             elif k == self._SPEC_DICTIONARY_SPEC:
@@ -287,20 +283,16 @@ class SmlpSpec:
                 for var_spec in spec_dict[self._SPEC_DICTIONARY_SPEC]:
                     var_spec_new = {}
                     for var_spec_token, var_spec_val in var_spec.items():
-                        #print('var_spec_token', var_spec_token, 'var_spec_val', var_spec_val)
                         var_spec_token_target = upgrade_token(var_spec_token)
                         var_spec_val_target = upgrade_token(var_spec_val)
                         if var_spec_val_target is None:
                             var_spec_val_target = var_spec_val
-                        #print('replace', var_spec_token, 'with', var_spec_token_target)
-                        #print('replace', var_spec_val, 'with', var_spec_val_target)
                         var_spec_new[var_spec_token_target] = var_spec_val_target
-                    #print('var_spec_new', var_spec_new)
                     vars.append(var_spec_new)
                 spec_new_dict[self._spec_tokens_dict['SPEC_DICTIONARY_SPEC'][target_version]] = vars
             else:
                 spec_new_dict[k] = v
-        #print('spec_new_dict', spec_new_dict); print('new soec file', spec_file+'_v{}.spec'.format('1.2'))
+        
         with open(spec_file.removesuffix('.spec')+'_v{}.spec'.format('1.1'), 'w') as f:
             json.dump(spec_dict, f, indent='\t', cls=np_JSONEncoder)
         with open(spec_file.removesuffix('.spec')+'_v{}.spec'.format('1.2'), 'w') as f:
@@ -316,13 +308,11 @@ class SmlpSpec:
                 raise Exception('Spec file ' + str(spec_file) + ' does not exist') #'.spec' + 
             with open(spec_file, 'r') as sf: #+'.spec'
                 spec_dict = json.load(sf, parse_float=Fraction)
-            #print('spec_dict loaded\n', spec_dict)
             assert isinstance(spec_dict, dict)
             self.set_spec_version(spec_dict[self._SPEC_DICTIONARY_VERSION])
             self.set_spec_tokens()
             assert self._SPEC_DICTIONARY_VERSION in spec_dict.keys()
             assert self._SPEC_DICTIONARY_SPEC in spec_dict.keys()
-            #print(set(spec_dict.keys()))
             assert (set(spec_dict.keys())).issubset({self._SPEC_DICTIONARY_VERSION, self._SPEC_DICTIONARY_SPEC,
                 self._SPEC_DICTIONARY_ASSERTIONS, self._SPEC_DICTIONARY_OBJECTIVES, self._SPEC_DICTIONARY_QUERIES,
                 self._SPEC_DICTIONARY_ALPHA, self._SPEC_DICTIONARY_BETA, self._SPEC_DICTIONARY_ETA, 
@@ -331,11 +321,7 @@ class SmlpSpec:
             self.spec = spec_dict[self._SPEC_DICTIONARY_SPEC]; 
             self.version = spec_dict[self._SPEC_DICTIONARY_VERSION]
             self._spec_logger.info('Model exploration specification:\n' + str(self.spec_dict))
-            #self._spec_logger.info(json.stringif(self.spec_dict, ensure_ascii=False, indent='\t', cls=np_JSONEncoder)) #parse_float=Fraction
-            #self.set_spec_tokens()
             self.sanity_check_spec()
-            #print(self._SPEC_DICTIONARY_SPEC); print('spec_file', spec_file)
-            #self.upgrade_spec(spec_file, '1.1', '1.2'); assert False
 
     # Override relative and absolute radii values supplied in the spec file
     def set_radii(self, rad_abs, rad_rel):
@@ -439,7 +425,6 @@ class SmlpSpec:
         for var_spec in self.spec:
             if not var_spec[self._SPEC_VARIABLE_LABEL] in spec_knobs:
                 continue
-            #print('knob spec', var_spec)
             if self._SPEC_KNOBS_GRID in var_spec.keys():
                 if len(var_spec[self._SPEC_KNOBS_GRID]) == 0:
                     raise Exception('Knob' + str(self._SPEC_VARIABLE_LABEL) + ' has an empty grid')
@@ -468,7 +453,6 @@ class SmlpSpec:
     # Knob values in this case can be provided is spec file using
     # the "witnesses" field instead of the "configurations" field.
     def sanity_check_certification_spec(self):
-        #print(self.get_spec_witn_dict)
         if self.get_spec_witn_dict is not None:
             return self.get_spec_witn_dict
         non_constant_knobs_inputs = []
@@ -477,7 +461,6 @@ class SmlpSpec:
         for var_spec in self.spec:
             if not var_spec[self._SPEC_VARIABLE_LABEL] in self.get_spec_knobs +  self.get_spec_inputs:
                 continue
-            #print('knob spec', var_spec)
             if self._SPEC_KNOBS_GRID in var_spec.keys():
                 if len(var_spec[self._SPEC_KNOBS_GRID]) == 0:
                     raise Exception('Knob' + str(self._SPEC_VARIABLE_LABEL) + ' has an empty grid')
@@ -507,24 +490,19 @@ class SmlpSpec:
     def get_spec_alpha_global_expr(self):
         if self._alpha_cmdl_expr is not None:
             alpha_expr = self._alpha_cmdl_expr
-            #print('get_spec_alpha_global_expr  1', alpha_expr)
         elif self._alpha_spec_expr is not None:
             alpha_expr = self._alpha_spec_expr
-            #print('get_spec_alpha_global_expr  2', alpha_expr)
         elif self._SPEC_DICTIONARY_ALPHA in self.spec_dict.keys():
             assert isinstance(self.spec_dict[self._SPEC_DICTIONARY_ALPHA], str)
             alpha_expr = self.spec_dict[self._SPEC_DICTIONARY_ALPHA]
             self._alpha_spec_expr = alpha_expr
             self._alpha_global_expr = alpha_expr
-            #print('get_spec_alpha_global_expr  3', alpha_expr)
         else:
-            #print('get_spec_alpha_global_expr  4  -- None')
             assert self._alpha_cmdl_expr is None
             assert self._alpha_spec_expr is None
             assert self._alpha_global_expr is None
             alpha_expr = None
             
-        #print('alpha_expr', alpha_expr, 'cmdl', self._alpha_cmdl_expr, 'spec', self._alpha_spec_expr, 'glbl', self._alpha_global_expr)
         return alpha_expr
 
     # API to extract from spec a global beta constraint defind using feild "beta"
@@ -545,7 +523,6 @@ class SmlpSpec:
             assert self._beta_global_expr is None
             beta_expr = None
             
-        #print('beta_expr', beta_expr, 'cmdl', self._beta_cmdl_expr, 'spec', self._beta_spec_expr, 'glbl', self._beta_global_expr)
         return beta_expr
 
     def get_cmdl_assertions(self, arg_asrt_names, arg_asrt_exprs, cmdl_cond_sep):
@@ -559,7 +536,7 @@ class SmlpSpec:
                 asrt_names = ['asrt_'+str(i) for i in enumerate(len(asrt_exprs))];
         assert asrt_names is not None and asrt_exprs is not None
         assert len(asrt_names) == len(asrt_exprs); 
-        #print('asrt_names', asrt_names); print('asrt_exprs', asrt_exprs)
+        
         self._asrt_cmdl_dict = dict(zip(asrt_names, asrt_exprs))
         self._asrt_dict = self._asrt_cmdl_dict
         return dict(zip(asrt_names, asrt_exprs)), asrt_names, asrt_exprs
@@ -575,7 +552,7 @@ class SmlpSpec:
                 query_names = ['query_'+str(i) for i in enumerate(len(query_exprs))];
         assert query_names is not None and query_exprs is not None
         assert len(query_names) == len(query_exprs); 
-        #print('query_names', query_names); print('query_exprs', query_exprs)
+        
         self._quer_cmdl_dict = dict(zip(query_names, query_exprs))
         self._quer_dict = self._quer_cmdl_dict
         return self._quer_dict, query_names, query_exprs
@@ -595,7 +572,7 @@ class SmlpSpec:
                 objv_names = ['objv_'+str(i) for i in enumerate(len(objv_exprs))];
         assert objv_names is not None and objv_exprs is not None
         assert len(objv_names) == len(objv_exprs); 
-        #print('objv_names', objv_names); print('objv_exprs', objv_exprs)
+        
         self._objv_cmdl_dict = dict(zip(objv_names, objv_exprs))
         self._objv_dict = self._objv_cmdl_dict
         return self._objv_dict, objv_names, objv_exprs
@@ -638,7 +615,6 @@ class SmlpSpec:
     # witnesses (assignments to knobs and inputs) that are inspected in mode "certify"
     @property
     def get_spec_witn_dict(self):
-        #print('self.spec_dict.keys()', self.spec_dict.keys(), self._SPEC_DICTIONARY_WITNESSES)
         if self._SPEC_DICTIONARY_WITNESSES in self.spec_dict.keys():
             self._witn_dict = self.spec_dict[self._SPEC_DICTIONARY_WITNESSES]
         else:
@@ -648,7 +624,6 @@ class SmlpSpec:
     # configurations that are inspected in mode "verify"
     @property
     def get_spec_config_dict(self):
-        #print('self.spec_dict.keys()', self.spec_dict.keys(), self._SPEC_DICTIONARY_WITNESSES)
         if self._SPEC_DICTIONARY_CONFIGS in self.spec_dict.keys():
             self._config_dict = self.spec_dict[self._SPEC_DICTIONARY_CONFIGS]
         else:
@@ -662,13 +637,13 @@ class SmlpSpec:
         if self._alpha_cmdl_expr is None and alph_cmdl is not None:
             self._alpha_cmdl_expr = alph_cmdl
             self._alpha_global_expr = alph_cmdl
-        alph_expr = self.get_spec_alpha_global_expr; #print('alph_expr', alph_expr)
+        alph_expr = self.get_spec_alpha_global_expr
         
         # beta
         if self._beta_cmdl_expr is None and beta_cmdl is not None:
             self._beta_cmdl_expr = beta_cmdl
             self._beta_global_expr = beta_cmdl
-        beta_expr = self.get_spec_beta_global_expr; #print('beta_expr', beta_expr)
+        beta_expr = self.get_spec_beta_global_expr
 
         # theta radii
         theta_radii_dict = self.get_spec_theta_radii_dict
@@ -678,20 +653,19 @@ class SmlpSpec:
         
         # assertions
         asrt_expr_dict, asrt_names, asrt_exprs = self.get_cmdl_assertions(asrt_names_cmdl, asrt_exprs_cmdl, cmdl_cond_sep)
-        asrt_expr_dict = self.get_spec_asrt_exprs_dict; #print('asrt_expr_dict', asrt_expr_dict)
+        asrt_expr_dict = self.get_spec_asrt_exprs_dict
         asrt_names = list(asrt_expr_dict.keys()) if asrt_expr_dict is not None else None
         asrt_exprs = list(asrt_expr_dict.values()) if asrt_expr_dict is not None else None
         
         # queries
         quer_expr_dict, query_names, query_exprs = self.get_cmdl_queries(quer_names_cmdl, quer_exprs_cmdl, cmdl_cond_sep)
-        #print('quer_expr_dict', quer_expr_dict); print('query_names, query_exprs', query_names, query_exprs)
-        quer_expr_dict = self.get_spec_quer_exprs_dict; #print('quer_expr_dict 2', quer_expr_dict)
+        quer_expr_dict = self.get_spec_quer_exprs_dict
         quer_names = list(quer_expr_dict.keys()) if quer_expr_dict is not None else None
         quer_exprs = list(quer_expr_dict.values()) if quer_expr_dict is not None else None
 
         # optimization objectives
         objv_expr_dict, objv_names, objv_exprs = self.get_cmdl_objectives(objv_names_cmdl, objv_exprs_cmdl, resp_names, cmdl_cond_sep)
-        objv_expr_dict = self.get_spec_objv_exprs_dict; #print('objv_expr_dict', objv_expr_dict)
+        objv_expr_dict = self.get_spec_objv_exprs_dict
         objv_names = list(objv_expr_dict.keys()) if objv_expr_dict is not None else None
         objv_exprs = list(objv_expr_dict.values()) if objv_expr_dict is not None else None
         
@@ -743,9 +717,7 @@ class SmlpSpec:
             return self._eta_dict
         
         eta_dict = {}
-        #print('self.spec', self.spec)
         for var_spec in self.spec:
-            #print('var_spec', var_spec)
             if var_spec[self._SPEC_VARIABLE_TYPE] != self._SPEC_KNOB_TAG:
                 if self._SPEC_KNOBS_GRID in var_spec.keys():
                     raise Exception('ETA constraint can only be defined for knobs')
@@ -754,7 +726,6 @@ class SmlpSpec:
                 continue
             eta_dict[var_spec[self._SPEC_VARIABLE_LABEL]] = var_spec[self._SPEC_KNOBS_GRID]
         
-        #print('eta_dict', eta_dict)
         self._eta_dict = eta_dict
         self._spec_logger.info('Knob grids (eta): ' + str(self._eta_dict))
         return eta_dict
@@ -767,15 +738,12 @@ class SmlpSpec:
         
         assert self.radius_absolute is None or self.radius_relative is None
         theta_dict = {}
-        #print('self.spec', self.spec)
         for var_spec in self.spec:
-            #print('var_spec', var_spec)
             if var_spec[self._SPEC_VARIABLE_TYPE] != self._SPEC_KNOB_TAG:
                 continue
             
             # first try to get radii values from command line, if they were specified in command line
             if self.radius_relative is not None and self._SPEC_KNOBS_RELATIVE_RADIUS in var_spec.keys():
-                #print('self.radius_relative', self.radius_relative)
                 theta_dict[var_spec[self._SPEC_VARIABLE_LABEL]] = {self._SPEC_KNOBS_ABSOLUTE_RADIUS: None, 
                     self._SPEC_KNOBS_RELATIVE_RADIUS: self.radius_relative}
                 continue
@@ -801,7 +769,6 @@ class SmlpSpec:
                 theta_dict[var_spec[self._SPEC_VARIABLE_LABEL]] = {self._SPEC_KNOBS_ABSOLUTE_RADIUS: None, 
                     self._SPEC_KNOBS_RELATIVE_RADIUS: var_spec[self._SPEC_KNOBS_RELATIVE_RADIUS]}
                 
-        #print('theta_dict', theta_dict)
         self._theta_dict = theta_dict
         return theta_dict   
     
@@ -824,7 +791,6 @@ class SmlpSpec:
         
         self._domain_dict = {}
         for var_spec in self.spec:
-            #print('var_spec', var_spec)
             # TODO !!! ranges on outputs should become part of beta???
             if self._SPEC_INPUTS_BOUNDS in var_spec.keys():
                 assert var_spec[self._SPEC_VARIABLE_TYPE] in [self._SPEC_INPUT_TAG, self._SPEC_KNOB_TAG]
@@ -837,7 +803,6 @@ class SmlpSpec:
             #self._domain_dict[var_spec['label']] = {'range': var_range, 'interval': var_bounds}
             self._domain_dict[var_spec[self._SPEC_VARIABLE_LABEL]] = {self._SPEC_DOMAIN_TYPE_TAG: var_range, self._SPEC_DOMAIN_INTERVAL_TAG: var_bounds}
             
-        #print('self._domain_dict', self._domain_dict)
         self._spec_logger.info('Variable domains (alpha): ' + str(self._domain_dict))
         return self._domain_dict
     
@@ -849,9 +814,7 @@ class SmlpSpec:
             return self._alpha_ranges_dict
         
         alpha_dict = {}
-        #print('self.spec', self.spec)
         for var_spec in self.spec:
-            #print('var_spec', var_spec)
             if self._SPEC_INPUTS_BOUNDS in var_spec.keys():
                 assert var_spec[self._SPEC_VARIABLE_TYPE] == self._SPEC_INPUT_TAG or \
                     var_spec[self._SPEC_VARIABLE_TYPE] == self._SPEC_KNOB_TAG
@@ -867,7 +830,6 @@ class SmlpSpec:
                 alpha_dict[var_spec[self._SPEC_VARIABLE_LABEL]] = {
                     'min': var_spec[self._SPEC_INPUTS_BOUNDS][0], 
                     'max':var_spec[self._SPEC_INPUTS_BOUNDS][1]}
-        #print('alpha_dict', alpha_dict)
         
         self._alpha_ranges_dict = alpha_dict
         self._spec_logger.info('Input bounds (alpha): ' + str(self._alpha_ranges_dict))
@@ -880,9 +842,7 @@ class SmlpSpec:
             return self._eta_ranges_dict
         
         eta_dict = {}
-        #print('self.spec', self.spec)
         for var_spec in self.spec:
-            #print('var_spec', var_spec)
             if self._SPEC_INPUTS_BOUNDS in var_spec.keys():
                 assert var_spec[self._SPEC_VARIABLE_TYPE] == self._SPEC_INPUT_TAG or \
                     var_spec[self._SPEC_VARIABLE_TYPE] == self._SPEC_KNOB_TAG
@@ -898,7 +858,6 @@ class SmlpSpec:
                 eta_dict[var_spec[self._SPEC_VARIABLE_LABEL]] = {
                     'min': var_spec[self._SPEC_INPUTS_BOUNDS][0], 
                     'max':var_spec[self._SPEC_INPUTS_BOUNDS][1]}
-        #print('eta_dict', eta_dict)
         
         self._eta_ranges_dict = eta_dict
         self._spec_logger.info('Knob bounds (eta): ' + str(self._eta_ranges_dict))
@@ -921,37 +880,34 @@ class SmlpSpec:
     # therefore the model exploration constraints are well defined on the model interface.
     def get_spec_constraint_vars(self):
         constraints_vars = []
-        #print('spec self', self._alpha_global_expr, self._beta_global_expr)
         if self._alpha_global_expr is not None:
-            alph_vars = get_expression_variables(self.get_spec_alpha_global_expr); #print('alph_vars', alph_vars)
+            alph_vars = get_expression_variables(self.get_spec_alpha_global_expr)
             constraints_vars = constraints_vars + alph_vars
         if self._beta_global_expr is not None:
-            beta_vars = get_expression_variables(self._beta_global_expr); #print('beta_vars', beta_vars)
+            beta_vars = get_expression_variables(self._beta_global_expr)
             constraints_vars = constraints_vars + beta_vars
         if self._eta_global_expr is not None:
-            eta_vars = get_expression_variables(self._eta_global_expr); #print('eta_vars', beta_vars)
+            eta_vars = get_expression_variables(self._eta_global_expr)
             constraints_vars = constraints_vars + eta_vars
         if self._objv_dict is not None:
             for objv_expr in self._objv_dict.values():
-                objv_vars = get_expression_variables(objv_expr); #print('objv_expr', objv_expr)
+                objv_vars = get_expression_variables(objv_expr)
                 constraints_vars = constraints_vars + objv_vars
         if self._asrt_dict is not None:
             for asrt_expr in self._asrt_dict.values():
-                asrt_vars = get_expression_variables(asrt_expr); #print('asrt_vars', asrt_vars)
+                asrt_vars = get_expression_variables(asrt_expr)
                 constraints_vars = constraints_vars + asrt_vars
         if self._quer_dict is not None:
             for quer_expr in self._quer_dict.values():
-                quer_vars = get_expression_variables(quer_expr); #print('quer_expr', quer_expr)
+                quer_vars = get_expression_variables(quer_expr)
                 constraints_vars = constraints_vars + quer_vars
 
         if self._witn_dict is not None:
             for witn in self._witn_dict.values():
-                #print('witn.keys()', witn.keys())
                 constraints_vars = constraints_vars + list(witn.keys())
                 
         if self._config_dict is not None:
             for config in self._config_dict.values():
-                #print('config.keys()', config.keys())
                 constraints_vars = constraints_vars + list(config.keys())
         
         return list_unique_unordered(constraints_vars)
@@ -962,11 +918,11 @@ class SmlpSpec:
             input_ranges[k] = [v['min'], v['max']]
         knobs_ranges = {}
         for k, v in self.get_spec_theta_radii_dict.items():
-            knob_val = knob_config[k]['value_in_config']; #print('knob_val', knob_val)
+            knob_val = knob_config[k]['value_in_config']
             if v['rad-abs'] is not None:
-                rad = abs(v['rad-abs']); #print('rad-abs', rad)
+                rad = abs(v['rad-abs'])
             elif v['rad-rel'] is not None:
-                rad = v['rad-rel'] * abs(knob_val); #print('rad-rel', rad)
+                rad = v['rad-rel'] * abs(knob_val)
             else:
                 raise Exception('At least on of the relative or absolute radii must mot be None')
             knobs_ranges[k] = [knob_val - rad, knob_val + rad] #{'min':knob_val - rad, 'max':knob_val + rad}
@@ -985,43 +941,39 @@ class SmlpSpec:
     # computed above in intersected with that domain (so that the stability interval returned by this 
     # function is within the domain of the respective knob).
     def get_spec_stability_intervals_dict(self, knob_config, include_inputs):
-        #print('=== knob_config', knob_config); print('radii dict', self.get_spec_theta_radii_dict.items())
         if include_inputs:
             input_ranges = {}
             for k, v in self.get_spec_alpha_bounds_dict.items():
                 input_ranges[k] = [v['min'] if v['min'] is not None else (-np.inf), 
                                    v['max'] if v['max'] is not None else (np.inf)]
-            #print('input_ranges', input_ranges)
+            
         knobs_ranges = {}
         for k, v in self.get_spec_theta_radii_dict.items():
-            #print('k', k, 'v', v)
             if k not in knob_config: # TODO !!!! this should not happen with full assighnement to knobs
-                #print('ignoring stability region of', k, v)
                 continue
-            knob_val = knob_config[k]; #print('knob_val', knob_val)
+            knob_val = knob_config[k]
             if v['rad-abs'] is not None:
-                rad = abs(v['rad-abs']); #print('rad-abs', rad)
+                rad = abs(v['rad-abs'])
             elif v['rad-rel'] is not None:
-                rad = v['rad-rel'] * abs(knob_val); #print('rad-rel', rad)
+                rad = v['rad-rel'] * abs(knob_val)
             else:
                 raise Exception('At least on of the relative or absolute radii must mot be None')
-            knob_range_min = knob_val - rad; #print('knob_range_min before', knob_range_min)
-            knob_range_max = knob_val + rad; #print('knob_range_max before', knob_range_max)
-            #print('get_spec_eta_bounds_dict', self.get_spec_eta_bounds_dict)
+            knob_range_min = knob_val - rad
+            knob_range_max = knob_val + rad
+            
             # make sure the returned value of knob range is within knob's domain range defined using self._SPEC_INPUTS_BOUNDS:
             if k in self.get_spec_eta_bounds_dict:
-                knob_interval = self.get_spec_eta_bounds_dict[k]; #print('knob_interval', knob_interval)
+                knob_interval = self.get_spec_eta_bounds_dict[k]
                 assert isinstance(knob_interval, dict) and len(knob_interval) == 2
                 if knob_interval['min'] is not None:
                     knob_range_min = max(knob_range_min, knob_interval['min'])
                 if knob_interval['max'] is not None:
                     knob_range_max = min(knob_range_max, knob_interval['max'])
-                #print('knob_range_min after', knob_range_min); print('knob_range_max after', knob_range_max)
-            #knobs_ranges[k] = [knob_val - rad, knob_val + rad] #{'min':knob_val - rad, 'max':knob_val + rad}
+                
             assert knob_range_min is not None
             assert knob_range_max is not None
             knobs_ranges[k] = [knob_range_min, knob_range_max]
-        #print('knobs_ranges', knobs_ranges)
+        
         if include_inputs:
             return input_ranges | knobs_ranges
         else:
