@@ -33,4 +33,4 @@ time python3.11 ${git_root}/src/run_smlp.py -data ${git_root}/${test_dir}/data/$
     -tree_encoding flat \
     -opt_strategy eager \
     -seed 10 \
-    -dt_sklearn_max_depth 17 |& tee $log
+    -dt_sklearn_max_depth 17 >& $log
