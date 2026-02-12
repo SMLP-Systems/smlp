@@ -43,6 +43,35 @@ SMLP has successfully been run without a container or VM on Ubuntu,
 Suse Linux Enterprise Server 15, and Gentoo. The following section provides
 instruction for the installation on Ubuntu.
 
+## Installation on a stock Ubuntu-22.04
+
+	sudo apt install \
+		python3-pip ninja-build z3 libz3-dev libboost-python-dev texlive \
+		pkg-config libgmp-dev libpython3-all-dev python-is-python3
+	# get a recent version of the meson configure tool
+	pip install --user meson
+
+	# obtain sources
+	git clone https://github.com/fbrausse/kay.git
+	git clone https://github.com/smlp-systems/smlp.git
+	cd smlp/utils/poly
+
+	# workaround <https://bugs.launchpad.net/ubuntu/+source/swig/+bug/1746755>
+	echo 'export PYTHONPATH=$HOME/.local/lib/python3/dist-packages:$PYTHONPATH' >> ~/.profile
+	# get $HOME/.local/bin into PATH and get PYTHONPATH
+	mkdir -p $HOME/.local/bin
+	source ~/.profile
+
+	# setup, build & install libsmlp
+	meson setup -Dkay-prefix=$HOME/kay --prefix $HOME/.local build
+	ninja -C build install
+
+	# tensorflow-2.16 has a change leading to the error:
+	# 'The filepath provided must end in .keras (Keras model format).'
+	pip install --user \
+		pandas tensorflow==2.15.1 scikit-learn pycaret seaborn \
+		mrmr-selection jenkspy pysubgroup pyDOE doepy
+
 ## Docker support
 
 - Using Docker container with GUI disabled
@@ -51,19 +80,11 @@ instruction for the installation on Ubuntu.
 docker run -it mdmitry1/python311-dev:latest
 ```
 
-Within docker container prepend SMLP Python script with `xvfb-run`
+Within docker container prepend SMLP Python script with `xvfb-run`.
 For example: 
 
 ```bash
-cd smlp/regr_smlp/code
-xvfb-run ../../src/run_smlp.py -data "../data/smlp_toy_num_resp_mult" \
-    -out_dir ./ -pref Test83 -mode optimize -pareto t \
-    -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 \
-    -spec smlp_toy_num_resp_mult_free_inps -data_scaler min_max \
-    -beta "y1>7 and y2>6" -objv_names obj1,objv2,objv3 \
-    -objv_exprs "(y1+y2)/2;y1/2-y2;y2" -epsilon 0.05 -delta_rel 0.01 \
-    -save_model_config f -mrmr_pred 0 -plots f -seed 10 -log_time f \
-    -spec ../specs/smlp_toy_num_resp_mult_free_inps.spec
+xvfb-run smlp/src/run_smlp.py -h
 ```
 
 - Entering Docker container with optional VNC support
@@ -96,64 +117,11 @@ Dependencies: `WSL2` with `WSLG` enabled
 bin/test_install
 ```
 
-## Installation on a stock Ubuntu-22.04
-
-	sudo apt install \
-		python3-pip ninja-build z3 libz3-dev libboost-python-dev texlive \
-		pkg-config libgmp-dev libpython3-all-dev python-is-python3
-	# get a recent version of the meson configure tool
-	pip install --user meson
-
-	# obtain sources
-	git clone https://github.com/fbrausse/kay.git
-	git clone https://github.com/smlp-systems/smlp.git
-	cd smlp/utils/poly
-
-	# workaround <https://bugs.launchpad.net/ubuntu/+source/swig/+bug/1746755>
-	echo 'export PYTHONPATH=$HOME/.local/lib/python3/dist-packages:$PYTHONPATH' >> ~/.profile
-	# get $HOME/.local/bin into PATH and get PYTHONPATH
-	mkdir -p $HOME/.local/bin
-	source ~/.profile
-
-	# setup, build & install libsmlp
-	meson setup -Dkay-prefix=$HOME/kay --prefix $HOME/.local build
-	ninja -C build install
-
-	# tensorflow-2.16 has a change leading to the error:
-	# 'The filepath provided must end in .keras (Keras model format).'
-	pip install --user \
-		pandas tensorflow==2.15.1 scikit-learn pycaret seaborn \
-		mrmr-selection jenkspy pysubgroup pyDOE doepy
-
-
 ## Quick instructions on testing whether the tool works
 
 - Option 1: Native tool installation
 ```
     cd $HOME/smlp/regr_smlp/code
-```
-
-- Option 2: Docker container installation
-
-1. Pull Docker container:
-
-```
-    docker pull mdmitry1/python311-dev:latest
-```
-
-2.  Start Docker container:
-```
-    bin/enter
-```
-3. Within Docker container:
-```
-    ./start_vnc
-    cd smlp/regr_smlp/code
-```
-*Note: Above `./start_vnc` command is needed, although GUI is not used*
-
-4. First run tool itself
-```
     ../../src/run_smlp.py -data "../data/smlp_toy_num_resp_mult" \
     -out_dir ./ -pref Test83 -mode optimize -pareto t \
     -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 \
@@ -164,17 +132,50 @@ bin/test_install
     -spec ../specs/smlp_toy_num_resp_mult_free_inps.spec
 ```
 
-4. Then the regression script
+- Option 2: Docker container installation
+
+1. Pull Docker container from the Docker repository:
+
 ```
-    ./smlp_regr.py -w 1 -def n -t 88 -tol 5
+    docker pull mdmitry1/python311-dev:latest
+```
+
+2.  Start Docker container:
+```
+    docker run -it mdmitry1/python311-dev:latest
+```
+
+3. Run the tool
+
+```
+    cd smlp/regr_smlp/code
+    xvfb-run ../../src/run_smlp.py -data "../data/smlp_toy_num_resp_mult" \
+    -out_dir ./ -pref Test83 -mode optimize -pareto t \
+    -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 \
+    -spec smlp_toy_num_resp_mult_free_inps -data_scaler min_max \
+    -beta "y1>7 and y2>6" -objv_names obj1,objv2,objv3 \
+    -objv_exprs "(y1+y2)/2;y1/2-y2;y2" -epsilon 0.05 -delta_rel 0.01 \
+    -save_model_config f -mrmr_pred 0 -plots f -seed 10 -log_time f \
+    -spec ../specs/smlp_toy_num_resp_mult_free_inps.spec
 ```
 
 # Running the regression suite
 
+- Option 1: Native tool installation
+
 The regression script has to be run from inside the regression's code directory:
 
+```
 	cd $HOME/smlp/regr_smlp/code
 	./smlp_regr.py -w 8 -def n -t all -tol 7
+```
+
+- Option 2: Docker installation
+
+```
+	cd /app/smlp/regr_smlp/code
+        xvfb-run ./smlp_regr.py -w 8 -def n -t all -tol 7 -g
+```
 
 The above commands will execute the script, run the regression tests numbered
 1 to 129 (-t all) parallely on 8 cores (-w 8), not overwriting the stored
@@ -211,6 +212,7 @@ manual.
 
 SMLP commands run in the regression can be found in ./smlp_regr.csv together
 with a short description of the respective test.
+
 
 ## Regression tests for SMLP operating modes
 
