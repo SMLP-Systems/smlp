@@ -1,5 +1,5 @@
 #!/usr/bin/tcsh -f
-foreach json (*.json)
+foreach json (split_s2_tx_piv_anonym_optimization_results.json no_split_s2_tx_piv_anonym_optimization_results.json)
     `realpath $0 | xargs dirname`/extract_results $json -clean
 end
 if($#argv > 0) then
@@ -7,6 +7,6 @@ if($#argv > 0) then
         exit(0)
     endif
 endif
-foreach json (*.json)
+foreach json (split_s2_tx_piv_anonym_optimization_results.json no_split_s2_tx_piv_anonym_optimization_results.json)
     `realpath $0 | xargs dirname`/extract_results $json
 end
