@@ -1,0 +1,27 @@
+#!/usr/bin/tcsh -f
+set script_path=`realpath $0 | xargs dirname`
+set build_dir=$script_path/build
+set output_dir=$HOME/.local_smlp
+set kay_dir=$output_dir/kay
+\rm -rf $build_dir $output_dir $kay_dir venv logs.log >& /dev/null
+if($#argv > 0) then
+    if("-clean" == "$argv[1]") then
+        exit(0)
+    endif
+endif
+git clone ssh://git@github.com/fbrausse/kay $kay_dir
+/usr/bin/python3.11 -m venv venv
+set prompt='%U%m%u:%B%~%b%#'
+source venv/bin/activate.csh
+pip install meson
+rehash
+cd $script_path:h:h/utils/poly
+meson setup \
+    --wipe \
+    -Dkay-prefix=$kay_dir \
+    --prefix $output_dir $build_dir
+cd $script_path
+/usr/bin/ninja -C build install
+\cp -rp ${HOME}/.local_smlp/lib/python3/dist-packages/smlp venv/lib/python3.11/site-packages
+pip install -r $script_path/requirements.txt
+$script_path/run_smlp_dora
