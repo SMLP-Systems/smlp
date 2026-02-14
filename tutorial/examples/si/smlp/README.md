@@ -18,8 +18,9 @@ git checkout remotes/origin/poly_pareto tutorial/examples/si/smlp
 xvfb-run tutorial/examples/si/smlp/run_si_test_nosplit
 ```
 
-### 4. Runtime on Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz in Docker environment, 4 Gb allocated for Docker VM
-1473.232u 4.293s 24:43.66 99.5%	0+0k 1240088+417552io 5063pf+0w
+### 4. Runtime on Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz in Docker CLI environment
+1364.003u 2.921s 22:49.65 99.8%	0+0k 356456+416600io 531pf+0w
+
 
 ### 5. Validation
 
