@@ -26,7 +26,7 @@ sudo ln -s /usr/lib/x86_64-linux-gnu/{libboost_python311.so.1.83.0,libboost_pyth
 ## 3. Clean SMLP installation
 
 ```bash
-git clone https://git.github.com/SMLP-Systems/smlp smlp_venv
+git clone https://github.com/smlp-systems/smlp smlp_venv
 cd smlp_venv
 ```
 
