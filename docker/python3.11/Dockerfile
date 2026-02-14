@@ -125,5 +125,8 @@ ENV LC_ALL=en_US.UTF-8
 COPY start_vnc .
 RUN chmod +x start_vnc
 
+#jq - needed for Intel SI test
+RUN apt-get update && apt-get install -y jq && rm -rf /var/lib/apt/lists/*
+
 ## Default command
 CMD ["/bin/tcsh"]
