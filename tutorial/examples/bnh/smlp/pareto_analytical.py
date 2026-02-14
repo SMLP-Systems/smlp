@@ -1,4 +1,4 @@
-#!/usr/bin/python3.13
+#!/usr/bin/python3.11
 import numpy as np
 
 # Generate analytical Pareto front in decision space

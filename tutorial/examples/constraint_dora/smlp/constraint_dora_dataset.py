@@ -1,4 +1,4 @@
-#!/usr/bin/python3.12
+#!/usr/bin/python3.11
 """
 Constrained Optimization Example using SMLP
 Classic Lagrange Multiplier Problem (appears in many optimization textbooks)
