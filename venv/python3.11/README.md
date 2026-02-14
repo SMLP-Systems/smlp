@@ -6,7 +6,7 @@
 sudo apt update
 sudo apt install software-properties-common
 sudo apt install add-apt-repository ppa:deadsnakes/ppa
-sudo apt install tcsh z3 libboost-python-dev python3.11-dev python3.11-tk python3.11-venv python3.11
+sudo apt install tcsh z3 libz3-dev ninja-build libboost-python-dev python3.11-dev python3.11-tk python3.11-venv python3.11
 ```
 
 ## 2. Boost installation instructions
