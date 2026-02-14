@@ -2,7 +2,7 @@
 set script_path=`realpath $0 | xargs dirname`
 set script_name=`realpath $0 | xargs basename`
 if($#argv < 1 ) then
-    echo "\nUsage: $script_name [<json>] [-clean]\n"
+    echo "\nUsage: $script_name [<json>] [-clean|-timeout <n>]\n"
     exit(0)
 endif
 set json=$argv[1]
@@ -15,8 +15,17 @@ if($#argv > 1) then
         exit(0)
     endif
 endif
+if($#argv > 2) then
+    if("-timeout" == "$argv[2]") then
+        set timeout="$argv[3]"
+    endif
+endif
 foreach key (`jq 'keys[] | select(test("objv"))' $json`)
     if( $key !~ "*scaled*" ) echo $key `jq ".${key}.threshold_scaled" $json` | tr -d '"' | sed 's/objv_//' >> $out
 end
 sort -n -r -k 2 $out >& $out_sorted
-$script_path/plot_results.py $out_sorted -timeout 5
+set cmd="$script_path/plot_results.py $out_sorted" 
+if($?timeout) then 
+    set cmd="$cmd -timeout $timeout"
+endif
+$cmd

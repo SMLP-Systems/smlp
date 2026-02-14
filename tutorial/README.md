@@ -272,7 +272,7 @@ examples/si/smlp/extract_results no_split_s2_tx_piv_anonym_optimization_results.
 examples/si/smlp/extract_results split_s2_tx_piv_anonym_optimization_results.json
 ```
 
-Results will be shown on the screen for 5 seconds and after that saved in png files:
+Results will be shown on the screen and then saved to the png files:
 
 ```bash
 no_split_s2_tx_piv_anonym_optimization_results.png

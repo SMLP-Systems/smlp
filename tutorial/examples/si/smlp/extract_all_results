@@ -8,5 +8,5 @@ if($#argv > 0) then
     endif
 endif
 foreach json (split_s2_tx_piv_anonym_optimization_results.json no_split_s2_tx_piv_anonym_optimization_results.json)
-    `realpath $0 | xargs dirname`/extract_results $json
+    `realpath $0 | xargs dirname`/extract_results $json -timeout 5
 end
