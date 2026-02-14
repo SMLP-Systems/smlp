@@ -1,9 +1,12 @@
 # SMLP [1] Optimization Examples
 
-This tutorial contains three benchmark optimization problems demonstrating the capabilities of SMLP (Symbolic Machine Learning Prover) for solving constrained and multi-objective optimization tasks for **black-box functions**.<br>
+This tutorial contains three benchmark optimization problems and one industrial example demonstrating the capabilities of SMLP (Symbolic Machine Learning Prover) for solving constrained and multi-objective optimization tasks for **black-box functions**.<br>
 Black-box function optimization definition used in this document [2]:<br>
 #### *Blackbox optimization (BBO) is the study of design and analysis of algorithms for optimization problems in which the structure of the objective function f and/or the constraints defining the set Ω is unknown, unexploitable or non-existant*<br>
 *In above definiton Ω is the feasible region : Ω → R* 
+
+SMLP has been applied in industrial setting at Intel for analyzing and optimizing hardware designs at the analog level [1].
+This tutorial contains one of Intel examples in Signal Integrity domain (with mangled numerical values and objective function names).
 
 ### In SMLP:
 - Structure of the objective function *f* is unknown
@@ -71,8 +74,8 @@ f(x, y) = -(y + 47) * sin(√|x/2 + (y + 47)|) - x * sin(√|x - (y + 47)|)
 ./examples/eggholder/smlp/eggholder_dataset.py
 ```
 
-# Run optimization with SMLP
 ```bash
+# Run optimization with SMLP
 ./examples/eggholder/smlp/run_eggholder
 ```
 
@@ -225,6 +228,56 @@ Each configuration file (`bnh_p1.json` through `bnh_p6.json`) uses different obj
 ```
 
 ---
+
+### 4. Intel Signal Integrity domain example
+
+**Location:** `examples/si/smlp`
+
+#### Problem Definition
+
+Multi-Objective optimization problem with 64 objectives and 4 categorical parameters
+
+#### Configuration File
+
+../bench/intel/specs/s2_tx_piv_anonym.spec
+
+
+#### Input Dataset
+
+../bench/intel/data/s2_tx_piv_anonym.csv.bz2
+
+#### Usage
+
+```bash
+#Regular run
+
+examples/si/smlp/run_si_test_nosplit
+```
+
+```bash
+#Run, in which all input data is used for training
+
+examples/si/smlp/run_si_test_split
+```
+
+#### Visualize results
+
+```bash
+#Regular run
+
+examples/si/smlp/extract_results no_split_s2_tx_piv_anonym_optimization_results.json
+
+#Run, in which all input data is used for training
+
+examples/si/smlp/extract_results split_s2_tx_piv_anonym_optimization_results.json
+```
+
+Results will be shown on the screen for 5 seconds and after that saved in png files:
+
+```bash
+no_split_s2_tx_piv_anonym_optimization_results.png
+split_s2_tx_piv_anonym_optimization_results.png
+```
 
 ## SMLP Configuration Structure
 

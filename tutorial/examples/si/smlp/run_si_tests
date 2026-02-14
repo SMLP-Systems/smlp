@@ -14,10 +14,10 @@ if($#argv > 0 ) then
 endif
 if($?dry_run) then
     echo "Dry run"
-    foreach f (*_EXPECTED.json)
+    foreach f ($script_path/*_EXPECTED.json)
         set f_lc=`echo $f | tr '[A-Z]' '[a-z]' | sed 's/_expected//'`
         \rm -f $f_lc >& /dev/null
-        \ln -sf $f $f_lc
+        \ln -sf $f $f_lc:t
     end
 else
     foreach test (run_si_test_nosplit run_si_test_split)
