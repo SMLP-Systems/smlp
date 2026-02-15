@@ -17,7 +17,7 @@ else
     exit(1)
 endif
 cd $script_path:h:h/regr_smlp/code
-$script_path:h:h/src/run_smlp.py \
+xvfb-run $script_path:h:h/src/run_smlp.py \
     -data ../data/${test}.csv \
     -out_dir ./ \
     -pref $pref \
