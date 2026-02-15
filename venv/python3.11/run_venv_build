@@ -9,7 +9,7 @@ if($#argv > 0) then
         exit(0)
     endif
 endif
-git clone ssh://git@github.com/fbrausse/kay $kay_dir
+git clone https://git@github.com/fbrausse/kay $kay_dir
 /usr/bin/python3.11 -m venv venv
 set prompt='%U%m%u:%B%~%b%#'
 source venv/bin/activate.csh
