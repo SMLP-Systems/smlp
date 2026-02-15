@@ -24,4 +24,5 @@ cd $script_path
 /usr/bin/ninja -C build install
 \cp -rp ${HOME}/.local_smlp/lib/python3/dist-packages/smlp venv/lib/python3.11/site-packages
 pip install -r $script_path/requirements.txt
+$script_path/tkagg_patch.sh
 $script_path/run_smlp_dora
