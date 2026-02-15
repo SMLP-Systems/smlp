@@ -15,6 +15,7 @@ if( 1 == `$script_path:h:h/src/run_smlp.py -h |& grep -c ^usage`) then
 else
     echo "\nSMLP installation failed\n"
     $script_path:h:h/src/run_smlp.py -h
+    cat $script_path:h:h/src/run_smlp.py
     exit(1)
 endif
 cd $script_path:h:h/regr_smlp/code
