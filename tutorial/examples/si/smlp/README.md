@@ -25,8 +25,8 @@ xvfb-run tutorial/examples/si/smlp/run_si_test_nosplit
 ### 5. Validation
 
 ```bash
-diff no_split_s2_tx_piv_anonym_optimization_results.json tutorial/examples/si/smlp/NO_SPLIT_S2_TX_PIV_ANONYM_OPTIMIZATION_RESULTS.json
-diff no_split_s2_tx_piv_anonym_optimization_results.csv tutorial/examples/si/smlp/NO_SPLIT_S2_TX_PIV_ANONYM_OPTIMIZATION_RESULTS.csv
+diff no_split_s2_tx_piv_anonym_optimization_results.json tutorial/examples/si/smlp/NO_SPLIT_S2_TX_PIV_ANONYM_OPTIMIZATION_RESULTS_EXPECTED.json
+diff no_split_s2_tx_piv_anonym_optimization_results.csv tutorial/examples/si/smlp/NO_SPLIT_S2_TX_PIV_ANONYM_OPTIMIZATION_RESULTS_EXPECTED.csv
 ```
 
 ### 6. Expected results plot
