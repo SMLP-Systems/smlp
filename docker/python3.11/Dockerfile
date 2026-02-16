@@ -9,28 +9,33 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Layer 1: base tools and Python PPA
+# Layer 1: base tools
 RUN apt-get update && apt-get install -y \
-    software-properties-common \
     wget \
     vim \
     git \
     tcsh \
     tzdata \
     locales \
-    && add-apt-repository ppa:deadsnakes/ppa -y \
     && apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Layer 2: Python 3.11
-RUN apt-get update && apt-get install -y \
-    python3.11-dev \
-    python3.11-distutils \
-    python3.11-venv \
-    python3.11-tk \
-    python3-pip \
-    python-is-python3 \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        gnupg \
+        curl \
+        ca-certificates && \
+        curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF23C5A6CF475977595C89F51BA6932366A755776" \
+            | gpg --dearmor -o /etc/apt/trusted.gpg.d/deadsnakes.gpg && \
+        echo "deb https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble main" \
+            > /etc/apt/sources.list.d/deadsnakes.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3.11 \
+        python3.11-dev \
+        python3.11-tk \
+        python3.11-distutils
 
 # Layer 3: build tools
 RUN apt-get update && apt-get install -y \
@@ -75,8 +80,8 @@ WORKDIR /app
 # Copy requirements file
 COPY requirements.txt .
 
-# Install setuptools
-RUN python3.11 -m pip install --no-cache-dir setuptools --target /usr/local/lib/python3.11/dist-packages
+# Install pip
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
 
 # Install Python packages including meson
 RUN python3.11 -m pip install --ignore-installed --no-cache-dir -r requirements.txt
