@@ -44,5 +44,8 @@ RUN git clone https://github.com/smlp-systems/smlp smlp_venv && \
     /app/tkagg_patch.sh && \
     ./run_venv_build
 
+## Change working directory to venv root
+WORKDIR smlp_venv/venv/python3.11
+
 ## Default command
 CMD ["/bin/bash"]

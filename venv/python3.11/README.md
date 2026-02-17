@@ -52,8 +52,7 @@ source venv/bin/activate
 ## 6. Validation in Docker
 ```bash
 ./run_docker_build
-docker run -it smlp-dev:latest
-bash
-source smlp_venv/venv/python3.11/venv/bin/activate
-smlp_venv/venv/python3.11/run_smlp_dora
+./run_venv_container
+source venv/bin/activate
+./run_smlp_dora
 ```
