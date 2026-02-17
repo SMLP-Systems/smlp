@@ -9,7 +9,7 @@ set json=$argv[1]
 set out="$json:t:r_relative_optimized_margin.txt"
 set out_sorted=$out:r_sorted.txt
 set png="$json:t:r.png"
-\rm -f $out $out_sorted $png >& /dev/null
+\rm -f $out_sorted $png >& /dev/null
 if($#argv > 1) then
     if("-clean" == "$argv[2]") then
         exit(0)
@@ -20,9 +20,6 @@ if($#argv > 2) then
         set timeout="$argv[3]"
     endif
 endif
-foreach key (`jq 'keys[] | select(test("objv"))' $json`)
-    if( $key !~ "*scaled*" ) echo $key `jq ".${key}.threshold_scaled" $json` | tr -d '"' | sed 's/objv_//' >> $out
-end
 sort -n -r -k 2 $out >& $out_sorted
 set cmd="$script_path/plot_results.py $out_sorted" 
 if($?timeout) then 

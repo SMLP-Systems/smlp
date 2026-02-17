@@ -14,7 +14,7 @@ if($#argv > 0 ) then
 endif
 if($?dry_run) then
     echo "Dry run"
-    foreach f ($script_path/*_EXPECTED.json)
+    foreach f ($script_path/results/*_EXPECTED.txt)
         set f_lc=`echo $f | tr '[A-Z]' '[a-z]' | sed 's/_expected//'`
         \rm -f $f_lc >& /dev/null
         \ln -sf $f $f_lc:t

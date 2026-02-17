@@ -34,3 +34,8 @@ time python3.11 ${git_root}/src/run_smlp.py -data ${git_root}/${test_dir}/data/$
     -opt_strategy eager \
     -seed 10 \
     -dt_sklearn_max_depth 17 >& $log
+set json=${pref}_${test}_optimization_results.json
+set out=$json:r_relative_optimized_margin.txt
+foreach key (`jq 'keys[] | select(test("objv"))' $json`)
+    if( $key !~ "*scaled*" ) echo $key `jq ".${key}.threshold_scaled" $json` | tr -d '"' | sed 's/objv_//' >> $out
+end
