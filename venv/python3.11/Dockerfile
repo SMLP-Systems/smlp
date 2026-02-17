@@ -24,17 +24,24 @@ RUN ARCH=$(uname -m) && \
     ./b2 install --prefix=$HOME/boost_py311 --with-python python=3.11 && \
     cp -p $HOME/boost_py311/lib/libboost_python311.a /usr/lib/$ARCH-linux-gnu && \
     cp -p $HOME/boost_py311/lib/libboost_python311.so.1.83.0 /usr/lib/$ARCH-linux-gnu && \
-    ln -s /usr/lib/$ARCH-linux-gnu/{libboost_python311.so.1.83.0,libboost_python311.so}
+    ln -s /usr/lib/$ARCH-linux-gnu/{libboost_python311.so.1.83.0,libboost_python311.so} && \
+    rm -rf /tmp/boost* /root/boost*
     
 # Set working directory
 WORKDIR /app
 
 # Build SMLP and run DORA test
 RUN touch /.dockerenv
+
+#tkdiff patch for https://bugs.launchpad.net/bugs/2139062
+COPY tkagg_patch.sh .
+RUN chmod +x tkagg_patch.sh
+
 RUN git clone https://github.com/smlp-systems/smlp smlp_venv && \
     cd smlp_venv && \
     git checkout remotes/origin/venv_build venv && \
     cd venv/python3.11 && \
+    /app/tkagg_patch.sh && \
     ./run_venv_build
 
 ## Default command
