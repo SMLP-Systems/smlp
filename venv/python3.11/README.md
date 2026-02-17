@@ -45,7 +45,7 @@ cd venv/python3.11
 Enter virtual environment
 ```
 bash
-source venv/bin/activate.sh
+source venv/bin/activate
 ./run_smlp_dora
 ```
 
