@@ -1,0 +1,2 @@
+#!/usr/bin/tcsh -f
+docker run --platform linux/arm64 -it python313-dev-mac:latest
