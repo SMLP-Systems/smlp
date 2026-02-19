@@ -72,6 +72,7 @@ cd smlp_regression
 ## 7. Regression in Docker environment
 
 ```bash
+./run_venv_container
 cd smlp_regression
 ./run_smlp_regression
 ```
