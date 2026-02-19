@@ -23,6 +23,7 @@ sudo cp -p $HOME/boost_py311/lib/libboost_python311.a /usr/lib/x86_64-linux-gnu
 sudo cp -p $HOME/boost_py311/lib/libboost_python311.so.1.83.0 /usr/lib/x86_64-linux-gnu
 sudo ln -s /usr/lib/x86_64-linux-gnu/{libboost_python311.so.1.83.0,libboost_python311.so}
 cd $HOME
+\rm -rf boost_py311 /tmp/boost*
 ```
 
 ## 3. Clean SMLP installation
