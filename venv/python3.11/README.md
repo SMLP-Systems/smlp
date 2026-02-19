@@ -44,6 +44,7 @@ cd venv/python3.11
 ## 5. Build Validation 
 
 Enter virtual environment
+
 ```
 bash
 source venv/bin/activate
@@ -51,9 +52,20 @@ source venv/bin/activate
 ```
 
 ## 6. Validation in Docker
+
 ```bash
 ./run_docker_build
 ./run_venv_container
 source venv/bin/activate
 ./run_smlp_dora
 ```
+## 7. Regression in Virtual enviroment after successful build validation
+
+```bash
+\cp -p ../../docker/python3.11/run_mathsat_build ../../..
+../../../run_mathsat_build
+rm -rf /tmp/mathsat*
+cd smlp_regression
+./run_smlp_regression
+```
+
