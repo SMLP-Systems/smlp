@@ -23,7 +23,8 @@ if(-f "/.dockerenv" ) then
     echo "Regression is running in Docker container"
     if(! -f $script_path:h/external/mathsat-5.6.8-linux-x86_64-reentrant/bin/mathsat ) then
         echo "Installing mathsat"
-        $script_path:h:h:h/docker/python3.11/run_mathsat_build
+        \cp -p $script_path:h:h:h/docker/python3.11/run_mathsat_build ..
+         ../run_mathsat_build
         \rm -f /tmp/mathsat* >& /dev/null
     endif
 endif
