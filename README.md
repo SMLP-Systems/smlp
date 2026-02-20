@@ -159,6 +159,11 @@ bin/test_install
     -spec ../specs/smlp_toy_num_resp_mult_free_inps.spec
 ```
 
+# SMLP Tutorial
+
+SMLP tutorial contains three benchmark optimization problems and one industrial example demonstrating the capabilities of SMLP (Symbolic Machine Learning Prover) for solving constrained and multi-objective optimization tasks for **black-box functions**.<br>
+See [tutorial README.md](tutorial/README.md) for detailed instructions
+
 # Running the regression suite
 
 - Option 1: Native tool installation
