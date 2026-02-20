@@ -227,8 +227,6 @@ Each configuration file (`bnh_p1.json` through `bnh_p6.json`) uses different obj
 ./examples/bnh/smlp/plot_results.py
 ```
 
----
-
 ### 4. Intel Signal Integrity domain example
 
 **Location:** `examples/si/smlp`
@@ -277,6 +275,12 @@ Results will be shown on the screen and then saved to the png files:
 ```bash
 no_split_s2_tx_piv_anonym_optimization_results.png
 split_s2_tx_piv_anonym_optimization_results.png
+```
+
+### 5. Running all examples
+
+```bash
+./run_all
 ```
 
 ## SMLP Configuration Structure
