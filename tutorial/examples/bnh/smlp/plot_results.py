@@ -38,7 +38,7 @@ f1_pareto = 4 * x1_pareto**2 + 4 * x2_pareto**2
 f2_pareto = (x1_pareto - 5)**2 + (x2_pareto - 5)**2
 
 # Create two subplots
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
 
 # Plot X1 vs X2
 sns.scatterplot(data=df_X, x='X1', y='X2', ax=ax1, label='Computed Solutions')
