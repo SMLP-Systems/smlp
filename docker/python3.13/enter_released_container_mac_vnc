@@ -1,10 +1,26 @@
-#!/usr/bin/tcsh -f
-mkdir -p $HOME/shared
-if( ! $?TZ ) setenv TZ `readlink /etc/localtime | sed 's@/usr/share/zoneinfo/@@'`
-@ p = 5900
-@ d = 99
-while( `lsof -i :$p | grep -c :${p}` > 0 )
-    @ p = $p + 1
-    @ d = $d + 1
-end
-docker run --platform linux/arm64 -e TZ=$TZ -e DISPLAY=:${d} -p ${p}:${p} -v $HOME/shared:/shared -it  mdmitry1/python313-dev-mac:latest $*
+#!/usr/bin/env bash
+set -euo pipefail
+
+mkdir -p "$HOME/shared"
+
+if [ -z "${TZ:-}" ]; then
+    TZ=$(readlink /etc/localtime | sed 's|.*/zoneinfo/||')
+    export TZ
+fi
+
+p=5900
+d=99
+
+while lsof -i ":$p" | grep -q ":${p}"; do
+    ((p++))
+    ((d++))
+done
+
+docker run --platform linux/arm64 \
+    -e TZ="$TZ" \
+    -e DISPLAY=":${d}" \
+    -p "${p}:${p}" \
+    -v "$HOME/shared:/shared" \
+    -it \
+    mdmitry1/python313-dev-mac:latest \
+    "$@"
