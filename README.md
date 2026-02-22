@@ -13,6 +13,8 @@ certifying and verifying assertions, synthesis and pareto-optimization of config
 design of experiments (to simulate systems and produce data), feature selection,
 rule learning/subgroup discovery, root-cause analysis, and more.
 
+See [SMLP_SHORT_INTRO.pdf](SMLP_SHORT_INTRO.pdf) for more technical details
+
 If you want to try out SMLP on your optimization problems
 and require support, please contact the developers through 
 the [discussion page](https://github.com/SMLP-Systems/smlp/discussions).
