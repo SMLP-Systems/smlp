@@ -1,4 +1,5 @@
 #!/usr/bin/tcsh -f
+cd `realpath $0 | xargs dirname`
 set examples = ( \
     examples/constraint_dora/smlp/run_constraint_dora_poly \
     examples/bnh/smlp/run_poly_pareto \

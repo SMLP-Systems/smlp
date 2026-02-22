@@ -1,8 +1,12 @@
 #!/usr/bin/python3.11
 import pandas as pd
 import seaborn as sns
+import matplotlib
+matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import tkinter as tk
 import numpy as np
 import re
 from math import inf
@@ -151,11 +155,68 @@ fig.text(
 )
 plt.tight_layout(rect=[0, 0.08, 1, 1])
 plt.savefig(f"{plot_name}.png", dpi=150, bbox_inches="tight")
+
+# ── Scrollable Tk window ──────────────────────────────────────────────────────
 timeout = inf
 if len(argv) > 3:
     if '-timeout' == argv[2]:
         timeout = int(argv[3])
+
+root = tk.Tk()
+root.title(f"{plot_name} — Optimization Results")
+
+# Get screen dimensions and set window to full screen height
+root.geometry("1280x1024")
+
+# Outer frame holds canvas + scrollbars
+outer = tk.Frame(root)
+outer.pack(fill=tk.BOTH, expand=True)
+
+# Horizontal + vertical scrollbars
+hbar = tk.Scrollbar(outer, orient=tk.HORIZONTAL)
+hbar.pack(side=tk.BOTTOM, fill=tk.X)
+vbar = tk.Scrollbar(outer, orient=tk.VERTICAL)
+vbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+# Tk canvas (scroll container)
+tk_canvas = tk.Canvas(outer, xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+tk_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+hbar.config(command=tk_canvas.xview)
+vbar.config(command=tk_canvas.yview)
+
+# Embed matplotlib figure into the Tk canvas
+mpl_canvas = FigureCanvasTkAgg(fig, master=tk_canvas)
+mpl_widget = mpl_canvas.get_tk_widget()
+# Place the widget inside the canvas
+fig_w_px = int(fig.get_figwidth() * fig.dpi)
+fig_h_px = int(fig.get_figheight() * fig.dpi)
+tk_canvas.create_window(0, 0, anchor="nw", window=mpl_widget, width=fig_w_px, height=fig_h_px)
+tk_canvas.config(scrollregion=(0, 0, fig_w_px, fig_h_px))
+
+mpl_canvas.draw()
+
+# Mouse-wheel horizontal scroll (Shift+wheel or middle-drag)
+def _on_mousewheel(event):
+    tk_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+def _on_shift_mousewheel(event):
+    tk_canvas.xview_scroll(int(-1 * (event.delta / 120)), "units")
+
+root.bind_all("<MouseWheel>", _on_mousewheel)
+root.bind_all("<Shift-MouseWheel>", _on_shift_mousewheel)
+# Linux scroll events
+root.bind_all("<Button-4>", lambda e: tk_canvas.yview_scroll(-1, "units"))
+root.bind_all("<Button-5>", lambda e: tk_canvas.yview_scroll(1, "units"))
+root.bind_all("<Shift-Button-4>", lambda e: tk_canvas.xview_scroll(-1, "units"))
+root.bind_all("<Shift-Button-5>", lambda e: tk_canvas.xview_scroll(1, "units"))
+
+def _quit(e=None):
+    root.destroy()
+    import os; os._exit(0)
+
+root.bind_all("<Escape>", _quit)
+root.bind_all("<q>", _quit)
+
 if not inf == timeout:
-    timer = fig.canvas.new_timer(interval=timeout*1000, callbacks=[(plt.close, [], {})])
-    timer.start()
-plt.show()
+    root.after(int(timeout * 1000), _quit)
+
+root.mainloop()
