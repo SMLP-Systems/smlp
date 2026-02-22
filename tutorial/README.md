@@ -13,10 +13,10 @@ This tutorial contains one of Intel examples in Signal Integrity domain (with ma
 - Constraint defining set is comprised of known functions, which are defined by Python expressions
 
 **SMLP** supports multiple modes: optimization, synthesis, verification and more
-This tutorial focuses on optimization mode. In future in may be extended to other modes.
+This tutorial focuses on optimization mode. In future it may be extended to other modes.
 
 ### SMLP optimization flow is comprised of two stages:
-- Model build: input data is converted into the one of supported model types:
+- Model build: input data is converted into one of supported model types:
   1. Polynomial model
   2. Decision Trees
   3. Random Forest
@@ -304,9 +304,12 @@ All examples use JSON configuration files with the following structure:
 ### Key Fields
 
 - **variables**: Define input variables (knobs) and output variables
-  - `interface`: "knob" for inputs, "output" for outputs
+  - `interface`: "knob" for controllable variables, "input" for inputs, "output" for outputs
   - `range`: Valid range for input variables
   - `rad-abs`: Radius for absolute perturbation (0.0 = exact values)
+
+    SMLP finds optimal values for knobs<br>
+    Inputs are "free" - they are not altered during optimization
 
 - **alpha**: Constraint expression using variable labels
   - Supports arithmetic operations: `+`, `-`, `*`, `/`
@@ -314,7 +317,7 @@ All examples use JSON configuration files with the following structure:
   - Supports comparisons: `<=`, `>=`, `<`, `>`, `==`
 
 - **objectives**: One or more objectives to optimize
-  - Negative sign for maximization (SMLP minimizes by default)
+  - For minimization, negate the objectives as SMLP searches for a maximum
   - Can combine multiple outputs with weights
 
 ---
