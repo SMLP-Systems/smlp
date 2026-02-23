@@ -1,0 +1,253 @@
+{
+  "_meta": {
+    "description": "SMLP RL few-shot example store. Each entry has a user_text, smlp_command, and RL tracking fields (success_rate, usage_count, source). The RL system updates success_rate over time via UCB and user feedback.",
+    "version": "1.0",
+    "valid_modes": [
+      "train",
+      "predict",
+      "optimize",
+      "synthesize",
+      "verify",
+      "query",
+      "optsyn",
+      "certify",
+      "frontier",
+      "subgroups",
+      "discretize",
+      "correlate",
+      "rag"
+    ],
+    "system_prompt": "You are an assistant for smlp. Convert the user's description into a JSON of CLI-style options dictionary. Make sure: do not modify file paths provided by user in the query.\nThe command line option analytics_mode (abbreviated name: mode) must be one of:\n'train', 'predict', 'optimize', 'synthesize', 'verify', 'query', 'optsyn', 'certify', 'frontier', 'subgroups', 'discretize', 'correlate'."
+  },
+  "examples": [
+    {
+      "id": "ex_001",
+      "tag": "optimize",
+      "status": "tested",
+      "source": "hand_crafted",
+      "user_text": "Train and pareto optimize with DT model on data file '../regr_smlp/data/smlp_toy_num_resp_mult.csv', responses y1,y2, features x1,x2; save model as model1. Use the eager optimization strategy and the flat tree encoding. Use spec file '../regr_smlp/specs/smlp_toy_num_resp_mult.spec', output directory '../regr_smlp/code', prefix 'test1'. Set epsilon = 0.05 and delta_abs = 0.01. Disable plots.",
+      "smlp_command": {
+        "data": "../regr_smlp/data/smlp_toy_num_resp_mult.csv",
+        "spec": "../regr_smlp/specs/smlp_toy_num_resp_mult.spec",
+        "opt_strategy": "eager",
+        "tree_encoding": "flat",
+        "epsilon": 0.05,
+        "delta_abs": 0.01,
+        "out_dir": "../regr_smlp/code",
+        "pref": "test1",
+        "mode": "optimize",
+        "pareto": true,
+        "resp": "y1,y2",
+        "feat": "x1,x2",
+        "model": "dt_sklearn",
+        "save_model": true,
+        "model_name": "model1",
+        "plots": false
+      },
+      "success_rate": 0.5759571411812557,
+      "usage_count": 34,
+      "last_used": "2026-02-20T18:37:20.560143",
+      "added": "2026-02-15T00:00:00"
+    },
+    {
+      "id": "ex_002",
+      "tag": "optimize",
+      "status": "tested",
+      "source": "hand_crafted",
+      "user_text": "Train and pareto optimize with DT model on data file '../regr_smlp/data/smlp_toy_basic.csv'. Use spec file '../regr_smlp/specs/smlp_toy_basic.spec', output directory '../regr_smlp/code', prefix 'test2'. Use lazy optimization strategy and nested tree encoding. Set epsilon = 0.05 and delta_rel = 0.01. Disable plots.",
+      "smlp_command": {
+        "data": "../regr_smlp/data/smlp_toy_basic.csv",
+        "spec": "../regr_smlp/specs/smlp_toy_basic.spec",
+        "opt_strategy": "lazy",
+        "tree_encoding": "nested",
+        "epsilon": 0.05,
+        "delta_rel": 0.01,
+        "out_dir": "../regr_smlp/code",
+        "pref": "test2",
+        "mode": "optimize",
+        "pareto": true,
+        "model": "dt_sklearn",
+        "save_model": false,
+        "plots": false
+      },
+      "success_rate": 0.6264248567845833,
+      "usage_count": 34,
+      "last_used": "2026-02-20T18:32:29.118991",
+      "added": "2026-02-15T00:00:00"
+    },
+    {
+      "id": "ex_003",
+      "tag": "rag",
+      "status": "todo",
+      "source": "hand_crafted",
+      "user_text": "Use previously trained RAG model from /models/smlp_rag_model to answer: 'What is the main advantage of symbolic learning in SMLP?'. Use LC-style retriever, cosine similarity, and pdf input located at /docs/smlp_whitepaper.pdf.",
+      "smlp_command": {
+        "mode": "rag",
+        "rag_type": "lc",
+        "rag_text": "/docs/smlp_whitepaper.pdf",
+        "rag_trained_model_path": "/models/smlp_rag_model",
+        "questions": "What is the main advantage of symbolic learning in SMLP?",
+        "index_backend": "cosine",
+        "do_sample": false,
+        "rag_eval": true
+      },
+      "success_rate": 0.5204824875000001,
+      "usage_count": 11,
+      "last_used": "2026-02-20T18:33:34.395674",
+      "added": "2026-02-15T00:00:00"
+    },
+    {
+      "id": "ex_004",
+      "tag": "verify",
+      "status": "todo",
+      "source": "hand_crafted",
+      "user_text": "Verify that DT model model123 meets spec '../regr_smlp/specs/my_spec.spec' on data '../regr_smlp/data/validation.csv'. Use strict delta=0.01 and radius=0.05, save results with prefix 'verify_run1'.",
+      "smlp_command": {
+        "mode": "verify",
+        "model_name": "model123",
+        "spec": "../regr_smlp/specs/my_spec.spec",
+        "data": "../regr_smlp/data/validation.csv",
+        "delta_rel": 0.01,
+        "rad_rel": 0.05,
+        "pref": "verify_run1"
+      },
+      "success_rate": 0.49557142857142866,
+      "usage_count": 7,
+      "last_used": "2026-02-20T18:02:56.266654",
+      "added": "2026-02-15T00:00:00"
+    },
+    {
+      "id": "ex_005",
+      "tag": "subgroups",
+      "status": "todo",
+      "source": "hand_crafted",
+      "user_text": "Discover subgroups with high correlation in dataset '../regr_smlp/data/smlp_numerical.csv', save results with prefix 'subgroup1'.",
+      "smlp_command": {
+        "mode": "subgroups",
+        "data": "../regr_smlp/data/smlp_numerical.csv",
+        "pref": "subgroup1"
+      },
+      "success_rate": 0.5282594285714287,
+      "usage_count": 9,
+      "last_used": "2026-02-20T18:02:56.266666",
+      "added": "2026-02-15T00:00:00"
+    },
+    {
+      "id": "ex_0006",
+      "tag": "rl_generated",
+      "status": "rl_generated",
+      "source": "user_correction",
+      "user_text": "Train and lazy-optimize a DT model on '../regr_smlp/data/smlp_toy_basic.csv' using spec '../regr_smlp/specs/smlp_toy_basic.spec', prefix 'run_a'. Nested tree encoding, epsilon=0.1, disable plots.",
+      "smlp_command": {
+        "mode": "optimize",
+        "pareto": true,
+        "model": "dt_sklearn",
+        "data": "../regr_smlp/data/smlp_toy_basic.csv",
+        "spec": "../regr_smlp/specs/smlp_toy_basic.spec",
+        "opt_strategy": "lazy",
+        "tree_encoding": "nested",
+        "epsilon": 0.1,
+        "pref": "run_a",
+        "plots": false
+      },
+      "success_rate": 0.5579714471175002,
+      "usage_count": 20,
+      "last_used": "2026-02-20T18:37:20.560129",
+      "added": "2026-02-15T08:30:45.491707"
+    },
+    {
+      "id": "ex_0007",
+      "tag": "rl_generated",
+      "status": "rl_generated",
+      "source": "user_correction",
+      "user_text": "Verify model 'modelABC' against spec '../regr_smlp/specs/my_spec.spec' on data '../regr_smlp/data/validation.csv'. delta=0.02, radius=0.1, prefix 'vrun2'.",
+      "smlp_command": {
+        "mode": "verify",
+        "model_name": "modelABC",
+        "spec": "../regr_smlp/specs/my_spec.spec",
+        "data": "../regr_smlp/data/validation.csv",
+        "delta_rel": 0.02,
+        "rad_rel": 0.1,
+        "pref": "vrun2"
+      },
+      "success_rate": 0.5845845101875001,
+      "usage_count": 15,
+      "last_used": "2026-02-20T18:02:56.266669",
+      "added": "2026-02-15T08:30:45.493280"
+    },
+    {
+      "id": "ex_0008",
+      "tag": "rl_generated",
+      "status": "rl_generated",
+      "source": "user_correction",
+      "user_text": "Use the LC RAG model at /models/smlp_rag_v2 to answer 'How does SMLP handle categorical features?' from PDF /docs/smlp_manual_v2.pdf. Use cosine index.",
+      "smlp_command": {
+        "mode": "rag",
+        "rag_type": "lc",
+        "rag_text": "/docs/smlp_manual_v2.pdf",
+        "rag_trained_model_path": "/models/smlp_rag_v2",
+        "questions": "How does SMLP handle categorical features?",
+        "index_backend": "cosine",
+        "do_sample": false,
+        "rag_eval": true
+      },
+      "success_rate": 0.5644992857142858,
+      "usage_count": 19,
+      "last_used": "2026-02-20T18:33:34.395661",
+      "added": "2026-02-15T08:30:45.494687"
+    },
+    {
+      "id": "ex_0009",
+      "tag": "rl_generated",
+      "status": "rl_generated",
+      "source": "user_correction",
+      "user_text": "Eager pareto-optimize a DT model on '../regr_smlp/data/smlp_toy_num_resp_mult.csv', responses y1,y2,y3, features x1,x2,x3. Spec '../regr_smlp/specs/mult.spec', prefix 'p_opt', epsilon=0.03, delta_abs=0.005. Save as model_m3. Flat tree. No plots.",
+      "smlp_command": {
+        "mode": "optimize",
+        "pareto": true,
+        "model": "dt_sklearn",
+        "data": "../regr_smlp/data/smlp_toy_num_resp_mult.csv",
+        "spec": "../regr_smlp/specs/mult.spec",
+        "resp": "y1,y2,y3",
+        "feat": "x1,x2,x3",
+        "opt_strategy": "eager",
+        "tree_encoding": "flat",
+        "epsilon": 0.03,
+        "delta_abs": 0.005,
+        "pref": "p_opt",
+        "save_model": true,
+        "model_name": "model_m3",
+        "plots": false
+      },
+      "success_rate": 0.5568187500000001,
+      "usage_count": 17,
+      "last_used": "2026-02-20T18:33:34.395672",
+      "added": "2026-02-15T08:30:45.496085"
+    },
+    {
+      "id": "ex_0010",
+      "tag": "rl_generated",
+      "status": "rl_generated",
+      "source": "user_correction",
+      "user_text": "train dt_sklearn model on training data ../data/smlp_toy_num_resp_mult.csv using y1 as the reponse and x,p1,p2 as features. Disable plots. Use seed 10",
+      "smlp_command": {
+        "mode": "train",
+        "data": "../data/smlp_toy_num_resp_mult.csv",
+        "model": [
+          "y1",
+          "x",
+          "p1",
+          "p2"
+        ],
+        "out_dir": "../data/smlp_toy_num_resp_mult.csv",
+        "pref": "test",
+        "disable_plots": false,
+        "seed": 10
+      },
+      "success_rate": 0.4973850000000002,
+      "usage_count": 11,
+      "last_used": "2026-02-20T18:37:20.560141",
+      "added": "2026-02-15T15:30:16.123253"
+    }
+  ]
+}
