@@ -13,8 +13,6 @@ certifying and verifying assertions, synthesis and pareto-optimization of config
 design of experiments (to simulate systems and produce data), feature selection,
 rule learning/subgroup discovery, root-cause analysis, and more.
 
-See [SMLP_SHORT_INTRO.pdf](SMLP_SHORT_INTRO.pdf) for more technical details
-
 If you want to try out SMLP on your optimization problems
 and require support, please contact the developers through 
 the [discussion page](https://github.com/SMLP-Systems/smlp/discussions).
@@ -98,7 +96,11 @@ Starting VNC server within container:
 ```
 ./start_vnc
 ```
-Recommended VNC client: `remmina`
+Recommended VNC client: 
+
+- Ubuntu: `remmina`
+- Windows: RealVNC
+  VNC installation instructions - see [VNC.md](VNC.md)
 
 - Entering Docker container with X11 support on native Linux
 ```
@@ -160,11 +162,6 @@ bin/test_install
     -save_model_config f -mrmr_pred 0 -plots f -seed 10 -log_time f \
     -spec ../specs/smlp_toy_num_resp_mult_free_inps.spec
 ```
-
-# SMLP Tutorial
-
-SMLP tutorial contains three benchmark optimization problems and one industrial example demonstrating the capabilities of SMLP (Symbolic Machine Learning Prover) for solving constrained and multi-objective optimization tasks for **black-box functions**.<br>
-See [tutorial README.md](tutorial/README.md) for detailed instructions
 
 # Running the regression suite
 
