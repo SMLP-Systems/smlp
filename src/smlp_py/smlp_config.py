@@ -175,16 +175,12 @@ class SmlpConfig:
                 parser.set_defaults(**json.load(f))
             args = parser.parse_args(argv[1:])  # RE-parse with same argv (not sys.argv)
 
-        # Compute and save report_file_prefix and model_file_prefix as part of self
+        # Compute and save report_file_prefix, model_file_prefix and wordvec_file_prefix as part of self
         self.report_file_prefix, self.model_file_prefix, self.wordvec_file_prefix = \
             self.args_get_report_name_prefix(
                 args.labeled_data, args.log_files_prefix, args.output_directory, args.new_data,
                 args.model_name, args.doe_spec_file, args.text_data, args.wordvec_model
             )
-
-        # compute and save report_file_prefix and model_file_prefix as part of self
-        self.report_file_prefix, self.model_file_prefix = self.args_get_report_name_prefix(args.labeled_data, 
-            args.log_files_prefix, args.output_directory, args.new_data, args.model_name, args.doe_spec_file) 
         
         # Save tool configuration and model rerun configuration
         # Adapted code from https://micha-feigin.medium.com/on-using-config-files-with-pythons-argparse-8af09d0bdfb9

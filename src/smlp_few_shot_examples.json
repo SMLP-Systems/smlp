@@ -45,8 +45,8 @@
         "plots": false
       },
       "success_rate": 0.5759571411812557,
-      "usage_count": 34,
-      "last_used": "2026-02-20T18:37:20.560143",
+      "usage_count": 35,
+      "last_used": "2026-02-23T17:51:41.369837",
       "added": "2026-02-15T00:00:00"
     },
     {
@@ -70,9 +70,9 @@
         "save_model": false,
         "plots": false
       },
-      "success_rate": 0.6264248567845833,
-      "usage_count": 34,
-      "last_used": "2026-02-20T18:32:29.118991",
+      "success_rate": 0.583782371106125,
+      "usage_count": 36,
+      "last_used": "2026-02-23T17:52:39.477633",
       "added": "2026-02-15T00:00:00"
     },
     {
@@ -127,9 +127,9 @@
         "data": "../regr_smlp/data/smlp_numerical.csv",
         "pref": "subgroup1"
       },
-      "success_rate": 0.5282594285714287,
-      "usage_count": 9,
-      "last_used": "2026-02-20T18:02:56.266666",
+      "success_rate": 0.49543348571428586,
+      "usage_count": 10,
+      "last_used": "2026-02-23T17:52:39.477649",
       "added": "2026-02-15T00:00:00"
     },
     {
@@ -170,9 +170,9 @@
         "rad_rel": 0.1,
         "pref": "vrun2"
       },
-      "success_rate": 0.5845845101875001,
-      "usage_count": 15,
-      "last_used": "2026-02-20T18:02:56.266669",
+      "success_rate": 0.5461260591687501,
+      "usage_count": 17,
+      "last_used": "2026-02-23T17:52:39.477647",
       "added": "2026-02-15T08:30:45.493280"
     },
     {
@@ -201,11 +201,11 @@
       "tag": "rl_generated",
       "status": "rl_generated",
       "source": "user_correction",
-      "user_text": "Eager pareto-optimize a DT model on '../regr_smlp/data/smlp_toy_num_resp_mult.csv', responses y1,y2,y3, features x1,x2,x3. Spec '../regr_smlp/specs/mult.spec', prefix 'p_opt', epsilon=0.03, delta_abs=0.005. Save as model_m3. Flat tree. No plots.",
+      "user_text": "Eager pareto-optimize a polynomial model on '../regr_smlp/data/smlp_toy_num_resp_mult.csv', responses y1,y2,y3, features x1,x2,x3. Spec '../regr_smlp/specs/mult.spec', prefix 'p_opt', epsilon=0.03, delta_abs=0.005. Save as model_m3. Flat tree. No plots.",
       "smlp_command": {
         "mode": "optimize",
         "pareto": true,
-        "model": "dt_sklearn",
+        "model": "poly_sklearn",
         "data": "../regr_smlp/data/smlp_toy_num_resp_mult.csv",
         "spec": "../regr_smlp/specs/mult.spec",
         "resp": "y1,y2,y3",
@@ -229,16 +229,13 @@
       "tag": "rl_generated",
       "status": "rl_generated",
       "source": "user_correction",
-      "user_text": "train dt_sklearn model on training data ../data/smlp_toy_num_resp_mult.csv using y1 as the reponse and x,p1,p2 as features. Disable plots. Use seed 10",
+      "user_text": "train nn_keras model on training data ../data/smlp_toy_num_resp_mult.csv using y1 as the reponse and x,p1,p2 as features. Disable plots. Use seed 10",
       "smlp_command": {
         "mode": "train",
         "data": "../data/smlp_toy_num_resp_mult.csv",
-        "model": [
-          "y1",
-          "x",
-          "p1",
-          "p2"
-        ],
+        "resp": "y1",
+        "feat": "x,p1,p2",
+        "model": "nn_keras",
         "out_dir": "../data/smlp_toy_num_resp_mult.csv",
         "pref": "test",
         "disable_plots": false,

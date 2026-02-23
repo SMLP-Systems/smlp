@@ -55,3 +55,10 @@ obj/table.c.o
 /regr_smlp/data/smlp_s2_tx.csv
 /regr_smlp/master/Test130_*.*
 /regr_smlp/master/Test131_*.*
+
+# RL Agent runtime files
+src/smlp_last_run.log
+src/smlp_rl_feedback.jsonl
+src/demo_feedback.jsonl
+src/smlp_rl_checkpoints/
+src/demo_checkpoints/

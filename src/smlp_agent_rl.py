@@ -66,6 +66,144 @@ class FewShotExample:
         return cls(**data)
 
 
+
+class ExampleStore:
+    """
+    Persistent, RL-tracked store of few-shot examples backed by a JSON file.
+
+    This is the single source of truth for the prompt container. The file
+    keeps every example readable/editable by hand while the RL system
+    updates success_rate and usage_count in-place after every feedback round.
+
+    Workflow
+    --------
+    1. On startup:      load_from_file()        reads examples + existing RL scores
+    2. On each LLM call: get_examples_as_pool()  converts store → FewShotExample list
+    3. After feedback:  update_scores()          writes updated scores back to JSON
+    4. User correction: add_example()            appends new entry to JSON
+
+    File
+    ----
+    Pass the path to __init__.  Recommended location alongside the agent:
+        ./smlp_few_shot_examples.json
+    """
+
+    def __init__(self, filepath: str = "./smlp_few_shot_examples.json"):
+        self.filepath = filepath
+        self._data: dict = {"_meta": {}, "examples": []}
+        self.system_prompt: str = ""
+        self.valid_modes: List[str] = []
+
+        if os.path.exists(filepath):
+            self.load_from_file()
+        else:
+            print(f"[ExampleStore] No file at {filepath}. Starting empty.")
+
+    # -- file I/O ----------------------------------------------------------
+
+    def load_from_file(self):
+        """Load examples and RL scores from the JSON file."""
+        with open(self.filepath, "r") as f:
+            self._data = json.load(f)
+        meta = self._data.get("_meta", {})
+        self.system_prompt = meta.get("system_prompt", "")
+        self.valid_modes   = meta.get("valid_modes", [])
+        print(f"[ExampleStore] Loaded {len(self._data['examples'])} examples "
+              f"from {self.filepath}")
+
+    def save_to_file(self):
+        """Write state (including updated RL scores) back to JSON."""
+        with open(self.filepath, "w") as f:
+            json.dump(self._data, f, indent=2)
+
+    # -- read --------------------------------------------------------------
+
+    def get_examples_as_pool(self) -> List:
+        """Return all stored examples as FewShotExample objects."""
+        pool = []
+        for entry in self._data["examples"]:
+            ex = FewShotExample(
+                user_text    = entry["user_text"],
+                smlp_command = entry["smlp_command"],
+                success_rate = entry.get("success_rate", 0.5),
+                usage_count  = entry.get("usage_count", 0),
+                last_used    = entry.get("last_used"),
+            )
+            pool.append(ex)
+        return pool
+
+    def count(self) -> int:
+        return len(self._data["examples"])
+
+    def list_tags(self) -> List[str]:
+        return sorted(set(e.get("tag","") for e in self._data["examples"]))
+
+    # -- write -------------------------------------------------------------
+
+    def add_example(self, user_text: str, smlp_command: Dict,
+                    tag: str = "rl_generated",
+                    initial_success_rate: float = 0.6,
+                    ex_id: str = None) -> str:
+        """Append a new example (e.g. from a user correction) and save."""
+        if ex_id is None:
+            ex_id = f"ex_{self.count() + 1:04d}"
+        entry = {
+            "id":           ex_id,
+            "tag":          tag,
+            "status":       "rl_generated",
+            "source":       "user_correction",
+            "user_text":    user_text,
+            "smlp_command": smlp_command,
+            "success_rate": initial_success_rate,
+            "usage_count":  0,
+            "last_used":    None,
+            "added":        datetime.datetime.now().isoformat(),
+        }
+        self._data["examples"].append(entry)
+        self.save_to_file()
+        return ex_id
+
+    def update_scores(self, updated_examples: List):
+        """
+        Write back updated success_rate / usage_count from FewShotExample
+        objects matched by user_text, then save.
+        """
+        text_to_entry = {e["user_text"]: e for e in self._data["examples"]}
+        for ex in updated_examples:
+            if ex.user_text in text_to_entry:
+                text_to_entry[ex.user_text]["success_rate"] = ex.success_rate
+                text_to_entry[ex.user_text]["usage_count"]  = ex.usage_count
+                text_to_entry[ex.user_text]["last_used"]    = ex.last_used
+        self.save_to_file()
+
+    def remove_low_performers(self, min_rate: float = 0.3):
+        """Drop RL-generated examples whose success_rate fell below threshold."""
+        before = self.count()
+        self._data["examples"] = [
+            e for e in self._data["examples"]
+            if e.get("source") == "hand_crafted"
+            or e.get("success_rate", 0.5) >= min_rate
+        ]
+        removed = before - self.count()
+        if removed:
+            self.save_to_file()
+            print(f"[ExampleStore] Pruned {removed} low-performing examples.")
+
+    def print_summary(self):
+        """Print a human-readable table of the example pool."""
+        print(f"\n[ExampleStore]  file: {self.filepath}   total: {self.count()}")
+        print(f"  {'ID':<10} {'tag':<12} {'source':<15} "
+              f"{'success':>7} {'used':>5}  query (first 60 chars)")
+        print("  " + "─" * 76)
+        for e in sorted(self._data["examples"],
+                        key=lambda x: x.get("success_rate", 0), reverse=True):
+            print(f"  {e.get('id',''):<10} {e.get('tag',''):<12} "
+                  f"{e.get('source',''):<15} "
+                  f"{e.get('success_rate', 0):>7.3f} "
+                  f"{e.get('usage_count', 0):>5}  "
+                  f"{e['user_text'][:60]}")
+
+
 class RewardModel:
     """
     Computes rewards for generated commands based on multiple criteria.
@@ -121,25 +259,38 @@ class RewardModel:
     
     def _compute_edit_reward(self, generated: Dict, corrected: Dict) -> float:
         """
-        Compute edit-based reward using parameter-level comparison
-        
-        Returns value in [0, 1] where 1 = perfect match
+        Compute edit-based reward using recall-weighted scoring.
+
+        The key insight: the corrected command is the ground truth.
+        We want to reward how much of the *correct* answer the LLM got right,
+        not penalise it for every key the user happened to add.
+
+        Scoring:
+          - correct_key_present_and_correct_value : +1.0  (full credit)
+          - correct_key_present_but_wrong_value   : +0.5  (partial credit)
+          - correct_key_missing entirely          : +0.0  (no credit)
+
+        Result is normalised by the number of keys in corrected (ground truth).
+        Extra spurious keys in generated are ignored (they get handled by
+        execution success / downstream validation).
         """
         if not generated and not corrected:
             return 1.0
-        
-        if not generated or not corrected:
+        if not corrected:          # corrected is empty but generated is not
             return 0.0
-        
-        # Count matching parameters
-        all_keys = set(generated.keys()) | set(corrected.keys())
-        matching = sum(1 for k in all_keys 
-                      if generated.get(k) == corrected.get(k))
-        
-        # Normalize by total number of parameters
-        similarity = matching / len(all_keys) if all_keys else 0.0
-        
-        return similarity
+        if not generated:          # generated is empty, corrected has content
+            return 0.0
+
+        score = 0.0
+        for key in corrected:
+            if key not in generated:
+                score += 0.0       # missing key
+            elif generated[key] == corrected[key]:
+                score += 1.0       # exact match
+            else:
+                score += 0.5       # key present, value wrong
+
+        return score / len(corrected)
     
     def compute_levenshtein_distance(self, s1: str, s2: str) -> int:
         """Compute Levenshtein edit distance between two strings"""
@@ -277,35 +428,58 @@ class PromptOptimizer:
     4. Periodically prune low-performing examples
     """
     
-    def __init__(self, 
+    def __init__(self,
                  max_examples: int = 100,
                  examples_per_prompt: int = 5,
-                 exploration_factor: float = 0.5):
+                 exploration_factor: float = 0.5,
+                 example_store: "Optional[ExampleStore]" = None):
         """
         Args:
             max_examples: Maximum examples to keep in pool
             examples_per_prompt: Number of examples to include in each prompt
             exploration_factor: UCB exploration parameter
+            example_store: Optional ExampleStore; if provided the pool is
+                           seeded from it on startup and scores are written
+                           back after every feedback round.
         """
         self.max_examples = max_examples
         self.examples_per_prompt = examples_per_prompt
         self.exploration_factor = exploration_factor
-        
+        self.example_store: Optional[ExampleStore] = example_store
+
         self.example_pool: List[FewShotExample] = []
         self.total_selections = 0
+
+        # Seed pool from ExampleStore if provided
+        if example_store is not None:
+            self.example_pool = example_store.get_examples_as_pool()
+            print(f"[PromptOptimizer] Seeded pool with "
+                  f"{len(self.example_pool)} examples from ExampleStore.")
         
-    def add_example(self, user_text: str, smlp_command: Dict):
-        """Add a new example to the pool"""
+    def add_example(self, user_text: str, smlp_command: Dict,
+                    tag: str = "rl_generated"):
+        """
+        Add a new example to the in-memory pool AND to the JSON ExampleStore
+        so it persists across runs.
+        """
+        # Avoid exact duplicates
+        for existing in self.example_pool:
+            if existing.user_text == user_text:
+                return  # Already in pool
+
         example = FewShotExample(
-            user_text=user_text,
-            smlp_command=smlp_command,
-            success_rate=0.5,  # Start with neutral score
-            usage_count=0,
-            last_used=datetime.datetime.now().isoformat()
+            user_text    = user_text,
+            smlp_command = smlp_command,
+            success_rate = 0.6,  # Slightly above neutral – user confirmed it
+            usage_count  = 0,
+            last_used    = datetime.datetime.now().isoformat()
         )
-        
         self.example_pool.append(example)
-        
+
+        # Persist to JSON
+        if self.example_store is not None:
+            self.example_store.add_example(user_text, smlp_command, tag=tag)
+
         # Prune if pool is too large
         if len(self.example_pool) > self.max_examples:
             self._prune_examples()
@@ -350,27 +524,26 @@ class PromptOptimizer:
         
         return selected
     
-    def update_example_scores(self, 
+    def update_example_scores(self,
                              selected_examples: List[FewShotExample],
                              reward: float):
         """
-        Update success rates of selected examples based on reward
-        
-        Uses exponential moving average to update scores
+        Update success rates of selected examples based on reward using
+        exponential moving average, then persist changes to ExampleStore.
         """
-        alpha = 0.1  # Learning rate
-        
+        alpha = 0.1  # EMA learning rate
+
         for example in selected_examples:
-            # Find the example in pool (by reference)
             for pool_ex in self.example_pool:
-                if (pool_ex.user_text == example.user_text and 
-                    pool_ex.smlp_command == example.smlp_command):
-                    # Update with exponential moving average
+                if pool_ex.user_text == example.user_text:
                     pool_ex.success_rate = (
-                        (1 - alpha) * pool_ex.success_rate + 
-                        alpha * reward
+                        (1 - alpha) * pool_ex.success_rate + alpha * reward
                     )
                     break
+
+        # Persist updated scores back to JSON
+        if self.example_store is not None:
+            self.example_store.update_scores(self.example_pool)
     
     def _prune_examples(self):
         """Remove low-performing examples to maintain pool size"""
@@ -380,32 +553,64 @@ class PromptOptimizer:
         # Keep top performers
         self.example_pool = self.example_pool[:self.max_examples]
     
-    def generate_prompt(self, selected_examples: List[FewShotExample]) -> str:
+    def generate_prompt(self,
+                        selected_examples: List[FewShotExample],
+                        example_store: "Optional[ExampleStore]" = None) -> str:
         """
-        Generate few-shot prompt from selected examples
-        
-        Returns:
-            Formatted prompt string
+        Generate the few-shot prompt that will be sent to the LLM.
+
+        The system preamble is taken from ExampleStore._meta.system_prompt if
+        an ExampleStore is provided; otherwise a generic fallback is used.
+        This means editing smlp_few_shot_examples.json is the single place
+        to change the preamble without touching code.
+
+        Format
+        ------
+        <system_preamble>
+
+        Examples:
+        #1 <tag>
+        Input:
+        "<user_text>"
+        Output:
+        { ... }
+
+        Now convert the following description into a JSON CLI options dict.
+        Output ONLY the JSON, nothing else.
         """
-        prompt_parts = [
-            "You are an AI assistant that converts natural language descriptions "
-            "into SMLP command-line parameter dictionaries.",
-            "",
-            "Examples:",
-            ""
-        ]
-        
+        # --- preamble -------------------------------------------------------
+        if example_store and example_store.system_prompt:
+            preamble = example_store.system_prompt
+        else:
+            preamble = (
+                "You are an assistant for SMLP. Convert the user's description "
+                "into a JSON of CLI-style options dictionary. Output ONLY the JSON."
+            )
+
+        prompt_parts = [preamble, "", "Examples:"]
+
+        # --- few-shot examples ----------------------------------------------
         for i, example in enumerate(selected_examples, 1):
-            prompt_parts.append(f"Example {i}:")
-            prompt_parts.append(f'User: "{example.user_text}"')
-            prompt_parts.append(f"Output: {json.dumps(example.smlp_command, indent=2)}")
+            # Try to recover tag from the example store for the label line
+            tag = ""
+            if example_store:
+                for entry in example_store._data.get("examples", []):
+                    if entry["user_text"] == example.user_text:
+                        tag = entry.get("tag", "")
+                        break
+            label = f"#{i} {tag}".rstrip()
+            prompt_parts.append(label)
+            prompt_parts.append("Input:")
+            prompt_parts.append(f'"{example.user_text}"')
+            prompt_parts.append("Output:")
+            prompt_parts.append(json.dumps(example.smlp_command, indent=2))
             prompt_parts.append("")
-        
+
+        # --- closing instruction --------------------------------------------
         prompt_parts.append(
-            "Now convert the following user request into an SMLP command dictionary. "
-            "Output ONLY the JSON dictionary, nothing else."
+            "Now convert the following description into a JSON CLI options "
+            "dictionary. Output ONLY the JSON, nothing else."
         )
-        
         return "\n".join(prompt_parts)
     
     def save_pool(self, filepath: str = "./smlp_rl_example_pool.pkl"):
@@ -478,8 +683,9 @@ class RLTrainer:
                 feedback_entry.reward
             )
         
-        # Add corrected command as new example if high quality
-        if feedback_entry.reward >= 0.7:
+        # Add corrected command as new example if high quality (threshold 0.6
+        # so realistic partial-match feedback still grows the pool)
+        if feedback_entry.reward >= 0.6:
             self.prompt_optimizer.add_example(
                 user_text=user_query,
                 smlp_command=corrected_command
@@ -491,16 +697,16 @@ class RLTrainer:
             self.fine_tune_threshold == 0
         )
         
-        # Generate new prompt
+        # Generate new prompt AFTER pool has been updated
         self.current_examples = self.prompt_optimizer.select_examples(user_query)
         new_prompt = self.prompt_optimizer.generate_prompt(self.current_examples)
         
-        # Log training step
+        # Log training step — pool size recorded AFTER add_example
         training_step = {
             'timestamp': datetime.datetime.now().isoformat(),
             'reward': feedback_entry.reward,
             'should_fine_tune': should_fine_tune,
-            'num_examples_in_pool': len(self.prompt_optimizer.example_pool)
+            'num_examples_in_pool': len(self.prompt_optimizer.example_pool)  # now accurate
         }
         self.training_history.append(training_step)
         
@@ -512,9 +718,13 @@ class RLTrainer:
         }
     
     def get_current_prompt(self, query: str = None) -> str:
-        """Get the current optimized prompt for a query"""
+        """Get the current optimized prompt for a query, using ExampleStore
+        system preamble if available."""
         self.current_examples = self.prompt_optimizer.select_examples(query)
-        return self.prompt_optimizer.generate_prompt(self.current_examples)
+        return self.prompt_optimizer.generate_prompt(
+            self.current_examples,
+            example_store=self.prompt_optimizer.example_store
+        )
     
     def get_training_stats(self) -> Dict:
         """Get statistics about the training process"""
@@ -522,7 +732,9 @@ class RLTrainer:
             return {
                 'total_feedback': 0,
                 'avg_reward': 0.0,
-                'recent_avg_reward': 0.0
+                'recent_avg_reward': 0.0,
+                'num_examples': len(self.prompt_optimizer.example_pool),
+                'total_selections': self.prompt_optimizer.total_selections
             }
         
         recent_history = self.training_history[-100:]  # Last 100 steps
