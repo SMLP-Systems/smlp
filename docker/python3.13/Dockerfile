@@ -79,11 +79,16 @@ WORKDIR /app
 # Copy requirements file
 COPY requirements.txt .
 
+#Copy pycaret
+COPY pycaret_313.tar.gz .
+
 # Install pip
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.13
 
 # Install Python packages including meson
-RUN python3.13 -m pip install --ignore-installed --no-cache-dir -r requirements.txt
+RUN python3.13 -m pip install --ignore-installed --no-cache-dir -r requirements.txt && \
+    pip install pycaret_313.tar.gz && \
+    pip install numpy==2.4.1 
 
 # Copy the build script
 COPY run_python_boost_build .

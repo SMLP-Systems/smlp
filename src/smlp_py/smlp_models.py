@@ -9,7 +9,7 @@ import os
 from sys import version_info
 
 from sklearn.metrics import mean_squared_error, r2_score
-if version_info.major < 4 and version_info.minor < 12:
+if version_info.major < 4 and version_info.minor < 14:
     from pycaret.regression import predict_model as caret_predict_model
     from pycaret.regression import save_model as caret_save_model
     from pycaret.regression import load_model as caret_load_model
@@ -77,12 +77,12 @@ class SmlpModels:
         }
         self._instKeras = ModelKeras()
         self._instSklearn = ModelSklearn()
-        if version_info.major < 4 and version_info.minor < 12:
+        if version_info.major < 4 and version_info.minor < 14:
             self._instCaret = ModelCaret()
             self._caret_dict = self._instCaret.get_caret_hparam_default_dict()
         self._sklearn_dict = self._instSklearn.get_sklearn_hparam_default_dict()
         self._keras_dict = self._instKeras.get_keras_hparam_default_dict()
-        if version_info.major < 4 and version_info.minor < 12:
+        if version_info.major < 4 and version_info.minor < 14:
             self.model_params_dict = self._model_params_common_dict | self._keras_dict | self._sklearn_dict | self._caret_dict 
         else:
             self.model_params_dict = self._model_params_common_dict | self._keras_dict | self._sklearn_dict
@@ -92,7 +92,7 @@ class SmlpModels:
         self.report_file_prefix = report_file_prefix
         self._instKeras.report_file_prefix = report_file_prefix
         self._instSklearn.report_file_prefix = report_file_prefix
-        if version_info.major < 4 and version_info.minor < 12:
+        if version_info.major < 4 and version_info.minor < 14:
             self._instCaret.report_file_prefix = report_file_prefix
         
     # model_file_prefix is a string used as prefix in all outut files of SMLP that are used to 
@@ -101,7 +101,7 @@ class SmlpModels:
         self.model_file_prefix = model_file_prefix
         self._instKeras.model_file_prefix = model_file_prefix
         self._instSklearn.model_file_prefix = model_file_prefix
-        if version_info.major < 4 and version_info.minor < 12:
+        if version_info.major < 4 and version_info.minor < 14:
             self._instCaret.model_file_prefix = model_file_prefix
     
     # required for generating file names of the reports containing model prediction results;
@@ -262,7 +262,7 @@ class SmlpModels:
     def set_logger(self, logger):
         self._model_logger = logger 
         self._instKeras.set_logger(logger)
-        if version_info.major < 4 and version_info.minor < 12:
+        if version_info.major < 4 and version_info.minor < 14:
             self._instCaret.set_logger(logger)
         self._instSklearn.set_logger(logger)
     
