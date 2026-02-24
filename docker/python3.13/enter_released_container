@@ -1,5 +1,21 @@
 #!/usr/bin/tcsh -f
+set script_path=`realpath $0 | xargs dirname`
+set script_name=`realpath $0 | xargs basename`
 mkdir -p $HOME/shared
+if($#argv > 0 ) then
+    if("-h" == "$argv[1]" || "--help" == "$argv[1]") then
+        echo "\nUsage: $script_name [-geom <screen_width>x<screen_length>] [<command>]"
+        echo "Example: $script_name -geom 1280x1024\n"
+        exit(0)
+    endif
+endif 
+if($#argv > 1 ) then
+    if("-geom" == "$argv[1]") then
+        set screen_resolution=$argv[2]
+        echo "User defined screen resolution: $screen_resolution"
+        shift; shift 
+    endif
+endif
 if( ! $?TZ ) setenv TZ `readlink /etc/localtime | sed 's@/usr/share/zoneinfo/@@'`
 @ p = 5900
 @ d = 99
@@ -7,4 +23,24 @@ while( `ss -tln | grep -c :${p}` > 0 )
     @ p = $p + 1
     @ d = $d + 1
 end
-docker run -e TZ=$TZ -e DISPLAY=:${d} -p ${p}:${p} -v $HOME/shared:/shared -it mdmitry1/python313-dev:latest $*
+if(! $?screen_resolution ) then
+    if(`uname -r` =~ *WSL2*) then
+        set powershell_exe=`where powershell.exe | awk '{print $1}'`
+        if($powershell_exe =~ *powershell.exe*) then
+            set screen_resolution=`$powershell_exe -ExecutionPolicy Bypass -File ${script_path}/getres.ps1 | tail -1 | sed 's/.$//'`
+        endif
+    else 
+        xset q >& /dev/null
+        if(0 == "$status") then
+            set screen_resolution=`xdpyinfo | grep dimensions | cut -d':' -f2 | awk '{print $1}'`
+        endif
+    endif
+    if($?screen_resolution) then
+        echo "Automatically defined screen resolution: $screen_resolution"
+    endif
+endif
+if(! $?screen_resolution ) then
+    set screen_resolution="1280x1024"
+    echo "Using default screen resolution: $screen_resolution"
+endif
+docker run -e TZ=$TZ -e DISPLAY=:${d} -e VNC_SCREEN_RESOLUTION=$screen_resolution -p ${p}:${p} -v $HOME/shared:/shared -it mdmitry1/python313-dev:latest $*
