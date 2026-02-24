@@ -5,9 +5,10 @@ matplotlib==3.10.8
 mrmr-selection 
 numpy==2.4.1
 pandas==2.3.3 
-pyDOE 
+pydoe==0.3.8
 pysubgroup 
 scikit-learn 
 scipy
 seaborn 
+pycaret
 tensorflow
