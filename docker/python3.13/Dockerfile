@@ -98,6 +98,8 @@ COPY pycaret_313.tar.gz .
 
 RUN  pip install --no-cache-dir pycaret_313.tar.gz && pip install numpy==2.4.1 && rm -f pycaret_313.tar.gz
 
+ARG CACHE_BUST_SMLP
+
 #Change python default version
 RUN ln -sf /usr/bin/python3.13 /usr/bin/python3
 RUN ln -sf /usr/bin/python3.13 /usr/bin/python
