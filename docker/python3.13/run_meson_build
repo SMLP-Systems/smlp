@@ -16,7 +16,11 @@ git clone https://github.com/fbrausse/kay "$kay_dir"
 # Clone the smlp repository
 git clone https://github.com/SMLP-Systems/smlp
 cd /app/smlp
-git switch smlp_python313
+endif
+
+if [ $(git branch -r --list origin/smlp_python313) ]; then
+    git switch smlp_python313
+fi
 
 # Run meson setup
 cd /app/smlp/utils/poly
