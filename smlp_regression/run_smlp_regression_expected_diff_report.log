@@ -1,31 +1,3 @@
-=================== Diff report for: Test9_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_args_config.json ==================================
-72a73,75
->     "model_caret_cross_validation": true,
->     "model_caret_return_train_score": false,
->     "model_caret_verbose": true,
-145a149,152
->     "setup_caret_data_split_shuffle": true,
->     "setup_caret_fold": 0,
->     "setup_caret_session_id": null,
->     "setup_caret_verbose": true,
-158a166,167
->     "tuner_caret_search_algorithm": "random",
->     "tuner_caret_tuner_verbose": true,
-=================== End of Test9_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_args_config.json diff report ================================
-=================== Diff report for: test20_model_rerun_model_config.json ==================================
-73a74,76
->     "model_caret_cross_validation": true,
->     "model_caret_return_train_score": false,
->     "model_caret_verbose": true,
-147a151,154
->     "setup_caret_data_split_shuffle": true,
->     "setup_caret_fold": 0,
->     "setup_caret_session_id": null,
->     "setup_caret_verbose": true,
-160a168,169
->     "tuner_caret_search_algorithm": "random",
->     "tuner_caret_tuner_verbose": true,
-=================== End of test20_model_rerun_model_config.json diff report ================================
 =================== Diff report for: Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled.txt ==================================
 87a88,111
 > 
@@ -59,62 +31,6 @@ diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test16_Test8_smlp_toy_n
 =================== Diff report for: Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_new_prediction_precisions.csv ==================================
 diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_new_prediction_precisions.csv: No such file or directory
 =================== End of Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_new_prediction_precisions.csv diff report ================================
-=================== Diff report for: test19_model_rerun_model_config.json ==================================
-73a74,76
->     "model_caret_cross_validation": true,
->     "model_caret_return_train_score": false,
->     "model_caret_verbose": true,
-147a151,154
->     "setup_caret_data_split_shuffle": true,
->     "setup_caret_fold": 0,
->     "setup_caret_session_id": null,
->     "setup_caret_verbose": true,
-160a168,169
->     "tuner_caret_search_algorithm": "random",
->     "tuner_caret_tuner_verbose": true,
-=================== End of test19_model_rerun_model_config.json diff report ================================
-=================== Diff report for: test22_model_rerun_model_config.json ==================================
-73a74,76
->     "model_caret_cross_validation": true,
->     "model_caret_return_train_score": false,
->     "model_caret_verbose": true,
-147a151,154
->     "setup_caret_data_split_shuffle": true,
->     "setup_caret_fold": 0,
->     "setup_caret_session_id": null,
->     "setup_caret_verbose": true,
-160a168,169
->     "tuner_caret_search_algorithm": "random",
->     "tuner_caret_tuner_verbose": true,
-=================== End of test22_model_rerun_model_config.json diff report ================================
-=================== Diff report for: test24_model_rerun_model_config.json ==================================
-73a74,76
->     "model_caret_cross_validation": true,
->     "model_caret_return_train_score": false,
->     "model_caret_verbose": true,
-147a151,154
->     "setup_caret_data_split_shuffle": true,
->     "setup_caret_fold": 0,
->     "setup_caret_session_id": null,
->     "setup_caret_verbose": true,
-160a168,169
->     "tuner_caret_search_algorithm": "random",
->     "tuner_caret_tuner_verbose": true,
-=================== End of test24_model_rerun_model_config.json diff report ================================
-=================== Diff report for: test26_model_rerun_model_config.json ==================================
-73a74,76
->     "model_caret_cross_validation": true,
->     "model_caret_return_train_score": false,
->     "model_caret_verbose": true,
-147a151,154
->     "setup_caret_data_split_shuffle": true,
->     "setup_caret_fold": 0,
->     "setup_caret_session_id": null,
->     "setup_caret_verbose": true,
-160a168,169
->     "tuner_caret_search_algorithm": "random",
->     "tuner_caret_tuner_verbose": true,
-=================== End of test26_model_rerun_model_config.json diff report ================================
 =================== Diff report for: Test29_smlp_toy_cls_metasymbol_colnames_mult.txt ==================================
 95,96d94
 < smlp_logger - WARNING - Range plots are not supported in this version of SMLP
@@ -267,20 +183,6 @@ diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test16_Test8_smlp_toy_n
 < smlp_logger - WARNING - Range plots are not supported in this version of SMLP
 < 
 =================== End of Test31_smlp_toy_num_resp_mult.txt diff report ================================
-=================== Diff report for: Test31_smlp_toy_num_resp_mult_args_config.json ==================================
-72a73,75
->     "model_caret_cross_validation": true,
->     "model_caret_return_train_score": false,
->     "model_caret_verbose": true,
-145a149,152
->     "setup_caret_data_split_shuffle": true,
->     "setup_caret_fold": 0,
->     "setup_caret_session_id": null,
->     "setup_caret_verbose": true,
-158a166,167
->     "tuner_caret_search_algorithm": "random",
->     "tuner_caret_tuner_verbose": true,
-=================== End of Test31_smlp_toy_num_resp_mult_args_config.json diff report ================================
 =================== Diff report for: Test31_smlp_toy_num_resp_mult_features_ranking.csv ==================================
 2,7c2,5
 < y1,0,0,1,0.5454545454545454,0.49792959773196915,p1_2.0_2.0_Bin_0__p2_3.0_3.0_Bin_0,p1,2.0:2.0,1:1,1,2.0,4.0,2.727272727272727,0.7496555682941201,p2,3.0:3.0,1:1,1,3,8,5.454545454545454,1.6160353486028343,,NA:NA,NA:NA,NA,NA,NA,NA,NA,1.8333333333333335,PSG,5.0,5.0,1.0,0.0,,,0.5834,1.8333,1.0,0.5207,0.5833,0.2858,0.2143,0.5455,0.5333,0,none,2~~3~~6~~7~~9,1~~4~~5~~8~~10
@@ -424,9 +326,6 @@ diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test16_Test8_smlp_toy_n
 > 12.0,7,2.0,1,0
 > 10.0,7,3.0,0,0
 =================== End of Test33_smlp_toy_num_resp_mult_ranking_resp_feat.csv diff report ================================
-=================== Diff report for: test63_model_rerun_model_config.json ==================================
-diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test63_model_rerun_model_config.json: No such file or directory
-=================== End of test63_model_rerun_model_config.json diff report ================================
 =================== Diff report for: Test66_test65_model.txt ==================================
 0a1,97
 > 
@@ -643,9 +542,6 @@ diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test68_test67_model_ver
 ---
 > 			"y2": 5.078784562647343
 =================== End of Test69_smlp_toy_num_resp_mult_verify_results.json diff report ================================
-=================== Diff report for: test69_model_rerun_model_config.json ==================================
-diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test69_model_rerun_model_config.json: No such file or directory
-=================== End of test69_model_rerun_model_config.json diff report ================================
 =================== Diff report for: Test70_test69_model.txt ==================================
 25a26,82
 > 
@@ -915,46 +811,6 @@ diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test72_test71_model_ver
 =================== Diff report for: Test77_test76_model_verify_results.json ==================================
 diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/Test77_test76_model_verify_results.json: No such file or directory
 =================== End of Test77_test76_model_verify_results.json diff report ================================
-=================== Diff report for: Test87_smlp_toy_num_resp_mult_rerun_model_config.json ==================================
-73a74,76
->     "model_caret_cross_validation": true,
->     "model_caret_return_train_score": false,
->     "model_caret_verbose": true,
-147a151,154
->     "setup_caret_data_split_shuffle": true,
->     "setup_caret_fold": 0,
->     "setup_caret_session_id": null,
->     "setup_caret_verbose": true,
-160a168,169
->     "tuner_caret_search_algorithm": "random",
->     "tuner_caret_tuner_verbose": true,
-=================== End of Test87_smlp_toy_num_resp_mult_rerun_model_config.json diff report ================================
-=================== Diff report for: Test92_smlp_toy_num_resp_mult_rerun_model_config.json ==================================
-73a74,76
->     "model_caret_cross_validation": true,
->     "model_caret_return_train_score": false,
->     "model_caret_verbose": true,
-147a151,154
->     "setup_caret_data_split_shuffle": true,
->     "setup_caret_fold": 0,
->     "setup_caret_session_id": null,
->     "setup_caret_verbose": true,
-160a168,169
->     "tuner_caret_search_algorithm": "random",
->     "tuner_caret_tuner_verbose": true,
-=================== End of Test92_smlp_toy_num_resp_mult_rerun_model_config.json diff report ================================
-=================== Diff report for: test101_model_rerun_model_config.json ==================================
-diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test101_model_rerun_model_config.json: No such file or directory
-=================== End of test101_model_rerun_model_config.json diff report ================================
-=================== Diff report for: test103_model_rerun_model_config.json ==================================
-diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test103_model_rerun_model_config.json: No such file or directory
-=================== End of test103_model_rerun_model_config.json diff report ================================
 =================== Diff report for: test110_model_poly_sklearn_formula.txt ==================================
 diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test110_model_poly_sklearn_formula.txt: No such file or directory
 =================== End of test110_model_poly_sklearn_formula.txt diff report ================================
-=================== Diff report for: test110_model_rerun_model_config.json ==================================
-diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test110_model_rerun_model_config.json: No such file or directory
-=================== End of test110_model_rerun_model_config.json diff report ================================
-=================== Diff report for: test113_model_rerun_model_config.json ==================================
-diff: /home/mdmitry/github/smlp_python313/regr_smlp/code/test113_model_rerun_model_config.json: No such file or directory
-=================== End of test113_model_rerun_model_config.json diff report ================================
