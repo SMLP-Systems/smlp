@@ -98,7 +98,7 @@ def _call_llm(prompt: str, provider: str, model: str,
                     # Ollama keeps the model loaded with its first num_ctx value
                     # and returns 500 on subsequent calls that request a different
                     # context size.
-                    "keep_alive": 0,
+                    "keep_alive": -1,
                     "options": {
                         "num_ctx":     ctx,
                         "num_predict": 512,  # JSON never needs more than this
@@ -119,10 +119,9 @@ def _call_llm(prompt: str, provider: str, model: str,
             return {"error": f"LLM returned non-JSON: {e}"}
         except _requests.HTTPError as e:
             if e.response is not None and e.response.status_code == 500:
-                # 500 = KV-cache conflict from a previously loaded context size.
-                # keep_alive:0 above should prevent this, but as a belt-and-braces
-                # retry: rebuild a minimal prompt (system preamble + query only,
-                # no few-shot examples) and try again with a smaller ctx.
+                # 500 = context size mismatch or model overload.
+                # Retry with minimal prompt (system preamble + query only,
+                # no few-shot examples) and smaller context window.
                 print("\n  (500 from Ollama — retrying with minimal prompt…)",
                       end="", flush=True)
                 # Extract system preamble: everything before "Examples:" or "#1"

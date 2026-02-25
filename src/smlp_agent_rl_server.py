@@ -251,6 +251,26 @@ def main():
     print(f"  Dry-run  : {args.dry_run}")
     print(f"  UI       : http://{args.host}:{args.port}/")
 
+    # Warmup: pre-load the model so first request doesn't time out
+    if args.provider == "ollama":
+        print(f"  Warming up {args.model}...", end="", flush=True)
+        try:
+            import requests
+            requests.post(
+                "http://localhost:11434/api/generate",
+                json={
+                    "model": args.model,
+                    "prompt": "test",
+                    "stream": False,
+                    "keep_alive": -1,  # Keep loaded indefinitely
+                },
+                timeout=120
+            )
+            print(" ready.")
+        except Exception as e:
+            print(f" failed: {e}")
+            print(f"  Note: Run 'ollama run {args.model}' manually to pre-load.")
+    
     app = create_app(args.provider, args.model, args.dry_run)
     uvicorn.run(app, host=args.host, port=args.port, log_level="warning")
 
