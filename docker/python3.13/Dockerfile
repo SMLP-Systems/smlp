@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     wget \
     vim \
     git \
+    jq \
     tcsh \
     tzdata \
     locales \
@@ -79,6 +80,13 @@ WORKDIR /app
 # Copy requirements file
 COPY requirements.txt .
 
+# Copy the build script
+COPY run_python_boost_build .
+
+# Make script executable
+RUN chmod +x run_python_boost_build
+RUN ./run_python_boost_build && rm -rf /tmp/boost* /root/boost*
+
 # Install pip
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.13
 
@@ -88,13 +96,7 @@ RUN python3.13 -m pip install --ignore-installed --no-cache-dir -r requirements.
 #Copy pycaret
 COPY pycaret_313.tar.gz .
 
-RUN  pip install --no-cache-dir pycaret_313.tar.gz && pip install numpy==2.4.1 
-
-# Copy the build script
-COPY run_python_boost_build .
-# Make script executable
-RUN chmod +x run_python_boost_build
-RUN ./run_python_boost_build && rm -rf /tmp/boost* /root/boost*
+RUN  pip install --no-cache-dir pycaret_313.tar.gz && pip install numpy==2.4.1 && rm -f pycaret_313.tar.gz
 
 #Change python default version
 RUN ln -sf /usr/bin/python3.13 /usr/bin/python3
@@ -133,9 +135,6 @@ ENV LC_ALL=en_US.UTF-8
 #VNC
 COPY start_vnc .
 RUN chmod +x start_vnc
-
-#jq - needed for Intel SI test
-RUN apt-get update && apt-get install -y jq && rm -rf /var/lib/apt/lists/*
 
 ## Default command
 CMD ["/bin/tcsh"]
