@@ -34,9 +34,9 @@ done
 
 if [[ -z "${screen_resolution:-}" ]]; then
     if [[ "$(uname -r)" == *WSL2* ]]; then
-        powershell_exe=$(where powershell.exe 2>/dev/null | awk '{print $1}' || true)
+        powershell_exe=$(which powershell.exe 2>/dev/null || true)
         if [[ "$powershell_exe" == *powershell.exe* ]]; then
-            screen_resolution=$("$powershell_exe" -ExecutionPolicy Bypass -File "$script_path/getres.ps1" | tail -1 | sed 's/.$//')
+            screen_resolution=$($powershell_exe -ExecutionPolicy Bypass -File "$script_path/getres.ps1" | tail -1 | sed 's/.$//')
         fi
     else
         if xset q &>/dev/null; then
