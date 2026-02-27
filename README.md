@@ -1,344 +1,190 @@
-# About SMLP
+# SMLP Installation Guide
 
-SMLP is a tool for optimization, synthesis and design space exploration. It is
-based on statistical and machine learning techniques combined with formal verification
-approaches that allows selection of optimal configurations with respect to given
-constraints on the inputs and outputs of the system under consideration.  
+Complete installation steps for a clean **Ubuntu 24.04** image.
 
-SMLP has been applied at Intel for hardware design optimization. It is a gneral
-purpose optimization and verification tool applicable to any domain where ML models
-can be trained on data. The supported modes in SMLP include processing data and 
-training models (NNs, tree-based, and polynomial models), querying data and models,
-certifying and verifying assertions, synthesis and pareto-optimization of configurations,
-design of experiments (to simulate systems and produce data), feature selection,
-rule learning/subgroup discovery, root-cause analysis, and more.
+---
 
-If you want to try out SMLP on your optimization problems
-and require support, please contact the developers through 
-the [discussion page](https://github.com/SMLP-Systems/smlp/discussions).
+## 1. System packages
 
-When you use this tool, please cite our corresponding CAV 2024 tool paper,
-a pre-submission version of which is provided on arXiv:
-<https://arxiv.org/abs/2402.01415>
-
-Coming soon: Support for NLP and LLMs in SMLP.
-See [SMLP_manual_v2.pdf](./SMLP_manual_v2.pdf) for more details.
-
-NLP:
--	NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
--	NLP based root cause analysis: which words or collections of words are most correlative to classification decision (especially, for the positive class).
-
-LLM:
--	LLM training from scratch
--	LLM finetuning
--	RAG (with HuggingFace and with LangChain)
-
-Agentic:
--	SMLP Agent
-
-
-# Platform support
-
-SMLP has successfully been run without a container or VM on Ubuntu,
-Suse Linux Enterprise Server 15, and Gentoo. The following section provides
-instruction for the installation on Ubuntu.
-
-## Installation on a stock Ubuntu-22.04
-
-	sudo apt install \
-		python3-pip ninja-build z3 libz3-dev libboost-python-dev texlive \
-		pkg-config libgmp-dev libpython3-all-dev python-is-python3
-	# get a recent version of the meson configure tool
-	pip install --user meson
-
-	# obtain sources
-	git clone https://github.com/fbrausse/kay.git
-	git clone https://github.com/smlp-systems/smlp.git
-	cd smlp/utils/poly
-
-	# workaround <https://bugs.launchpad.net/ubuntu/+source/swig/+bug/1746755>
-	echo 'export PYTHONPATH=$HOME/.local/lib/python3/dist-packages:$PYTHONPATH' >> ~/.profile
-	# get $HOME/.local/bin into PATH and get PYTHONPATH
-	mkdir -p $HOME/.local/bin
-	source ~/.profile
-
-	# setup, build & install libsmlp
-	meson setup -Dkay-prefix=$HOME/kay --prefix $HOME/.local build
-	ninja -C build install
-
-	# tensorflow-2.16 has a change leading to the error:
-	# 'The filepath provided must end in .keras (Keras model format).'
-	pip install --user \
-		pandas tensorflow==2.15.1 scikit-learn pycaret seaborn \
-		mrmr-selection jenkspy pysubgroup pyDOE doepy
-
-## Docker support
-
-- Using Docker container with GUI disabled
-
-```
-docker run -it mdmitry1/python313-dev:latest
-```
-
-Within docker container prepend SMLP Python script with `xvfb-run`.
-For example: 
+These require `sudo` and only need to be installed once.
 
 ```bash
-xvfb-run smlp/src/run_smlp.py -h
+apt update
+apt install -y ca-certificates curl gnupg wget
+
+curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF23C5A6CF475977595C89F51BA6932366A755776" \
+    | gpg --dearmor -o /etc/apt/trusted.gpg.d/deadsnakes.gpg
+
+echo "deb https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble main" \
+    > /etc/apt/sources.list.d/deadsnakes.list
+
+apt update
+apt install -y \
+    gcc g++ git make m4 pkg-config xvfb \
+    python3.13 python3.13-dev python3.13-venv python3.13-tk python3-pip
 ```
 
-- Entering Docker container with optional VNC support
-```
-bin/enter
-```
+---
 
-Starting VNC server within container:
-```
-./start_vnc
-```
-Recommended VNC client: `remmina`
+## 2. Python user packages
 
-- Entering Docker container with X11 support on native Linux
-```
-bin/enter_x11
+These are installed into `~/.local` and do not require `sudo`.
+
+```bash
+python3.13 -m pip install --user --force-reinstall --break-system-packages setuptools
+python3.13 -m pip install --user meson ninja z3-solver==4.8.12
 ```
 
-Dependencies: `socat`
+---
 
-- Entering Docker container with X11 support on wslg
-```
-bin/enter_wslg
-```
+## 3. Add `~/.local/bin` to PATH
 
-Dependencies: `WSL2` with `WSLG` enabled
+Required so that `meson`, `ninja`, and `z3` are found during the build.
 
-- Installation test:
-```
-bin/test_install
+```bash
+export PATH=$HOME/.local/bin:$PATH
 ```
 
-## Quick instructions on testing whether the tool works
+Add it permanently to your shell profile:
 
-- Option 1: Native tool installation
-```
-    cd $HOME/smlp/regr_smlp/code
-    ../../src/run_smlp.py -data "../data/smlp_toy_num_resp_mult" \
-    -out_dir ./ -pref Test83 -mode optimize -pareto t \
-    -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 \
-    -spec smlp_toy_num_resp_mult_free_inps -data_scaler min_max \
-    -beta "y1>7 and y2>6" -objv_names obj1,objv2,objv3 \
-    -objv_exprs "(y1+y2)/2;y1/2-y2;y2" -epsilon 0.05 -delta_rel 0.01 \
-    -save_model_config f -mrmr_pred 0 -plots f -seed 10 -log_time f \
-    -spec ../specs/smlp_toy_num_resp_mult_free_inps.spec
+```bash
+echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
 ```
 
-- Option 2: Docker container installation
+---
 
-1. Pull Docker container from the Docker repository:
+## 4. Clone the smlp repository
 
-```
-    docker pull mdmitry1/python313-dev:latest
-```
-
-2.  Start Docker container:
-```
-    docker run -it mdmitry1/python313-dev:latest
+```bash
+git clone https://github.com/SMLP-Systems/smlp.git
+cd smlp
+git switch smlp_python313
 ```
 
-3. Run the tool
+---
 
-```
-    cd smlp/regr_smlp/code
-    xvfb-run ../../src/run_smlp.py -data "../data/smlp_toy_num_resp_mult" \
-    -out_dir ./ -pref Test83 -mode optimize -pareto t \
-    -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 \
-    -spec smlp_toy_num_resp_mult_free_inps -data_scaler min_max \
-    -beta "y1>7 and y2>6" -objv_names obj1,objv2,objv3 \
-    -objv_exprs "(y1+y2)/2;y1/2-y2;y2" -epsilon 0.05 -delta_rel 0.01 \
-    -save_model_config f -mrmr_pred 0 -plots f -seed 10 -log_time f \
-    -spec ../specs/smlp_toy_num_resp_mult_free_inps.spec
-```
+## 5. Install smlp
 
-# Running the regression suite
+The `setup.py` automatically:
+- Downloads and compiles **Boost 1.83** (cached in `~/.local/boost_py313`, ~5 min first time)
+- Downloads and compiles **GMP 6.3.0** (cached in `~/.local/gmp`, ~1 min first time)
+- Clones the **kay** C++ dependency
+- Runs `meson` + `ninja` to build the native extension
 
-- Option 1: Native tool installation
-
-The regression script has to be run from inside the regression's code directory:
-
-```
-	cd $HOME/smlp/regr_smlp/code
-	./smlp_regr.py -w 8 -def n -t all -tol 7
+```bash
+python3.13 -m pip install .
 ```
 
-- Option 2: Docker installation
+Subsequent installs reuse the Boost and GMP caches and are much faster.
 
+---
+
+## 6. Build a wheel (optional)
+
+To save a redistributable `.whl` file instead of installing directly:
+
+```bash
+python3.13 -m pip wheel . -w dist/
 ```
-	cd /app/smlp/regr_smlp/code
-        xvfb-run ./smlp_regr.py -w 8 -def n -t all -tol 7 -g
+
+The wheel is saved in `dist/smlp-*.whl`. It can be installed without recompiling:
+
+```bash
+python3.13 -m pip install dist/smlp-*.whl
 ```
 
-The above commands will execute the script, run the regression tests numbered
-1 to 129 (-t all) parallely on 8 cores (-w 8), not overwriting the stored
-reference output (-def n) with a tolerance of 7 decimal fractional digits
-(-tol 10). Note, it needs to be run from the given directory and will place the
-resulting files into that directory as well. It takes about 10 minutes on a
-2.9 GHz laptop with 8 cores utilized.
+> **Portability note:** The wheel filename (e.g. `smlp-0.1.0-cp313-cp313-linux_x86_64.whl`)
+> indicates it requires CPython 3.13 on Linux x86_64. However it is **not** fully portable —
+> it embeds RPATH entries pointing to `~/.local/boost_py313/lib`, `~/.local/gmp/lib`, and
+> `~/.local/lib/python3.13/site-packages/z3/lib`. The target machine must have these
+> libraries installed at the same paths, and a compatible glibc version (built on Ubuntu 24.04
+> with glibc 2.39, so it will not run on older distros like Ubuntu 20.04).
+> For a fully redistributable wheel, use `auditwheel repair` to bundle the `.so` dependencies
+> inside the wheel (`manylinux` standard).
 
-The output of the command will report on the results of comparing the stored
-known-good results (called 'master' in this directory tree) with those created
-by running the test locally. It should form a sequence of
+---
 
-	comparing $FILE to master
-	Passed!
+## 7. Headless display (xvfb)
 
-In case there differences between the current run and the stored files, a diff
-between the generated files will be printed instead.
+Required when running SMLP without a `$DISPLAY` (e.g. in Docker or CI).
 
-The actual SMLP commands being run by the script can be obtained by appending
-the parameter -p, e.g.
+```bash
+Xvfb :99 -screen 0 1024x768x24 &
+export DISPLAY=:99
+```
 
-	./smlp_regr.py -def n -t 1 -p
+Add to your shell profile to make it permanent:
 
-will produce the SMLP command for the regression test number 1:
+```bash
+echo 'export DISPLAY=:99' >> ~/.bashrc
+```
 
-	../../src/run_smlp.py -data "../data/smlp_toy_num_resp_mult" \
-	-out_dir ./ -pref Test1 -mode train -resp y1 -feat x,p1,p2 \
-	-model dt_caret -save_model_config f -mrmr_pred 0 -plots f \
-	-seed 10 -log_time f
+---
 
-For details about those parameters, please refer to the help messages (-h) of
-both tools, src/run_smlp.py and regr_smlp/code/smlp_regr.py, as well as the
-manual.
+## 8. Verify
 
-SMLP commands run in the regression can be found in ./smlp_regr.csv together
-with a short description of the respective test.
+```bash
+python3.13 -c "import smlp; print('smlp imported OK')"
+```
 
+---
 
-## Regression tests for SMLP operating modes
+## Environment variables
 
-The main claims of the paper are about functionality of SMLP which is
-reflected in different operating modes.
+All are optional. Set before running `pip install .` to override defaults.
 
-The smlp_regr.py script supports parameter -m to select the subset of the
-regression tests matching the given operating mode. Supported are the
-following of SMLP's modes:
+| Variable | Default | Description |
+|---|---|---|
+| `BOOST_ROOT` | *(build from source)* | Reuse an existing Boost prefix, skips download + compile |
+| `BOOST_CACHE_DIR` | `~/.local/boost_py313` | Where to cache the compiled Boost |
+| `BOOST_VERSION` | `1.83.0` | Boost version to download |
+| `GMP_ROOT` | *(build from source)* | Reuse an existing GMP prefix, skips download + compile |
+| `GMP_CACHE_DIR` | `~/.local/gmp` | Where to cache the compiled GMP |
+| `GMP_VERSION` | `6.3.0` | GMP version to download |
+| `Z3_PREFIX` | `~/.local/lib/python3.13/site-packages/z3` | Reuse an existing Z3 install |
+| `Z3_BIN_DIR` | `~/.local/z3/bin` | Directory containing the `z3` binary |
+| `Z3_VERSION` | `4.8.12` | Z3 version to download if binary not found |
+| `KAY_DIR` | *(cloned into build temp)* | Reuse an existing kay checkout |
+| `SMLP_BRANCH` | *(auto-detected)* | Git branch to use in the smlp repo |
 
-- certify
-- query
-- verify
-- synthesize
-- optimize
-- optsyn (optimized synthesis)
-- doe
+---
 
-Detailed outputs of each tests will be generated in the regr_smlp/code directory.
-We refer to the manual for further information. 
+## Reinstalling
 
-## A note on external solvers
+To reinstall after code changes:
 
-Some regression tests for performance reasons use external solvers, like
-     MathSAT, instead of the default Z3. The list of those tests can be obtained via
+```bash
+python3.13 -m pip uninstall smlp -y
+python3.13 -m pip install .
+```
 
-    grep -- -solver_path ./smlp_regr.csv
+To force a full rebuild including Boost and GMP:
 
-Unfortunately, due to licensing restrictions, it is impossible for us to
-include a copy of this particular external solver. However, reviewers are
-free to obtain a copy and put the executable into the path expected by those
-regression tests:
+```bash
+rm -rf ~/.local/boost_py313 ~/.local/gmp
+python3.13 -m pip install .
+```
 
-    $HOME/smlp/regr_smlp/code/../../../external/mathsat-5.6.8-linux-x86_64-reentrant/bin/mathsat
+---
 
-(or to modify the path given in the above .csv file).
+## Troubleshooting
 
-It is also possible to use different SMT solvers, for details please see
-<https://github.com/fbrausse/smlp/tree/master/utils/poly#external-solvers>.
+**`No module named 'z3'` during build**
 
-These tests are thus expected to not finish successfully.
+Install z3-solver before running pip install:
+```bash
+python3.13 -m pip install --user z3-solver==4.8.12
+```
 
-## Tests on a real-life data set
+**`meson: command not found` during build**
 
-In the regr_smlp directory, we also provide two tests on a real-life data set
-as have been used at Intel. To run them from inside the regr_smlp/code
-directory, run the following commands:
+Make sure `~/.local/bin` is on `PATH` as described in step 3.
 
-    ../../src/run_smlp.py -out_dir ./ -pref smlp_s2_tx_dt -data ../data/smlp_s2_tx \
-    -mode optimize -pareto f -sat_thresh f -resp o0 -feat \
-    Byte,CH,RANK,Timing,i0,i1,i2,i3 -model dt_sklearn -dt_sklearn_max_depth 15 \
-    -data_scaler min_max -epsilon 0.05 -log_time f -plots f \
-    -spec ../specs/smlp_s2_tx
+**`sys/pstat.h: No such file or directory` during GMP build**
 
-    ../../src/run_smlp.py -out_dir ./ -pref smlp_s2_tx_nn -data ../data/smlp_s2_tx \
-    -mode optimize -pareto f -sat_thresh f -resp o0 \
-    -feat Byte,CH,RANK,Timing,i0,i1,i2,i3 \
-    -model nn_keras -nn_keras_epochs 20 -data_scaler min_max \
-    -epsilon 0.05 -log_time f -plots f  -spec ../specs/smlp_s2_tx 
-
-These runs will take longer than the regression tests provided earlier,
-usually between one and three hours, depending on the machine.
-
-
-# Source code organization
-
-SMLP at the moment consists of parts written in Python and in C++ and tiny bits
-of C. The C++ part is compiled into a shared library 'libsmlp', which exports a
-Python module with the same name. Additionally, a small wrapper script around
-it is provided in
-
-- utils/poly/python/smlp
-
-which contains the proper Python interface consisting of ways to run solvers,
-to construct terms and formulas, and to deal with variable domains.
-
-The source code for this library is located in
-
-- utils/poly/src
-
-and the main files in there include
-
-- algebraics.*: support for algebraic real numbers as solutions to polynomial equations
-- domain.*: definition of the search space (the "domain")
-- expr2.*: definition of internal representation of terms and formulas
-- libsmlp.cc: Python interface library 'libsmlp'
-- reals.hh: support for computable real numbers, a superset of the algebraics
-- solver.*: definition of SMT solver interface
-
-This however is just the backend dealing with the process of solving concrete
-formulas once the semantics has been put in place.
-
-The core of the project is written in Python, and is located in
-
-- src/smlp_py/
-
-(and subdirectories). It defines the actual algorithms used in SMLP as described
-in the tool paper, and contains code supporting all modes and configurations
-laid out therein. In alphabetical order, these are the main files:
-
-- smlp_doe.py: design of experiments
-- smlp_optimize.py: optimization and optimized synthesis
-- smlp_query.py: synthesis, certification, verification and query
-- smlp_subgroups.py: the subgroup discovery algorithm implemented in pysubgroup package
-
-The main entry point is the script
-
-- src/run_smlp.py
-
-It supports the various modes documented in the CAV submission as well as in the
-manual.
-
-SMLP comes with a set of regression tests located in the directory
-
-- regr_smlp
-
-It contains definitions of models, specifications, data sets used for training
-and data constraints for the solving process. A script to run
-the regression tests is provided in
-
-- regr_smlp/code/smlp_regr.py
-
-which basically just builds command lines, runs the tool and compares the
-outputs to the expected results contained in
-
-- regr_smlp/master
-
-Documentation is provided in form of a manual and a description of the .spec
-format as part of the artifact in SMLP_manual.pdf.
+Delete the GMP cache and rebuild — the `--disable-assembly` flag handles this:
+```bash
+rm -rf ~/.local/gmp ~/.local/_gmp_build_tmp
+python3.13 -m pip install .
+```

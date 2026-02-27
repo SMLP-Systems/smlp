@@ -1,0 +1,42 @@
+[build-system]
+requires = [
+    "setuptools>=68",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smlp"
+version = "0.1.0"
+description = "SMLP - System for Machine Learning-based Parameter analysis"
+requires-python = "==3.13.*"
+dependencies = [
+    "doepy",
+    "jenkspy",
+    "keras_tuner",
+    "matplotlib==3.10.8",
+    "meson",
+    "mrmr-selection",
+    "numpy==2.3.5",
+    "pandas==2.3.3",
+    "pydoe==0.3.8",
+    "pysubgroup",
+    "scikit-learn==1.7.2",
+    "scipy",
+    "seaborn",
+    "tensorflow",
+    "z3-solver==4.8.12"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+# ---------------------------------------------------------------------------
+# Build-time environment variables (all optional)
+# ---------------------------------------------------------------------------
+# BOOST_ROOT       Reuse an existing Boost prefix, skips download + compile.
+#                  e.g.  export BOOST_ROOT=~/.local/boost_py313
+# BOOST_CACHE_DIR  Where to cache compiled Boost (default: ~/.local/boost_py313).
+# BOOST_VERSION    Boost version to download (default: 1.83.0).
+# KAY_DIR          Path to an existing kay checkout.
+# SMLP_BRANCH      Git branch to use in the smlp repo (auto-detected if unset).
