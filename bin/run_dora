@@ -2,8 +2,13 @@
 script_name=$(realpath $0 | xargs basename)
 log=$PWD/${script_name}.log
 pref=Test83
-\rm -f Test83* > /dev/null 2>&1
+\rm -f ${pref}* > /dev/null 2>&1
 \rm -f $log logs.log > /dev/null 2>&1
+if [[ $# -gt 0 ]]; then
+    if [[ "$1" == "-clean" ]]; then
+        exit 0
+    fi
+fi
 xvfb-run /usr/local/lib/python3.13/dist-packages/smlp/run_smlp.py \
          -data smlp/regr_smlp/data/smlp_toy_num_resp_mult.csv \
          -out_dir ./ \
