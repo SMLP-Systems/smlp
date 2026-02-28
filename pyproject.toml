@@ -24,12 +24,13 @@ dependencies = [
     "scikit-learn==1.7.2",
     "scipy",
     "seaborn",
+    "z3-solver==4.8.12",
     "tensorflow",
-    "z3-solver==4.8.12"
 ]
 
 [tool.setuptools.packages.find]
 where = ["."]
+exclude = ["src*", "smlp_py*", "regr_smlp*", "utils*"]
 
 # ---------------------------------------------------------------------------
 # Build-time environment variables (all optional)

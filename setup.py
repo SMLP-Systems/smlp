@@ -817,6 +817,25 @@ class MesonBuildExt(_build_ext):
         shutil.copytree(str(installed_pkg), str(dest))
         print(f"[smlp build] smlp extension copied to wheel at {dest}")
 
+        # 5. Copy Python source from src/smlp_py into smlp/smlp_py inside the wheel
+        smlp_py_src = REPO_ROOT / "src" / "smlp_py"
+        if smlp_py_src.is_dir():
+            smlp_py_dest = dest / "smlp_py"  # dest is already smlp/
+            if smlp_py_dest.exists():
+                shutil.rmtree(smlp_py_dest)
+            shutil.copytree(str(smlp_py_src), str(smlp_py_dest))
+            print(f"[smlp build] smlp_py source copied to wheel at {smlp_py_dest}")
+        else:
+            print(f"[smlp build] WARNING: src/smlp_py not found at {smlp_py_src}, skipping.")
+
+        # 6. Copy src/run_smlp.py into smlp/ inside the wheel
+        run_smlp_src = REPO_ROOT / "src" / "run_smlp.py"
+        if run_smlp_src.is_file():
+            shutil.copy2(str(run_smlp_src), str(dest / "run_smlp.py"))
+            print(f"[smlp build] run_smlp.py copied to wheel at {dest / 'run_smlp.py'}")
+        else:
+            print(f"[smlp build] WARNING: src/run_smlp.py not found at {run_smlp_src}, skipping.")
+
 
 # ---------------------------------------------------------------------------
 # setup()
