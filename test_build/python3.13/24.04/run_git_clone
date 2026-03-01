@@ -1,0 +1,4 @@
+#!/bin/bash
+git clone https://github.com/SMLP-Systems/smlp.git && \
+    cd smlp && \
+    git switch smlp_python313
