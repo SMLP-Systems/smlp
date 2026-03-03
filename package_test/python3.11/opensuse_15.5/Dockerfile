@@ -15,9 +15,14 @@ RUN zypper refresh && zypper install -y \
         glibc-i18ndata \
         gzip \
         tar \
+        tcsh \
         timezone \
+        vim \
         wget \
+        xorg-x11-fonts \
+        xorg-x11-fonts-core \
         xorg-x11-server-Xvfb \
+        xset \
         procps \
         python311 \
         python311-devel \
