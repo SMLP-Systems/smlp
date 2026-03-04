@@ -73,7 +73,7 @@ RUN ln -sf /usr/bin/python3.11 /usr/bin/python
 RUN ln -sf /usr/bin/python3.11 /usr/bin/python3
 
 # ---------------------------------------------------------------------------
-# 11. Copy and run DORA 
+# 10. Copy and run DORA 
 # ---------------------------------------------------------------------------
 COPY run_dora /app
 RUN ./run_dora
