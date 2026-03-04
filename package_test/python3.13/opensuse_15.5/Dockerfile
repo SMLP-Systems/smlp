@@ -26,11 +26,18 @@ RUN zypper refresh && zypper install -y \
         procps
 
 # ---------------------------------------------------------------------------
-# 2. Python 3.13
+# 2. gcc and g++
 # ---------------------------------------------------------------------------
 RUN zypper --non-interactive install -y \
-        gcc \
-        gcc-c++ \
+        gcc13 \
+        gcc13-c++ && \
+    ln -sf /usr/bin/gcc-13 /usr/bin/gcc && \
+    ln -sf /usr/bin/g++-13 /usr/bin/g++
+
+# ---------------------------------------------------------------------------
+# 3. Python 3.13
+# ---------------------------------------------------------------------------
+RUN zypper --non-interactive install -y \
         make \
         zlib-devel \
         libopenssl-devel \
@@ -48,7 +55,7 @@ RUN zypper --non-interactive install -y \
 RUN wget https://www.python.org/ftp/python/3.13.12/Python-3.13.12.tgz && \
     tar -xf Python-3.13.12.tgz && \
     cd Python-3.13.12 && \
-    ./configure --enable-optimizations --with-tcltk && \
+    CC=gcc-13 CXX=g++-13 ./configure --enable-optimizations --with-tcltk && \
     make -j$(nproc) && \
     make altinstall && \
     cd .. && rm -rf Python-3.13.12 Python-3.13.12.tgz
