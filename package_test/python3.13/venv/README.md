@@ -5,7 +5,7 @@
 ```bash
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt-get update
-sudo apt-get install -y python3.13 python3.13-dev python3.13-distutils python3.13-venv python3.13-tk
+sudo apt-get install -y python3.13 python3.13-dev python3.13-venv python3.13-tk
 ```
 
 ## 2. Install SMLP package, MathSat and run DORA test
