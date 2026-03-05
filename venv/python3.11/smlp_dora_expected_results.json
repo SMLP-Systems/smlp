@@ -20,17 +20,17 @@
 		"max_in_data": 9.0,
 		"min_in_data": 5.0
 	},
-	"x": {
-		"value_in_config": 11.020833348234495
-	},
 	"p1": {
 		"value_in_config": 7.0
 	},
-	"p2": {
-		"value_in_config": 5.222833400388558
+	"x": {
+		"value_in_config": 11.020833348234495
 	},
 	"y1": {
 		"value_in_config": 9.0
+	},
+	"p2": {
+		"value_in_config": 5.222833400388558
 	},
 	"y2": {
 		"value_in_config": 9.0
