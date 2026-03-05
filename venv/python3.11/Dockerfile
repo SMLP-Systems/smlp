@@ -31,7 +31,7 @@ RUN  ./run_git_clone venv_build && \
     ./run_venv_build
 
 ## Change working directory to venv root
-WORKDIR smlp_venv/venv/python3.11
+WORKDIR /app/smlp/venv/python3.11
 
 ## Default command
 CMD ["/bin/bash"]
