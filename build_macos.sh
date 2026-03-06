@@ -7,15 +7,12 @@
 # dylib dependencies are bundled (equivalent to auditwheel on Linux).
 #
 # Usage:
-#   chmod +x build_macos.sh
-#   ./build_macos.sh [GIT_BRANCH]
+#   ./build_macos.sh
 #
-# GIT_BRANCH defaults to 'smlp_python311'.
-# The finished wheel is left in  ./smlp/dist/
+# The finished wheel is left in  ./dist/
 # =============================================================================
 set -euo pipefail
 
-GIT_BRANCH="${1:-smlp_python311_mac}"
 PYTHON_VERSION="3.11"
 
 # ---------------------------------------------------------------------------
