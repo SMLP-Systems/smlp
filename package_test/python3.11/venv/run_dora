@@ -10,7 +10,17 @@ python3.11 -m venv $smlp_venv_dir
 cd $smlp_venv_dir
 source bin/activate
 git clone https://github.com/SMLP-Systems/smlp
-GIT_BRANCH=smlp_python311
+
+SYS=$(uname -s)
+
+if [ "$SYS" = "Darwin" ]
+ then
+  GIT_BRANCH=smlp_python311_mac
+ else
+  GIT_BRANCH=smlp_python311
+fi
+
+
 cd smlp
 if [ $(git branch -r --list origin/$GIT_BRANCH) ]; then
     git switch $GIT_BRANCH
