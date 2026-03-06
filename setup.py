@@ -39,7 +39,8 @@ GMP_ROOT         Reuse an existing GMP prefix (default: $(brew --prefix)/opt/gmp
 GMP_CACHE_DIR    Where to cache compiled GMP (default: ~/.local/gmp).
 GMP_VERSION      GMP version to download (default: 6.3.0).
 Z3_PREFIX        Reuse an existing Z3 install prefix – skips pip z3-solver.
-Z3_VERSION       Z3 version (default: 4.8.12).
+#Z3_VERSION       Z3 version (default: 4.8.12).
+Z3_VERSION       Z3 version (default: 4.16.0).
 Z3_BIN_DIR       Path to directory containing z3 binary.
 SMLP_BRANCH      Git branch to switch to in the smlp repo.
 """
@@ -105,7 +106,9 @@ GMP_CACHE_DIR = Path(
     )
 ).expanduser()
 
-Z3_VERSION    = os.environ.get("Z3_VERSION", "4.8.12")
+#Z3_VERSION    = os.environ.get("Z3_VERSION", "4.8.12")
+Z3_VERSION    = os.environ.get("Z3_VERSION", "4.16.0")
+
 Z3_BIN_DIR    = Path(
     os.environ.get("Z3_BIN_DIR", Path.home() / ".local" / "z3" / "bin")
 ).expanduser()
