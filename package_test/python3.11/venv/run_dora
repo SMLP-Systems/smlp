@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-set -x
+#set -x
 
 smlp_venv_dir=smlp_package_venv
 \rm -rf $smlp_venv_dir > /dev/null
