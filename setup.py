@@ -753,7 +753,7 @@ class MesonBuildExt(_build_ext):
             _run(["git", "switch", branch], cwd=str(REPO_ROOT))
         else:
             py_ver = f"{sys.version_info.major}{sys.version_info.minor}"
-            auto_branch = f"smlp_python{py_ver}"
+            auto_branch = f"smlp_python{py_ver}_mac"
             result = subprocess.run(
                 ["git", "branch", "-r", "--list", f"origin/{auto_branch}"],
                 capture_output=True, text=True, cwd=str(REPO_ROOT)
