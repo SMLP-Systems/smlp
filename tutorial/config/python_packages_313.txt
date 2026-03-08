@@ -126,9 +126,7 @@ PySMT==0.9.6
 pysubgroup==0.9.0
 pytest==7.4.4
 pytest-mock==3.12.0
-python-apt==2.7.7+ubuntu5.2
 python-dateutil==2.9.0.post0
-python-debian==0.1.49+ubuntu2
 pytz==2024.1
 pyxdg==0.28
 PyYAML==6.0.1
@@ -158,8 +156,6 @@ threadpoolctl==3.6.0
 tqdm==4.67.1
 traitlets==5.14.3
 typing_extensions==4.15.0
-ubuntu-drivers-common==0.0.0
-ubuntu-pro-client==8001
 ufw==0.36.2
 unattended-upgrades==0.1
 urllib3==2.6.3
