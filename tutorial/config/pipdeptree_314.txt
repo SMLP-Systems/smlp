@@ -1,11 +1,25 @@
 Warning!!! Duplicate package metadata found:
+"/usr/local/lib/python3.14/dist-packages"
+  pipdeptree                       2.30.0           (using 2.31.0, "/usr/local/lib/python3.14/dist-packages")
+  alembic                          1.18.1           (using 1.18.4, "/usr/local/lib/python3.14/dist-packages")
+  numpy                            2.4.2            (using 2.4.1, "/usr/local/lib/python3.14/dist-packages")
+  greenlet                         3.3.1            (using 3.3.2, "/usr/local/lib/python3.14/dist-packages")
+  tqdm                             4.67.3           (using 4.67.1, "/usr/local/lib/python3.14/dist-packages")
+  SQLAlchemy                       2.0.46           (using 2.0.48, "/usr/local/lib/python3.14/dist-packages")
+  packaging                        26.0             (using 25.0, "/usr/local/lib/python3.14/dist-packages")
 "/usr/lib/python3/dist-packages"
+  numpy                            1.26.4           (using 2.4.1, "/usr/local/lib/python3.14/dist-packages")
+  packaging                        24.0             (using 25.0, "/usr/local/lib/python3.14/dist-packages")
   pillow                           10.2.0           (using 12.1.0, "/usr/local/lib/python3.14/dist-packages")
+  rich                             13.7.1           (using 14.3.3, "/usr/local/lib/python3.14/dist-packages")
   setuptools                       68.1.2           (using 80.10.1, "/usr/local/lib/python3.14/dist-packages")
   urllib3                          2.0.7            (using 2.6.3, "/usr/local/lib/python3.14/dist-packages")
+  markdown-it-py                   3.0.0            (using 4.0.0, "/usr/local/lib/python3.14/dist-packages")
   Brotli                           1.1.0            (using 1.2.0, "/usr/local/lib/python3.14/dist-packages")
   PyQt5-sip                        12.13.0          (using 12.18.0, "/usr/local/lib/python3.14/dist-packages")
   six                              1.16.0           (using 1.17.0, "/usr/local/lib/python3.14/dist-packages")
+  pip                              24.0             (using 26.0.1, "/usr/local/lib/python3.14/dist-packages")
+  mdurl                            0.1.2            (using 0.1.2, "/usr/local/lib/python3.14/dist-packages")
   gitdb                            4.0.11           (using 4.0.12, "/usr/local/lib/python3.14/dist-packages")
   pandas                           2.1.4+dfsg       (using 2.3.3, "/usr/local/lib/python3.14/dist-packages")
   GitPython                        3.1.37           (using 3.1.46, "/usr/local/lib/python3.14/dist-packages")
@@ -14,7 +28,9 @@ Warning!!! Duplicate package metadata found:
   pytest-mock                      3.12.0           (using 3.15.1, "/usr/local/lib/python3.14/dist-packages")
   cryptography                     41.0.7           (using 41.0.7, "/usr/lib/python3/dist-packages")
   iniconfig                        1.1.1            (using 2.3.0, "/usr/local/lib/python3.14/dist-packages")
-  packaging                        24.0             (using 25.0, "/usr/local/lib/python3.14/dist-packages")
+  click                            8.1.6            (using 8.3.1, "/usr/local/lib/python3.14/dist-packages")
+  MarkupSafe                       2.1.5            (using 3.0.3, "/usr/local/lib/python3.14/dist-packages")
+  PyYAML                           6.0.1            (using 6.0.3, "/usr/local/lib/python3.14/dist-packages")
   SciPy                            1.11.4           (using 1.17.0, "/usr/local/lib/python3.14/dist-packages")
   graphviz                         0.20.2           (using 0.21, "/usr/local/lib/python3.14/dist-packages")
   pyparsing                        3.1.1            (using 3.3.2, "/usr/local/lib/python3.14/dist-packages")
@@ -22,7 +38,6 @@ Warning!!! Duplicate package metadata found:
   Cython                           3.0.8            (using 3.2.4, "/usr/local/lib/python3.14/dist-packages")
   typing_extensions                4.10.0           (using 4.15.0, "/usr/local/lib/python3.14/dist-packages")
   pygraphviz                       1.7              (using 1.14, "/usr/local/lib/python3.14/dist-packages")
-  numpy                            1.26.4           (using 2.4.1, "/usr/local/lib/python3.14/dist-packages")
   requests                         2.31.0           (using 2.32.5, "/usr/local/lib/python3.14/dist-packages")
   pytest                           7.4.4            (using 9.0.2, "/usr/local/lib/python3.14/dist-packages")
   Pygments                         2.17.2           (using 2.19.2, "/usr/local/lib/python3.14/dist-packages")
@@ -42,8 +57,8 @@ Warning!!! Possibly conflicting dependencies found:
  - tzdata [required: >=2022.7, installed: ?]
 * pendulum==3.1.0
  - tzdata [required: >=2020.1, installed: ?]
-* pipdeptree==2.30.0
- - pip [required: >=25.2, installed: 24.0]
+* pipdeptree==2.31.0
+ - packaging [required: >=26, installed: 25.0]
 * pymoo==0.6.1.6
  - autograd [required: >=1.4, installed: ?]
  - cma [required: >=3.2.2, installed: ?]
@@ -55,8 +70,6 @@ Warning!!! Possibly conflicting dependencies found:
  - pytest-cov [required: Any, installed: ?]
 * tables==3.9.2
  - blosc2 [required: >=2.3.0, installed: ?]
-* tasepy==0.2.2
- - PyYAML [required: ~=6.0.3, installed: 6.0.1]
 ------------------------------------------------------------------------
 aiohttp==3.9.1
 ├── attrs [required: >=17.3.0, installed: 23.2.0]
@@ -83,8 +96,7 @@ Bottleneck==1.3.5
 braceexpand==0.1.7
 bracex==2.6
 Brlapi==0.8.5
-click==8.1.6
-cloud-init==25.2
+cloud-init==25.3
 colorama==0.4.6
 command-not-found==0.3
 configobj==5.0.8
@@ -129,6 +141,7 @@ launchpadlib==1.11.0
 └── six [required: Any, installed: 1.17.0]
 loguru==0.7.3
 louis==3.29.0
+meson==1.10.1
 natsort==8.4.0
 netaddr==0.8.0
 netifaces==0.11.0
@@ -139,21 +152,21 @@ openpyxl==3.1.2
 optproblems==1.3
 optunahub==0.4.0
 ├── optuna [required: Any, installed: 4.7.0]
-│   ├── alembic [required: >=1.5.0, installed: 1.18.1]
-│   │   ├── SQLAlchemy [required: >=1.4.0, installed: 2.0.46]
-│   │   │   ├── greenlet [required: >=1, installed: 3.3.1]
+│   ├── alembic [required: >=1.5.0, installed: 1.18.4]
+│   │   ├── SQLAlchemy [required: >=1.4.23, installed: 2.0.48]
+│   │   │   ├── greenlet [required: >=1, installed: 3.3.2]
 │   │   │   └── typing_extensions [required: >=4.6.0, installed: 4.15.0]
 │   │   ├── Mako [required: Any, installed: 1.3.10]
-│   │   │   └── MarkupSafe [required: >=0.9.2, installed: 2.1.5]
+│   │   │   └── MarkupSafe [required: >=0.9.2, installed: 3.0.3]
 │   │   └── typing_extensions [required: >=4.12, installed: 4.15.0]
 │   ├── colorlog [required: Any, installed: 6.10.1]
 │   ├── numpy [required: Any, installed: 2.4.1]
 │   ├── packaging [required: >=20.0, installed: 25.0]
-│   ├── SQLAlchemy [required: >=1.4.2, installed: 2.0.46]
-│   │   ├── greenlet [required: >=1, installed: 3.3.1]
+│   ├── SQLAlchemy [required: >=1.4.2, installed: 2.0.48]
+│   │   ├── greenlet [required: >=1, installed: 3.3.2]
 │   │   └── typing_extensions [required: >=4.6.0, installed: 4.15.0]
 │   ├── tqdm [required: Any, installed: 4.67.1]
-│   └── PyYAML [required: Any, installed: 6.0.1]
+│   └── PyYAML [required: Any, installed: 6.0.3]
 ├── GitPython [required: Any, installed: 3.1.46]
 │   └── gitdb [required: >=4.0.1,<5, installed: 4.0.12]
 │       └── smmap [required: >=3.0.1,<6, installed: 6.0.0]
@@ -188,9 +201,9 @@ pendulum==3.1.0
 ├── python-dateutil [required: >=2.6, installed: 2.8.2]
 └── tzdata [required: >=2020.1, installed: ?]
 pexpect==4.9.0
-pipdeptree==2.30.0
-├── packaging [required: >=25, installed: 25.0]
-└── pip [required: >=25.2, installed: 24.0]
+pipdeptree==2.31.0
+├── packaging [required: >=26, installed: 25.0]
+└── pip [required: >=25.2, installed: 26.0.1]
 pooch==1.8.2
 ├── platformdirs [required: >=2.5.0, installed: 4.5.1]
 ├── packaging [required: >=20.0, installed: 25.0]
@@ -199,6 +212,7 @@ pooch==1.8.2
     ├── idna [required: >=2.5,<4, installed: 3.11]
     ├── urllib3 [required: >=1.21.1,<3, installed: 2.6.3]
     └── certifi [required: >=2017.4.17, installed: 2026.1.4]
+proton==0.9.1
 psutil==5.9.8
 ptyprocess==0.7.0
 pycairo==1.25.1
@@ -260,7 +274,7 @@ pytest-mock==3.15.1
     ├── packaging [required: >=22, installed: 25.0]
     ├── pluggy [required: >=1.5,<2, installed: 1.6.0]
     └── Pygments [required: >=2.7.2, installed: 2.19.2]
-python-apt==2.7.7+ubuntu5.1
+python-apt==2.7.7+ubuntu5.2
 python-debian==0.1.49+ubuntu2
 pywebio==1.8.4
 ├── tornado [required: >=5.0, installed: 6.5.4]
@@ -271,10 +285,6 @@ pyxdg==0.28
 reportlab==4.4.9
 ├── pillow [required: >=9.0.0, installed: 12.1.0]
 └── charset-normalizer [required: Any, installed: 3.4.4]
-rich==13.7.1
-├── markdown-it-py [required: >=2.2.0, installed: 3.0.0]
-│   └── mdurl [required: ~=0.1, installed: 0.1.2]
-└── Pygments [required: >=2.13.0,<3.0.0, installed: 2.19.2]
 schwifty==2025.9.0
 ├── pycountry [required: Any, installed: 24.6.1]
 └── rstr [required: Any, installed: 3.2.2]
@@ -344,7 +354,7 @@ tasepy==0.2.2
 │   ├── typing_extensions [required: >=4.14.1, installed: 4.15.0]
 │   └── typing-inspection [required: >=0.4.2, installed: 0.4.2]
 │       └── typing_extensions [required: >=4.12.0, installed: 4.15.0]
-├── PyYAML [required: ~=6.0.3, installed: 6.0.1]
+├── PyYAML [required: ~=6.0.3, installed: 6.0.3]
 ├── typeguard [required: ~=4.4.4, installed: 4.4.4]
 │   └── typing_extensions [required: >=4.14.0, installed: 4.15.0]
 ├── beautifulsoup4 [required: ~=4.13.5, installed: 4.13.5]
@@ -385,6 +395,14 @@ torch==2.10.0
 ├── nvidia-nvjitlink-cu12 [required: ==12.8.93, installed: 12.8.93]
 ├── nvidia-cufile-cu12 [required: ==1.13.1.3, installed: 1.13.1.3]
 └── triton [required: ==3.6.0, installed: 3.6.0]
+typer==0.24.1
+├── click [required: >=8.2.1, installed: 8.3.1]
+├── shellingham [required: >=1.3.0, installed: 1.5.4]
+├── rich [required: >=12.3.0, installed: 14.3.3]
+│   ├── markdown-it-py [required: >=2.2.0, installed: 4.0.0]
+│   │   └── mdurl [required: ~=0.1, installed: 0.1.2]
+│   └── Pygments [required: >=2.13.0,<3.0.0, installed: 2.19.2]
+└── annotated-doc [required: >=0.0.2, installed: 0.0.4]
 ubuntu-drivers-common==0.0.0
 ubuntu-pro-client==8001
 ufw==0.36.2
@@ -394,3 +412,4 @@ webencodings==0.5.1
 wheel==0.42.0
 xdg==5
 xkit==0.0.0
+z3-solver==4.8.12.0
