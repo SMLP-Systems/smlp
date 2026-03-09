@@ -1,6 +1,6 @@
 # SMLP Installation Guide
 
-Complete installation steps for a clean **Ubuntu 20.04** image.
+Complete installation steps for a clean **Ubuntu 22.04** image.
 
 ---
 
@@ -15,7 +15,7 @@ apt install -y ca-certificates curl gnupg wget
 curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF23C5A6CF475977595C89F51BA6932366A755776" \
     | gpg --dearmor -o /etc/apt/trusted.gpg.d/deadsnakes.gpg
 
-echo "deb https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu focal main" \
+echo "deb https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy main" \
     > /etc/apt/sources.list.d/deadsnakes.list
 
 apt update
