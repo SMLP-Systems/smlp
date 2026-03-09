@@ -26,6 +26,9 @@ if ! command -v brew &>/dev/null; then
     exit 1
 fi
 
+CC="$(brew --prefix)/bin/gcc-15"
+CXX="$(brew --prefix)/bin/g++-15"
+
 brew install wget git make m4 pkg-config gmp
 
 # ---------------------------------------------------------------------------
