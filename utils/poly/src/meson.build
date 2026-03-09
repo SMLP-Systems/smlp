@@ -42,7 +42,7 @@ if flint_dep.found()
   all_deps += {'mpfr': dep}
   poly_deps += dep
   message('using Flint for Z and Q')
-  kay_dep = [flint_dep, dep]
+  kay_deps = [flint_dep, dep]
 else
   gmpxx_dep = dependency('gmpxx', static: get_option('static'))
   all_deps += {'gmpxx': gmpxx_dep}
@@ -50,7 +50,7 @@ else
     config.set('KAY_USE_GMPXX', 1)
     poly_deps += gmpxx_dep
     message('using gmpxx for Z and Q')
-    kay_dep = [gmpxx_dep]
+    kay_deps = [gmpxx_dep]
   else
     error('need either flint library or gmpxx headers')
   endif
@@ -85,7 +85,7 @@ dep_libs = {
   },
   'kay': {
     'libs_hdrs': { '': ['kay' / 'numbers.hh'] },
-    'extra': { 'required': true, 'dependencies': kay_dep }
+    'extra': { 'required': true, 'dependencies': kay_deps }
   },
   'kjson': {
     'libs_hdrs': { 'kjson': ['kjson.h','kjson.hh'], },
