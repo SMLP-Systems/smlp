@@ -12,12 +12,13 @@ description = "SMLP - System for Machine Learning-based Parameter analysis"
 requires-python = "==3.11.*"
 dependencies = [
     "category_encoders==2.7.0",
+    "meson",
+    "ninja",
     "doepy",
     "jenkspy",
-    "keras_tuner",
+    "keras-tuner",
     "joblib==1.3.2",
     "matplotlib",
-    "meson",
     "mrmr-selection",
     "pandas",
     "pycaret",

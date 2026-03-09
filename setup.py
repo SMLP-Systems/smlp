@@ -708,6 +708,8 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
 
     print(f"[smlp build] PKG_CONFIG_PATH   = {env.get('PKG_CONFIG_PATH', '(not set)')}")
     print(f"[smlp build] DYLD_LIBRARY_PATH = {env.get('DYLD_LIBRARY_PATH', '(not set)')}")
+    with open('/tmp/meson.env', 'w') as f:
+        print('\n'.join(f"{k}={v}" for k,v in env.items()), file=f)
     _run(
         _meson_bin(build_tmp) + ["setup"] + meson_flags,
         env=env,
