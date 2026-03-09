@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
     echo "deb https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy main" \
         > /etc/apt/sources.list.d/deadsnakes.list && \
     apt-get update && apt-get install -y \
-        python3.13 python3.13-dev python3.13-venv python3.13-tk && \
+        python3.12 python3.12-dev python3.12-venv python3.12-tk && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
@@ -33,24 +33,23 @@ COPY run_mathsat_build.sh .
 RUN ./run_mathsat_build.sh && rm -rf /tmp/mathsat*
 
 # ---------------------------------------------------------------------------
-# 3. Install pip and setuptools for Python 3.13
+# 3. Install pip and setuptools for Python 3.12
 # ---------------------------------------------------------------------------
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.13 && \
-    python3.13 -m pip install --user --force-reinstall --break-system-packages setuptools
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12 && \
+    python3.12 -m pip install --user --force-reinstall --break-system-packages setuptools
 
 # ---------------------------------------------------------------------------
 # 4. Clone smlp (ARG busts the cache to always get latest)
 # ---------------------------------------------------------------------------
 ARG CACHE_BUST_SMLP
 COPY run_git_clone /app
-RUN cd /app && ./run_git_clone smlp_python313
+RUN ./run_git_clone smlp_python312
 
 # ---------------------------------------------------------------------------
 # 5. Install smlp from wheel
 # ---------------------------------------------------------------------------
-RUN python3.13 -m pip install /app/smlp/dist/smlp-0.1.0-cp313-cp313-manylinux_2_34_x86_64.whl
+RUN python3.12 -m pip install /app/smlp/dist/smlp-0.1.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
 
-# ---------------------------------------------------------------------------
 # 6. Install pycaret from archive
 # ---------------------------------------------------------------------------
 RUN pip install /app/smlp/docker/python3.13/pycaret_313.tar.gz
@@ -78,8 +77,8 @@ RUN ./smlp_regr_patch.sh
 # ---------------------------------------------------------------------------
 # 10. Define python version
 # ---------------------------------------------------------------------------
-RUN ln -sf /usr/bin/python3.13 /usr/bin/python
-RUN ln -sf /usr/bin/python3.13 /usr/bin/python3
+RUN ln -sf /usr/bin/python3.12 /usr/bin/python
+RUN ln -sf /usr/bin/python3.12 /usr/bin/python3
 
 # ---------------------------------------------------------------------------
 # 11. Copy and run DORA 
