@@ -45,9 +45,8 @@ RUN ./run_git_clone $GIT_BRANCH
 # 6. Build wheel
 # ---------------------------------------------------------------------------
 WORKDIR smlp
-RUN \cp -f manylinux_2_28/setup.py . && \
-    /opt/python/cp312-cp312/bin/python3.12 -m pip -v wheel . -w dist/ && \
-    /opt/python/cp312-cp312/bin/python3.12 manylinux_2_28/repair_wheel.py dist/ --plat manylinux_2_28_x86_64
+RUN /opt/python/cp312-cp312/bin/python3.12 -m pip -v wheel . -w dist/ && \
+    /opt/python/cp312-cp312/bin/python3.12 repair_wheel.py dist/ --plat manylinux_2_28_x86_64
 
 CMD ["/usr/bin/bash"]
 # The manylinux wheel is in /app/smlp/dist/
