@@ -33,6 +33,7 @@
 #include <set>
 
 #include <signal.h>
+#include <unistd.h>
 
 using namespace smlp;
 using std::isfinite;

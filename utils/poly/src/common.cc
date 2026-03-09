@@ -11,6 +11,7 @@
 static inline int isatty(int) { return 0; }
 #else
 #include <signal.h>
+#include <unistd.h>
 #endif
 
 #define CSI		"\x1b["

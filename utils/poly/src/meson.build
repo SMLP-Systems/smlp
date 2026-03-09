@@ -42,13 +42,15 @@ if flint_dep.found()
   all_deps += {'mpfr': dep}
   poly_deps += dep
   message('using Flint for Z and Q')
+  kay_dep = [flint_dep, dep]
 else
   gmpxx_dep = dependency('gmpxx', static: get_option('static'))
   all_deps += {'gmpxx': gmpxx_dep}
-  if gmpxx_dep.found() and cxx.check_header('gmpxx.h')
+  if gmpxx_dep.found() and cxx.check_header('gmpxx.h', dependencies: gmpxx_dep)
     config.set('KAY_USE_GMPXX', 1)
     poly_deps += gmpxx_dep
     message('using gmpxx for Z and Q')
+    kay_dep = [gmpxx_dep]
   else
     error('need either flint library or gmpxx headers')
   endif
@@ -83,7 +85,7 @@ dep_libs = {
   },
   'kay': {
     'libs_hdrs': { '': ['kay' / 'numbers.hh'] },
-    'extra': { 'required': true }
+    'extra': { 'required': true, 'dependencies': kay_dep }
   },
   'kjson': {
     'libs_hdrs': { 'kjson': ['kjson.h','kjson.hh'], },
@@ -271,7 +273,7 @@ libsmlp_deps = poly_deps
 
 py3 = import('python').find_installation('python', modules: ['fractions'],
                                          disabler: true, required: false)
-py3_dep = py3.dependency(embed: true)
+py3_dep = py3.dependency(embed: true, required: false)
 all_deps += {'python3': py3_dep}
 libsmlp_deps += py3_dep
 boost_dep = dependency('boost',
