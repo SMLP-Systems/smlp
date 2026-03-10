@@ -471,8 +471,8 @@ def main(rootpath: str = ".", timeout: float=5000) -> int:
              verticalalignment='top',
              bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
 
-    plt.savefig('multi_objective_comparison.png', dpi=150, bbox_inches='tight')
-    print("\nVisualization saved as 'multi_objective_comparison.png'")
+    plt.savefig(f'{rootpath}/multi_objective_comparison.png', dpi=150, bbox_inches='tight')
+    print(f"\nVisualization saved as '{rootpath}/multi_objective_comparison.png'")
     if not inf == timeout:
         timer = fig.canvas.new_timer(interval=timeout, callbacks=[(plt.close, [], {})])
         timer.start()
