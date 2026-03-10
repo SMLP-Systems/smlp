@@ -2,9 +2,11 @@ Warning!!! Duplicate package metadata found:
 "/usr/lib/python3/dist-packages"
   setuptools                       68.1.2           (using 80.10.1, "/usr/local/lib/python3.12/dist-packages")
   urllib3                          2.0.7            (using 2.6.3, "/usr/local/lib/python3.12/dist-packages")
+  joblib                           1.3.2            (using 1.3.2, "/usr/local/lib/python3.12/dist-packages")
   Brotli                           1.1.0            (using 1.2.0, "/usr/local/lib/python3.12/dist-packages")
   PyQt5-sip                        12.13.0          (using 12.18.0, "/usr/local/lib/python3.12/dist-packages")
   wrapt                            1.15.0           (using 2.0.1, "/usr/local/lib/python3.12/dist-packages")
+  threadpoolctl                    3.1.0            (using 3.1.0, "/usr/local/lib/python3.12/dist-packages")
   pandas                           2.1.4+dfsg       (using 2.3.3, "/usr/local/lib/python3.12/dist-packages")
   certifi                          2023.11.17       (using 2026.1.4, "/usr/local/lib/python3.12/dist-packages")
   cryptography                     41.0.7           (using 41.0.7, "/usr/lib/python3/dist-packages")
@@ -92,7 +94,7 @@ Bottleneck==1.6.0
 └── numpy [required: Any, installed: 1.26.4]
 Brlapi==0.8.5
 chardet==5.2.0
-cloud-init==25.2
+cloud-init==25.3
 colorama==0.4.6
 command-not-found==0.3
 configobj==5.0.8
@@ -457,7 +459,7 @@ pytest-forked==1.6.0
     ├── packaging [required: Any, installed: 24.0]
     └── pluggy [required: >=0.12,<2.0, installed: 1.4.0]
 pytest-mock==3.12.0
-python-apt==2.7.7+ubuntu5.1
+python-apt==2.7.7+ubuntu5.2
 python-debian==0.1.49+ubuntu2
 pyxdg==0.28
 quads==1.1.0
