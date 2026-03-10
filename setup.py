@@ -657,6 +657,8 @@ def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path,
         f"gmp_librarydir = '{gmp_lib}'\n"
         f"gmpxx_includedir = '{gmp_inc}'\n"
         f"gmpxx_librarydir = '{gmp_lib}'\n"
+        #KK
+        f"z3_librarydir = '{z3_lib}'\n"
         "\n"
         "[binaries]\n"
         f"python = '{sys.executable}'\n"
@@ -668,9 +670,9 @@ def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path,
         f"pkg_config_path = ['{gmp_lib / 'pkgconfig'}', '{boost_lib / 'pkgconfig'}', '{z3_pc_dir}']\n"
         f"c_args = ['-I{gmp_inc}', '-I{boost_inc}']\n"
         f"cpp_args = ['-I{gmp_inc}', '-I{boost_inc}']\n"
-        f"c_link_args = ['-L{gmp_lib}', '-L{boost_lib}', '-L{build_tmp}', "
+        f"c_link_args = ['-L{gmp_lib}', '-L{boost_lib}', '-L{build_tmp}', '-L{z3_lib}',"
         + ", ".join(f"'{f}'" for f in rpath_flags_c) + "]\n"
-        f"cpp_link_args = ['-L{gmp_lib}', '-L{boost_lib}', '-L{build_tmp}', "
+        f"cpp_link_args = ['-L{gmp_lib}', '-L{boost_lib}', '-L{build_tmp}', '-L{z3_lib}',"
         + ", ".join(f"'{f}'" for f in rpath_flags_cpp) + "]\n"
     )
     print(f"[smlp build] Wrote Meson native file: {native_file}")
