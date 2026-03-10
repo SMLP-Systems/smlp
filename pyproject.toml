@@ -2,6 +2,7 @@
 requires = [
     "setuptools>=68",
     "meson",
+    "ninja",
     "wheel",
 ]
 build-backend = "setuptools.build_meta"

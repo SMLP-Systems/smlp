@@ -51,7 +51,7 @@ echo "[build] Python version: $(${PYTHON} --version)"
 # ---------------------------------------------------------------------------
 echo "[build] Installing Python build tools..."
 ${PIP} install --upgrade pip
-${PIP} install "setuptools==71.1.0"
+${PIP} install "setuptools >= 71.1.0"
 #${PIP} install meson ninja "z3-solver==4.8.12" delocate
 
 ${PIP} install meson ninja "z3-solver==4.16.0" delocate

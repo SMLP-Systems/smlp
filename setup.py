@@ -260,6 +260,7 @@ def _ninja_bin() -> str:
 # ---------------------------------------------------------------------------
 
 def _boost_prefix() -> Path:
+    print(f"[KK _boost_prefix]")
     env_root = os.environ.get("BOOST_ROOT")
     if env_root:
         prefix = Path(env_root).expanduser()
@@ -332,6 +333,7 @@ def _boost_prefix() -> Path:
 
 
 def _boost_env(prefix: Path) -> dict:
+    print(f"[KK _boost_env]")
     lib_dir = prefix / "lib"
     inc_dir = prefix / "include"
 
@@ -358,6 +360,7 @@ def _boost_env(prefix: Path) -> dict:
 
 
 def _add_z3_to_env(env: dict, z3_lib: Path) -> dict:
+    print(f"[KK _add_z3_to_env]")
     """Prepend the z3-solver lib/bin directories to the relevant env vars."""
     # macOS: DYLD_LIBRARY_PATH
     existing_dyld = env.get("DYLD_LIBRARY_PATH", "")
@@ -371,11 +374,13 @@ def _add_z3_to_env(env: dict, z3_lib: Path) -> dict:
     z3_bin = z3_lib.parent / "bin"
     existing_path = env.get("PATH", os.environ.get("PATH", ""))
     env["PATH"] = f"{z3_bin}:{existing_path}" if existing_path else str(z3_bin)
-
+    
+    print(f"[KK _add_z3_to_env: PATH]={env['PATH']}")
     return env
 
 
 def _add_gmp_to_env(env: dict, gmp_prefix: Path) -> dict:
+    print(f"[KK _add_gmp_to_env]")
     gmp_lib = gmp_prefix / "lib"
     gmp_inc = gmp_prefix / "include"
 
@@ -674,9 +679,12 @@ def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path,
 
 def _meson_build(poly_dir: Path, kay_dir: Path,
                  boost_prefix: Path, build_tmp: Path) -> Path:
+
+    print(f"[KK _meson_build]")
     meson_build_dir = poly_dir / "build"
     install_prefix  = build_tmp.resolve() / "smlp_install"
 
+    
     if meson_build_dir.exists():
         shutil.rmtree(meson_build_dir)
 
@@ -694,6 +702,9 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
         str(gmp_prefix / "lib"),
         str(z3_lib),
     ]
+
+    print(f"[KK rpath_dirs] rpath_dirs={rpath_dirs}")
+    
     rpath_flags = " ".join(f"-Wl,-rpath,{d}" for d in rpath_dirs)
     existing_ldflags = env.get("LDFLAGS", "")
     env["LDFLAGS"] = f"{rpath_flags} {existing_ldflags}".strip()
