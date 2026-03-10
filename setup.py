@@ -363,9 +363,11 @@ def _add_z3_to_env(env: dict, z3_lib: Path) -> dict:
     existing_dyld = env.get("DYLD_LIBRARY_PATH", "")
     env["DYLD_LIBRARY_PATH"] = f"{z3_lib}:{existing_dyld}" if existing_dyld else str(z3_lib)
 
+    pkgconfig    = z3_lib / "pkgconfig"
     existing_pkg = env.get("PKG_CONFIG_PATH", "")
-    env["PKG_CONFIG_PATH"] = f"{z3_lib}:{existing_pkg}" if existing_pkg else str(z3_lib)
-
+#    env["PKG_CONFIG_PATH"] = f"{z3_lib}:{existing_pkg}" if existing_pkg else str(z3_lib)
+    env["PKG_CONFIG_PATH"] = f"{pkgconfig}:{existing_pkg}" if existing_pkg else str(z3_lib)
+    
     z3_bin = z3_lib.parent / "bin"
     existing_path = env.get("PATH", os.environ.get("PATH", ""))
     env["PATH"] = f"{z3_bin}:{existing_path}" if existing_path else str(z3_bin)
@@ -575,7 +577,7 @@ def _z3_binary() -> Path:
 
 def _write_z3_pc(z3_lib: Path) -> None:
     import re
-
+    print(f"[KK _write_z3_pc]")
     # On macOS, dylibs are named libz3.dylib (no version in the name)
     version = Z3_VERSION  # use known version directly
     for f in list(z3_lib.glob("libz3.*.dylib")) + list(z3_lib.glob("libz3.so.*")):
@@ -605,6 +607,7 @@ def _write_z3_pc(z3_lib: Path) -> None:
 
 
 def _z3_prefix() -> Path:
+    print(f"[KK _z3_prefix]")
     env_prefix = os.environ.get("Z3_PREFIX")
     prefix = Path(env_prefix).expanduser() if env_prefix else Z3_DEFAULT_PREFIX
     lib_dir = prefix / "lib"
@@ -628,6 +631,7 @@ def _z3_prefix() -> Path:
 
 def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path,
                        z3_bin: Path, build_tmp: Path) -> Path:
+    print(f"[KK _write_native_file]")
     boost_lib = boost_prefix / "lib"
     boost_inc = boost_prefix / "include"
     gmp_lib   = gmp_prefix / "lib"
@@ -737,6 +741,7 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
 class MesonBuildExt(_build_ext):
 
     def run(self):
+        print(f"[KK MesonBuildExt]")
         build_tmp = Path(self.build_temp).resolve()
         build_tmp.mkdir(parents=True, exist_ok=True)
 
