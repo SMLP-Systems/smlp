@@ -13,6 +13,7 @@ RUN dnf install -y epel-release && \
         glibc-langpack-en \
         gzip \
         python3.12 \
+        python3.12-tkinter \
         tar \
         tcsh \
         tzdata \
@@ -77,8 +78,8 @@ RUN ./smlp_regr_patch.sh
 # ---------------------------------------------------------------------------
 # 10. Define python version
 # ---------------------------------------------------------------------------
-RUN ln -sf /usr/local/bin/python3.12 /usr/bin/python && \
-    ln -sf /usr/local/bin/python3.12 /usr/bin/python3
+RUN ln -sf /usr/bin/python3.12 /usr/bin/python && \
+    ln -sf /usr/bin/python3.12 /usr/bin/python3
 
 # ---------------------------------------------------------------------------
 # 11. Copy and run DORA
