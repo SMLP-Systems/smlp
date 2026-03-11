@@ -10,11 +10,13 @@ RUN apt-get update && apt-get install -y \
         ca-certificates \
         curl \
         git \
-        gnupg \
         jq \
         libgomp1 \
         locales \
+        tcsh \
         tzdata wget \
+        vim \
+        x11-xserver-utils \
         xvfb && \
     apt-get update && apt-get install -y \
         python3.11 python3.11-dev python3.11-distutils python3.11-venv python3.11-tk && \
@@ -73,10 +75,15 @@ RUN ln -sf /usr/bin/python3.11 /usr/bin/python
 RUN ln -sf /usr/bin/python3.11 /usr/bin/python3
 
 # ---------------------------------------------------------------------------
-# 11. Copy and run DORA 
+# 10. Copy and run DORA 
 # ---------------------------------------------------------------------------
 COPY run_dora /app
 RUN ./run_dora
+
+# ---------------------------------------------------------------------------
+# 11. Copy virtual display initialization script
+# ---------------------------------------------------------------------------
+COPY open_virtual_display.sh /app
 
 # Default command
 CMD ["/usr/bin/bash"]
