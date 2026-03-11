@@ -16,10 +16,22 @@ Install delocate with:
     pip install delocate
 """
 import sys
+import os
 import subprocess
 import platform
 import argparse
 from pathlib import Path
+
+
+
+#----------------
+# setting DYLD_LIBRARY_PATH
+#-----------------
+# DLD_PATH is a workaround of MacOS purging DYLD_LIBRARY_PATH when calling python processes
+
+os.environ['DYLD_LIBRARY_PATH']=os.environ['DLD_PATH']
+env = os.environ
+print(env)    
 
 
 def _default_platform_tag() -> str:
@@ -114,6 +126,7 @@ def main():
     wheel = wheels[-1]
     print(f"Repairing {wheel} for platform {plat} ...")
 
+     
     # delocate-wheel bundles all non-system dylibs into the wheel and
     # rewrites their install names, equivalent to auditwheel repair.
     subprocess.check_call([
@@ -123,7 +136,7 @@ def main():
         "--wheel-dir", str(dist_dir),
         "--require-archs", platform.machine(),
         str(wheel),
-    ])
+    ], env=env)
 
     print(f"Done. Repaired wheel saved to {dist_dir}/")
 

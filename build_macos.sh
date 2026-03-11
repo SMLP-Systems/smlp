@@ -73,6 +73,12 @@ export GMP_ROOT="${BREW_PREFIX}/opt/gmp"
 echo "[build] Z3_PREFIX=${Z3_PREFIX}"
 echo "[build] GMP_ROOT=${GMP_ROOT}"
 
+# DLD_PATH is a workaround of MacOS purging DYLD_LIBRARY_PATH when calling python processes
+
+export DLD_PATH="${Z3_PREFIX}/lib"
+
+echo "[DLD_PATH] $DLD_PATH"
+
 # ---------------------------------------------------------------------------
 # 5. Build wheel
 # ---------------------------------------------------------------------------
@@ -83,6 +89,8 @@ ${PYTHON} -m pip wheel . -w dist/
 # 7. Repair wheel with delocate (macOS equivalent of auditwheel)
 # ---------------------------------------------------------------------------
 echo "[build] Repairing wheel with delocate..."
+
+
 ${PYTHON} repair_wheel.py dist/
 
 echo ""

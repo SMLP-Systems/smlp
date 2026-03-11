@@ -43,6 +43,7 @@ Z3_PREFIX        Reuse an existing Z3 install prefix – skips pip z3-solver.
 Z3_VERSION       Z3 version (default: 4.16.0).
 Z3_BIN_DIR       Path to directory containing z3 binary.
 SMLP_BRANCH      Git branch to switch to in the smlp repo.
+DLD_PATH         workaround of MacOS purging DYLD_LIBRARY_PATH when calling python processes
 """
 
 import os
@@ -56,6 +57,9 @@ from pathlib import Path
 
 from setuptools import setup
 from setuptools.command.build_ext import build_ext as _build_ext
+
+print(os.environ)
+
 
 # ---------------------------------------------------------------------------
 # Platform guard
@@ -76,6 +80,7 @@ BOOST_CACHE_DIR = Path(
     os.environ.get("BOOST_CACHE_DIR", Path.home() / ".local" / "boost_py311")
 ).expanduser()
 
+
 # On macOS, z3-solver installs into the active Python's site-packages
 Z3_DEFAULT_PREFIX = Path(
     subprocess.check_output(
@@ -86,6 +91,15 @@ Z3_DEFAULT_PREFIX = Path(
 
 GMP_VERSION   = os.environ.get("GMP_VERSION", "6.3.0")
 
+# ---------------------------------------------------------------------------
+# setting DYLD_LIBRARY_PATH
+# ---------------------------------------------------------------------------
+
+os.environ['DYLD_LIBRARY_PATH']=os.environ['DLD_PATH']
+env = os.environ
+print(env)
+
+ 
 # Prefer Homebrew GMP so we can skip the source build
 def _homebrew_gmp() -> str | None:
     try:
@@ -753,8 +767,9 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
 
 class MesonBuildExt(_build_ext):
 
-    def run(self):
+    def run(self):        
         print(f"[KK MesonBuildExt]")
+        
         build_tmp = Path(self.build_temp).resolve()
         build_tmp.mkdir(parents=True, exist_ok=True)
 
