@@ -20,10 +20,10 @@ struct Pipe {
 
 	file rd, wr;
 
-	explicit Pipe(int flags = 0)
+	explicit Pipe()
 	{
 		int rw[2];
-		if (pipe2(rw, flags))
+		if (pipe(rw))
 			throw std::error_code(errno, std::system_category());
 		rd = file(rw[0], "r");
 		wr = file(rw[1], "w");
