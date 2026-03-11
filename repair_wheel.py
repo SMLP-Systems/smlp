@@ -135,6 +135,7 @@ def main():
         f"from delocate.cmd.delocate_wheel import main; sys.exit(main())",
         "--wheel-dir", str(dist_dir),
         "--require-archs", platform.machine(),
+        "--exclude", "libpython3.11",
         str(wheel),
     ], env=env)
 

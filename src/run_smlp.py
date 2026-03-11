@@ -12,6 +12,9 @@ def main(argv):
     smlpInst = SmlpFlows(argv)
     smlpInst.smlp_flow()
 
+def main2():
+    main(sys.argv)
+
 if __name__ == '__main__':
     # TODO: this branch should go away: replace by invoking the 'smlp' script
     # which loads this file as a module
@@ -19,3 +22,4 @@ if __name__ == '__main__':
     main(sys.argv)
 else:
     from .smlp_py.smlp_flows import SmlpFlows
+
