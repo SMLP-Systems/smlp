@@ -2,13 +2,15 @@
 set script_path=`realpath $0 | xargs dirname`
 set test=BNH
 set test_lc=`echo $test | tr '[A-Z]' '[a-z]'`
+set gzipped_dataset=${test_lc}.csv.gz 
 if($#argv > 0) then
     if("-clean" == "$argv[1]") then
         \rm -f ${test}* *.log  >& /dev/null
+        \rm -f $gzipped_dataset  >& /dev/null
         exit(0)
     endif
 endif
-set gzipped_dataset=${test_lc}.csv.gz 
+${script_path}/bnh_dataset.py
 set csv=${test}.csv
 set json=${script_path}/${test_lc}_w.json
 gunzip -c $gzipped_dataset > $csv
