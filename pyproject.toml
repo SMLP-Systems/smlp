@@ -38,6 +38,9 @@ dependencies = [
 where = ["."]
 exclude = ["src*", "smlp_py*", "regr_smlp*", "utils*"]
 
+[project.scripts]
+smlp = "smlp.run_smlp:main2"
+
 # ---------------------------------------------------------------------------
 # Build-time environment variables (all optional)
 # ---------------------------------------------------------------------------

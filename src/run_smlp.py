@@ -14,6 +14,9 @@ def main(argv):
     smlpInst = SmlpFlows(argv)
     smlpInst.smlp_flow()
 
+def main2():
+    main(sys.argv)
+
 if __name__ == "__main__":
     main(sys.argv)
     
