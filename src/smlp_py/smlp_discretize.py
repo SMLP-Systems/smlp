@@ -6,7 +6,7 @@ import numpy as np
 import jenkspy
 from sklearn.preprocessing import KBinsDiscretizer
 
-from smlp_py.smlp_utils import cast_type, list_unique_ordered, str_to_bool
+from .smlp_utils import cast_type, list_unique_ordered, str_to_bool
 
 
 # useful links for discretization in Python used to build class SmlpDiscretize

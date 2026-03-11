@@ -2,7 +2,8 @@
 # This file is part of smlp.
 
 import os, argparse, json
-from smlp_py.smlp_utils import str_to_bool
+
+from .smlp_utils import str_to_bool
 
 class SmlpConfig:
     def __init__(self):

@@ -18,9 +18,9 @@ import sys
 from enum import Enum
 
 import smlp
-from smlp_py.smlp_utils import (np_JSONEncoder, lists_union_order_preserving_without_duplicates, 
+from .smlp_utils import (np_JSONEncoder, lists_union_order_preserving_without_duplicates, 
     list_subtraction_set, get_expression_variables, str_to_bool)
-#from smlp_py.smlp_spec import SmlpSpec
+#from .smlp_spec import SmlpSpec
 
 
 # TODO !!! create a parent class for TreeTerms, PolyTerms, NNKerasTerms.
