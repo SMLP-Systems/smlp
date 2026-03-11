@@ -11,7 +11,8 @@ def main(rootpath: str = ".", timeout: float=5000,
          csv_files: list[str] = 
              ['pareto_front_analytical_expected.csv',
              'pareto_front_results_dt_expected.csv',
-             'pareto_front_results_tab_expected.csv']
+             'pareto_front_results_tab_expected.csv',
+             'pareto_front_results_sklearn_tab_expected.csv']
           ) -> int:
   # Create figure and axis
   fig, ax = plt.subplots(figsize=(10, 6))
