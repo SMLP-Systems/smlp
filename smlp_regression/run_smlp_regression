@@ -19,5 +19,8 @@ if($#argv > 0) then
 endif
 cd `git rev-parse --show-toplevel`/regr_smlp/code
 echo "Log file: $log"
+if(! $?DISPLAY ) then
+    setenv DISPLAY :99
+endif
 echo n | env CUDA_VISIBLE_DEVICES=-1 ./smlp_regr.py -w 8 -def n -t all -tol 7 -g |& tee $log
 ${script_path}/create_diff_report >& $diff_report
