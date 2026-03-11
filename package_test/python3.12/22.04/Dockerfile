@@ -14,7 +14,10 @@ RUN apt-get update && apt-get install -y \
         jq \
         libgomp1 \
         locales \
+        tcsh \
         tzdata wget \
+        vim \
+        x11-xserver-utils \
         xvfb && \
     curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF23C5A6CF475977595C89F51BA6932366A755776" \
         | gpg --dearmor -o /etc/apt/trusted.gpg.d/deadsnakes.gpg && \
@@ -85,6 +88,12 @@ RUN ln -sf /usr/bin/python3.12 /usr/bin/python3
 # ---------------------------------------------------------------------------
 COPY run_dora /app
 RUN ./run_dora
+
+# ---------------------------------------------------------------------------
+# 12. Copy virtual display initialization script
+# ---------------------------------------------------------------------------
+COPY open_virtual_display.sh /app
+
 
 # Default command
 CMD ["/usr/bin/bash"]
