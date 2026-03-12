@@ -77,7 +77,7 @@ instruction for the installation on Ubuntu.
 - Using Docker container with GUI disabled
 
 ```
-docker run -it mdmitry1/python311-dev:latest
+docker run -it mdmitry1/python313-dev:latest
 ```
 
 Within docker container prepend SMLP Python script with `xvfb-run`.
@@ -137,12 +137,12 @@ bin/test_install
 1. Pull Docker container from the Docker repository:
 
 ```
-    docker pull mdmitry1/python311-dev:latest
+    docker pull mdmitry1/python313-dev:latest
 ```
 
 2.  Start Docker container:
 ```
-    docker run -it mdmitry1/python311-dev:latest
+    docker run -it mdmitry1/python313-dev:latest
 ```
 
 3. Run the tool
