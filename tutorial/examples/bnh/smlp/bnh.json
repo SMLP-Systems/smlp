@@ -6,8 +6,5 @@
     {"label":"F1", "interface":"output", "type":"real"},
     {"label":"F2", "interface":"output", "type":"real"}
   ],
-  "alpha": "(X1-5)*(X1-5)+X2*X2<=25 and (X1-8)*(X1-8)+(X2+3)*(X2+3)>=7.7",
-  "objectives": {
-    "objective1": "-F1*0.6-F2*0.4"
-  }
+  "alpha": "(X1-5)*(X1-5)+X2*X2<=25 and (X1-8)*(X1-8)+(X2+3)*(X2+3)>=7.7"
 }
