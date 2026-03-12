@@ -16,7 +16,7 @@ if [ $(git branch -r --list origin/$GIT_BRANCH) ]; then
     git switch $GIT_BRANCH
 fi
 mathsat_dest_dir=../external
-mathsat_src_dir=package_test/python3.12/manylinux_2_28/external
+mathsat_src_dir=package_test/python3.12/22.04/external
 $(dirname $mathsat_src_dir)/run_mathsat_build.sh
 \rm -rf $mathsat_dest_dir > /dev/null
 \mv $mathsat_src_dir $mathsat_dest_dir
