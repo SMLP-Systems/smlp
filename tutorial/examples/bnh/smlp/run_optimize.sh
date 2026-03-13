@@ -39,8 +39,6 @@ python3.11 "$(realpath "$0" | xargs dirname | xargs dirname | xargs dirname | xa
     -objv_names "w1,w2,w3,w4,w5,w6" \
     -objv_exprs "$o1;$o2;$o3;$o4;$o5;$o6" \
     -model poly_sklearn \
-    -tree_encoding flat \
-    -compress_rules t \
     -mrmr_pred 0 \
     -epsilon 0.000005 \
     -delta_rel 0.05 \
