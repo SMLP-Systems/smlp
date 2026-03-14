@@ -2,10 +2,11 @@
 # This file is part of smlp.
 
 import smlp
-from smlp_py.smlp_terms import SmlpTerms, ModelTerms, ScalerTerms
-from smlp_py.smlp_query import SmlpQuery
-from smlp_py.smlp_utils import (str_to_bool, np_JSONEncoder)
-            
+
+from .smlp_terms import SmlpTerms, ModelTerms, ScalerTerms
+from .smlp_query import SmlpQuery
+from .smlp_utils import (str_to_bool, np_JSONEncoder)
+
 from fractions import Fraction
 from decimal import Decimal
 from typing import Union

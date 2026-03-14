@@ -2,8 +2,9 @@
 # This file is part of smlp.
 
 import smlp
-from smlp_py.smlp_utils import str_to_bool
-                                
+
+from .smlp_utils import str_to_bool
+
 # Solver class; currently used only to set an external solver to SMLP
 class SmlpSolver:
     def __init__(self):

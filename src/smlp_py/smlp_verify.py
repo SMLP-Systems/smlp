@@ -5,8 +5,9 @@ from fractions import Fraction
 import json
 
 import smlp
-from smlp_py.smlp_terms import ModelTerms, SmlpTerms
-from smlp_py.smlp_utils import np_JSONEncoder
+
+from .smlp_terms import ModelTerms, SmlpTerms
+from .smlp_utils import np_JSONEncoder
 
 class SmlpVerify:
     def __init__(self):
