@@ -1,0 +1,12 @@
+{
+  "questions": [
+    "Who developed SMLP?",
+    "Is SMLP paper published?"
+  ],
+  "retrieved_contexts": [
+    "[1] SMLP was developed by franz, zurab and konstantin.",
+    "[2] SMLP manual is available at Git Hub.",
+    "[3] SMLP is an open source model exploration tool."
+  ],
+  "answers": "<think>\nOkay, so I need to figure out who developed the SMLP. The question is asking for the developer's name or team. Looking at the context provided, it says that SMLP was developed by three people: Franz, Zurab, and Konstantin. So, the answer should list these names as the developers.\n\nI don't see any other information in the context that would suggest a different set of developers. The mention of the manual being on Git Hub and SMLP being an open-source tool is extra information but doesn't affect who developed it. Therefore, I can confidently say that the developers are Franz, Zurab, and Konstantin.\n</think>\n\nThe developers of SMLP are Franz, Zurab, and Konstantin.\n\nSMLP manual is available at Git Hub.\n\nSMLP is an open source model exploration tool."
+}

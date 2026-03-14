@@ -1,0 +1,20 @@
+{
+  "summary": {
+    "num_examples": 1,
+    "num_valid": 1,
+    "grounded_rate": 1.0,
+    "grounded_none_count": 0,
+    "hallucination_rate": 0.0,
+    "hallucination_none_count": 0,
+    "avg_score": 5.0
+  },
+  "details": [
+    {
+      "grounded": true,
+      "hallucination": false,
+      "score": 5,
+      "explanation": "The answer 'Franz, Zurab, and Konstantin developed SMLP.' is fully supported by the context statement '[1] SMLP was developed by franz, zurab and konstantin.' The names match exactly, and there is no additional or fabricated information. The answer is complete and accurate based on the provided context.",
+      "confidence": "high"
+    }
+  ]
+}

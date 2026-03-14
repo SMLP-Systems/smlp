@@ -1,0 +1,85 @@
+
+smlp_logger - INFO - Executing run_smlp.py script: Start
+
+smlp_logger - INFO - Running SMLP in mode "rag": Start
+
+smlp_logger - INFO - Running RAG with base model facebook/rag-token-base, using HuggingFace libs.
+
+smlp_logger - INFO - Starting RAG generation
+
+smlp_logger - INFO - Set random seed to 42 for deterministic generation
+
+smlp_logger - INFO - Loading RAG trained model from: ../rag_models/test245_model
+
+smlp_logger - INFO - rag_token loaded from config: True
+
+smlp_logger - INFO - Loading model and tokenizer from ../rag_models/test245_model
+
+smlp_logger - INFO - Retriever index type: CustomHFIndex
+
+smlp_logger - INFO - Model, tokenizer, and retriever loaded successfully
+
+smlp_logger - INFO - Generating answers for 2 question(s)
+
+smlp_logger - INFO - ============================================================
+
+smlp_logger - INFO - Processing question 1/2: Who developed SMLP?
+
+smlp_logger - INFO - ============================================================
+
+smlp_logger - INFO - Top Retrieved Passages:
+
+smlp_logger - INFO -   1. SMLP was developed by franz, zurab and konstantin....
+
+smlp_logger - INFO - Generated Answer: SMLP was developed by franz, zurab and konstantin.
+
+smlp_logger - INFO - ============================================================
+
+smlp_logger - INFO - Processing question 2/2: Is SMLP paper published?
+
+smlp_logger - INFO - ============================================================
+
+smlp_logger - INFO - Top Retrieved Passages:
+
+smlp_logger - INFO -   1. SMLP tool paper is published in CAV 2025 conference....
+
+smlp_logger - INFO - Generated Answer: SMLP tool paper is published in CAV 2025 conference.
+
+smlp_logger - INFO - ============================================================
+
+smlp_logger - INFO - Generation complete. Processed 2 questions.
+
+smlp_logger - INFO - Successful: 2
+
+smlp_logger - INFO - Failed: 0
+
+smlp_logger - INFO - ============================================================
+
+
+smlp_logger - INFO - Saving generated text into ./Test246_toy_smlp_rag_generated.txt
+
+smlp_logger - INFO - Saved retrieved contexts to ./Test246_toy_smlp_rag_retrieved_contexts.json
+
+smlp_logger - INFO - ======================================================================
+
+smlp_logger - INFO - MEMORY CLEANUP: Freeing RAG model memory before loading judge
+
+smlp_logger - INFO - ======================================================================
+
+smlp_logger - INFO - Cleaning up RAG model memory...
+
+smlp_logger - INFO - Memory cleanup complete
+
+smlp_logger - INFO - ======================================================================
+
+smlp_logger - INFO - Running RAG quality evaluation with LLM-as-a-Judge
+
+smlp_logger - INFO - Running LLM judge using model: Qwen/Qwen2.5-1.5B-Instruct
+
+smlp_logger - INFO - Judge results for (training): {'summary': {'num_examples': 2, 'num_valid': 2, 'grounded_rate': 1.0, 'grounded_none_count': 0, 'hallucination_rate': 0.0, 'hallucination_none_count': 0, 'avg_score': 5.0}, 'details': [{'grounded': True, 'hallucination': False, 'score': 5, 'explanation': 'The answer is directly supported by the given context which states that SMLP was developed by franz, zurab, and konstantin.', 'confidence': 'high'}, {'grounded': True, 'hallucination': False, 'score': 5, 'explanation': 'The answer is fully supported by the given context. It correctly states that the SMLP paper is published in the CAV 2025 conference without any fabricated information.', 'confidence': 'high'}]}
+
+smlp_logger - INFO - LLM judge results written to ./Test246_toy_smlp_llm_training_quality.json
+
+smlp_logger - INFO - Running SMLP in mode "rag": End
+
+smlp_logger - INFO - Executing run_smlp.py script: End

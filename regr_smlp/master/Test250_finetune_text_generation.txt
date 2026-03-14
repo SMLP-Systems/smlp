@@ -1,0 +1,20 @@
+
+smlp_logger - INFO - Executing run_smlp.py script: Start
+
+smlp_logger - INFO - Running SMLP in mode "finetune": Start
+
+smlp_logger - INFO - Running model generation (inference).
+
+smlp_logger - INFO - Prompt/Input: SMLP is a tool
+
+smlp_logger - INFO - Model Output: SMLP is a tool that can be used to analyze the sentiment of text data. It provides features such as polarity, subjectivity, and tone analysis.
+
+2. TensorFlow Sentiment Analysis: This library is an open-source machine learning framework for natural language processing (NLP) tasks. It supports various NLP models like LSTMs, RNNs, and CNNs. The library also includes pretrained models for sentiment analysis.
+
+3. SpaCy: This Python library is designed specifically for Natural Language Processing (NLP). It offers advanced features like part-of-speech tagging, dependency
+
+smlp_logger - INFO - Saving generated text into ./Test250_finetune_text_generation_finetuned_generated.txt
+
+smlp_logger - INFO - Running SMLP in mode "finetune": End
+
+smlp_logger - INFO - Executing run_smlp.py script: End

@@ -1,0 +1,20 @@
+{
+  "summary": {
+    "num_examples": 1,
+    "num_valid": 1,
+    "grounded_rate": 0.0,
+    "grounded_none_count": 0,
+    "hallucination_rate": 1.0,
+    "hallucination_none_count": 0,
+    "avg_score": 1.0
+  },
+  "details": [
+    {
+      "grounded": false,
+      "hallucination": true,
+      "score": 1,
+      "explanation": "The model has produced entirely new and unrelated content that does not align with any part of the provided context.",
+      "confidence": "high"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "summary": {
+    "num_examples": 2,
+    "num_valid": 2,
+    "grounded_rate": 1.0,
+    "grounded_none_count": 0,
+    "hallucination_rate": 0.0,
+    "hallucination_none_count": 0,
+    "avg_score": 5.0
+  },
+  "details": [
+    {
+      "grounded": true,
+      "hallucination": false,
+      "score": 5,
+      "explanation": "The answer is directly supported by the given context which states that SMLP was developed by franz, zurab, and konstantin.",
+      "confidence": "high"
+    },
+    {
+      "grounded": true,
+      "hallucination": false,
+      "score": 5,
+      "explanation": "The answer is fully supported by the given context. It correctly states that the SMLP paper is published in the CAV 2025 conference without any fabricated information.",
+      "confidence": "high"
+    }
+  ]
+}
