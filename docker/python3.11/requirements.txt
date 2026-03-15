@@ -10,4 +10,5 @@ pysubgroup
 scikit-learn 
 scipy==1.11.4 
 seaborn 
+matplotlib
 tensorflow==2.15.1 
