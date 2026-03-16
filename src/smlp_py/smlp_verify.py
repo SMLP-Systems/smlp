@@ -4,7 +4,7 @@
 from fractions import Fraction
 import json
 
-import smlp
+import smlp.core as smlp
 
 from .smlp_terms import ModelTerms, SmlpTerms
 from .smlp_utils import np_JSONEncoder

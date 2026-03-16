@@ -17,7 +17,8 @@ from collections import defaultdict
 import sys
 from enum import Enum
 
-import smlp
+import smlp.core as smlp
+
 from .smlp_utils import (np_JSONEncoder, lists_union_order_preserving_without_duplicates, 
     list_subtraction_set, get_expression_variables, str_to_bool)
 #from .smlp_spec import SmlpSpec

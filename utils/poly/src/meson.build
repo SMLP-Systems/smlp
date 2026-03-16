@@ -286,8 +286,8 @@ if py3_dep.found() and boost_dep.found()
   have_smlp_py = true
   features += {'Python module "smlp"': true}
   message('SMLP Python ' + py3.language_version() + ' API enabled')
-  py3.install_sources('..'/'python'/'smlp'/'__init__.py',
-                      subdir: 'smlp')
+  py3.install_sources('..'/'python'/'smlp'/'core'/'__init__.py',
+                      subdir: 'smlp'/'core')
   py3.extension_module('libsmlp', 'libsmlp.cc',
                        dependencies: libsmlp_deps,
                        override_options: 'cpp_std=c++20',
@@ -295,7 +295,7 @@ if py3_dep.found() and boost_dep.found()
                        install: true,
                        link_args: link_args_libsmlp_so,
                        link_with: libsmlp_static,
-                       subdir : 'smlp')
+                       subdir : 'smlp'/'core')
 else
   have_smlp_py = false
   features += {'Python module "smlp"': [false,'python3','boost']}

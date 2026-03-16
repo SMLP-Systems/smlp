@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # This file is part of smlp.
 
-import smlp
+import smlp.core as smlp
 
 from .smlp_utils import str_to_bool
 
