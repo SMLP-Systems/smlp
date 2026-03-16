@@ -37,7 +37,7 @@ ENV PATH="/root/.local/bin:${PATH}"
 ENV Z3_PREFIX=/opt/python/cp311-cp311/lib/python3.11/site-packages/z3
 
 WORKDIR /app
-ARG GIT_BRANCH=smlp_python311
+ARG GIT_BRANCH=$(git branch --show-current)
 COPY run_git_clone .
 RUN ./run_git_clone $GIT_BRANCH
 
@@ -45,9 +45,8 @@ RUN ./run_git_clone $GIT_BRANCH
 # 6. Build wheel
 # ---------------------------------------------------------------------------
 WORKDIR smlp
-RUN \cp -f manylinux_2_28/setup.py . && \
-    /opt/python/cp311-cp311/bin/python3.11 -m pip wheel . -w dist/ && \
-    /opt/python/cp311-cp311/bin/python3.11 manylinux_2_28/repair_wheel.py dist/ --plat manylinux_2_28_x86_64
+RUN /opt/python/cp311-cp311/bin/python3.11 -m pip wheel . -w dist/ && \
+    /opt/python/cp311-cp311/bin/python3.11 repair_wheel.py dist/ --plat manylinux_2_28_x86_64
 
 CMD ["/usr/bin/bash"]
 # The manylinux wheel is in /app/smlp/dist/

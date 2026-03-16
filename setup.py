@@ -14,7 +14,7 @@ Build flow
 1.  Boost.Python 1.83 is compiled from source for Python 3.11 and cached in
     ~/.local/boost_py311  (or the path in $BOOST_CACHE_DIR).
     The build is skipped on subsequent runs if the cache directory already
-    contains the marker file  .built_for_python311.
+    contains the marker file  .built_for_python<major><minor>.
     Set $BOOST_ROOT to point at an existing Boost prefix to skip this step
     entirely.
 
@@ -182,9 +182,24 @@ def _meson_bin(build_tmp: Path) -> list[str]:
         if (user_site / "mesonbuild").exists():
             mesonbuild_location = str(user_site)
 
+    # Fallback: find mesonbuild via importlib (works when on sys.path)
+    if not mesonbuild_location:
+        import importlib.util
+        spec = importlib.util.find_spec("mesonbuild")
+        if spec and spec.submodule_search_locations:
+            mesonbuild_location = str(Path(list(spec.submodule_search_locations)[0]).parent)
+
+    # Fallback: use meson binary directly from PATH
+    if not mesonbuild_location:
+        from shutil import which
+        meson_bin = which("meson")
+        if meson_bin:
+            print(f"[smlp build] Using meson from PATH: {meson_bin}")
+            return [meson_bin]
+
     if not mesonbuild_location:
         raise RuntimeError(
-            "[smlp build] meson not found. Run:  python3.11 -m pip install --user meson"
+            f"[smlp build] meson not found. Run:  python{sys.version_info.major}.{sys.version_info.minor} -m pip install meson"
         )
 
     print(f"[smlp build] meson location: {mesonbuild_location}")
@@ -266,7 +281,8 @@ def _boost_prefix() -> Path:
         return prefix
 
     # ── Option B: cached build already present ────────────────────────────
-    tag_file = BOOST_CACHE_DIR / ".built_for_python311"
+    py_tag = f"python{sys.version_info.major}{sys.version_info.minor}"
+    tag_file = BOOST_CACHE_DIR / f".built_for_{py_tag}"
     if tag_file.exists():
         print(f"[smlp build] Boost cache found at {BOOST_CACHE_DIR}, skipping build.")
         return BOOST_CACHE_DIR
@@ -303,11 +319,26 @@ def _boost_prefix() -> Path:
 
     BOOST_CACHE_DIR.mkdir(parents=True, exist_ok=True)
     print(f"[smlp build] Compiling Boost → {BOOST_CACHE_DIR}  (this takes a few minutes) ...")
+    py_ver = f"{sys.version_info.major}.{sys.version_info.minor}"
+    py_inc = subprocess.check_output(
+        [sys.executable, "-c",
+         "import sysconfig; print(sysconfig.get_path('include'))"],
+        text=True
+    ).strip()
+
+    # Write a user-config.jam that tells Boost.Python exactly which Python
+    # to use and disables linking against libpython (required for manylinux
+    # where libpython.so does not exist).
+    user_config = src / "user-config.jam"
+    user_config.write_text(
+        f"using python : {py_ver} : {sys.executable} : {py_inc} : ;\n"
+    )
+
     _run(
         ["./b2", "install",
          f"--prefix={BOOST_CACHE_DIR}",
          "--with-python",
-         "python=3.11"],
+         f"python={py_ver}"],
         cwd=str(src),
     )
 
@@ -341,7 +372,7 @@ def _boost_env(prefix: Path) -> dict:
     env["PYTHON3"]          = sys.executable
 
     # Tell Meson the exact versioned Boost.Python library name,
-    # e.g. Python 3.11 → boost_python311
+    # e.g. Python 3.11 → boost_python311, Python 3.11 → boost_python313
     py_ver = f"{sys.version_info.major}{sys.version_info.minor}"
     env["BOOST_PYTHON_LIBNAME"] = f"boost_python{py_ver}"
 
@@ -667,7 +698,7 @@ def _z3_prefix() -> Path:
     )
 
 
-def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path, z3_bin: Path, build_tmp: Path) -> Path:
+def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path, z3_bin: Path, build_tmp: Path, stub_dir: Path = None) -> Path:
     """
     Write a Meson native file that points to the user-space Boost install.
     This is the most reliable way to pass non-standard library paths to Meson —
@@ -701,11 +732,43 @@ def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path, z3_bi
         f"pkg_config_path = ['{gmp_lib / 'pkgconfig'}', '{boost_lib / 'pkgconfig'}', '{z3_pc_dir}']\n"
         f"c_args = ['-I{gmp_inc}', '-I{boost_inc}']\n"
         f"cpp_args = ['-I{gmp_inc}', '-I{boost_inc}']\n"
-        f"c_link_args = ['-L{gmp_lib}', '-L{boost_lib}', '-Wl,-rpath,{gmp_lib}', '-Wl,-rpath,{boost_lib}']\n"
-        f"cpp_link_args = ['-L{gmp_lib}', '-L{boost_lib}', '-Wl,-rpath,{gmp_lib}', '-Wl,-rpath,{boost_lib}', '-Wl,-rpath,{z3_lib}']\n"
+        f"c_link_args = ['-L{gmp_lib}', '-L{boost_lib}', '-L{build_tmp}', '-Wl,-rpath,{gmp_lib}', '-Wl,-rpath,{boost_lib}']\n"
+        f"cpp_link_args = ['-L{gmp_lib}', '-L{boost_lib}', '-L{build_tmp}', '-Wl,-rpath,{gmp_lib}', '-Wl,-rpath,{boost_lib}', '-Wl,-rpath,{z3_lib}']\n"
     )
     print(f"[smlp build] Wrote Meson native file: {native_file}")
     return native_file
+
+
+def _create_python_stub_lib(build_tmp: Path) -> None:
+    """
+    Create a stub libpythonX.Y.so in build_tmp so the linker can satisfy
+    the -lpythonX.Y flag from Meson's embed:true Python dependency.
+    On manylinux, Python is statically linked so no real libpython exists,
+    but the extension works at runtime because the interpreter provides
+    all symbols via dlopen.
+    """
+    import sysconfig
+    py_ver = f"{sys.version_info.major}.{sys.version_info.minor}"
+    stub_lib = build_tmp / f"libpython{py_ver}.so"
+    if stub_lib.exists():
+        return
+
+    # Create an empty shared library as a stub
+    stub_src = build_tmp / f"python_stub.c"
+    stub_src.write_text("// empty stub\n")
+    result = subprocess.run(
+        ["gcc", "-shared", "-fPIC", "-o", str(stub_lib), str(stub_src)],
+        capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        print(f"[smlp build] WARNING: failed to create Python stub lib: {result.stderr}")
+        return
+
+    print(f"[smlp build] Created Python stub lib: {stub_lib}")
+
+    # Add stub dir to LDFLAGS and library path so linker finds it
+    os.environ["LDFLAGS"] = f"-L{build_tmp} " + os.environ.get("LDFLAGS", "")
+    os.environ["LIBRARY_PATH"] = f"{build_tmp}:" + os.environ.get("LIBRARY_PATH", "")
 
 
 def _meson_build(poly_dir: Path, kay_dir: Path,
@@ -723,6 +786,7 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
     z3_lib     = _z3_prefix()
     z3_bin     = _z3_binary()
     gmp_prefix = _gmp_prefix()
+    _create_python_stub_lib(build_tmp)
     env = _boost_env(boost_prefix)
     env = _add_z3_to_env(env, z3_lib)
     env = _add_gmp_to_env(env, gmp_prefix)
@@ -763,7 +827,9 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
 
     # Locate the installed smlp package (Meson may use a versioned python path)
     candidates = (list(install_prefix.glob("lib/python*/dist-packages/smlp")) +
-                  list(install_prefix.glob("lib/python3/dist-packages/smlp")))
+                  list(install_prefix.glob("lib/python3/dist-packages/smlp")) +
+                  list(install_prefix.glob("lib/python*/site-packages/smlp")) +
+                  list(install_prefix.glob("lib/python3/site-packages/smlp")))
     if not candidates:
         sys.exit(
             f"[smlp build] ERROR: could not find installed smlp package under "
@@ -801,12 +867,14 @@ class MesonBuildExt(_build_ext):
         if branch:
             _run(["git", "switch", branch], cwd=str(REPO_ROOT))
         else:
+            py_ver = f"{sys.version_info.major}{sys.version_info.minor}"
+            auto_branch = f"smlp_python{py_ver}"
             result = subprocess.run(
-                ["git", "branch", "-r", "--list", "origin/smlp_python311"],
+                ["git", "branch", "-r", "--list", f"origin/{auto_branch}"],
                 capture_output=True, text=True, cwd=str(REPO_ROOT)
             )
             if result.stdout.strip():
-                _run(["git", "switch", "smlp_python311"], cwd=str(REPO_ROOT))
+                _run(["git", "switch", auto_branch], cwd=str(REPO_ROOT))
 
         installed_pkg = _meson_build(poly_dir, kay_dir, boost_prefix, build_tmp)
 
