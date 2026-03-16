@@ -271,7 +271,8 @@ configure_file(
 
 libsmlp_deps = poly_deps
 
-py3 = import('python').find_installation('python', modules: ['fractions'],
+py3 = import('python').find_installation(get_option('python-bin'),
+                                         modules: ['fractions'],
                                          disabler: true, required: false)
 py3_dep = py3.dependency(embed: true, required: false)
 all_deps += {'python3': py3_dep}
@@ -284,7 +285,7 @@ libsmlp_deps += boost_dep
 if py3_dep.found() and boost_dep.found()
   have_smlp_py = true
   features += {'Python module "smlp"': true}
-  message('SMLP Python API enabled')
+  message('SMLP Python ' + py3.language_version() + ' API enabled')
   py3.install_sources('..'/'python'/'smlp'/'__init__.py',
                       subdir: 'smlp')
   py3.extension_module('libsmlp', 'libsmlp.cc',
@@ -298,7 +299,7 @@ if py3_dep.found() and boost_dep.found()
 else
   have_smlp_py = false
   features += {'Python module "smlp"': [false,'python3','boost']}
-  message('SMLP Python API disabled')
+  message('SMLP Python ' + py3.language_version() + ' API disabled')
 endif
 
 summary(all_deps, section: 'Dependencies', list_sep: ', ')
