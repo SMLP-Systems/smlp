@@ -37,8 +37,9 @@ ENV PATH="/root/.local/bin:${PATH}"
 ENV Z3_PREFIX=/opt/python/cp311-cp311/lib/python3.11/site-packages/z3
 
 WORKDIR /app
-ARG GIT_BRANCH=$(git branch --show-current)
 COPY run_git_clone .
+ARG GIT_BRANCH=master
+RUN echo "Building image for branch: $GIT_BRANCH"
 RUN ./run_git_clone $GIT_BRANCH
 
 # ---------------------------------------------------------------------------

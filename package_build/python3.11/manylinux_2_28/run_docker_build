@@ -6,7 +6,9 @@ set clone_script=run_git_clone
 \rm -f $wheel >& /dev/null
 \rm -f $clone_script >& /dev/null
 \cp -p `realpath $0 | xargs dirname`/../22.04/$clone_script .
-env DOCKER_BUILDKIT=1 docker build --no-cache --progress=plain -t $image .
+set cmd="env DOCKER_BUILDKIT=1 docker build --no-cache --build-arg GIT_BRANCH=`git branch --show-current` --progress=plain -t $image ."
+echo $cmd
+$cmd
 if($status) then
     echo "\nERROR: Docker build faied\n"
     exit 1
