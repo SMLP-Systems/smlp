@@ -10,7 +10,8 @@ import os
 import pandas as pd
 import numpy as np
 #import textwrap
-from smlp_py.smlp_utils import list_unique_unordered
+
+from .smlp_utils import list_unique_unordered
 
 
 # What are main effects, simple effects, and interactions?

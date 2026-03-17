@@ -5,12 +5,12 @@ import pysubgroup as ps
 import pandas as pd
 import numpy as np
 
-from smlp_py.smlp_utils import (pd_df_col_is_numeric, pd_df_col_is_categorical, list_unique_unordered, 
+from .smlp_utils import (pd_df_col_is_numeric, pd_df_col_is_categorical, list_unique_unordered, 
     list_unique_ordered, param_dict_with_algo_name, get_response_type, rows_dict_to_df)
-from smlp_py.smlp_precisions import PrecisionMeasures
-from smlp_py.smlp_constants import *
+from .smlp_precisions import PrecisionMeasures
+from .smlp_constants import *
 try:
-    from smlp_py.range_plots import RangePlots
+    from .range_plots import RangePlots
     RangePlots_are_missing = False
 except ImportError:
     # Subgroup discovery can run but plots (visualization) of the slected ranges must be disabled
