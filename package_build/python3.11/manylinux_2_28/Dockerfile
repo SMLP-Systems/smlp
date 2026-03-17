@@ -4,7 +4,7 @@ FROM quay.io/pypa/manylinux_2_28_x86_64
 # 1. System packages
 # ---------------------------------------------------------------------------
 RUN dnf install -y \
-        wget git make m4 pkg-config && \
+        wget git make m4 pkg-config gmp-devel && \
     dnf clean all
 
 # ---------------------------------------------------------------------------
@@ -34,7 +34,7 @@ ENV PATH="/root/.local/bin:${PATH}"
 # 5. Clone smlp and optionaly switch to branch
 # ---------------------------------------------------------------------------
 # Point setup.py to the correct z3 location for this Python installation
-ENV Z3_PREFIX=/opt/python/cp311-cp311/lib/python3.11/site-packages/z3
+ENV Z3_PREFIX=/opt/python/cp311-cp311/lib/python3.11/site-packages/z3/lib
 
 WORKDIR /app
 COPY run_git_clone .
@@ -46,7 +46,7 @@ RUN ./run_git_clone $GIT_BRANCH
 # 6. Build wheel
 # ---------------------------------------------------------------------------
 WORKDIR smlp
-RUN /opt/python/cp311-cp311/bin/python3.11 -m pip wheel . -w dist/ && \
+RUN /opt/python/cp311-cp311/bin/python3.11 -m pip -v wheel . -w dist/ && \
     /opt/python/cp311-cp311/bin/python3.11 repair_wheel.py dist/ --plat manylinux_2_28_x86_64
 
 CMD ["/usr/bin/bash"]
