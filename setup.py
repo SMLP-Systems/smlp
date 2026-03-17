@@ -699,7 +699,7 @@ def _z3_prefix() -> tuple[Path,Path]:
       2. Z3_DEFAULT_PREFIX constant → ~/.local/lib/python3.11/site-packages/z3/lib
          (standard location for: pip install --user z3-solver)
     """
-    env_prefix = os.environ.get("Z3_PREFIX")
+    env_prefix = os.environ.get("Z3_PREFIX", f"/usr/lib/{platform.machine()}-{platform.system().lower()}-gnu")
     prefix = Path(env_prefix).expanduser() if env_prefix else Z3_DEFAULT_PREFIX
     lib_dir = prefix
 
