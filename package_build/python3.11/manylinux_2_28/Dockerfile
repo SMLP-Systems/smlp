@@ -38,6 +38,7 @@ ENV Z3_PREFIX=/opt/python/cp311-cp311/lib/python3.11/site-packages/z3/lib
 
 WORKDIR /app
 COPY run_git_clone .
+ARG CACHE_BUST_SMLP
 ARG GIT_BRANCH=master
 RUN echo "Building image for branch: $GIT_BRANCH"
 RUN ./run_git_clone $GIT_BRANCH

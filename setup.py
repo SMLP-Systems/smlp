@@ -674,7 +674,6 @@ def _write_z3_pc(z3_lib: Path) -> Path:
         print(f"[smlp build] Using existing pkg-config file: {pc_file}")
     else:
         pkgconfig_dir = Path.cwd() / "pkgconfig"
-        os.environ["PKG_CONFIG_PATH"] = os.environ.get("PKG_CONFIG_PATH", str(pkgconfig_dir))
         pkgconfig_dir.mkdir(parents=True, exist_ok=True)
         pc_file = pkgconfig_dir / "z3.pc"
         pc_file.write_text(
