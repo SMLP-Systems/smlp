@@ -40,8 +40,10 @@ RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 && \
 # 4. Clone smlp (ARG busts the cache to always get latest)
 # ---------------------------------------------------------------------------
 ARG CACHE_BUST_SMLP
+ARG GIT_BRANCH=master
+RUN echo "Building image for branch: $GIT_BRANCH"
 COPY run_git_clone /app
-RUN cd /app && ./run_git_clone smlp_python311
+RUN cd /app && ./run_git_clone $GIT_BRANCH
 
 # ---------------------------------------------------------------------------
 # 5. Install smlp from wheel
