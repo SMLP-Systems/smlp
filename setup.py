@@ -72,7 +72,7 @@ BOOST_CACHE_DIR = Path(
 #   python3.11 -m pip install --user z3-solver
 Z3_DEFAULT_PREFIX = (
     Path.home() / ".local" / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}"
-    / "site-packages" / "z3"
+    / "site-packages" / "z3" / "lib"
 )
 
 GMP_VERSION   = os.environ.get("GMP_VERSION", "6.3.0")
@@ -188,6 +188,22 @@ def _meson_bin(build_tmp: Path) -> list[str]:
         spec = importlib.util.find_spec("mesonbuild")
         if spec and spec.submodule_search_locations:
             mesonbuild_location = str(Path(list(spec.submodule_search_locations)[0]).parent)
+
+    # Fallback: probe system dist-packages / site-packages directly
+    # (covers installs in /usr/local/lib/pythonX.Y/dist-packages, etc.)
+    if not mesonbuild_location:
+        py_ver = f"python{sys.version_info.major}.{sys.version_info.minor}"
+        candidate_roots = [
+            Path(f"/usr/local/lib/{py_ver}/dist-packages"),
+            Path(f"/usr/lib/{py_ver}/dist-packages"),
+            Path(f"/usr/local/lib/{py_ver}/site-packages"),
+            Path(f"/usr/lib/{py_ver}/site-packages"),
+        ]
+        for root in candidate_roots:
+            if (root / "mesonbuild").exists():
+                mesonbuild_location = str(root)
+                print(f"[smlp build] Found mesonbuild in system path: {root}")
+                break
 
     # Fallback: use meson binary directly from PATH
     if not mesonbuild_location:
@@ -634,7 +650,7 @@ def _z3_binary() -> Path:
     return Z3_BIN_DIR / "z3"
 
 
-def _write_z3_pc(z3_lib: Path) -> None:
+def _write_z3_pc(z3_lib: Path) -> Path:
     """
     Write a z3.pc pkg-config file into <z3_lib>/pkgconfig/.
     z3-solver does not ship one, so Meson cannot find it via pkg-config
@@ -653,23 +669,29 @@ def _write_z3_pc(z3_lib: Path) -> None:
     inc_dir   = prefix / "include"
 
     pkgconfig_dir = z3_lib / "pkgconfig"
-    pkgconfig_dir.mkdir(parents=True, exist_ok=True)
     pc_file = pkgconfig_dir / "z3.pc"
-    pc_file.write_text(
-        f"prefix={prefix}\n"
-        f"libdir={z3_lib}\n"
-        f"includedir={inc_dir}\n"
-        "\n"
-        "Name: z3\n"
-        "Description: Z3 Theorem Prover\n"
-        f"Version: {version}\n"
-        "Libs: -L${libdir} -lz3\n"
-        "Cflags: -I${includedir}\n"
-    )
-    print(f"[smlp build] Wrote pkg-config file: {pc_file}")
+    if os.path.exists(pc_file):
+        print(f"[smlp build] Using existing pkg-config file: {pc_file}")
+    else:
+        pkgconfig_dir = Path.cwd() / "pkgconfig"
+        os.environ["PKG_CONFIG_PATH"] = os.environ.get("PKG_CONFIG_PATH", str(pkgconfig_dir))
+        pkgconfig_dir.mkdir(parents=True, exist_ok=True)
+        pc_file = pkgconfig_dir / "z3.pc"
+        pc_file.write_text(
+            f"prefix={prefix}\n"
+            f"libdir={z3_lib}\n"
+            f"includedir={inc_dir}\n"
+            "\n"
+            "Name: z3\n"
+            "Description: Z3 Theorem Prover\n"
+            f"Version: {version}\n"
+            "Libs: -L${libdir} -lz3\n"
+            "Cflags: -I${includedir}\n"
+        )
+        print(f"[smlp build] Wrote pkg-config file: {pc_file}")
+        return pkgconfig_dir
 
-
-def _z3_prefix() -> Path:
+def _z3_prefix() -> tuple[Path,Path]:
     """
     Return the z3-solver lib directory containing libz3.so.
 
@@ -680,15 +702,15 @@ def _z3_prefix() -> Path:
     """
     env_prefix = os.environ.get("Z3_PREFIX")
     prefix = Path(env_prefix).expanduser() if env_prefix else Z3_DEFAULT_PREFIX
-    lib_dir = prefix / "lib"
+    lib_dir = prefix
 
     print(f"[smlp build] Looking for libz3.so in: {lib_dir}")
 
     found = list(lib_dir.rglob("libz3.so")) if lib_dir.exists() else []
     if found:
         print(f"[smlp build] Using z3 lib dir: {lib_dir}")
-        _write_z3_pc(lib_dir)
-        return lib_dir
+        z3_pc_dir = _write_z3_pc(lib_dir)
+        return lib_dir, z3_pc_dir
 
     sys.exit(
         f"[smlp build] ERROR: libz3.so not found at {lib_dir}.\n"
@@ -698,7 +720,7 @@ def _z3_prefix() -> Path:
     )
 
 
-def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path, z3_bin: Path, build_tmp: Path, stub_dir: Path = None) -> Path:
+def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path, z3_bin: Path, z3_pc_dir: Path, build_tmp: Path, stub_dir: Path = None) -> Path:
     """
     Write a Meson native file that points to the user-space Boost install.
     This is the most reliable way to pass non-standard library paths to Meson —
@@ -709,7 +731,6 @@ def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path, z3_bi
     boost_inc = boost_prefix / "include"
     gmp_lib   = gmp_prefix / "lib"
     gmp_inc   = gmp_prefix / "include"
-    z3_pc_dir = z3_lib / "pkgconfig"
 
     native_file = build_tmp / "native.ini"
     native_file.write_text(
@@ -783,9 +804,9 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
     if meson_build_dir.exists():
         shutil.rmtree(meson_build_dir)
 
-    z3_lib     = _z3_prefix()
-    z3_bin     = _z3_binary()
-    gmp_prefix = _gmp_prefix()
+    z3_lib, z3_pc_dir  = _z3_prefix()
+    z3_bin         = _z3_binary()
+    gmp_prefix     = _gmp_prefix()
     _create_python_stub_lib(build_tmp)
     env = _boost_env(boost_prefix)
     env = _add_z3_to_env(env, z3_lib)
@@ -801,7 +822,7 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
     rpath_flags = ":".join(f"-Wl,-rpath,{d}" for d in rpath_dirs)
     existing_ldflags = env.get("LDFLAGS", "")
     env["LDFLAGS"] = f"{rpath_flags} {existing_ldflags}".strip()
-    native_file = _write_native_file(boost_prefix, gmp_prefix, z3_lib, z3_bin, build_tmp)
+    native_file = _write_native_file(boost_prefix, gmp_prefix, z3_lib, z3_bin, z3_pc_dir, build_tmp)
 
     meson_flags = [
         "--wipe",
