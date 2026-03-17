@@ -25,7 +25,10 @@ RUN chmod +x tkagg_patch.sh
 
 #Install smlp and run DORA test
 COPY run_git_clone .
-RUN  ./run_git_clone venv_build && \
+ARG CACHE_BUST_SMLP
+ARG GIT_BRANCH=master
+RUN echo "Building image for branch: $GIT_BRANCH"
+RUN  ./run_git_clone $GIT_BRANCH && \
      cd smlp/venv/python3.11 && \
      /app/tkagg_patch.sh && \
     ./run_venv_build
