@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 script_path=$(realpath $0 | xargs dirname)
 venv_dir=venv
-\rm -rf $venv_dir > /dev/null
+\rm -rf $venv_dir logs.log > /dev/null
 if [[ $# -gt 0 ]]; then
    if [ "$1" == "-clean" ]; then
        exit 0
