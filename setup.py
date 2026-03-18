@@ -34,10 +34,14 @@ BOOST_ROOT       Reuse an existing Boost prefix – skips download + compile.
 BOOST_CACHE_DIR  Where to cache the compiled Boost (default: ~/.local/boost_py311).
 BOOST_VERSION    Boost version to download (default: 1.83.0).
 KAY_DIR          Reuse an existing kay checkout.
-GMP_ROOT         Reuse an existing GMP prefix – skips download + compile.
-                 e.g.  export GMP_ROOT=~/.local/gmp
-GMP_CACHE_DIR    Where to cache compiled GMP (default: ~/.local/gmp).
-GMP_VERSION      GMP version to download (default: 6.3.0).
+GMP_ROOT         Point at an existing GMP prefix – skips all detection.
+                 e.g.  export GMP_ROOT=/usr          (apt/dnf install)
+                        export GMP_ROOT=~/.local/gmp  (custom build)
+                 If unset, the system GMP is located automatically via
+                 pkg-config or well-known prefixes (/usr/local, /usr).
+                 Source compilation is only attempted as a last resort.
+GMP_CACHE_DIR    Where to cache a source-compiled GMP (default: ~/.local/gmp).
+GMP_VERSION      GMP version to download if source build is needed (default: 6.3.0).
 Z3_PREFIX        Reuse an existing Z3 install prefix – skips pip z3-solver.
                  e.g.  export Z3_PREFIX=~/.local/z3
 Z3_VERSION       Z3 version to download binary for (default: 4.8.12).
@@ -465,11 +469,28 @@ def _ensure_kay(build_tmp: Path) -> Path:
 
 def _write_gmp_pc(prefix: Path) -> None:
     """
-    Write a gmp.pc pkg-config file into <prefix>/lib/pkgconfig/.
-    GMP does not generate one by default, so Meson cannot find it
-    via pkg-config without this file.
+    Write gmp.pc and gmpxx.pc into <prefix>/lib/pkgconfig/ so Meson can
+    locate GMP via pkg-config.  GMP itself does not generate these files.
+
+    When prefix is a system path (e.g. /usr) that is not writable without
+    root, the files are written to a temporary directory inside the build
+    tree and PKG_CONFIG_PATH is updated so pkg-config still finds them.
     """
     pkgconfig_dir = prefix / "lib" / "pkgconfig"
+
+    # If the system pkgconfig dir is not writable (no root), fall back to a
+    # writable directory in the user's home and extend PKG_CONFIG_PATH.
+    if not os.access(str(pkgconfig_dir.parent), os.W_OK):
+        pkgconfig_dir = Path.home() / ".local" / "share" / "pkgconfig"
+        existing = os.environ.get("PKG_CONFIG_PATH", "")
+        os.environ["PKG_CONFIG_PATH"] = (
+            f"{pkgconfig_dir}:{existing}" if existing else str(pkgconfig_dir)
+        )
+        print(
+            f"[smlp build] System pkgconfig dir not writable; "
+            f"writing GMP .pc files to {pkgconfig_dir}"
+        )
+
     pkgconfig_dir.mkdir(parents=True, exist_ok=True)
     pc_file = pkgconfig_dir / "gmp.pc"
     pc_file.write_text(
@@ -504,14 +525,62 @@ def _write_gmp_pc(prefix: Path) -> None:
     print(f"[smlp build] Wrote pkg-config file: {pcxx_file}")
 
 
+def _probe_system_gmp() -> "Path | None":
+    """
+    Locate a system-installed GMP (apt/dnf) without compiling anything.
+    Returns the install prefix (e.g. /usr or /usr/local), or None.
+
+    Detection order:
+      1. pkg-config gmp  – works when the distro ships gmp.pc
+         (Ubuntu/Debian: libgmp-dev  already ships gmp.pc)
+         (Fedora/RHEL:   gmp-devel   already ships gmp.pc)
+      2. Well-known prefixes (/usr/local, /usr) — header + library present,
+         including multiarch lib dirs used by Debian/Ubuntu.
+    """
+    from shutil import which
+
+    # ── 1. pkg-config ────────────────────────────────────────────────────
+    if which("pkg-config"):
+        r = subprocess.run(
+            ["pkg-config", "--variable=prefix", "gmp"],
+            capture_output=True, text=True,
+        )
+        if r.returncode == 0:
+            prefix = Path(r.stdout.strip())
+            print(f"[smlp build] System GMP found via pkg-config: {prefix}")
+            return prefix
+
+    # ── 2. Well-known prefixes ────────────────────────────────────────────
+    import platform as _plat
+    machine = _plat.machine()
+    for prefix in (Path("/usr/local"), Path("/usr")):
+        header = prefix / "include" / "gmp.h"
+        if not header.exists():
+            continue
+        lib_candidates = [
+            prefix / "lib" / "libgmp.so",
+            prefix / "lib" / "libgmp.a",
+            prefix / "lib" / f"{machine}-linux-gnu" / "libgmp.so",
+            prefix / "lib" / f"{machine}-linux-gnu" / "libgmp.a",
+        ]
+        if any(p.exists() for p in lib_candidates):
+            print(f"[smlp build] System GMP found at prefix: {prefix}")
+            return prefix
+
+    return None
+
+
 def _gmp_prefix() -> Path:
     """
-    Return the GMP install prefix, building from source if necessary.
+    Return the GMP install prefix, building from source only as a last resort.
 
     Search order:
-      1. $GMP_ROOT env var       → use as-is, no build
-      2. GMP_CACHE_DIR marker    → cache hit, skip build
-      3. Download + compile into GMP_CACHE_DIR
+      1. $GMP_ROOT env var          → use as-is, no detection
+      2. System GMP installation    → pkg-config or well-known paths
+         Ubuntu/Debian: sudo apt install libgmp-dev
+         Fedora/RHEL:   sudo dnf install gmp-devel
+      3. GMP_CACHE_DIR marker       → previous source build, reuse it
+      4. Download + compile into GMP_CACHE_DIR
     """
     # ── Option A: caller supplied an existing prefix ──────────────────────
     env_root = os.environ.get("GMP_ROOT")
@@ -520,14 +589,22 @@ def _gmp_prefix() -> Path:
         print(f"[smlp build] Using GMP_ROOT={prefix}")
         return prefix
 
-    # ── Option B: cached build already present ────────────────────────────
+    # ── Option B: system-installed GMP (apt/dnf — no compilation needed) ──
+    system_prefix = _probe_system_gmp()
+    if system_prefix is not None:
+        # Write gmp.pc / gmpxx.pc if the distro package doesn't ship them,
+        # so Meson can find GMP via pkg-config regardless of package manager.
+        _write_gmp_pc(system_prefix)
+        return system_prefix
+
+    # ── Option C: cached source build already present ─────────────────────
     tag_file = GMP_CACHE_DIR / ".built"
     if tag_file.exists():
         print(f"[smlp build] GMP cache found at {GMP_CACHE_DIR}, skipping build.")
         _write_gmp_pc(GMP_CACHE_DIR)
         return GMP_CACHE_DIR
 
-    # ── Option C: download + compile into user-space cache ────────────────
+    # ── Option D: download + compile into user-space cache ────────────────
     tarball_name = f"gmp-{GMP_VERSION}.tar.xz"
     url          = f"https://gmplib.org/download/gmp/{tarball_name}"
 
