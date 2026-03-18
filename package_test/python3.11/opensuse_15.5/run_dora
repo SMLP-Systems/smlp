@@ -9,17 +9,7 @@ if [[ $# -gt 0 ]]; then
         exit 0
     fi
 fi
-pkill Xvfb > /dev/null
-export DISPLAY=:99
-Xvfb $DISPLAY -screen 0 1024x768x24 > /dev/null 2>&1 &
-sleep 1
-if xset q > /dev/null 2>&1; then
-    echo "" && echo "X display has been initialized successfully" && echo ""
-else
-    echo "" && echo "X display initialization failed"  && echo ""
-    exit 1
-fi
-/usr/local/lib64/python3.11/site-packages/smlp/run_smlp.py \
+xvfb-run /usr/local/lib64/python3.11/site-packages/smlp/run_smlp.py \
          -data smlp/regr_smlp/data/smlp_toy_num_resp_mult.csv \
          -out_dir ./ \
          -pref Test83 \

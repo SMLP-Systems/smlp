@@ -22,6 +22,7 @@ RUN zypper refresh && zypper install -y \
         xorg-x11-fonts \
         xorg-x11-fonts-core \
         xorg-x11-server-Xvfb \
+        xvfb-run \
         xset \
         procps \
         python311 \
