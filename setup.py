@@ -954,7 +954,8 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
     print(f"[smlp build] PKG_CONFIG_PATH = {env.get('PKG_CONFIG_PATH', '(not set)')}")
     print(f"[smlp build] LD_LIBRARY_PATH  = {env.get('LD_LIBRARY_PATH', '(not set)')}")
     _run(
-        _meson_bin(build_tmp) + ["setup"] + meson_flags,
+        #_meson_bin(build_tmp) + ["setup"] + meson_flags,
+        ["meson", "setup"] + meson_flags,
         env=env,
     )
 
