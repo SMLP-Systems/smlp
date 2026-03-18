@@ -52,7 +52,7 @@ RUN cd /app && ./run_git_clone smlp_python311
 # ---------------------------------------------------------------------------
 # 5. Install smlp from wheel
 # ---------------------------------------------------------------------------
-RUN python3.11 -m pip install /app/smlp/dist/smlp-0.1.0-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+RUN python3.11 -m pip install /app/smlp/package_test/python3.11/dist/smlp-0.1.0-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
 
 # ---------------------------------------------------------------------------
 # 6. Configure UTF-8 locale
