@@ -67,12 +67,12 @@ BOOST_CACHE_DIR = Path(
     os.environ.get("BOOST_CACHE_DIR", Path.home() / ".local" / "boost_py311")
 ).expanduser()
 
-# Default Z3_PREFIX: where z3-solver installs its lib/libz3.so
+# Default Z3_PREFIX: where z3-solver installs its libz3.so
 # This is the standard location when installed via:
 #   python3.11 -m pip install --user z3-solver
 Z3_DEFAULT_PREFIX = (
     Path.home() / ".local" / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}"
-    / "site-packages" / "z3" / "lib"
+    / "site-packages" / "z3"
 )
 
 GMP_VERSION   = os.environ.get("GMP_VERSION", "6.3.0")
@@ -354,6 +354,7 @@ def _boost_prefix() -> Path:
         ["./b2", "install",
          f"--prefix={BOOST_CACHE_DIR}",
          "--with-python",
+         f"--user-config={user_config}",
          f"python={py_ver}"],
         cwd=str(src),
     )
