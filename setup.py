@@ -156,87 +156,95 @@ def _download(url: str, dest: Path, retries: int = 5) -> None:
 
 def _meson_bin(build_tmp: Path) -> list[str]:
     """
-    Write a meson wrapper script and return the command to invoke it.
+    Return the command list used to invoke Meson.
 
-    The wrapper explicitly adds the meson install location to sys.path,
-    so it works in pip's isolated build environment where user site-packages
-    is not on sys.path. Meson stores the wrapper path in the build dir and
-    reuses it for internal calls like `meson install`, so it must be a real
-    executable file — not a -c string.
+    Strategy: write a small wrapper script whose shebang is exactly
+    sys.executable (the Python running this build) and which explicitly
+    adds the mesonbuild location to sys.path before importing it.
+    This is the only approach that works reliably in all three environments:
+
+      • pip isolated build  – sys.executable is the build-venv interpreter;
+                              mesonbuild lives in the *outer* site-packages and
+                              is not on sys.path by default.
+      • Docker / root       – meson is pip-installed into the cp311 prefix;
+                              the symlink at /usr/local/bin/meson has the wrong
+                              shebang when called from an isolated env.
+      • plain `pip install` – same as above.
+
+    The wrapper must be a real file (not `python -m ...`) because Meson
+    stores its own path and re-invokes it for `meson install`, etc.
     """
-    # Find where mesonbuild is installed via pip show
-    mesonbuild_location = None
-    result = subprocess.run(
-        [sys.executable, "-m", "pip", "show", "meson"],
-        capture_output=True, text=True
-    )
-    if result.returncode == 0:
-        for line in result.stdout.splitlines():
-            if line.startswith("Location:"):
-                mesonbuild_location = line.split(":", 1)[1].strip()
-                break
+    # Locate the directory that contains the `mesonbuild` package.
+    mesonbuild_location = _find_mesonbuild_location()
 
-    # Fallback: check user site-packages directly
-    if not mesonbuild_location:
-        user_site = (
-            Path.home() / ".local" / "lib"
-            / f"python{sys.version_info.major}.{sys.version_info.minor}"
-            / "site-packages"
-        )
-        if (user_site / "mesonbuild").exists():
-            mesonbuild_location = str(user_site)
-
-    # Fallback: find mesonbuild via importlib (works when on sys.path)
-    if not mesonbuild_location:
-        import importlib.util
-        spec = importlib.util.find_spec("mesonbuild")
-        if spec and spec.submodule_search_locations:
-            mesonbuild_location = str(Path(list(spec.submodule_search_locations)[0]).parent)
-
-    # Fallback: probe system dist-packages / site-packages directly
-    # (covers installs in /usr/local/lib/pythonX.Y/dist-packages, etc.)
-    if not mesonbuild_location:
-        py_ver = f"python{sys.version_info.major}.{sys.version_info.minor}"
-        candidate_roots = [
-            Path(f"/usr/local/lib/{py_ver}/dist-packages"),
-            Path(f"/usr/lib/{py_ver}/dist-packages"),
-            Path(f"/usr/local/lib/{py_ver}/site-packages"),
-            Path(f"/usr/lib/{py_ver}/site-packages"),
-        ]
-        for root in candidate_roots:
-            if (root / "mesonbuild").exists():
-                mesonbuild_location = str(root)
-                print(f"[smlp build] Found mesonbuild in system path: {root}")
-                break
-
-    # Fallback: use meson binary directly from PATH
-    if not mesonbuild_location:
-        from shutil import which
-        meson_bin = which("meson")
-        if meson_bin:
-            print(f"[smlp build] Using meson from PATH: {meson_bin}")
-            return [meson_bin]
-
-    if not mesonbuild_location:
-        raise RuntimeError(
-            f"[smlp build] meson not found. Run:  python{sys.version_info.major}.{sys.version_info.minor} -m pip install meson"
-        )
-
-    print(f"[smlp build] meson location: {mesonbuild_location}")
-
-    # Write a wrapper script with a proper shebang so Meson can store and
-    # reuse its path for internal calls (meson install, meson test, etc.)
     wrapper = build_tmp / "meson"
     wrapper.write_text(
-        f"#!/usr/bin/env {sys.executable}\n"
+        f"#!{sys.executable}\n"
         "import sys\n"
         f"sys.path.insert(0, {mesonbuild_location!r})\n"
         "from mesonbuild.mesonmain import main\n"
         "sys.exit(main())\n"
     )
     wrapper.chmod(0o755)
-    print(f"[smlp build] Using meson wrapper: {wrapper}")
+    print(f"[smlp build] Using meson wrapper: {wrapper} (mesonbuild at {mesonbuild_location})")
     return [str(wrapper)]
+
+
+def _find_mesonbuild_location() -> str:
+    """
+    Return the parent directory of the `mesonbuild` package so it can be
+    inserted into sys.path inside the wrapper script.
+
+    Search order (all use the *same* interpreter that is running this script):
+      1. importlib.util.find_spec  – works when mesonbuild is already on
+                                     sys.path (normal installs, venvs).
+      2. pip show meson            – works even when mesonbuild is not on
+                                     sys.path (pip isolated build envs).
+      3. Well-known site-packages  – /usr/local/lib/pythonX.Y/site-packages
+                                     and dist-packages variants.
+    Raises RuntimeError if nothing is found.
+    """
+    import importlib.util
+
+    # ── 1. importlib – cheapest, works when already importable ───────────
+    spec = importlib.util.find_spec("mesonbuild")
+    if spec and spec.submodule_search_locations:
+        location = str(Path(list(spec.submodule_search_locations)[0]).parent)
+        print(f"[smlp build] mesonbuild found via importlib: {location}")
+        return location
+
+    # ── 2. pip show meson ─────────────────────────────────────────────────
+    result = subprocess.run(
+        [sys.executable, "-m", "pip", "show", "meson"],
+        capture_output=True, text=True,
+    )
+    if result.returncode == 0:
+        for line in result.stdout.splitlines():
+            if line.startswith("Location:"):
+                location = line.split(":", 1)[1].strip()
+                if (Path(location) / "mesonbuild").exists():
+                    print(f"[smlp build] mesonbuild found via pip show: {location}")
+                    return location
+
+    # ── 3. Well-known paths ───────────────────────────────────────────────
+    py_ver = f"python{sys.version_info.major}.{sys.version_info.minor}"
+    for root in [
+        Path(f"/opt/python/cp{sys.version_info.major}{sys.version_info.minor}"
+             f"-cp{sys.version_info.major}{sys.version_info.minor}/lib/{py_ver}/site-packages"),
+        Path(f"/usr/local/lib/{py_ver}/site-packages"),
+        Path(f"/usr/local/lib/{py_ver}/dist-packages"),
+        Path(f"/usr/lib/{py_ver}/site-packages"),
+        Path(f"/usr/lib/{py_ver}/dist-packages"),
+        Path.home() / ".local" / "lib" / py_ver / "site-packages",
+    ]:
+        if (root / "mesonbuild").exists():
+            print(f"[smlp build] mesonbuild found via path probe: {root}")
+            return str(root)
+
+    raise RuntimeError(
+        "[smlp build] mesonbuild not found. "
+        f"Run: {sys.executable} -m pip install meson"
+    )
 
 
 def _ninja_bin() -> str:
@@ -425,7 +433,7 @@ def _add_z3_to_env(env: dict, z3_lib: Path) -> dict:
 
 def _add_gmp_to_env(env: dict, gmp_prefix: Path) -> dict:
     """Prepend the GMP lib/include directories to the relevant env vars."""
-    gmp_lib = gmp_prefix / "lib"
+    gmp_lib = _gmp_libdir(gmp_prefix)
     gmp_inc = gmp_prefix / "include"
 
     existing_ld = env.get("LD_LIBRARY_PATH", "")
@@ -467,37 +475,55 @@ def _ensure_kay(build_tmp: Path) -> Path:
 # Step 1c – GMP (compiled from source, cached in user-space)
 # ---------------------------------------------------------------------------
 
+def _gmp_libdir(prefix: Path) -> Path:
+    """
+    Return the directory inside *prefix* that actually contains libgmp.
+    RPM-based distros (Fedora, RHEL, AlmaLinux, manylinux) use lib64;
+    Debian/Ubuntu use lib/<multiarch-triple>; most custom builds use lib.
+    """
+    import platform as _plat
+    machine = _plat.machine()
+    candidates = [
+        prefix / "lib64",
+        prefix / "lib" / f"{machine}-linux-gnu",  # Debian/Ubuntu multiarch
+        prefix / "lib",
+    ]
+    for d in candidates:
+        if (d / "libgmp.so").exists() or (d / "libgmp.a").exists():
+            return d
+    # Fall back to lib — Meson / the linker will emit a clear error if wrong
+    return prefix / "lib"
+
+
 def _write_gmp_pc(prefix: Path) -> None:
     """
-    Write gmp.pc and gmpxx.pc into <prefix>/lib/pkgconfig/ so Meson can
-    locate GMP via pkg-config.  GMP itself does not generate these files.
+    Write gmp.pc and gmpxx.pc so Meson can locate GMP via pkg-config.
+    GMP itself does not generate these files.
 
-    When prefix is a system path (e.g. /usr) that is not writable without
-    root, the files are written to a temporary directory inside the build
-    tree and PKG_CONFIG_PATH is updated so pkg-config still finds them.
+    The lib directory is resolved via _gmp_libdir() to handle RPM-based
+    distros that install into lib64 (AlmaLinux, manylinux) as well as
+    Debian/Ubuntu multiarch paths and plain lib for custom builds.
+
+    When the resolved pkgconfig dir is not writable (no root), the files
+    are written to ~/.local/share/pkgconfig and PKG_CONFIG_PATH is extended.
     """
-    pkgconfig_dir = prefix / "lib" / "pkgconfig"
-
-    # If the system pkgconfig dir is not writable (no root), fall back to a
-    # writable directory in the user's home and extend PKG_CONFIG_PATH.
-    if not os.access(str(pkgconfig_dir.parent), os.W_OK):
-        pkgconfig_dir = Path.home() / ".local" / "share" / "pkgconfig"
-        existing = os.environ.get("PKG_CONFIG_PATH", "")
-        os.environ["PKG_CONFIG_PATH"] = (
-            f"{pkgconfig_dir}:{existing}" if existing else str(pkgconfig_dir)
-        )
-        print(
-            f"[smlp build] System pkgconfig dir not writable; "
-            f"writing GMP .pc files to {pkgconfig_dir}"
-        )
+    gmp_lib       = _gmp_libdir(prefix)
+    pkgconfig_dir = Path.home() / ".local" / "share" / "pkgconfig"
+    existing = os.environ.get("PKG_CONFIG_PATH", "")
+    os.environ["PKG_CONFIG_PATH"] = (
+        f"{pkgconfig_dir}:{existing}" if existing else str(pkgconfig_dir)
+    )
+    print(
+        f"[smlp build] pkgconfig dir not writable; "
+        f"writing GMP .pc files to {pkgconfig_dir}"
+    )
 
     pkgconfig_dir.mkdir(parents=True, exist_ok=True)
     pc_file = pkgconfig_dir / "gmp.pc"
     pc_file.write_text(
         f"prefix={prefix}\n"
-        "exec_prefix=${prefix}\n"
-        "libdir=${exec_prefix}/lib\n"
-        "includedir=${prefix}/include\n"
+        f"libdir={gmp_lib}\n"
+        f"includedir={prefix / 'include'}\n"
         "\n"
         "Name: gmp\n"
         "Description: GNU Multiple Precision Arithmetic Library\n"
@@ -507,13 +533,11 @@ def _write_gmp_pc(prefix: Path) -> None:
     )
     print(f"[smlp build] Wrote pkg-config file: {pc_file}")
 
-    # Also write gmpxx.pc for the C++ wrapper library
     pcxx_file = pkgconfig_dir / "gmpxx.pc"
     pcxx_file.write_text(
         f"prefix={prefix}\n"
-        "exec_prefix=${prefix}\n"
-        "libdir=${exec_prefix}/lib\n"
-        "includedir=${prefix}/include\n"
+        f"libdir={gmp_lib}\n"
+        f"includedir={prefix / 'include'}\n"
         "\n"
         "Name: gmpxx\n"
         "Description: GNU Multiple Precision Arithmetic Library (C++ bindings)\n"
@@ -525,18 +549,31 @@ def _write_gmp_pc(prefix: Path) -> None:
     print(f"[smlp build] Wrote pkg-config file: {pcxx_file}")
 
 
+def _is_debian_based() -> bool:
+    """Return True on Debian/Ubuntu — the only distros where system GMP is used."""
+    if Path("/etc/debian_version").exists():
+        return True
+    lsb = Path("/etc/lsb-release")
+    if lsb.exists() and "Ubuntu" in lsb.read_text():
+        return True
+    return False
+
+
 def _probe_system_gmp() -> "Path | None":
     """
-    Locate a system-installed GMP (apt/dnf) without compiling anything.
-    Returns the install prefix (e.g. /usr or /usr/local), or None.
+    Locate a system-installed GMP on Debian/Ubuntu only.
+    Returns the install prefix, or None on all other distros (RPM-based
+    distros like AlmaLinux/manylinux/Fedora/RHEL use source compilation
+    to avoid C++ template incompatibilities with their packaged GMP).
 
-    Detection order:
-      1. pkg-config gmp  – works when the distro ships gmp.pc
-         (Ubuntu/Debian: libgmp-dev  already ships gmp.pc)
-         (Fedora/RHEL:   gmp-devel   already ships gmp.pc)
-      2. Well-known prefixes (/usr/local, /usr) — header + library present,
-         including multiarch lib dirs used by Debian/Ubuntu.
+    Detection order (Debian/Ubuntu only):
+      1. pkg-config gmp        – libgmp-dev ships gmp.pc
+      2. Well-known prefixes   – /usr/local then /usr, including multiarch.
     """
+    if not _is_debian_based():
+        print(f"[smlp build] Non-Debian distro detected — skipping system GMP, will compile from source.")
+        return None
+
     from shutil import which
 
     # ── 1. pkg-config ────────────────────────────────────────────────────
@@ -560,7 +597,7 @@ def _probe_system_gmp() -> "Path | None":
         lib_candidates = [
             prefix / "lib" / "libgmp.so",
             prefix / "lib" / "libgmp.a",
-            prefix / "lib" / f"{machine}-linux-gnu" / "libgmp.so",
+            prefix / "lib" / f"{machine}-linux-gnu" / "libgmp.so",   # Debian/Ubuntu multiarch
             prefix / "lib" / f"{machine}-linux-gnu" / "libgmp.a",
         ]
         if any(p.exists() for p in lib_candidates):
@@ -587,6 +624,7 @@ def _gmp_prefix() -> Path:
     if env_root:
         prefix = Path(env_root).expanduser()
         print(f"[smlp build] Using GMP_ROOT={prefix}")
+        _write_gmp_pc(prefix)
         return prefix
 
     # ── Option B: system-installed GMP (apt/dnf — no compilation needed) ──
@@ -806,7 +844,7 @@ def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path, z3_bi
     """
     boost_lib = boost_prefix / "lib"
     boost_inc = boost_prefix / "include"
-    gmp_lib   = gmp_prefix / "lib"
+    gmp_lib   = _gmp_libdir(gmp_prefix)
     gmp_inc   = gmp_prefix / "include"
 
     native_file = build_tmp / "native.ini"
@@ -893,7 +931,7 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
     # without needing LD_LIBRARY_PATH to be set.
     rpath_dirs = [
         str(boost_prefix / "lib"),
-        str(gmp_prefix / "lib"),
+        str(_gmp_libdir(gmp_prefix)),
         str(z3_lib),
     ]
     rpath_flags = ":".join(f"-Wl,-rpath,{d}" for d in rpath_dirs)
