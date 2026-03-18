@@ -4,7 +4,7 @@ FROM quay.io/pypa/manylinux_2_28_x86_64
 # 1. System packages
 # ---------------------------------------------------------------------------
 RUN dnf install -y \
-        wget git make m4 pkg-config gmp-devel && \
+        wget git make m4 pkg-config && \
     dnf clean all
 
 # ---------------------------------------------------------------------------
