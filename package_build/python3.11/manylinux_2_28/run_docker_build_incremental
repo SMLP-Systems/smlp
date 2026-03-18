@@ -15,7 +15,7 @@ set cmd="env DOCKER_BUILDKIT=1 docker build $build_args --build-arg GIT_BRANCH=`
 echo $cmd
 $cmd
 if($status) then
-    echo "\nERROR: Docker build faied\n"
+    echo "\nERROR: Docker build failed\n"
     exit 1
 else
     set container=dummy
