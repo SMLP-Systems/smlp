@@ -2,10 +2,7 @@
 set build_args=""
 set image=smlp-manylinux_2_28-python311
 set wheel=smlp-0.1.0-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
-set clone_script=run_git_clone
 \rm -f $wheel >& /dev/null
-\rm -f $clone_script >& /dev/null
-\cp -p `realpath $0 | xargs dirname`/../22.04/$clone_script .
 set cmd="env DOCKER_BUILDKIT=1 docker build --no-cache --build-arg GIT_BRANCH=`git branch --show-current` --progress=plain -t $image ."
 echo $cmd
 $cmd
