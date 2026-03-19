@@ -107,7 +107,8 @@ RUN ./run_tkdiff_patch
 COPY run_git_clone .
 # Build SMLP
 COPY run_meson_build .
-ARG GIT_BRANCH
+ARG CACHE_BUST_SMLP
+ARG GIT_BRANCH=master
 RUN ./run_meson_build $GIT_BRANCH
 
 #UTF-8 fonts
