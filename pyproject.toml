@@ -36,7 +36,7 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-exclude = ["src*", "smlp_py*", "regr_smlp*", "utils*", "package_test*"]
+exclude = ["scripts*","src*", "smlp_py*", "regr_smlp*", "utils*"]
 
 # ---------------------------------------------------------------------------
 # Build-time environment variables (all optional)
