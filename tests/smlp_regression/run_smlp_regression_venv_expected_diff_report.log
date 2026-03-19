@@ -497,7 +497,7 @@
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test66_test65_model.txt diff report ================================
 =================== Diff report for: Test66_test65_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_python311/package_test/python3.11/venv/smlp_package_venv/smlp/regr_smlp/code/Test66_test65_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/Test66_test65_model_verify_results.json: No such file or directory
 =================== End of Test66_test65_model_verify_results.json diff report ================================
 =================== Diff report for: Test68_test67_model.txt ==================================
 0a1,97
@@ -600,7 +600,7 @@ diff: /home/mdmitry/github/smlp_python311/package_test/python3.11/venv/smlp_pack
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test68_test67_model.txt diff report ================================
 =================== Diff report for: Test68_test67_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_python311/package_test/python3.11/venv/smlp_package_venv/smlp/regr_smlp/code/Test68_test67_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/Test68_test67_model_verify_results.json: No such file or directory
 =================== End of Test68_test67_model_verify_results.json diff report ================================
 =================== Diff report for: Test69_smlp_toy_num_resp_mult_verify_results.json ==================================
 6d5
@@ -712,7 +712,7 @@ diff: /home/mdmitry/github/smlp_python311/package_test/python3.11/venv/smlp_pack
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test72_test71_model.txt diff report ================================
 =================== Diff report for: Test72_test71_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_python311/package_test/python3.11/venv/smlp_package_venv/smlp/regr_smlp/code/Test72_test71_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/Test72_test71_model_verify_results.json: No such file or directory
 =================== End of Test72_test71_model_verify_results.json diff report ================================
 =================== Diff report for: Test77_test76_model.txt ==================================
 0a1,110
@@ -828,7 +828,7 @@ diff: /home/mdmitry/github/smlp_python311/package_test/python3.11/venv/smlp_pack
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test77_test76_model.txt diff report ================================
 =================== Diff report for: Test77_test76_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_python311/package_test/python3.11/venv/smlp_package_venv/smlp/regr_smlp/code/Test77_test76_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/Test77_test76_model_verify_results.json: No such file or directory
 =================== End of Test77_test76_model_verify_results.json diff report ================================
 =================== Diff report for: Test79_smlp_toy_num_resp_mult_query_results.json ==================================
 14a15
@@ -2039,7 +2039,7 @@ diff: /home/mdmitry/github/smlp_python311/package_test/python3.11/venv/smlp_pack
 > 			"y1": 9.0,
 =================== End of Test105_smlp_toy_num_resp_mult_verify_results.json diff report ================================
 =================== Diff report for: test110_model_poly_sklearn_formula.txt ==================================
-diff: /home/mdmitry/github/smlp_python311/package_test/python3.11/venv/smlp_package_venv/smlp/regr_smlp/code/test110_model_poly_sklearn_formula.txt: No such file or directory
+diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/test110_model_poly_sklearn_formula.txt: No such file or directory
 =================== End of test110_model_poly_sklearn_formula.txt diff report ================================
 =================== Diff report for: Test113_smlp_toy_basic_optimization_progress.json ==================================
 17,18c17,21

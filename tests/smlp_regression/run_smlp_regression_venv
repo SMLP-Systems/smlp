@@ -8,7 +8,7 @@ if($status) then
     echo "\nERROR: Current directory is outside git directory tree\n"
     exit(1)
 endif
-set venv_path=$script_path:h/package_test/python3.11/venv/smlp_package_venv
+set venv_path=$script_path:h:h/scripts/venv/smlp_package_venv
 cd $venv_path/smlp
 \rm -f regr_smlp/models/test{63,101}_model_y*_smlp_* >& /dev/null
 \rm -rf regr_smlp/code/*{test,Test}* >& /dev/null
