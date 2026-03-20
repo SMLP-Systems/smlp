@@ -1,5 +1,5 @@
 SHELL           := /bin/bash
-IMAGE           ?= smlp-test-build-22.04-manylinux-python311
+IMAGE           ?= smlp-wheel_2_28-python311
 DOCKERFILE      := Dockerfile.$(IMAGE)
 
 GIT_BRANCH      := $(shell git branch --show-current)
@@ -64,5 +64,5 @@ help:
 	@echo "  help           Show this message"
 	@echo ""
 	@echo "Example:"
-	@echo "  make build IMAGE=smlp-wheel_2_28-python311"
+	@echo "  make build IMAGE=python311-dev"
 	@echo ""

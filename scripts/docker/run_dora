@@ -9,7 +9,8 @@ if [[ $# -gt 0 ]]; then
         exit 0
     fi
 fi
-xvfb-run /usr/local/lib/python3.11/dist-packages/smlp/run_smlp.py \
+package_path=$(ls -d /usr/local/lib*/python3.11/*-packages/smlp | head -1)
+xvfb-run $package_path/run_smlp.py \
          -data smlp/regr_smlp/data/smlp_toy_num_resp_mult.csv \
          -out_dir ./ \
          -pref Test83 \

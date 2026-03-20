@@ -4,6 +4,12 @@ set -euo pipefail
 script_path=$(dirname "$(realpath "$0")")
 script_name=$(basename "$(realpath "$0")")
 
+image=mdmitry1/python311-dev:latest
+if [ $# -gt 0 ]; then 
+    image=$1
+    shift
+fi
+
 mkdir -p "$HOME/shared"
 
 if [[ $# -gt 0 ]]; then
@@ -59,4 +65,4 @@ docker run \
     -e VNC_SCREEN_RESOLUTION="$screen_resolution" \
     -p "${p}:${p}" \
     -v "$HOME/shared:/shared" \
-    -it python311-dev:latest "$@"
+    -it $image "$@"

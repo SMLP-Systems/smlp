@@ -1,40 +1,40 @@
-FROM almalinux:9
+FROM opensuse/leap:15.5
 
 # ---------------------------------------------------------------------------
 # 1. System packages
 # ---------------------------------------------------------------------------
-RUN dnf install -y epel-release && \
-    dnf install -y \
-        ca-certificates \
-        diffutils \
+RUN zypper refresh && zypper install -y \
+        curl \
         git \
-        gnupg2 \
+        gpg2 \
         jq \
-        libgomp \
-        glibc-locale-source \
-        glibc-langpack-en \
+        libgomp1 \
+        glibc-locale \
+        glibc-locale-base \
+        glibc-i18ndata \
         gzip \
         tar \
         tcsh \
-        tzdata \
+        timezone \
         vim \
         wget \
-        xorg-x11-fonts-Type1 \
-        xorg-x11-fonts-misc \
+        xorg-x11-fonts \
+        xorg-x11-fonts-core \
         xorg-x11-server-Xvfb \
-        xorg-x11-utils \
-        procps-ng \
-        python3.11 \
-        python3.11-devel \
-        python3-tkinter && \
-    dnf clean all
+        xvfb-run \
+        xset \
+        procps \
+        python311 \
+        python311-devel \
+        python311-tk && \
+    zypper clean --all
 
 # ---------------------------------------------------------------------------
 # 2. mathsat
 # ---------------------------------------------------------------------------
 WORKDIR /app
-COPY run_mathsat_build.sh .
-RUN ./run_mathsat_build.sh && rm -rf /tmp/mathsat*
+COPY run_mathsat_build .
+RUN ./run_mathsat_build && rm -rf /tmp/mathsat*
 
 # ---------------------------------------------------------------------------
 # 3. Install pip and setuptools for Python 3.11
@@ -54,7 +54,7 @@ RUN cd /app && ./run_git_clone $GIT_BRANCH
 # ---------------------------------------------------------------------------
 # 5. Install smlp from wheel
 # ---------------------------------------------------------------------------
-RUN python3.11 -m pip install /app/smlp/package_test/python3.11/dist/smlp-0.1.0-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+RUN python3.11 -m pip install /app/smlp/scripts/dist/smlp-0.1.0-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
 
 # ---------------------------------------------------------------------------
 # 6. Configure UTF-8 locale
@@ -65,28 +65,27 @@ ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
 # ---------------------------------------------------------------------------
-# 7. Docker GUI patch
+# 7. SMLP regression patch
 # ---------------------------------------------------------------------------
-COPY tkagg_patch.sh .
-RUN ./tkagg_patch.sh
+COPY smlp_regr_patch .
+RUN ./smlp_regr_patch
 
 # ---------------------------------------------------------------------------
-# 8. SMLP regression patch
-# ---------------------------------------------------------------------------
-COPY smlp_regr_patch.sh .
-RUN ./smlp_regr_patch.sh
-
-# ---------------------------------------------------------------------------
-# 9. Define python version
+# 8. Define python version
 # ---------------------------------------------------------------------------
 RUN ln -sf /usr/bin/python3.11 /usr/bin/python && \
     ln -sf /usr/bin/python3.11 /usr/bin/python3
 
 # ---------------------------------------------------------------------------
-# 10. Copy and run DORA
+# 9. Copy and run DORA
 # ---------------------------------------------------------------------------
 COPY run_dora /app
 RUN ./run_dora
+
+# ---------------------------------------------------------------------------
+# 10. Copy script for opening virtual display - needed for regression
+# ---------------------------------------------------------------------------
+COPY open_virtual_display /app
 
 # Default command
 CMD ["/usr/bin/bash"]
