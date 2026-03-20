@@ -20,6 +20,14 @@ sudo apt-get install libgomp1
 
 ## 4. Run regression 
 
+**Licensing limitations**
+
+Some of the regression tests are using **MathSat5.**.  Please, read [MathSat5 license terms](https://mathsat.fbk.eu/download.html) before using MathSat
+
+- *MathSAT5 is available for research and evaluation purposes only.* **It can not be used in a commercial environment, particularly as part of a commercial product, without written permission.** *MathSAT5 is provided as is, without any warranty.*
+
+Instructions for running regression:
+
 ```bash
 source smlp_package_venv/bin/activate
 cd smlp_package_venv/smlp/regr_smlp/code
