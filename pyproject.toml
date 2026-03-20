@@ -34,6 +34,9 @@ dependencies = [
 where = ["."]
 exclude = ["src*", "smlp_py*", "regr_smlp*", "utils*"]
 
+[tool.pytest]
+strict = true
+
 [tool.pytest.ini_options]
 markers = [
     "toy: Toy example tests (deselect with '-m \"not toy\"')",
