@@ -21,6 +21,7 @@ RUN dnf install -y epel-release && \
         xorg-x11-fonts-Type1 \
         xorg-x11-fonts-misc \
         xorg-x11-server-Xvfb \
+        xorg-x11-server-utils \
         xorg-x11-utils \
         procps-ng \
         python3.11 \
