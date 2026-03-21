@@ -1,0 +1,4 @@
+Build from pip cache:
+83.937u 7.795s 2:46.64 55.0%	0+0k 328416+7613296io 0pf+0w
+Build from scratch using Docker:
+2.727u 2.522s 18:21.44 0.4%	0+0k 19040+24io 148pf+0w

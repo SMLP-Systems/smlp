@@ -1,0 +1,2 @@
+#!/usr/bin/tcsh -f
+env DOCKER_BUILDKIT=1 docker build --no-cache --build-arg GIT_BRANCH=`git branch --show-current` --progress=plain -t smlp-dev .

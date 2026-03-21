@@ -1,0 +1,4 @@
+#!/usr/bin/tcsh -f
+mkdir -p $HOME/smlp_shared
+if( ! $?TZ ) setenv TZ `readlink /etc/localtime | sed 's@/usr/share/zoneinfo/@@'`
+docker run -e TZ=$TZ -v $HOME/smlp_shared:/shared -it mdmitry1/smlp-dev:latest $*

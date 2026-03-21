@@ -1,0 +1,11 @@
+#!/usr/bin/tcsh -f
+set build_args=""
+if($#argv > 0) then
+    if("-rebuild_smlp" == "$argv[1]" ) then
+        set build_args="--build-arg CACHE_BUST_SMLP=`date +%s`"
+    else
+        echo "\nUsage: `realpath $0 | xargs basename` [-rebuild_smlp]\n"
+        exit 0
+    endif
+endif
+env DOCKER_BUILDKIT=1 docker build --progress=plain $build_args --build-arg GIT_BRANCH=`git branch --show-current` -t smlp-dev .

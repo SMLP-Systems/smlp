@@ -1,0 +1,12 @@
+#!/usr/bin/bash
+script_path=$(realpath $0 | xargs dirname)
+venv_dir=venv
+\rm -rf $venv_dir logs.log > /dev/null
+if [[ $# -gt 0 ]]; then
+   if [ "$1" == "-clean" ]; then
+       exit 0
+   fi
+fi
+python3.11 -m venv $venv_dir && source venv/bin/activate
+pip install $script_path/../../dist/smlp-0.1.0-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+$script_path/run_smlp_dora
