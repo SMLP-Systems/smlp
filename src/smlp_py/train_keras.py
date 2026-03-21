@@ -370,7 +370,7 @@ class ModelKeras:
             for k, v in self._loss_functions.items():
                 if str(v) in str(model.loss) or str(k) in str(model.loss):
                     self._keras_logger.info("Loss function: " + str(k))
-        if hasattr(model, 'compiled_metrics'):
+        if hasattr(model, 'compiled_metrics') and hasattr(model.compiled_metrics, '_metrics'):
             compiled_metrics = model.compiled_metrics._metrics  # Access the private _metrics attribute
             self._keras_logger.info("Metrics: " + str([m.name for m in compiled_metrics]))
         else:
@@ -900,5 +900,3 @@ class ModelKeras:
                 seed, weights_coef, model_per_response)
         self._keras_logger.info('keras_main: end')
         return model
-
-    
