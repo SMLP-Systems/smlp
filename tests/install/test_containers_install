@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+install_script=test_container_install
+for image in $(docker images --format table | awk '{print $1}' | egrep "smlp|dev" | grep python311 | grep -v wheel)
+do
+    if [ $# -gt 0 ]; then 
+        if [ "-clean" == "$1" ]; then
+            \rm -f ${install_script}.$(echo $image | tr / _).log &> /dev/null
+            continue
+        fi
+   fi
+   $(realpath $0 | xargs dirname)/${install_script} $image |& grep -v ^$
+done
