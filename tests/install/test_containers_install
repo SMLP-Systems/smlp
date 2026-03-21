@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 install_script=test_container_install
-for image in $(docker images --format table | awk '{print $1}' | egrep "smlp|dev" | grep python311 | grep -v wheel)
+i=1
+for image in $(docker images --format table | awk '{print $1}' | egrep "smlp|dev" | grep python311 )
 do
     if [ $# -gt 0 ]; then 
         if [ "-clean" == "$1" ]; then
@@ -8,5 +9,7 @@ do
             continue
         fi
    fi
-   $(realpath $0 | xargs dirname)/${install_script} $image |& grep -v ^$
+   install_script_full_path=$(realpath $0 | xargs dirname)/${install_script}
+   echo $i $($install_script_full_path $image |& grep -v ^$)
+   (( i++ ))
 done
