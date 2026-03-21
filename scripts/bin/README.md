@@ -13,22 +13,22 @@ All `enter*` commands mentioned below create `$HOME/shared` directory and mount 
 
 **Docker Hub Images Details:**
 
-| Repository | Tag | Image ID | Image size |
-|--------------------------------------------------|-------|-------------|-----------|
-| mdmitry1/smlp-test-build-opensuse\_15.5-python311 | latest | 8bd8f5a0a6f1 | 7.72GB
-| mdmitry1/smlp-test-build-almalinux\_9-python311   | latest | db28f324b82e | 7.53GB
-| mdmitry1/smlp-test-build-ubuntu\_22.04-python311  | latest | aaeae9e7b068 | 7.44GB
-| mdmitry1/python311-dev                            | latest | a28747d7ec0e | 6.76GB
+| Repository | Tag | Image Index Digest |
+|--------------------------------------------------|-------|-------------|
+| mdmitry1/smlp-test-build-opensuse\_15.5-python311 | latest | sha256:8bd8f5a0a6f1 |
+| mdmitry1/smlp-test-build-almalinux\_9-python311   | latest | sha256:db28f324b82e |
+| mdmitry1/smlp-test-build-ubuntu\_22.04-python311  | latest | sha256:aaeae9e7b068 |
+| mdmitry1/python311-dev                            | latest | sha256:a28747d7ec0e |
 
 ## Quick Start
 
-### Run Container with VNC
+### Run Container with VNC client
 
 - Recommended VNC servers:
-  - Windows: VNC
+  - Windows: RealVNC®
   - Ubuntu 24.04: remmina
 
-[VNC installation instructions](./VNC.md)
+[RealVNC® installation instructions](./RealVNC.md)
 
 - Remmina installation command
 
