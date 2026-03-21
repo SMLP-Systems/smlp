@@ -4,7 +4,7 @@
 import matplotlib
 
 # matplotlib.use('TkAgg')  # Set the backend to 'TkAgg' before importing pyplot, to enable interactive plots
-matplotlib.use('macosx')  # Set the backend to 'Cocoa' before importing pyplot, to enable interactive plots
+# matplotlib.use('macosx')  # Set the backend to 'Cocoa' before importing pyplot, to enable interactive plots
 
 import matplotlib.pyplot as plt
 plt.rcdefaults()
