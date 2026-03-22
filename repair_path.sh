@@ -30,7 +30,8 @@ for FILE_WHL in $TMP_DIR/*; do
 
     for FILE_SO in ./*.so; do
         echo "FILE_SO: $FILE_SO"
-        install_name_tool -change libpython3.11.dylib @rpath/libpython3.11.dylib "$FILE_SO"
+        libpython_orig_path=$(otool -L "$FILE_SO" | grep libpython3.11.dylib | awk -F' ' '{print $1}')
+        install_name_tool -change "$libpython_orig_path" "@rpath/libpython3.11.dylib" "$FILE_SO"
         codesign --force -s - "$FILE_SO"
     done    
     cd ../
