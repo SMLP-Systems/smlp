@@ -784,17 +784,17 @@ class MesonBuildExt(_build_ext):
             )
 
         branch = os.environ.get("SMLP_BRANCH")
-        if branch:
-            _run(["git", "switch", branch], cwd=str(REPO_ROOT))
-        else:
-            py_ver = f"{sys.version_info.major}{sys.version_info.minor}"
-            auto_branch = f"smlp_python{py_ver}_mac"
-            result = subprocess.run(
-                ["git", "branch", "-r", "--list", f"origin/{auto_branch}"],
-                capture_output=True, text=True, cwd=str(REPO_ROOT)
-            )
-            if result.stdout.strip():
-                _run(["git", "switch", auto_branch], cwd=str(REPO_ROOT))
+#        if branch:
+#            _run(["git", "switch", branch], cwd=str(REPO_ROOT))
+#        else:
+#            py_ver = f"{sys.version_info.major}{sys.version_info.minor}"
+#            auto_branch = f"smlp_python{py_ver}_mac"
+#            result = subprocess.run(
+#                ["git", "branch", "-r", "--list", f"origin/{auto_branch}"],
+#                capture_output=True, text=True, cwd=str(REPO_ROOT)
+#            )
+#            if result.stdout.strip():
+#                _run(["git", "switch", auto_branch], cwd=str(REPO_ROOT))
 
         installed_pkg = _meson_build(poly_dir, kay_dir, boost_prefix, build_tmp)
 
