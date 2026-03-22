@@ -93,6 +93,15 @@ echo "[build] Repairing wheel with delocate..."
 
 ${PYTHON} repair_wheel.py dist/
 
+#----- Fix libpython3.11.dylib path in the .so inside the whl into @rpath/libpython3.11.dylib
+
+echo "[./repair_path.sh] Fixing path to libpython3.11.dylib in .so"
+./repair_path.sh
+    
+
+#---------
+
+
 echo ""
 echo "======================================================"
 echo " Build complete.  Wheel is in: $PWD/dist/"
