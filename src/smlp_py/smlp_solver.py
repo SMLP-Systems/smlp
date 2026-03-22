@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # This file is part of smlp.
 
-import smlp
+from smlp import core
 
 from .smlp_utils import str_to_bool
 
@@ -46,7 +46,7 @@ class SmlpSolver:
         
     def set_solver_path(self, solver_path:str):
         if solver_path is not None:
-            smlp.options({'inc_solver_cmd': solver_path})
+            core.options({'inc_solver_cmd': solver_path})
         
         
     
