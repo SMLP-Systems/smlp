@@ -6,7 +6,6 @@ FROM opensuse/leap:15.5
 RUN zypper refresh && zypper install -y \
         curl \
         git \
-        gpg2 \
         jq \
         libgomp1 \
         glibc-locale \

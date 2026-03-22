@@ -7,7 +7,6 @@ RUN dnf install -y epel-release && \
     dnf install -y \
         diffutils \
         git \
-        gnupg2 \
         jq \
         libgomp \
         glibc-locale-source \
