@@ -17,7 +17,7 @@ dependencies = [
     "category_encoders==2.7.0",
     "doepy",
     "jenkspy",
-    "keras_tuner",
+    "keras-tuner",
     "kt_legacy",
     "joblib==1.3.2",
     "matplotlib",
@@ -37,6 +37,9 @@ dependencies = [
 [tool.setuptools.packages.find]
 where = ["."]
 exclude = ["scripts*","src*", "smlp_py*", "regr_smlp*", "utils*"]
+
+[project.scripts]
+smlp = "smlp.run_smlp:main2"
 
 # ---------------------------------------------------------------------------
 # Build-time environment variables (all optional)
