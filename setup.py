@@ -361,9 +361,6 @@ def _gmp_libdir(prefix: Path) -> Path:
 
 def _write_gmp_pc(prefix: Path) -> None:
     """
-    Write gmp.pc and gmpxx.pc so Meson can locate GMP via pkg-config.
-    GMP itself does not generate these files.
-
     The lib directory is resolved via _gmp_libdir() to handle RPM-based
     distros that install into lib64 (AlmaLinux, manylinux) as well as
     Debian/Ubuntu multiarch paths and plain lib for custom builds.
