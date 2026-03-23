@@ -46,7 +46,6 @@ Z3_PREFIX        Reuse an existing Z3 install prefix – skips pip z3-solver.
                  e.g.  export Z3_PREFIX=~/.local/z3
 Z3_VERSION       Z3 version to download binary for (default: 4.8.12).
 Z3_BIN_DIR       Path to directory containing z3 binary (default: ~/.local/z3/bin).
-SMLP_BRANCH      Git branch to switch to in the smlp repo (auto-detected if unset).
 """
 
 import os
