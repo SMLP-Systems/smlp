@@ -422,11 +422,6 @@ def _is_debian_based() -> bool:
 
 def _probe_system_gmp() -> "Path | None":
     """
-    Locate a system-installed GMP on Debian/Ubuntu only.
-    Returns the install prefix, or None on all other distros (RPM-based
-    distros like AlmaLinux/manylinux/Fedora/RHEL use source compilation
-    to avoid C++ template incompatibilities with their packaged GMP).
-
     Detection order (Debian/Ubuntu only):
       1. pkg-config gmp        – libgmp-dev ships gmp.pc
       2. Well-known prefixes   – /usr/local then /usr, including multiarch.
