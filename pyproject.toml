@@ -37,6 +37,10 @@ dependencies = [
 [project.scripts]
 smlp = "smlp.run_smlp:main2"
 
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["*"]
+
 # ---------------------------------------------------------------------------
 # Build-time environment variables (all optional)
 # ---------------------------------------------------------------------------
