@@ -122,5 +122,8 @@ COPY open_virtual_display .
 #VNC
 COPY start_vnc .
 
+#SMLP link
+RUN ln -sf /app/smlp/src/run_smlp.py /usr/local/bin/smlp
+
 ## Default command
 CMD ["/bin/bash"]

@@ -18,7 +18,7 @@ All `enter*` commands mentioned below create `$HOME/shared` directory and mount 
 | mdmitry1/smlp-test-build-opensuse\_15.5-python311 | latest | sha256:ca6725b46ce9 |
 | mdmitry1/smlp-test-build-almalinux\_9-python311   | latest | sha256:82ae0eeb8ac8 |
 | mdmitry1/smlp-test-build-ubuntu\_22.04-python311  | latest | sha256:11ab93a137dc |
-| mdmitry1/python311-dev                            | latest | sha256:47e677d6faff |
+| mdmitry1/python311-dev                            | latest | sha256:b8766bbe59d2 |
 
 GUI and data sharing is supported for container `mdmitry1/python311-dev:latest` only.
 Virtual display is supported for all containers.
@@ -44,16 +44,8 @@ export DISPLAY=:99
 
 Check SMLP installation 
 
-- Containers mdmitry1/smlp-test-build-opensuse\_15.5-python311, mdmitry1/smlp-test-build-almalinux\_9-python311, mdmitry1/smlp-test-build-ubuntu\_22.04-python311:
-
 ```bash
 smlp -h
-```
-
-- Container mdmitry1/python311-dev:
-
-```bash
-/app/smlp/src/run_smlp.py -h
 ```
 
 ### Run mdmitry1/python311-dev container with VNC client
