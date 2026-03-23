@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "smlp"
-version = "0.1.0"
+version = "1.0.1"
 description = "SMLP - System for Machine Learning-based Parameter analysis"
 requires-python = "==3.11.*"
 dependencies = [
@@ -33,10 +33,6 @@ dependencies = [
     "z3-solver==4.8.12",
     "tensorflow==2.15.1",
 ]
-
-[tool.setuptools.packages.find]
-where = ["."]
-exclude = ["scripts*","src*", "smlp_py*", "regr_smlp*", "utils*"]
 
 [project.scripts]
 smlp = "smlp.run_smlp:main2"

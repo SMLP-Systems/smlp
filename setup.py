@@ -266,7 +266,7 @@ def _boost_env(prefix: Path) -> dict:
     env["PYTHON3"]          = sys.executable
 
     # Tell Meson the exact versioned Boost.Python library name,
-    # e.g. Python 3.11 → boost_python311, Python 3.11 → boost_python313
+    # e.g. Python 3.11 → boost_python311, Python 3.13 → boost_python313
     py_ver = f"{sys.version_info.major}{sys.version_info.minor}"
     env["BOOST_PYTHON_LIBNAME"] = f"boost_python{py_ver}"
 
@@ -829,9 +829,7 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
 
     # Locate the installed smlp package (Meson may use a versioned python path)
     candidates = (list(install_prefix.glob("lib/python*/dist-packages/smlp")) +
-                  list(install_prefix.glob("lib/python3/dist-packages/smlp")) +
-                  list(install_prefix.glob("lib/python*/site-packages/smlp")) +
-                  list(install_prefix.glob("lib/python3/site-packages/smlp")))
+                  list(install_prefix.glob("lib/python*/site-packages/smlp"))) 
     if not candidates:
         sys.exit(
             f"[smlp build] ERROR: could not find installed smlp package under "
