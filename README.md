@@ -99,8 +99,9 @@ Starting VNC server within container:
 Recommended VNC client: 
 
 - Ubuntu: `remmina`
-- Windows: RealVNC
-  VNC installation instructions - see [VNC.md](VNC.md)
+- Windows: RealVNC®
+  
+  Details - see [RealVNC® installation instructions](doc/RealVNC.md)
 
 - Entering Docker container with X11 support on native Linux
 ```
