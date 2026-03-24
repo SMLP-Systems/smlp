@@ -14,14 +14,14 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 
-from smlp_py.smlp_plots import response_distribution_plot
-from smlp_py.smlp_utils import (np_JSONEncoder, list_intersection, str_to_bool, list_unique_unordered,
+from .smlp_plots import response_distribution_plot
+from .smlp_utils import (np_JSONEncoder, list_intersection, str_to_bool, list_unique_unordered,
     lists_union_order_preserving_without_duplicates, get_response_type, cast_type, pd_df_col_is_numeric)
-from smlp_py.smlp_mrmr import SmlpMrmr
-#from smlp_py.smlp_spec import SmlpSpec
-from smlp_py.smlp_constants import *
-from smlp_py.smlp_discretize import SmlpDiscretize
-#from smlp_py.smlp_correlations import SmlpCorrelations
+from .smlp_mrmr import SmlpMrmr
+#from .smlp_spec import SmlpSpec
+from .smlp_constants import *
+from .smlp_discretize import SmlpDiscretize
+#from .smlp_correlations import SmlpCorrelations
 
 
 # Methods for data processing, traing vs test splitting, handling responses vs features, and more.
