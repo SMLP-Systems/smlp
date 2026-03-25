@@ -15,7 +15,7 @@ endif
 set csv=Constraint_dora.csv
 set json=`echo $csv:r | tr '[A-Z]' '[a-z]'`.json
 gunzip -c dataset.txt.gz | tr ' ' , > $csv
-$script_path:h:h:h:h/src/run_smlp.py -data $csv \
+smlp -data $csv \
     -spec $script_path/$json \
     -out_dir ./ \
     -pref $csv:r \

@@ -237,12 +237,12 @@ Multi-Objective optimization problem with 64 objectives and 4 categorical parame
 
 #### Configuration File
 
-../bench/intel/specs/s2_tx_piv_anonym.spec
+../tests/bench/intel/specs/s2\_tx\_piv\_anonym.spec
 
 
 #### Input Dataset
 
-../bench/intel/data/s2_tx_piv_anonym.csv.bz2
+../tests/bench/intel/data/s2\_tx\_piv\_anonym.csv.bz2
 
 #### Usage
 

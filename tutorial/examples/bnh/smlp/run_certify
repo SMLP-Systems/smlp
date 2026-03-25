@@ -22,7 +22,7 @@ set e4="(F1-14.876033)*(F1-14.876033)<1e-10 and (F2-26.446281)*(F2-26.446281)<1e
 set e5="(F1-50.0)*(F1-50.0)<1e-10 and (F2-12.5)*(F2-12.5)<1e-10"
 set e6="(F1-136.0)*(F1-136.0)<1e-10 and (F2-4.0)*(F2-4.0)<1e-10"
 set exprs=("$e1" "$e2" "$e3" "$e4" "$e5" "$e6")
-python3.11 $script_path:h:h:h:h/src/run_smlp.py \
+smlp \
     -data $csv \
     -spec $json \
     -out_dir ./ \

@@ -6,7 +6,7 @@ if($status) then
     exit(1)
 endif
 set test=s2_tx_piv_anonym
-set test_dir=bench/intel
+set test_dir=tests/bench/intel
 set git_root=`git rev-parse --show-toplevel` 
 set pref=no_split
 \rm -f logs.log $log >& /dev/null
@@ -16,7 +16,7 @@ if($#argv > 0) then
         exit(0)
     endif
 endif
-time python3.11 ${git_root}/src/run_smlp.py -data ${git_root}/${test_dir}/data/${test}.csv.bz2 \
+smlp -data ${git_root}/${test_dir}/data/${test}.csv.bz2 \
     -spec ${git_root}/${test_dir}/specs/${test}.spec \
     -out_dir ./ \
     -pref $pref \

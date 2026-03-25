@@ -26,7 +26,7 @@ o4="(-(F1*0.4+F2*0.6))"
 o5="(-(F1*0.2+F2*0.8))"
 o6="(-F2)"
 
-python3.11 "$(realpath "$0" | xargs dirname | xargs dirname | xargs dirname | xargs dirname | xargs dirname)/src/run_smlp.py" \
+smlp \
     -data "$csv" \
     -spec "$json" \
     -out_dir ./ \
