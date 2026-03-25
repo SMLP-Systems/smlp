@@ -15,7 +15,7 @@ if [[ "$image" == *wheel* ]]; then
         success=1
     fi
 else
-    docker run --rm $image /bin/bash -c './open_virtual_display && env DISPLAY=:99 smlp/src/run_smlp.py -h' &> $log
+    docker run --rm $image /bin/bash -c './open_virtual_display && env DISPLAY=:99 smlp -h' &> $log
     if [ "1" -eq $(grep -c ^usage $log) ]; then
         success=1
     fi
