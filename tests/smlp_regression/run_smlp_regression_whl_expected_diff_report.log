@@ -400,12 +400,68 @@
 ---
 > smlp_logger - INFO - Seving model rerun configuration in file ./../models/test47_model_rerun_model_config.json
 =================== End of Test47_test47_model_smlp_toy_pf_mult.txt diff report ================================
+=================== Diff report for: Test58_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+17,19d16
+< 		"p1": {
+< 			"value_in_config": 2.0
+< 		},
+23,24c20,21
+< 		"y1": {
+< 			"value_in_config": 5.0
+---
+> 		"p1": {
+> 			"value_in_config": 2.0
+27a25,27
+> 		},
+> 		"y1": {
+> 			"value_in_config": 5.0
+=================== End of Test58_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test58_smlp_toy_num_resp_mult_optimization_results.json ==================================
+3d2
+< 		"p1": 7.0,
+5c4
+< 		"y1": 9.0,
+---
+> 		"p1": 7.0,
+6a6
+> 		"y1": 9.0,
+15d14
+< 		"p1": 7.0,
+17c16
+< 		"y1": 5.0,
+---
+> 		"p1": 7.0,
+18a18
+> 		"y1": 5.0,
+=================== End of Test58_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test63_smlp_toy_num_resp_mult_verify_results.json ==================================
+12d11
+< 			"p1": 1.0,
+14,15c13,15
+< 			"y1": 9.0,
+< 			"p2": 7.0
+---
+> 			"p1": 1.0,
+> 			"p2": 7.0,
+> 			"y1": 9.0
+=================== End of Test63_smlp_toy_num_resp_mult_verify_results.json diff report ================================
 =================== Diff report for: Test64_test63_model.txt ==================================
 27c27
 < smlp_logger - INFO - Seving model rerun configuration in file ../models/test63_model_rerun_model_config.json
 ---
 > smlp_logger - INFO - Seving model rerun configuration in file ./../models/test63_model_rerun_model_config.json
 =================== End of Test64_test63_model.txt diff report ================================
+=================== Diff report for: Test64_test63_model_verify_results.json ==================================
+12d11
+< 			"p1": 1.0,
+14,15c13,15
+< 			"y1": 9.0,
+< 			"p2": 7.0
+---
+> 			"p1": 1.0,
+> 			"p2": 7.0,
+> 			"y1": 9.0
+=================== End of Test64_test63_model_verify_results.json diff report ================================
 =================== Diff report for: Test66_test65_model.txt ==================================
 0a1,97
 > 
@@ -612,12 +668,34 @@ diff: /app/smlp/regr_smlp/code/Test66_test65_model_verify_results.json: No such 
 =================== Diff report for: Test68_test67_model_verify_results.json ==================================
 diff: /app/smlp/regr_smlp/code/Test68_test67_model_verify_results.json: No such file or directory
 =================== End of Test68_test67_model_verify_results.json diff report ================================
+=================== Diff report for: Test69_smlp_toy_num_resp_mult_verify_results.json ==================================
+6d5
+< 			"p1": 1.0,
+8,9c7,9
+< 			"y2": 5.078784562647343,
+< 			"p2": 7.0
+---
+> 			"p1": 1.0,
+> 			"p2": 7.0,
+> 			"y2": 5.078784562647343
+=================== End of Test69_smlp_toy_num_resp_mult_verify_results.json diff report ================================
 =================== Diff report for: Test70_test69_model.txt ==================================
 25c25
 < smlp_logger - INFO - Seving model rerun configuration in file ../models/test69_model_rerun_model_config.json
 ---
 > smlp_logger - INFO - Seving model rerun configuration in file ./../models/test69_model_rerun_model_config.json
 =================== End of Test70_test69_model.txt diff report ================================
+=================== Diff report for: Test70_test69_model_verify_results.json ==================================
+6d5
+< 			"p1": 1.0,
+8,9c7,9
+< 			"y2": 5.078784562647343,
+< 			"p2": 7.0
+---
+> 			"p1": 1.0,
+> 			"p2": 7.0,
+> 			"y2": 5.078784562647343
+=================== End of Test70_test69_model_verify_results.json diff report ================================
 =================== Diff report for: Test72_test71_model.txt ==================================
 0a1,84
 > 
@@ -824,18 +902,1220 @@ diff: /app/smlp/regr_smlp/code/Test72_test71_model_verify_results.json: No such 
 =================== Diff report for: Test77_test76_model_verify_results.json ==================================
 diff: /app/smlp/regr_smlp/code/Test77_test76_model_verify_results.json: No such file or directory
 =================== End of Test77_test76_model_verify_results.json diff report ================================
+=================== Diff report for: Test79_smlp_toy_num_resp_mult_query_results.json ==================================
+14a15
+> 			"p1": 7.0,
+16d16
+< 			"y2": 9.0,
+18c18
+< 			"p1": 7.0
+---
+> 			"y2": 9.0
+=================== End of Test79_smlp_toy_num_resp_mult_query_results.json diff report ================================
+=================== Diff report for: Test80_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+10,12d9
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+16,17c13,14
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+20a18,20
+> 		},
+> 		"y1": {
+> 			"value_in_config": 9.0
+=================== End of Test80_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test80_smlp_toy_num_resp_mult_optimization_results.json ==================================
+3d2
+< 		"p1": 7.0,
+5c4
+< 		"y1": 9.0,
+---
+> 		"p1": 7.0,
+6a6
+> 		"y1": 9.0,
+=================== End of Test80_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test81_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+10,12d9
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+16,17c13,14
+< 		"y1": {
+< 			"value_in_config": 5.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+20a18,20
+> 		},
+> 		"y1": {
+> 			"value_in_config": 5.0
+=================== End of Test81_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test81_smlp_toy_num_resp_mult_optimization_results.json ==================================
+3d2
+< 		"p1": 4.0,
+5c4
+< 		"y1": 9.0,
+---
+> 		"p1": 4.0,
+6a6
+> 		"y1": 9.0,
+=================== End of Test81_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test82_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+24,26d23
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+30,31c27,28
+< 		"y1": {
+< 			"value_in_config": 5.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+35a33,35
+> 		"y1": {
+> 			"value_in_config": 5.0
+> 		},
+62,64d61
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+68,69c65,66
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+73a71,73
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+121,123d120
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+127,128c124,125
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+131a129,131
+> 		},
+> 		"y1": {
+> 			"value_in_config": 9.0
+=================== End of Test82_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test82_smlp_toy_num_resp_mult_optimization_results.json ==================================
+23,25d22
+< 	"p1": {
+< 		"value_in_config": 4.0
+< 	},
+29,30c26,27
+< 	"y1": {
+< 		"value_in_config": 9.0
+---
+> 	"p1": {
+> 		"value_in_config": 4.0
+33a31,33
+> 	},
+> 	"y1": {
+> 		"value_in_config": 9.0
+=================== End of Test82_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test83_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+24,26d23
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+30,31c27,28
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+35a33,35
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+62,64d61
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+68,69c65,66
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+73a71,73
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+100,102d99
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+106,107c103,104
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+111a109,111
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+138,140d137
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+144,145c141,142
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+149a147,149
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+197,199d196
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+203,204c200,201
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+208a206,208
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+235,237d234
+< 		"p1": {
+< 			"value_in_config": 7.0
+< 		},
+241,242c238,239
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 7.0
+246a244,246
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+273,275d272
+< 		"p1": {
+< 			"value_in_config": 7.0
+< 		},
+279,280c276,277
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 7.0
+284a282,284
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+332,334d331
+< 		"p1": {
+< 			"value_in_config": 7.0
+< 		},
+338,339c335,336
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 7.0
+342a340,342
+> 		},
+> 		"y1": {
+> 			"value_in_config": 9.0
+=================== End of Test83_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test83_smlp_toy_num_resp_mult_optimization_results.json ==================================
+23,25d22
+< 	"p1": {
+< 		"value_in_config": 7.0
+< 	},
+29,30c26,27
+< 	"y1": {
+< 		"value_in_config": 9.0
+---
+> 	"p1": {
+> 		"value_in_config": 7.0
+33a31,33
+> 	},
+> 	"y1": {
+> 		"value_in_config": 9.0
+=================== End of Test83_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test85_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+17,19d16
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+23,24c20,21
+< 		"y1": {
+< 			"value_in_config": 5.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+27a25,27
+> 		},
+> 		"y1": {
+> 			"value_in_config": 5.0
+=================== End of Test85_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test85_smlp_toy_num_resp_mult_optimization_results.json ==================================
+3d2
+< 		"p1": 4.0,
+5c4
+< 		"y1": 5.0,
+---
+> 		"p1": 4.0,
+6a6
+> 		"y1": 5.0,
+18d17
+< 		"p1": 4.0,
+20c19
+< 		"y1": 5.0,
+---
+> 		"p1": 4.0,
+21a21
+> 		"y1": 5.0,
+=================== End of Test85_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test86_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+17,19d16
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+23,24c20,21
+< 		"y1": {
+< 			"value_in_config": 5.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+27a25,27
+> 		},
+> 		"y1": {
+> 			"value_in_config": 5.0
+=================== End of Test86_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test86_smlp_toy_num_resp_mult_optimization_results.json ==================================
+3d2
+< 		"p1": 4.0,
+5c4
+< 		"y1": 5.0,
+---
+> 		"p1": 4.0,
+6a6
+> 		"y1": 5.0,
+18d17
+< 		"p1": 4.0,
+20c19
+< 		"y1": 5.0,
+---
+> 		"p1": 4.0,
+21a21
+> 		"y1": 5.0,
+=================== End of Test86_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test87_smlp_toy_num_resp_mult_verify_results.json ==================================
+6d5
+< 			"p1": 2.5,
+8c7
+< 			"y1": 9.0,
+---
+> 			"p1": 2.5,
+9a9
+> 			"y1": 9.0,
+24d23
+< 			"p1": 2.5,
+26c25
+< 			"y1": 9.0,
+---
+> 			"p1": 2.5,
+27a27
+> 			"y1": 9.0,
+=================== End of Test87_smlp_toy_num_resp_mult_verify_results.json diff report ================================
+=================== Diff report for: Test88_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+24,26d23
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+30,31c27,28
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+35a33,35
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+62,64d61
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+68,69c65,66
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+73a71,73
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+100,102d99
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+106,107c103,104
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+111a109,111
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+138,140d137
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+144,145c141,142
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+149a147,149
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+197,199d196
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+203,204c200,201
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+208a206,208
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+235,237d234
+< 		"p1": {
+< 			"value_in_config": 7.0
+< 		},
+241,242c238,239
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 7.0
+246a244,246
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+273,275d272
+< 		"p1": {
+< 			"value_in_config": 7.0
+< 		},
+279,280c276,277
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 7.0
+284a282,284
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+332,334d331
+< 		"p1": {
+< 			"value_in_config": 7.0
+< 		},
+338,339c335,336
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 7.0
+342a340,342
+> 		},
+> 		"y1": {
+> 			"value_in_config": 9.0
+=================== End of Test88_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test88_smlp_toy_num_resp_mult_optimization_results.json ==================================
+23,25d22
+< 	"p1": {
+< 		"value_in_config": 7.0
+< 	},
+29,30c26,27
+< 	"y1": {
+< 		"value_in_config": 9.0
+---
+> 	"p1": {
+> 		"value_in_config": 7.0
+33a31,33
+> 	},
+> 	"y1": {
+> 		"value_in_config": 9.0
+=================== End of Test88_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test89_smlp_toy_num_resp_mult_query_results.json ==================================
+14a15
+> 			"p1": 7.0,
+16d16
+< 			"y2": 9.0,
+18c18
+< 			"p1": 7.0
+---
+> 			"y2": 9.0
+=================== End of Test89_smlp_toy_num_resp_mult_query_results.json diff report ================================
+=================== Diff report for: Test93_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+17,19d16
+< 		"p1": {
+< 			"value_in_config": 2.0
+< 		},
+23,24c20,21
+< 		"y1": {
+< 			"value_in_config": 5.0
+---
+> 		"p1": {
+> 			"value_in_config": 2.0
+28a26,28
+> 		"y1": {
+> 			"value_in_config": 5.0
+> 		},
+48,50d47
+< 		"p1": {
+< 			"value_in_config": 2.0
+< 		},
+54,55c51,52
+< 		"y1": {
+< 			"value_in_config": 5.0
+---
+> 		"p1": {
+> 			"value_in_config": 2.0
+59a57,59
+> 		"y1": {
+> 			"value_in_config": 5.0
+> 		},
+100,102d99
+< 		"p1": {
+< 			"value_in_config": 2.0
+< 		},
+106,107c103,104
+< 		"y1": {
+< 			"value_in_config": 5.0
+---
+> 		"p1": {
+> 			"value_in_config": 2.0
+110a108,110
+> 		},
+> 		"y1": {
+> 			"value_in_config": 5.0
+=================== End of Test93_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test93_smlp_toy_num_resp_mult_optimization_results.json ==================================
+16,18d15
+< 	"p1": {
+< 		"value_in_config": 2.0
+< 	},
+22,23c19,20
+< 	"y1": {
+< 		"value_in_config": 5.0
+---
+> 	"p1": {
+> 		"value_in_config": 2.0
+26a24,26
+> 	},
+> 	"y1": {
+> 		"value_in_config": 5.0
+=================== End of Test93_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test94_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+17,19d16
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+23,24c20,21
+< 		"y1": {
+< 			"value_in_config": 7.48
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+28a26,28
+> 		"y1": {
+> 			"value_in_config": 7.48
+> 		},
+48,50d47
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+54,55c51,52
+< 		"y1": {
+< 			"value_in_config": 7.48
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+59a57,59
+> 		"y1": {
+> 			"value_in_config": 7.48
+> 		},
+79,81d78
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+85,86c82,83
+< 		"y1": {
+< 			"value_in_config": 7.48
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+90a88,90
+> 		"y1": {
+> 			"value_in_config": 7.48
+> 		},
+110,112d109
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+116,117c113,114
+< 		"y1": {
+< 			"value_in_config": 7.48
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+121a119,121
+> 		"y1": {
+> 			"value_in_config": 7.48
+> 		},
+162,164d161
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+168,169c165,166
+< 		"y1": {
+< 			"value_in_config": 7.48
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+173a171,173
+> 		"y1": {
+> 			"value_in_config": 7.48
+> 		},
+193,195d192
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+199,200c196,197
+< 		"y1": {
+< 			"value_in_config": 7.48
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+204a202,204
+> 		"y1": {
+> 			"value_in_config": 7.48
+> 		},
+224,226d223
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+230,231c227,228
+< 		"y1": {
+< 			"value_in_config": 7.48
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+235a233,235
+> 		"y1": {
+> 			"value_in_config": 7.48
+> 		},
+276,278d275
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+282,283c279,280
+< 		"y1": {
+< 			"value_in_config": 7.48
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+286a284,286
+> 		},
+> 		"y1": {
+> 			"value_in_config": 7.48
+=================== End of Test94_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test94_smlp_toy_num_resp_mult_optimization_results.json ==================================
+16,18d15
+< 	"p1": {
+< 		"value_in_config": 4.0
+< 	},
+22,23c19,20
+< 	"y1": {
+< 		"value_in_config": 7.48
+---
+> 	"p1": {
+> 		"value_in_config": 4.0
+26a24,26
+> 	},
+> 	"y1": {
+> 		"value_in_config": 7.48
+=================== End of Test94_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test95_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+17,19d16
+< 		"p1": {
+< 			"value_in_config": 2.0
+< 		},
+23,24c20,21
+< 		"y1": {
+< 			"value_in_config": 7.0
+---
+> 		"p1": {
+> 			"value_in_config": 2.0
+28a26,28
+> 		"y1": {
+> 			"value_in_config": 7.0
+> 		},
+48,50d47
+< 		"p1": {
+< 			"value_in_config": 2.0
+< 		},
+54,55c51,52
+< 		"y1": {
+< 			"value_in_config": 7.0
+---
+> 		"p1": {
+> 			"value_in_config": 2.0
+59a57,59
+> 		"y1": {
+> 			"value_in_config": 7.0
+> 		},
+79,81d78
+< 		"p1": {
+< 			"value_in_config": 2.0
+< 		},
+85,86c82,83
+< 		"y1": {
+< 			"value_in_config": 7.0
+---
+> 		"p1": {
+> 			"value_in_config": 2.0
+90a88,90
+> 		"y1": {
+> 			"value_in_config": 7.0
+> 		},
+131,133d130
+< 		"p1": {
+< 			"value_in_config": 2.0
+< 		},
+137,138c134,135
+< 		"y1": {
+< 			"value_in_config": 7.0
+---
+> 		"p1": {
+> 			"value_in_config": 2.0
+141a139,141
+> 		},
+> 		"y1": {
+> 			"value_in_config": 7.0
+=================== End of Test95_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test95_smlp_toy_num_resp_mult_optimization_results.json ==================================
+16,18d15
+< 	"p1": {
+< 		"value_in_config": 2.0
+< 	},
+22,23c19,20
+< 	"y1": {
+< 		"value_in_config": 7.0
+---
+> 	"p1": {
+> 		"value_in_config": 2.0
+26a24,26
+> 	},
+> 	"y1": {
+> 		"value_in_config": 7.0
+=================== End of Test95_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test96_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+17,19d16
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+23,24c20,21
+< 		"y1": {
+< 			"value_in_config": 6.44
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+28a26,28
+> 		"y1": {
+> 			"value_in_config": 6.44
+> 		},
+48,50d47
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+54,55c51,52
+< 		"y1": {
+< 			"value_in_config": 6.44
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+59a57,59
+> 		"y1": {
+> 			"value_in_config": 6.44
+> 		},
+79,81d78
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+85,86c82,83
+< 		"y1": {
+< 			"value_in_config": 6.44
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+90a88,90
+> 		"y1": {
+> 			"value_in_config": 6.44
+> 		},
+131,133d130
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+137,138c134,135
+< 		"y1": {
+< 			"value_in_config": 6.44
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+142a140,142
+> 		"y1": {
+> 			"value_in_config": 6.44
+> 		},
+162,164d161
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+168,169c165,166
+< 		"y1": {
+< 			"value_in_config": 6.44
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+173a171,173
+> 		"y1": {
+> 			"value_in_config": 6.44
+> 		},
+193,195d192
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+199,200c196,197
+< 		"y1": {
+< 			"value_in_config": 6.44
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+204a202,204
+> 		"y1": {
+> 			"value_in_config": 6.44
+> 		},
+245,247d244
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+251,252c248,249
+< 		"y1": {
+< 			"value_in_config": 6.44
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+255a253,255
+> 		},
+> 		"y1": {
+> 			"value_in_config": 6.44
+=================== End of Test96_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test96_smlp_toy_num_resp_mult_optimization_results.json ==================================
+16,18d15
+< 	"p1": {
+< 		"value_in_config": 4.0
+< 	},
+22,23c19,20
+< 	"y1": {
+< 		"value_in_config": 6.44
+---
+> 	"p1": {
+> 		"value_in_config": 4.0
+26a24,26
+> 	},
+> 	"y1": {
+> 		"value_in_config": 6.44
+=================== End of Test96_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
 =================== Diff report for: Test97_smlp_toy_num_resp_mult.txt ==================================
 252c252
 < smlp_logger - INFO - Model operator counts for y2: {'add': 100, 'mul': 715, 'const': 2547, 'ite': 305, 'and': 408, 'prop': 713, 'sub': 713, 'var': 713}
 ---
 > smlp_logger - INFO - Model operator counts for y2: {'add': 100, 'mul': 716, 'const': 2550, 'ite': 305, 'and': 409, 'prop': 714, 'sub': 714, 'var': 714}
 =================== End of Test97_smlp_toy_num_resp_mult.txt diff report ================================
+=================== Diff report for: Test98_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+17,19d16
+< 		"p1": {
+< 			"value_in_config": 2.0
+< 		},
+23,24c20,21
+< 		"y1": {
+< 			"value_in_config": 7.0
+---
+> 		"p1": {
+> 			"value_in_config": 2.0
+28a26,28
+> 		"y1": {
+> 			"value_in_config": 7.0
+> 		},
+48,50d47
+< 		"p1": {
+< 			"value_in_config": 2.0
+< 		},
+54,55c51,52
+< 		"y1": {
+< 			"value_in_config": 7.0
+---
+> 		"p1": {
+> 			"value_in_config": 2.0
+59a57,59
+> 		"y1": {
+> 			"value_in_config": 7.0
+> 		},
+79,81d78
+< 		"p1": {
+< 			"value_in_config": 2.0
+< 		},
+85,86c82,83
+< 		"y1": {
+< 			"value_in_config": 7.0
+---
+> 		"p1": {
+> 			"value_in_config": 2.0
+90a88,90
+> 		"y1": {
+> 			"value_in_config": 7.0
+> 		},
+131,133d130
+< 		"p1": {
+< 			"value_in_config": 2.0
+< 		},
+137,138c134,135
+< 		"y1": {
+< 			"value_in_config": 7.0
+---
+> 		"p1": {
+> 			"value_in_config": 2.0
+141a139,141
+> 		},
+> 		"y1": {
+> 			"value_in_config": 7.0
+=================== End of Test98_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test98_smlp_toy_num_resp_mult_optimization_results.json ==================================
+16,18d15
+< 	"p1": {
+< 		"value_in_config": 2.0
+< 	},
+22,23c19,20
+< 	"y1": {
+< 		"value_in_config": 7.0
+---
+> 	"p1": {
+> 		"value_in_config": 2.0
+26a24,26
+> 	},
+> 	"y1": {
+> 		"value_in_config": 7.0
+=================== End of Test98_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test99_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+24,26d23
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+30,31c27,28
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+35a33,35
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+62,64d61
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+68,69c65,66
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+73a71,73
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+100,102d99
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+106,107c103,104
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+111a109,111
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+138,140d137
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+144,145c141,142
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+149a147,149
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+197,199d196
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+203,204c200,201
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+208a206,208
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+235,237d234
+< 		"p1": {
+< 			"value_in_config": 7.0
+< 		},
+241,242c238,239
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 7.0
+246a244,246
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+273,275d272
+< 		"p1": {
+< 			"value_in_config": 7.0
+< 		},
+279,280c276,277
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 7.0
+284a282,284
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+332,334d331
+< 		"p1": {
+< 			"value_in_config": 7.0
+< 		},
+338,339c335,336
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 7.0
+342a340,342
+> 		},
+> 		"y1": {
+> 			"value_in_config": 9.0
+=================== End of Test99_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test99_smlp_toy_num_resp_mult_optimization_results.json ==================================
+23,25d22
+< 	"p1": {
+< 		"value_in_config": 7.0
+< 	},
+29,30c26,27
+< 	"y1": {
+< 		"value_in_config": 9.0
+---
+> 	"p1": {
+> 		"value_in_config": 7.0
+33a31,33
+> 	},
+> 	"y1": {
+> 		"value_in_config": 9.0
+=================== End of Test99_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test100_smlp_toy_num_resp_mult_optimization_progress.json ==================================
+24,26d23
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+30,31c27,28
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+35a33,35
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+62,64d61
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+68,69c65,66
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+73a71,73
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+100,102d99
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+106,107c103,104
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+111a109,111
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+138,140d137
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+144,145c141,142
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+149a147,149
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+197,199d196
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+203,204c200,201
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+208a206,208
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+235,237d234
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+241,242c238,239
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+246a244,246
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+273,275d272
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+279,280c276,277
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+284a282,284
+> 		"y1": {
+> 			"value_in_config": 9.0
+> 		},
+332,334d331
+< 		"p1": {
+< 			"value_in_config": 4.0
+< 		},
+338,339c335,336
+< 		"y1": {
+< 			"value_in_config": 9.0
+---
+> 		"p1": {
+> 			"value_in_config": 4.0
+342a340,342
+> 		},
+> 		"y1": {
+> 			"value_in_config": 9.0
+=================== End of Test100_smlp_toy_num_resp_mult_optimization_progress.json diff report ================================
+=================== Diff report for: Test100_smlp_toy_num_resp_mult_optimization_results.json ==================================
+23,25d22
+< 	"p1": {
+< 		"value_in_config": 4.0
+< 	},
+29,30c26,27
+< 	"y1": {
+< 		"value_in_config": 9.0
+---
+> 	"p1": {
+> 		"value_in_config": 4.0
+33a31,33
+> 	},
+> 	"y1": {
+> 		"value_in_config": 9.0
+=================== End of Test100_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
 =================== Diff report for: Test102_test101_model.txt ==================================
 38c38
 < smlp_logger - INFO - Seving model rerun configuration in file ../models/test101_model_rerun_model_config.json
 ---
 > smlp_logger - INFO - Seving model rerun configuration in file ./../models/test101_model_rerun_model_config.json
 =================== End of Test102_test101_model.txt diff report ================================
+=================== Diff report for: Test105_smlp_toy_num_resp_mult_verify_results.json ==================================
+6d5
+< 			"p1": 4.0,
+8c7
+< 			"y1": 9.0,
+---
+> 			"p1": 4.0,
+9a9
+> 			"y1": 9.0,
+=================== End of Test105_smlp_toy_num_resp_mult_verify_results.json diff report ================================
 =================== Diff report for: test110_model_poly_sklearn_formula.txt ==================================
 diff: /app/smlp/regr_smlp/code/test110_model_poly_sklearn_formula.txt: No such file or directory
 =================== End of test110_model_poly_sklearn_formula.txt diff report ================================
@@ -851,3 +2131,1163 @@ diff: /app/smlp/regr_smlp/code/test110_model_poly_sklearn_formula.txt: No such f
 ---
 > smlp_logger - INFO - Seving model rerun configuration in file ./../models/test110_model_rerun_model_config.json
 =================== End of Test112_test110_model_smlp_toy_basic_pred_unlabeled.txt diff report ================================
+=================== Diff report for: Test113_smlp_toy_basic_optimization_progress.json ==================================
+17,18c17,21
+< 		"x2": {
+< 			"value_in_config": 0.0
+---
+> 		"x1": {
+> 			"value_in_config": 10.0
+> 		},
+> 		"p2": {
+> 			"value_in_config": 4.0
+23,24c26,27
+< 		"x1": {
+< 			"value_in_config": 10.0
+---
+> 		"x2": {
+> 			"value_in_config": 0.0
+31,33d33
+< 		},
+< 		"p2": {
+< 			"value_in_config": 4.0
+51,52c51,55
+< 		"x2": {
+< 			"value_in_config": 0.0
+---
+> 		"x1": {
+> 			"value_in_config": 10.0
+> 		},
+> 		"p2": {
+> 			"value_in_config": 4.0
+57,58c60,61
+< 		"x1": {
+< 			"value_in_config": 10.0
+---
+> 		"x2": {
+> 			"value_in_config": 0.0
+66,68d68
+< 		"p2": {
+< 			"value_in_config": 4.0
+< 		},
+106,107c106,110
+< 		"x2": {
+< 			"value_in_config": 0.0
+---
+> 		"x1": {
+> 			"value_in_config": 10.0
+> 		},
+> 		"p2": {
+> 			"value_in_config": 4.0
+112,113c115,116
+< 		"x1": {
+< 			"value_in_config": 10.0
+---
+> 		"x2": {
+> 			"value_in_config": 0.0
+120,122d122
+< 		},
+< 		"p2": {
+< 			"value_in_config": 4.0
+=================== End of Test113_smlp_toy_basic_optimization_progress.json diff report ================================
+=================== Diff report for: Test113_smlp_toy_basic_optimization_results.json ==================================
+16,17c16,20
+< 	"x2": {
+< 		"value_in_config": 0.0
+---
+> 	"x1": {
+> 		"value_in_config": 10.0
+> 	},
+> 	"p2": {
+> 		"value_in_config": 4.0
+22,23c25,26
+< 	"x1": {
+< 		"value_in_config": 10.0
+---
+> 	"x2": {
+> 		"value_in_config": 0.0
+30,32d32
+< 	},
+< 	"p2": {
+< 		"value_in_config": 4.0
+=================== End of Test113_smlp_toy_basic_optimization_results.json diff report ================================
+=================== Diff report for: Test114_smlp_toy_basic_optimization_progress.json ==================================
+17,18c17,21
+< 		"x2": {
+< 			"value_in_config": 0.0
+---
+> 		"x1": {
+> 			"value_in_config": 10.0
+> 		},
+> 		"p2": {
+> 			"value_in_config": 4.0
+23,24c26,27
+< 		"x1": {
+< 			"value_in_config": 10.0
+---
+> 		"x2": {
+> 			"value_in_config": 0.0
+31,33d33
+< 		},
+< 		"p2": {
+< 			"value_in_config": 4.0
+51,52c51,55
+< 		"x2": {
+< 			"value_in_config": 0.0
+---
+> 		"x1": {
+> 			"value_in_config": 10.0
+> 		},
+> 		"p2": {
+> 			"value_in_config": 4.0
+57,58c60,61
+< 		"x1": {
+< 			"value_in_config": 10.0
+---
+> 		"x2": {
+> 			"value_in_config": 0.0
+66,68d68
+< 		"p2": {
+< 			"value_in_config": 4.0
+< 		},
+106,107c106,110
+< 		"x2": {
+< 			"value_in_config": 0.0
+---
+> 		"x1": {
+> 			"value_in_config": 10.0
+> 		},
+> 		"p2": {
+> 			"value_in_config": 4.0
+112,113c115,116
+< 		"x1": {
+< 			"value_in_config": 10.0
+---
+> 		"x2": {
+> 			"value_in_config": 0.0
+120,122d122
+< 		},
+< 		"p2": {
+< 			"value_in_config": 4.0
+=================== End of Test114_smlp_toy_basic_optimization_progress.json diff report ================================
+=================== Diff report for: Test114_smlp_toy_basic_optimization_results.json ==================================
+16,17c16,20
+< 	"x2": {
+< 		"value_in_config": 0.0
+---
+> 	"x1": {
+> 		"value_in_config": 10.0
+> 	},
+> 	"p2": {
+> 		"value_in_config": 4.0
+22,23c25,26
+< 	"x1": {
+< 		"value_in_config": 10.0
+---
+> 	"x2": {
+> 		"value_in_config": 0.0
+30,32d32
+< 	},
+< 	"p2": {
+< 		"value_in_config": 4.0
+=================== End of Test114_smlp_toy_basic_optimization_results.json diff report ================================
+=================== Diff report for: Test118_smlp_toy_basic_verify_results.json ==================================
+5a6
+> 			"p1": 0.2,
+7d7
+< 			"y2": 0.0,
+9c9
+< 			"p1": 0.2
+---
+> 			"y2": 0.0
+=================== End of Test118_smlp_toy_basic_verify_results.json diff report ================================
+=================== Diff report for: Test119_smlp_toy_basic_query_results.json ==================================
+14a15
+> 			"p1": 0.0,
+16d16
+< 			"y2": 0.0,
+18c18
+< 			"p1": 0.0
+---
+> 			"y2": 0.0
+=================== End of Test119_smlp_toy_basic_query_results.json diff report ================================
+=================== Diff report for: Test121_smlp_toy_basic_synthesize_results.json ==================================
+9,10c9,10
+< 		"p2": 0.0,
+< 		"p1": 0.0
+---
+> 		"p1": 0.0,
+> 		"p2": 0.0
+=================== End of Test121_smlp_toy_basic_synthesize_results.json diff report ================================
+=================== Diff report for: Test122_smlp_toy_basic_optimization_progress.json ==================================
+16a17,19
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+20c23
+< 		"y2": {
+---
+> 		"y1": {
+24c27
+< 		"y1": {
+---
+> 		"y2": {
+27,29d29
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+=================== End of Test122_smlp_toy_basic_optimization_progress.json diff report ================================
+=================== Diff report for: Test122_smlp_toy_basic_optimization_results.json ==================================
+2a3
+> 		"p1": 0.0,
+4d4
+< 		"y2": 0.0,
+6c6
+< 		"p1": 0.0,
+---
+> 		"y2": 0.0,
+16a17
+> 		"p1": 0.0,
+18d18
+< 		"y2": 0.0,
+20c20
+< 		"p1": 0.0,
+---
+> 		"y2": 0.0,
+=================== End of Test122_smlp_toy_basic_optimization_results.json diff report ================================
+=================== Diff report for: Test123_smlp_toy_basic_optimization_progress.json ==================================
+16a17,19
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+20c23
+< 		"y2": {
+---
+> 		"y1": {
+24c27
+< 		"y1": {
+---
+> 		"y2": {
+27,29d29
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+46a47,49
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+50c53
+< 		"y2": {
+---
+> 		"y1": {
+54c57
+< 		"y1": {
+---
+> 		"y2": {
+57,59d59
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+76a77,79
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+80c83
+< 		"y2": {
+---
+> 		"y1": {
+84c87
+< 		"y1": {
+---
+> 		"y2": {
+87,89d89
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+106a107,109
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+110c113
+< 		"y2": {
+---
+> 		"y1": {
+114c117
+< 		"y1": {
+---
+> 		"y2": {
+117,119d119
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+136a137,139
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+140c143
+< 		"y2": {
+---
+> 		"y1": {
+144c147
+< 		"y1": {
+---
+> 		"y2": {
+147,149d149
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+166a167,169
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+170c173
+< 		"y2": {
+---
+> 		"y1": {
+174c177
+< 		"y1": {
+---
+> 		"y2": {
+177,179d179
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+196a197,199
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+200c203
+< 		"y2": {
+---
+> 		"y1": {
+204c207
+< 		"y1": {
+---
+> 		"y2": {
+207,209d209
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+226a227,229
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+230c233
+< 		"y2": {
+---
+> 		"y1": {
+234c237
+< 		"y1": {
+---
+> 		"y2": {
+237,239d239
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+256a257,259
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+260c263
+< 		"y2": {
+---
+> 		"y1": {
+264c267
+< 		"y1": {
+---
+> 		"y2": {
+267,269d269
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+286a287,289
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+290c293
+< 		"y2": {
+---
+> 		"y1": {
+294c297
+< 		"y1": {
+---
+> 		"y2": {
+297,299d299
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+316a317,319
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+320c323
+< 		"y2": {
+---
+> 		"y1": {
+324c327
+< 		"y1": {
+---
+> 		"y2": {
+327,329d329
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+346a347,349
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+350c353
+< 		"y2": {
+---
+> 		"y1": {
+354c357
+< 		"y1": {
+---
+> 		"y2": {
+357,359d359
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+376a377,379
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+380c383
+< 		"y2": {
+---
+> 		"y1": {
+384c387
+< 		"y1": {
+---
+> 		"y2": {
+388,390d390
+< 		"p1": {
+< 			"value_in_config": 0.0
+< 		},
+427a428,430
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+431c434
+< 		"y2": {
+---
+> 		"y1": {
+435c438
+< 		"y1": {
+---
+> 		"y2": {
+438,440d440
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+457a458,460
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+461c464
+< 		"y2": {
+---
+> 		"y1": {
+465c468
+< 		"y1": {
+---
+> 		"y2": {
+468,470d470
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+487a488,490
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+491c494
+< 		"y2": {
+---
+> 		"y1": {
+495c498
+< 		"y1": {
+---
+> 		"y2": {
+498,500d500
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+517a518,520
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+521c524
+< 		"y2": {
+---
+> 		"y1": {
+525c528
+< 		"y1": {
+---
+> 		"y2": {
+528,530d530
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+547a548,550
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+551c554
+< 		"y2": {
+---
+> 		"y1": {
+555c558
+< 		"y1": {
+---
+> 		"y2": {
+558,560d560
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+577a578,580
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+581c584
+< 		"y2": {
+---
+> 		"y1": {
+585c588
+< 		"y1": {
+---
+> 		"y2": {
+588,590d590
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+607a608,610
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+611c614
+< 		"y2": {
+---
+> 		"y1": {
+615c618
+< 		"y1": {
+---
+> 		"y2": {
+618,620d620
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+637a638,640
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+641c644
+< 		"y2": {
+---
+> 		"y1": {
+645c648
+< 		"y1": {
+---
+> 		"y2": {
+648,650d650
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+667a668,670
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+671c674
+< 		"y2": {
+---
+> 		"y1": {
+675c678
+< 		"y1": {
+---
+> 		"y2": {
+678,680d680
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+697a698,700
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+701c704
+< 		"y2": {
+---
+> 		"y1": {
+705c708
+< 		"y1": {
+---
+> 		"y2": {
+708,710d710
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+727a728,730
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+731c734
+< 		"y2": {
+---
+> 		"y1": {
+735c738
+< 		"y1": {
+---
+> 		"y2": {
+738,740d740
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+757a758,760
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+761c764
+< 		"y2": {
+---
+> 		"y1": {
+765c768
+< 		"y1": {
+---
+> 		"y2": {
+768,770d770
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+787a788,790
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+791c794
+< 		"y2": {
+---
+> 		"y1": {
+795c798
+< 		"y1": {
+---
+> 		"y2": {
+799,801d801
+< 		"p1": {
+< 			"value_in_config": 0.0
+< 		},
+838a839,841
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+842c845
+< 		"y2": {
+---
+> 		"y1": {
+846c849
+< 		"y1": {
+---
+> 		"y2": {
+849,851d851
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+=================== End of Test123_smlp_toy_basic_optimization_progress.json diff report ================================
+=================== Diff report for: Test123_smlp_toy_basic_optimization_results.json ==================================
+15a16,18
+> 	"p1": {
+> 		"value_in_config": 0.0
+> 	},
+19c22
+< 	"y2": {
+---
+> 	"y1": {
+23c26
+< 	"y1": {
+---
+> 	"y2": {
+26,28d28
+< 	},
+< 	"p1": {
+< 		"value_in_config": 0.0
+=================== End of Test123_smlp_toy_basic_optimization_results.json diff report ================================
+=================== Diff report for: Test125_smlp_toy_basic_optimization_progress.json ==================================
+16a17,19
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+20c23
+< 		"y2": {
+---
+> 		"y1": {
+24c27
+< 		"y1": {
+---
+> 		"y2": {
+27,29d29
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+46a47,49
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+50c53
+< 		"y2": {
+---
+> 		"y1": {
+54c57
+< 		"y1": {
+---
+> 		"y2": {
+57,59d59
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+76a77,79
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+80c83
+< 		"y2": {
+---
+> 		"y1": {
+84c87
+< 		"y1": {
+---
+> 		"y2": {
+87,89d89
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+106a107,109
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+110c113
+< 		"y2": {
+---
+> 		"y1": {
+114c117
+< 		"y1": {
+---
+> 		"y2": {
+117,119d119
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+136a137,139
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+140c143
+< 		"y2": {
+---
+> 		"y1": {
+144c147
+< 		"y1": {
+---
+> 		"y2": {
+147,149d149
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+166a167,169
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+170c173
+< 		"y2": {
+---
+> 		"y1": {
+174c177
+< 		"y1": {
+---
+> 		"y2": {
+177,179d179
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+196a197,199
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+200c203
+< 		"y2": {
+---
+> 		"y1": {
+204c207
+< 		"y1": {
+---
+> 		"y2": {
+207,209d209
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+226a227,229
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+230c233
+< 		"y2": {
+---
+> 		"y1": {
+234c237
+< 		"y1": {
+---
+> 		"y2": {
+237,239d239
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+256a257,259
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+260c263
+< 		"y2": {
+---
+> 		"y1": {
+264c267
+< 		"y1": {
+---
+> 		"y2": {
+267,269d269
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+286a287,289
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+290c293
+< 		"y2": {
+---
+> 		"y1": {
+294c297
+< 		"y1": {
+---
+> 		"y2": {
+297,299d299
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+316a317,319
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+320c323
+< 		"y2": {
+---
+> 		"y1": {
+324c327
+< 		"y1": {
+---
+> 		"y2": {
+327,329d329
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+346a347,349
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+350c353
+< 		"y2": {
+---
+> 		"y1": {
+354c357
+< 		"y1": {
+---
+> 		"y2": {
+357,359d359
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+376a377,379
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+380c383
+< 		"y2": {
+---
+> 		"y1": {
+384c387
+< 		"y1": {
+---
+> 		"y2": {
+388,390d390
+< 		"p1": {
+< 			"value_in_config": 0.0
+< 		},
+427a428,430
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+431c434
+< 		"y2": {
+---
+> 		"y1": {
+435c438
+< 		"y1": {
+---
+> 		"y2": {
+438,440d440
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+457a458,460
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+461c464
+< 		"y2": {
+---
+> 		"y1": {
+465c468
+< 		"y1": {
+---
+> 		"y2": {
+468,470d470
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+487a488,490
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+491c494
+< 		"y2": {
+---
+> 		"y1": {
+495c498
+< 		"y1": {
+---
+> 		"y2": {
+498,500d500
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+517a518,520
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+521c524
+< 		"y2": {
+---
+> 		"y1": {
+525c528
+< 		"y1": {
+---
+> 		"y2": {
+528,530d530
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+547a548,550
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+551c554
+< 		"y2": {
+---
+> 		"y1": {
+555c558
+< 		"y1": {
+---
+> 		"y2": {
+558,560d560
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+577a578,580
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+581c584
+< 		"y2": {
+---
+> 		"y1": {
+585c588
+< 		"y1": {
+---
+> 		"y2": {
+588,590d590
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+607a608,610
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+611c614
+< 		"y2": {
+---
+> 		"y1": {
+615c618
+< 		"y1": {
+---
+> 		"y2": {
+618,620d620
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+637a638,640
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+641c644
+< 		"y2": {
+---
+> 		"y1": {
+645c648
+< 		"y1": {
+---
+> 		"y2": {
+648,650d650
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+667a668,670
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+671c674
+< 		"y2": {
+---
+> 		"y1": {
+675c678
+< 		"y1": {
+---
+> 		"y2": {
+678,680d680
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+697a698,700
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+701c704
+< 		"y2": {
+---
+> 		"y1": {
+705c708
+< 		"y1": {
+---
+> 		"y2": {
+708,710d710
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+727a728,730
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+731c734
+< 		"y2": {
+---
+> 		"y1": {
+735c738
+< 		"y1": {
+---
+> 		"y2": {
+738,740d740
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+757a758,760
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+761c764
+< 		"y2": {
+---
+> 		"y1": {
+765c768
+< 		"y1": {
+---
+> 		"y2": {
+768,770d770
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+787a788,790
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+791c794
+< 		"y2": {
+---
+> 		"y1": {
+795c798
+< 		"y1": {
+---
+> 		"y2": {
+799,801d801
+< 		"p1": {
+< 			"value_in_config": 0.0
+< 		},
+838a839,841
+> 		"p1": {
+> 			"value_in_config": 0.0
+> 		},
+842c845
+< 		"y2": {
+---
+> 		"y1": {
+846c849
+< 		"y1": {
+---
+> 		"y2": {
+849,851d851
+< 		},
+< 		"p1": {
+< 			"value_in_config": 0.0
+=================== End of Test125_smlp_toy_basic_optimization_progress.json diff report ================================
+=================== Diff report for: Test125_smlp_toy_basic_optimization_results.json ==================================
+15a16,18
+> 	"p1": {
+> 		"value_in_config": 0.0
+> 	},
+19c22
+< 	"y2": {
+---
+> 	"y1": {
+23c26
+< 	"y1": {
+---
+> 	"y2": {
+26,28d28
+< 	},
+< 	"p1": {
+< 		"value_in_config": 0.0
+=================== End of Test125_smlp_toy_basic_optimization_results.json diff report ================================
+=================== Diff report for: Test126_smlp_toy_basic_verify_results.json ==================================
+6,7d5
+< 			"x2": 0.0,
+< 			"y1": 0.2,
+8a7,9
+> 			"p2": 0.0,
+> 			"y1": 0.2,
+> 			"x2": 0.0,
+10,11c11
+< 			"y2": 0.0,
+< 			"p2": 0.0
+---
+> 			"y2": 0.0
+=================== End of Test126_smlp_toy_basic_verify_results.json diff report ================================
+=================== Diff report for: Test129_smlp_toy_ctg_num_resp_verify_results.json ==================================
+18d17
+< 			"p1": 7.5,
+20c19
+< 			"y1": -61.895667856765954,
+---
+> 			"p1": 7.5,
+21a21
+> 			"y1": -61.895667856765954,
+30d29
+< 			"p1": 7.5,
+32c31
+< 			"y1": -61.895667856765954,
+---
+> 			"p1": 7.5,
+33a33
+> 			"y1": -61.895667856765954,
+=================== End of Test129_smlp_toy_ctg_num_resp_verify_results.json diff report ================================
