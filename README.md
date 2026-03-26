@@ -83,3 +83,4 @@ This should produce ...
 
   Tutorial contains SMLP examples for black-box function optimization and Intel benchmarks for signal integrity. 
 
+## Manual
