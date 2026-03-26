@@ -45,13 +45,14 @@ Papers:
  - install python 3.11
  <details>
   Example:   Install python virtual environment [[pyenv]](https://github.com/pyenv/pyenv)
+
+ </details>
+ - `pip install smlptech`
+
   ```
   pyenv install 3.11
   pyenv local 3.11
   ```
- </details>
- - `pip install smlptech`
-
 ### Docker
 ### Sources
 
