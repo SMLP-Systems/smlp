@@ -16,5 +16,18 @@ SMLP modes:
 - root cause analysis
 
 
+In SMLP systems can be represented as:
 
-Sytems can be seen as black-box functions that can be sampled.
+- black-box functions: via sampling input -- output behaviour
+  only tabular data is needed
+  
+- explicit expressions involving polynomials, trigonometric functions
+
+- machine learning models:
+  -- neural networks
+  -- decision trees
+  -- random forests
+  -- polynomial models
+
+
+
