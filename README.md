@@ -1,9 +1,10 @@
 # SMLP -- Symbolic Machine Learning Prover
 
 SMLP is a tool for verification and optimisation of systems modelled using machine learning.
+
 SMLP uses symbolic reasoning for ML model exploration and optimisation under verification and stability constraints.
 
-<img src="./misc/smlp_arch.png"  alt="SMLP" class="center" width="500" height="500">
+<img src="./misc/smlp_arch.png"  alt="SMLP" class="center" width="800" height="500">
 
 
 SMLP modes:
