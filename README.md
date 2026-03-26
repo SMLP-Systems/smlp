@@ -43,6 +43,12 @@ Papers:
 
 ### pip installation (recommended)
  - install Python 3.11
+  Example via python virtual environment [[pyenv]](https://github.com/pyenv/pyenv)
+  ```
+  pyenv install 3.11
+  pyenv local 3.11
+  ```
+  
  <details>
   Example:   Install python virtual environment [[pyenv]](https://github.com/pyenv/pyenv)
 
@@ -51,10 +57,7 @@ Papers:
 
 
 <details> Install Python 3.11
-  ```
-  pyenv install 3.11
-  pyenv local 3.11
-  ```
+ 
 </details>
 
 ### Docker
