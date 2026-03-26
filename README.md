@@ -42,7 +42,7 @@ Papers:
 ## Installation
 
 ### pip installation (recommended)
- 1. install python 3.11
+ - install python 3.11
  <details>
   Example:   Install python virtual environment [[pyenv]](https://github.com/pyenv/pyenv)
   ```
@@ -50,7 +50,7 @@ Papers:
   pyenv local 3.11
   ```
  </details>
- 2. `pip install smlptech`
+ - `pip install smlptech`
 
 ### Docker
 ### Sources
