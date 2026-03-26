@@ -48,14 +48,37 @@ Papers:
   pyenv local 3.11
   ```
   
- - install smlptech package: 
- ```pip install smlptech```
-
-
-<details> Install Python 3.11
+ - install smlptech package:
  
-</details>
+ ```pip install smlptech```
 
 ### Docker
 ### Sources
 
+## Quick instructions on testing whether the tool works:
+## TODO paths for regression data ? or separate download
+
+   ```
+    smlp \
+    -data "data/smlp_toy_num_resp_mult" \
+    -out_dir ./ -pref Test83 -mode optimize -pareto t \
+    -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 \
+    -spec smlp_toy_num_resp_mult_free_inps -data_scaler min_max \
+    -beta "y1>7 and y2>6" -objv_names obj1,objv2,objv3 \
+    -objv_exprs "(y1+y2)/2;y1/2-y2;y2" -epsilon 0.05 -delta_rel 0.01 \
+    -save_model_config f -mrmr_pred 0 -plots f -seed 10 -log_time f \
+    -spec ../specs/smlp_toy_num_resp_mult_free_inps.spec
+```
+
+This should produce ...
+(better visual example; eggholder ?  )
+
+## Tutorial
+
+  Tutorial contains SMLP examples for black-box function optimization and Intel benchmarks for signal integrity. 
+
+
+   
+
+
+   
