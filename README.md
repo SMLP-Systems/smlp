@@ -42,7 +42,7 @@ Papers:
 ## Installation
 
 ### pip installation (recommended)
- - install Python 3.11; for example via python virtual environment [[pyenv]](https://github.com/pyenv/pyenv)
+ - install Python 3.11; for example via Python version management [[pyenv]](https://github.com/pyenv/pyenv)
   ```
   pyenv install 3.11
   pyenv local 3.11
@@ -79,8 +79,3 @@ This should produce ...
 
   Tutorial contains SMLP examples for black-box function optimization and Intel benchmarks for signal integrity. 
 
-
-   
-
-
-   
