@@ -24,10 +24,10 @@ In SMLP systems can be represented as:
 - explicit expressions involving polynomials, trigonometric functions
 
 - machine learning models:
-  -- neural networks
-  -- decision trees
-  -- random forests
-  -- polynomial models
+  - neural networks
+  - decision trees
+  - random forests
+  - polynomial models
 
 
 
