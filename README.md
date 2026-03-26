@@ -19,10 +19,8 @@ SMLP modes:
 In SMLP systems can be represented as:
 
 - black-box functions: via sampling input -- output behaviour
-  only tabular data is needed
-  
+  only tabular data is needed  
 - explicit expressions involving polynomials, trigonometric functions
-
 - machine learning models:
   - neural networks
   - decision trees
