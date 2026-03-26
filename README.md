@@ -39,12 +39,12 @@ Papers:
 * Combining Constraint Solving and Bayesian Techniques for System Optimization, (IJCAI'22) [[pdf]](https://www.ijcai.org/proceedings/2022/0249.pdf) [[bib]](https://dblp.org/rec/conf/ijcai/BrausseKK22.html?view=bibtex)
 * Selecting Stable Safe Configurations for Systems Modelled by Neural Networks with ReLU Activation, (FMCAD'20), [[pdf]](https://korovin.gitlab.io/pub/fmcad_bkk_2020.pdf) [[bib]](https://dblp.org/rec/conf/fmcad/BrausseKK20.html?view=bibtex)
 
-# Installation
+## Installation
 
-## pip installation (recommended)
+### pip installation (recommended)
  1. install python 3.11
  2. pip install smlptech
 
-## Docker
-## Sources
+### Docker
+### Sources
 
