@@ -4,7 +4,8 @@ SMLP is a tool for verification and optimisation of systems modelled using machi
 
 SMLP uses symbolic reasoning for ML model exploration and optimisation under verification and stability constraints.
 
-<img src="./misc/smlp_arch.png"  alt="SMLP" class="center" width="800" height="500">
+
+<img src="./misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="800" height="500">
 
 
 SMLP modes:
@@ -33,6 +34,7 @@ SMLP supports:
  - stability constraints
  - parameter optimization
 
+<img src="./misc/smlp_arch.png"  alt="SMLP Arch" class="center" width="800" height="500">
 
 Papers:
 * SMLP: Symbolic Machine Learning Prover, (CAV'24) [[pdf]](https://link.springer.com/content/pdf/10.1007/978-3-031-65627-9_11.pdf) [[bib]](https://dblp.org/rec/conf/cav/BrausseKK24.html?view=bibtex)
