@@ -50,7 +50,9 @@ Papers:
   
  - install smlptech package:
  
- ```pip install smlptech```
+ ```
+ pip install smlptech
+ ```
 
 ### Docker
 ### Sources
