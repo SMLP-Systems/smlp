@@ -1,4 +1,4 @@
-#!/usr/bin/tcsh -f
+#!/usr/bin/env -S tcsh -f
 set log=`realpath $0 | xargs basename`.log
 git rev-parse --show-toplevel >& /dev/null
 if($status) then

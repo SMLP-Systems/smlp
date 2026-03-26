@@ -1,8 +1,7 @@
-#!/usr/bin/python3.11
+#!/usr/bin/env python3.11
 import pandas as pd
 import seaborn as sns
 import matplotlib
-matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg

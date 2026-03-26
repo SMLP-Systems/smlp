@@ -1,4 +1,4 @@
-#!/usr/bin/python3.11
+#!/usr/bin/env python3.11
 """
 Binh and Korn (BNH) Multi-Objective Optimization Problem
 Reference: https://web.archive.org/web/20190801183649/https://pdfs.semanticscholar.org/cf68/41a6848ca2023342519b0e0e536b88bdea1d.pdf, Test Case 2 on page 6

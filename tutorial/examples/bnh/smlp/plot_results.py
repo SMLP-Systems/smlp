@@ -1,4 +1,4 @@
-#!/usr/bin/python3.11
+#!/usr/bin/env python3.11
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt

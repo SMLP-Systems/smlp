@@ -1,4 +1,4 @@
-#!/usr/bin/python3.11
+#!/usr/bin/env python3.11
 """
 https://www.sfu.ca/~ssurjano/egg.html
 """

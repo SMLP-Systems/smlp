@@ -1,4 +1,4 @@
-#!/usr/bin/tcsh -f
+#!/usr/bin/env -S tcsh -f
 set script_path=`realpath $0 | xargs dirname`
 \rm -f bnh.csv.gz bnh_p*_optimization_results.json BNH* *.log >& /dev/null
 foreach v (X1 X2 F1 F2) 

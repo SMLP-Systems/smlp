@@ -1,4 +1,4 @@
-#!/usr/bin/tcsh -f
+#!/usr/bin/env -S tcsh -f
 set script_path=`realpath $0 | xargs dirname`
 set test=BNH
 set test_lc=`echo $test | tr '[A-Z]' '[a-z]'`

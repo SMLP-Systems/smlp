@@ -1,4 +1,4 @@
-#!/usr/bin/tcsh -f
+#!/usr/bin/env -S tcsh -f
 set script_path=`realpath $0 | xargs dirname`
 set script_name=`realpath $0 | xargs basename`
 if($#argv < 1 ) then

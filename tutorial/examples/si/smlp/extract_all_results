@@ -1,4 +1,4 @@
-#!/usr/bin/tcsh -f
+#!/usr/bin/env -S tcsh -f
 foreach json (split_s2_tx_piv_anonym_optimization_results.json no_split_s2_tx_piv_anonym_optimization_results.json)
     `realpath $0 | xargs dirname`/extract_results $json -clean
 end
