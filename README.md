@@ -50,7 +50,7 @@ Papers:
   pyenv local 3.11
   ```
  </details>
- 2. ```pip install smlptech```
+ 2. `pip install smlptech`
 
 ### Docker
 ### Sources
