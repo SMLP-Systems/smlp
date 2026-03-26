@@ -16,7 +16,7 @@ SMLP modes:
 - root cause analysis
 
 
-In SMLP systems can be represented as:
+Systems can be represented as:
 
 - black-box functions: via sampling input -- output behaviour
   only tabular data is needed  
