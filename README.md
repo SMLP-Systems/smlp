@@ -87,4 +87,4 @@ This should produce ...
 
 ## Applications:
   
-### Comments/Feedback/Discussions: [[Zulup]](smlp.zulipchat.com)
+### Comments/Feedback/Discussions: [[Zulup]](https://smlp.zulipchat.com)
