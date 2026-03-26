@@ -58,7 +58,7 @@ Papers:
 ### Sources
 
 ## Quick instructions on testing whether the tool works:
-## TODO paths for regression data ? or separate download
+ TODO paths for regression data ? or separate download
 
    ```
     smlp \
