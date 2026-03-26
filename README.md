@@ -42,18 +42,14 @@ Papers:
 ## Installation
 
 ### pip installation (recommended)
- - install Python 3.11
-  Example via python virtual environment [[pyenv]](https://github.com/pyenv/pyenv)
+ - install Python 3.11; for example via python virtual environment [[pyenv]](https://github.com/pyenv/pyenv)
   ```
   pyenv install 3.11
   pyenv local 3.11
   ```
   
- <details>
-  Example:   Install python virtual environment [[pyenv]](https://github.com/pyenv/pyenv)
-
- </details>
- - `pip install smlptech`
+ - install smlptech package: 
+ ```pip install smlptech```
 
 
 <details> Install Python 3.11
