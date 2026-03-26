@@ -28,4 +28,10 @@ Systems can be represented as:
   - polynomial models
 
 
+SMLP supports:
+ - symbolic constrains
+ - stability constraints
+ - parameter optimization
 
+
+ 
