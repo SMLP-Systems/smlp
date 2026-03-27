@@ -65,18 +65,11 @@ Papers:
 
 </details>
 
-
-[[Ubuntu 24.04]](./scripts/venv/README.md)
-
 <details>
  <summary> [Ubuntu 24.04](./scripts/venv/README.md) </summary>
  
-           [SMLP Installation Guide for Ubuntu 24.04](./scripts/venv/README.md)
+           [SMLP Installation Guide for Ubuntu 24.04](https://github.com/SMLP-Systems/smlp/blob/readme_main/scripts/venv/README.md)
            
-           [SMLP](./scripts/venv/README.md)
-
- [[pdf]](https://www.ijcai.org/proceedings/2022/0249.pdf)
-
 </details>
 
 
