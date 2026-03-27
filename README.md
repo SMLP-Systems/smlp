@@ -83,7 +83,7 @@ Papers:
 
 </details>
 
- <details>
+<details>
  <summary> Linux </summary>
  
   ```docker run -it mdmitry1/python311-dev:latest```
@@ -125,6 +125,10 @@ Papers:
 
  </details>
 
+<details>
+ <summary> Installation on a stock Ubuntu-22.04 </summary>
+   Installation instructions for Ubuntu-22.04 can be followed using `homebrew` in place of `apt`
+</details>
 
 ## Tutorial TODO: add Eggholder detailes
 
