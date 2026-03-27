@@ -5,7 +5,7 @@
 #### Success story: used at Intel for circuit layout optimization in signal integrity
 
 
-SMLP is a tool for verification and optimisation of systems modelled using machine learning.
+SMLP is a general purpose tool for verification and optimisation of systems modelled using machine learning.
 SMLP uses symbolic reasoning for ML model exploration and optimisation under verification and stability constraints.
 
 
