@@ -106,7 +106,7 @@ Papers:
 
  <summary> Linux with GUI support using VNC </summary>
 
-<details>
+
 
 Starting VNC server within container:
 
@@ -133,8 +133,10 @@ Recommended VNC client:
 
 </details>
 
- <summary> Linux with GUI support using X11 </summary>
+
 <details>
+ <summary> Linux with GUI support using X11 </summary>
+
 - Entering Docker container with X11 support on native Linux
 
 ```
