@@ -8,9 +8,10 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "smlp"
-version = "1.0.1"
+name = "smlptech"
+version = "1.0.2"
 description = "SMLP - The Symbolic Machine Learning Prover"
+readme = "README.md"
 requires-python = "==3.11.*"
 dependencies = [
     "blosc2",
