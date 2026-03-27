@@ -104,8 +104,8 @@ Papers:
  
 </details>
 
+<details>
  <summary> Linux with GUI support using VNC </summary>
-
 
 
 Starting VNC server within container:
