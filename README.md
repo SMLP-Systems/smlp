@@ -75,6 +75,8 @@ Papers:
            
            [SMLP](./scripts/venv/README.md)
 
+ [[pdf]](https://www.ijcai.org/proceedings/2022/0249.pdf)
+
 </details>
 
 
