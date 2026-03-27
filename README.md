@@ -2,7 +2,7 @@
 
 <img src="./misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="800" height="500">
 
-#### Success story: used at Intel for optimization of circuit layouts in signal integrity
+#### Success story: used at Intel for optimization of circuit layouts and signal integrity
 
 
 SMLP is a general purpose tool for verification and optimisation of systems modelled using machine learning.  
