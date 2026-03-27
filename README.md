@@ -67,11 +67,7 @@ Papers:
 
 <details>
  <summary> Ubuntu 24.04 </summary>
-           [SMLP](https://github.com/SMLP-Systems/smlp/blob/readme_main/scripts/venv/README.md)           
-           [SMLP Installation Guide for Ubuntu-24.04](https://github.com/SMLP-Systems/smlp/blob/readme_main/scripts/venv/README.md)
-
  [[SMLP Installation Guide for Ubuntu-24.04]](https://korovin.gitlab.io/pub/fmcad_bkk_2020.pdf)
- 
 </details>
 
 
