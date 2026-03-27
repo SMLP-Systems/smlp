@@ -76,6 +76,20 @@ Papers:
 
 
 ### Docker
+ <details>
+ <summary> MacOS </summary>
+ 
+  ``` docker run -it mdmitry1/python311-dev-mac:latest ```
+
+</details>
+
+ <details>
+ <summary> Linux </summary>
+ 
+  ```docker run -it mdmitry1/python311-dev:latest```
+
+</details>
+
 ### Sources
 <details>
  <summary> Installation on a stock Ubuntu-22.04 </summary>
