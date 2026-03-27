@@ -84,37 +84,42 @@ Within docker container prepend SMLP Python script with `xvfb-run`.
 For example: 
 
 ```bash
-xvfb-run smlp/src/run_smlp.py -h
+xvfb-run smlp -h
 ```
 
 - Entering Docker container with optional VNC support
 ```
-bin/enter
+scripts/bin/enter_container
 ```
 
 Starting VNC server within container:
 ```
 ./start_vnc
 ```
-Recommended VNC client: `remmina`
+Recommended VNC client: 
+
+- Ubuntu: `remmina`
+- Windows: RealVNC®
+  
+  Details - see [RealVNC® installation instructions](doc/RealVNC.md)
 
 - Entering Docker container with X11 support on native Linux
 ```
-bin/enter_x11
+scripts/bin/enter_container_x11_forwarding
 ```
 
 Dependencies: `socat`
 
 - Entering Docker container with X11 support on wslg
 ```
-bin/enter_wslg
+scripts/bin/enter_container_wslg
 ```
 
 Dependencies: `WSL2` with `WSLG` enabled
 
 - Installation test:
 ```
-bin/test_install
+tests/install/test_container_install mdmitry1/python311-dev
 ```
 
 ## Quick instructions on testing whether the tool works
@@ -149,7 +154,7 @@ bin/test_install
 
 ```
     cd smlp/regr_smlp/code
-    xvfb-run ../../src/run_smlp.py -data "../data/smlp_toy_num_resp_mult" \
+    xvfb-run smlp -data "../data/smlp_toy_num_resp_mult" \
     -out_dir ./ -pref Test83 -mode optimize -pareto t \
     -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 \
     -spec smlp_toy_num_resp_mult_free_inps -data_scaler min_max \
@@ -318,9 +323,15 @@ laid out therein. In alphabetical order, these are the main files:
 - smlp_query.py: synthesis, certification, verification and query
 - smlp_subgroups.py: the subgroup discovery algorithm implemented in pysubgroup package
 
-The main entry point is the script
+The main entry point for native installation is script
 
 - src/run_smlp.py
+
+The main entry point for Docker installation is script
+
+- /usr/local/bin/smlp
+
+As in Docker installation /usr/local/bin is in the $PATH, it is possible just to type `smlp`
 
 It supports the various modes documented in the CAV submission as well as in the
 manual.
