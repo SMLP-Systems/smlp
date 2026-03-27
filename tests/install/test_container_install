@@ -8,14 +8,14 @@ log=$(realpath $0 | xargs basename).$(echo $image | tr / _ | cut -d: -f1).log
 success=0
 if [[ "$image" == *wheel* ]]; then
     docker run --rm $image /bin/bash -c \
-        'auditwheel show dist/smlp-1.0.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl \
+        'auditwheel show dist/smlptech-1.0.1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl \
             | grep -B1 -A1 consistent |& tr "\012" " "' &> $log
     echo "" >> $log
     if [ "1" -eq $(grep -c consistent $log) ]; then
         success=1
     fi
 else
-    docker run --rm $image /bin/bash -c './open_virtual_display && env DISPLAY=:99 smlp/src/run_smlp.py -h' &> $log
+    docker run --rm $image /bin/bash -c './open_virtual_display && env DISPLAY=:99 smlp -h' &> $log
     if [ "1" -eq $(grep -c ^usage $log) ]; then
         success=1
     fi

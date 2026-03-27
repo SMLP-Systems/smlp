@@ -314,12 +314,60 @@
 737a737
 > if (p2 > 0.30543398172847647) and (p1 > 0.7651434488432218) then (y1 = 1.0) and (y2 = 1.0) | based on 1 samples
 =================== End of Test10_smlp_toy_num_resp_mult_et_sklearn_tree_rules.txt diff report ================================
+=================== Diff report for: Test15_Test5_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled.txt ==================================
+87c87
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/Test5_smlp_toy_num_resp_mult_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/Test5_smlp_toy_num_resp_mult_rerun_model_config.json
+=================== End of Test15_Test5_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled.txt diff report ================================
+=================== Diff report for: Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled.txt ==================================
+87c87
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/Test8_smlp_toy_num_resp_mult_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/Test8_smlp_toy_num_resp_mult_rerun_model_config.json
+=================== End of Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled.txt diff report ================================
+=================== Diff report for: Test17_Test11_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled.txt ==================================
+87c87
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/Test11_smlp_toy_num_resp_mult_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/Test11_smlp_toy_num_resp_mult_rerun_model_config.json
+=================== End of Test17_Test11_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled.txt diff report ================================
+=================== Diff report for: Test19_test19_model_smlp_toy_num_resp_mult_pred_labeled.txt ==================================
+87c87
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/test19_model_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/test19_model_rerun_model_config.json
+=================== End of Test19_test19_model_smlp_toy_num_resp_mult_pred_labeled.txt diff report ================================
+=================== Diff report for: Test20_test20_model_smlp_toy_num_resp_mult_pred_labeled.txt ==================================
+75c75
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/test20_model_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/test20_model_rerun_model_config.json
+=================== End of Test20_test20_model_smlp_toy_num_resp_mult_pred_labeled.txt diff report ================================
+=================== Diff report for: Test22_test22_model_smlp_toy_num_metasymbol_mult_reg_pred_labeled.txt ==================================
+75c75
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/test22_model_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/test22_model_rerun_model_config.json
+=================== End of Test22_test22_model_smlp_toy_num_metasymbol_mult_reg_pred_labeled.txt diff report ================================
+=================== Diff report for: Test24_test24_model_smlp_toy_num_resp_mult_pred_labeled.txt ==================================
+87c87
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/test24_model_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/test24_model_rerun_model_config.json
+=================== End of Test24_test24_model_smlp_toy_num_resp_mult_pred_labeled.txt diff report ================================
 =================== Diff report for: test26_model_dt_sklearn_tree_rules.txt ==================================
 6d5
 < if (p2 > 0.4000000134110451) and (p1 > 0.75) then (y1 = 1.0) and (y2 = 1.0) | based on 1 samples
 7a7
 > if (p2 > 0.4000000134110451) and (p1 > 0.75) then (y1 = 1.0) and (y2 = 1.0) | based on 1 samples
 =================== End of test26_model_dt_sklearn_tree_rules.txt diff report ================================
+=================== Diff report for: Test26_test26_model_smlp_toy_num_resp_mult_pred_labeled.txt ==================================
+87c87
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/test26_model_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/test26_model_rerun_model_config.json
+=================== End of Test26_test26_model_smlp_toy_num_resp_mult_pred_labeled.txt diff report ================================
 =================== Diff report for: Test29_smlp_toy_cls_metasymbol_colnames_mult.txt ==================================
 95,96d94
 < smlp_logger - WARNING - Range plots are not supported in this version of SMLP
@@ -335,11 +383,23 @@
 < smlp_logger - WARNING - Range plots are not supported in this version of SMLP
 < 
 =================== End of Test31_smlp_toy_num_resp_mult.txt diff report ================================
+=================== Diff report for: Test32_test20_model_smlp_toy_num_resp_mult_pred_labeled.txt ==================================
+75c75
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/test20_model_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/test20_model_rerun_model_config.json
+=================== End of Test32_test20_model_smlp_toy_num_resp_mult_pred_labeled.txt diff report ================================
 =================== Diff report for: Test33_smlp_toy_num_resp_mult.txt ==================================
 95,96d94
 < smlp_logger - WARNING - Range plots are not supported in this version of SMLP
 < 
 =================== End of Test33_smlp_toy_num_resp_mult.txt diff report ================================
+=================== Diff report for: Test47_test47_model_smlp_toy_pf_mult.txt ==================================
+83c83
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/test47_model_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/test47_model_rerun_model_config.json
+=================== End of Test47_test47_model_smlp_toy_pf_mult.txt diff report ================================
 =================== Diff report for: Test58_smlp_toy_num_resp_mult_optimization_progress.json ==================================
 17,19d16
 < 		"p1": {
@@ -385,6 +445,12 @@
 > 			"p2": 7.0,
 > 			"y1": 9.0
 =================== End of Test63_smlp_toy_num_resp_mult_verify_results.json diff report ================================
+=================== Diff report for: Test64_test63_model.txt ==================================
+27c27
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/test63_model_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/test63_model_rerun_model_config.json
+=================== End of Test64_test63_model.txt diff report ================================
 =================== Diff report for: Test64_test63_model_verify_results.json ==================================
 12d11
 < 			"p1": 1.0,
@@ -497,7 +563,7 @@
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test66_test65_model.txt diff report ================================
 =================== Diff report for: Test66_test65_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/Test66_test65_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlptech/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/Test66_test65_model_verify_results.json: No such file or directory
 =================== End of Test66_test65_model_verify_results.json diff report ================================
 =================== Diff report for: Test68_test67_model.txt ==================================
 0a1,97
@@ -600,7 +666,7 @@ diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test68_test67_model.txt diff report ================================
 =================== Diff report for: Test68_test67_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/Test68_test67_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlptech/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/Test68_test67_model_verify_results.json: No such file or directory
 =================== End of Test68_test67_model_verify_results.json diff report ================================
 =================== Diff report for: Test69_smlp_toy_num_resp_mult_verify_results.json ==================================
 6d5
@@ -613,6 +679,12 @@ diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_
 > 			"p2": 7.0,
 > 			"y2": 5.078784562647343
 =================== End of Test69_smlp_toy_num_resp_mult_verify_results.json diff report ================================
+=================== Diff report for: Test70_test69_model.txt ==================================
+25c25
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/test69_model_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/test69_model_rerun_model_config.json
+=================== End of Test70_test69_model.txt diff report ================================
 =================== Diff report for: Test70_test69_model_verify_results.json ==================================
 6d5
 < 			"p1": 1.0,
@@ -712,7 +784,7 @@ diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test72_test71_model.txt diff report ================================
 =================== Diff report for: Test72_test71_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/Test72_test71_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlptech/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/Test72_test71_model_verify_results.json: No such file or directory
 =================== End of Test72_test71_model_verify_results.json diff report ================================
 =================== Diff report for: Test77_test76_model.txt ==================================
 0a1,110
@@ -828,7 +900,7 @@ diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_
 > smlp_logger - INFO - Executing run_smlp.py script: End
 =================== End of Test77_test76_model.txt diff report ================================
 =================== Diff report for: Test77_test76_model_verify_results.json ==================================
-diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/Test77_test76_model_verify_results.json: No such file or directory
+diff: /home/mdmitry/github/smlptech/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/Test77_test76_model_verify_results.json: No such file or directory
 =================== End of Test77_test76_model_verify_results.json diff report ================================
 =================== Diff report for: Test79_smlp_toy_num_resp_mult_query_results.json ==================================
 14a15
@@ -2028,6 +2100,12 @@ diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_
 > 	"y1": {
 > 		"value_in_config": 9.0
 =================== End of Test100_smlp_toy_num_resp_mult_optimization_results.json diff report ================================
+=================== Diff report for: Test102_test101_model.txt ==================================
+38c38
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/test101_model_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/test101_model_rerun_model_config.json
+=================== End of Test102_test101_model.txt diff report ================================
 =================== Diff report for: Test105_smlp_toy_num_resp_mult_verify_results.json ==================================
 6d5
 < 			"p1": 4.0,
@@ -2039,8 +2117,20 @@ diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_
 > 			"y1": 9.0,
 =================== End of Test105_smlp_toy_num_resp_mult_verify_results.json diff report ================================
 =================== Diff report for: test110_model_poly_sklearn_formula.txt ==================================
-diff: /home/mdmitry/github/smlp_python311_refactoring/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/test110_model_poly_sklearn_formula.txt: No such file or directory
+diff: /home/mdmitry/github/smlptech/scripts/venv/smlp_package_venv/smlp/regr_smlp/code/test110_model_poly_sklearn_formula.txt: No such file or directory
 =================== End of test110_model_poly_sklearn_formula.txt diff report ================================
+=================== Diff report for: Test111_test110_model_smlp_toy_basic_pred_unlabeled.txt ==================================
+79c79
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/test110_model_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/test110_model_rerun_model_config.json
+=================== End of Test111_test110_model_smlp_toy_basic_pred_unlabeled.txt diff report ================================
+=================== Diff report for: Test112_test110_model_smlp_toy_basic_pred_unlabeled.txt ==================================
+79c79
+< smlp_logger - INFO - Seving model rerun configuration in file ../models/test110_model_rerun_model_config.json
+---
+> smlp_logger - INFO - Seving model rerun configuration in file ./../models/test110_model_rerun_model_config.json
+=================== End of Test112_test110_model_smlp_toy_basic_pred_unlabeled.txt diff report ================================
 =================== Diff report for: Test113_smlp_toy_basic_optimization_progress.json ==================================
 17,18c17,21
 < 		"x2": {

@@ -1,8 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # This file is part of smlp.
 
+print("Loading libraries...")
+
 # imports from SMLP modules
 from .smlp_logs import SmlpLogger, SmlpTracer
+
 from .smlp_utils import str_to_bool, np_JSONEncoder
 from .smlp_models import SmlpModels
 from .smlp_data import SmlpData
