@@ -67,8 +67,10 @@ Papers:
 
 <details>
  <summary> Ubuntu 24.04 </summary>
-  - `cd scripts/venv/`
-  - [[SMLP Installation Guide for Ubuntu-24.04]](https://github.com/SMLP-Systems/smlp/blob/readme_main/scripts/venv/README.md)
+ 
+  * `cd scripts/venv/`
+  
+  * [[SMLP Installation Guide for Ubuntu-24.04]](https://github.com/SMLP-Systems/smlp/blob/readme_main/scripts/venv/README.md)
 
 </details>
 
