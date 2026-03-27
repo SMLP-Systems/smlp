@@ -5,7 +5,7 @@
 #### Success story: used at Intel for circuit layout optimization in signal integrity
 
 
-SMLP is a general purpose tool for verification and optimisation of systems modelled using machine learning.
+SMLP is a general purpose tool for verification and optimisation of systems modelled using machine learning.  
 SMLP uses symbolic reasoning for ML model exploration and optimisation under verification and stability constraints.
 
 
@@ -72,6 +72,8 @@ Papers:
  <summary> Ubuntu 24.04 </summary>
  
            [SMLP Installation Guide for Ubuntu 24.04](./scripts/venv/README.md)
+           
+           [SMLP](./scripts/venv/README.md)
 
 </details>
 
@@ -117,7 +119,7 @@ Papers:
 
   Tutorial contains SMLP examples for black-box function optimization and Intel benchmarks for signal integrity. 
 
-## [[Manual]](./SMLP_manual.pdf)
+## [Manual](./SMLP_manual.pdf)
 
   
 ### Comments/Feedback/Discussions: [[GitHub Discussions]](https://github.com/SMLP-Systems/smlp/discussions) or [[Zulip Chat]](https://smlp.zulipchat.com)
