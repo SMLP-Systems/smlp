@@ -71,7 +71,7 @@ Papers:
 <details>
  <summary> Ubuntu 24.04 </summary>
  
-           [[SMLP Installation Guide for Ubuntu 24.04]](./scripts/venv/README.md)
+           [SMLP Installation Guide for Ubuntu 24.04](./scripts/venv/README.md)
 
 </details>
 
