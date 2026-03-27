@@ -1,20 +1,6 @@
 *.d
 *.ipynb*
 
-# src directory
-/src/local_paths.py
-/src/process_shai.py
-/src/process_*.py
-
-# smlp directory
-/src/smlp/subgroups.py
-
-# smlp_py directory
-/src/smlp_py/correlations.py
-/src/smlp_py/range_plots_template.html
-/src/smlp_py/range_plots.py
-/src/smlp_py/range_plots.py_save
-
 /regr_smlp/code/Test*.*
 /regr_smlp/code/test*.*
 /regr_smlp/code/__pycache__/
