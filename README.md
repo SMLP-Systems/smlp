@@ -2,7 +2,7 @@
 
 <img src="./misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="800" height="500">
 
-#### Success story: used at Intel for circuit layout optimization in signal integrity
+#### Success story: used at Intel for optimization of circuit layouts in signal integrity
 
 
 SMLP is a general purpose tool for verification and optimisation of systems modelled using machine learning.  
@@ -213,7 +213,7 @@ tests/install/test_container_install mdmitry1/python311-dev
 ## [Manual](./SMLP_manual.pdf)
 
   
-### Comments/Feedback/Discussions: [[GitHub Discussions]](https://github.com/SMLP-Systems/smlp/discussions) or [[Zulip Chat]](https://smlp.zulipchat.com)
+### Comments/Feedback/Discussions: [[GitHub]](https://github.com/SMLP-Systems/smlp/) or [[Zulip Chat]](https://smlp.zulipchat.com)
 
 
 ### Coming soon:
