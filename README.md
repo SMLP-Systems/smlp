@@ -45,6 +45,11 @@ Papers:
 ## Installation
 
 ### pip installation (recommended)
+ <details>
+ <summary> MacOS </summary>
+ 
+``` 
+
  - install Python 3.11; for example via Python version management [[pyenv]](https://github.com/pyenv/pyenv)
   ```
   pyenv install 3.11
@@ -56,6 +61,13 @@ Papers:
  ```
  pip install smlptech
  ```
+</details>
+ <details>
+ <summary> Ubuntu 24.04 </summary>
+           [[SMLP Installation Guide for Ubuntu 24.04]](./scripts/venv/README.md)
+ </details>
+
+
 
 ### Docker
 ### Sources
