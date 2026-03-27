@@ -1,0 +1,26 @@
+#!/usr/bin/env -S tcsh -f
+set script_path=`realpath $0 | xargs dirname`
+set script_name=`realpath $0 | xargs basename`
+set results_dir=${script_name}_results_`date +%s`
+\rm -rf $results_dir >& /dev/null
+mkdir $results_dir
+cd $results_dir
+echo "\nWorking directory: `realpath $PWD`\n"
+set examples = ( \
+    ${script_path}/examples/constraint_dora/smlp/run_constraint_dora_poly \
+    ${script_path}/examples/bnh/smlp/run_poly_pareto \
+    ${script_path}/examples/eggholder/smlp/run_eggholder \
+    ${script_path}/examples/si/smlp/run_si_tests )
+foreach e ( $examples )
+    $e -clean
+    if( $#argv > 0 ) then
+        if("-clean" == "$argv[1]") then
+            echo Cleaning $e:h
+            continue
+        endif
+    endif
+    echo Starting: $e
+    $e
+    echo DONE: $e
+    echo =============================================
+end
