@@ -59,6 +59,39 @@ Papers:
 
 ### Docker
 ### Sources
+<details>
+ <summary> Installation on a stock Ubuntu-22.04 </summary>
+ 
+``` 
+	sudo apt install \
+		python3-pip ninja-build z3 libz3-dev libboost-python-dev texlive \
+		pkg-config libgmp-dev libpython3-all-dev python-is-python3
+	# get a recent version of the meson configure tool
+	pip install --user meson
+
+	# obtain sources
+	git clone https://github.com/fbrausse/kay.git
+	git clone https://github.com/smlp-systems/smlp.git
+	cd smlp/utils/poly
+
+	# workaround <https://bugs.launchpad.net/ubuntu/+source/swig/+bug/1746755>
+	echo 'export PYTHONPATH=$HOME/.local/lib/python3/dist-packages:$PYTHONPATH' >> ~/.profile
+	# get $HOME/.local/bin into PATH and get PYTHONPATH
+	mkdir -p $HOME/.local/bin
+	source ~/.profile
+
+	# setup, build & install libsmlp
+	meson setup -Dkay-prefix=$HOME/kay --prefix $HOME/.local build
+	ninja -C build install
+
+	# tensorflow-2.16 has a change leading to the error:
+	# 'The filepath provided must end in .keras (Keras model format).'
+	pip install --user \
+		pandas tensorflow==2.15.1 scikit-learn pycaret seaborn \
+		mrmr-selection jenkspy pysubgroup pyDOE doepy
+```                
+
+ </details>
 
 ## Quick instructions on testing whether the tool works:
  TODO paths for regression data ? or separate download
