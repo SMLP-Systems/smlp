@@ -100,6 +100,24 @@ Papers:
 
 ## [[Manual]](./SMLP_manual.pdf)
 
-
   
 ### Comments/Feedback/Discussions: [[GitHub Discussions]](https://github.com/SMLP-Systems/smlp/discussions) or [[Zulip Chat]](https://smlp.zulipchat.com)
+
+
+### Coming soon:
+<details>
+<summary> NLP, LLM, Agentic</summary>
+
+ NLP:
+ - NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
+ - NLP based root cause analysis: which words or collections of words are most correlative to classification decision (especially, for the positive class).
+
+LLM:
+- LLM training from scratch
+- LLM finetuning
+- RAG (with HuggingFace and with LangChain)
+
+Agentic:
+- SMLP Agent
+
+</details>
