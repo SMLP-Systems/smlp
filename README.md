@@ -126,7 +126,7 @@ Papers:
  </details>
 
 <details>
- <summary> Installation on a stock Ubuntu-22.04 </summary>
+ <summary> MacOS </summary>
    Installation instructions for Ubuntu-22.04 can be followed using `homebrew` in place of `apt`
 </details>
 
