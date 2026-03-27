@@ -80,6 +80,13 @@ Papers:
  <summary> MacOS </summary>
  
   ``` docker run -it mdmitry1/python311-dev-mac:latest ```
+  
+  Within docker container prepend SMLP Python script with `xvfb-run`.  
+  For example: 
+
+  ```bash
+  xvfb-run smlp -h
+  ```
 
 </details>
 
@@ -87,8 +94,70 @@ Papers:
  <summary> Linux </summary>
  
   ```docker run -it mdmitry1/python311-dev:latest```
+  
+ Within docker container prepend SMLP Python script with `xvfb-run`.  
+ For example: 
+
+  ```bash
+  xvfb-run smlp -h
+ ```
+ 
+</details>
+
+ <summary> Linux with GUI support using VNC </summary>
+
+<details>
+
+Starting VNC server within container:
+
+```
+./start_vnc
+```
+
+```
+scripts/bin/enter_container
+```
+
+Starting VNC server within container:
+
+```
+./start_vnc
+```
+
+Recommended VNC client: 
+
+- Ubuntu: `remmina`
+- Windows: RealVNC®
+  
+  Details - see [RealVNC® installation instructions](doc/RealVNC.md)
 
 </details>
+
+ <summary> Linux with GUI support using X11 </summary>
+<details>
+- Entering Docker container with X11 support on native Linux
+
+```
+scripts/bin/enter_container_x11_forwarding
+```
+
+Dependencies: `socat`
+
+- Entering Docker container with X11 support on wslg
+
+```
+scripts/bin/enter_container_wslg
+```
+
+Dependencies: `WSL2` with `WSLG` enabled
+
+- Installation test:
+```
+tests/install/test_container_install mdmitry1/python311-dev
+```
+
+</details>
+
 
 ### Sources
 <details>
@@ -149,7 +218,7 @@ Papers:
 <details>
 <summary> NLP, LLM, Agentic</summary>
 
- NLP:
+NLP:
  - NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
  - NLP based root cause analysis: which words or collections of words are most correlative to classification decision (especially, for the positive class).
 
