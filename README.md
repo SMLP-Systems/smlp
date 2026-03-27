@@ -120,5 +120,4 @@ This should produce ...
 
 ## Applications:
   
-### Comments/Feedback/Discussions: [[GitHub Discussions]](https://github.com/SMLP-Systems/smlp/discussions) or
-[[Zulip Chat]](https://smlp.zulipchat.com)
+### Comments/Feedback/Discussions: [[GitHub Discussions]](https://github.com/SMLP-Systems/smlp/discussions) or [[Zulip Chat]](https://smlp.zulipchat.com)
