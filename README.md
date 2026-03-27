@@ -210,7 +210,7 @@ tests/install/test_container_install mdmitry1/python311-dev
 
 
 
-## [Manual](./doc/smlp_manual.pdf)
+## [Manual](https://github.com/SMLP-Systems/smlp/raw/master/doc/smlp_manual.pdf)
 
   
 ### Comments/Feedback/Discussions: [[GitHub]](https://github.com/SMLP-Systems/smlp/) or [[Zulip Chat]](https://smlp.zulipchat.com)
