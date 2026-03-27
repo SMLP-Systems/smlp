@@ -130,9 +130,14 @@ Papers:
    Installation instructions for Ubuntu-22.04 can be followed using `homebrew` in place of `apt`
 </details>
 
-## Tutorial TODO: add Eggholder detailes
+## [Tutorial](https://github.com/SMLP-Systems/smlp/tree/master/tutorial)
 
-  Tutorial contains SMLP examples for black-box function optimization and Intel benchmarks for signal integrity. 
+   - Black-box optimization Eggholder Function
+   - Constrained DORA (Distance to Optimal with Radial Adjustment)
+   - Binh and Korn (BNH) Multi-Objective Problem
+   - Intel Signal Integrity domain example
+
+
 
 ## [Manual](./SMLP_manual.pdf)
 
