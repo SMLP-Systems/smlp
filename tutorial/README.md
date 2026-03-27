@@ -1,4 +1,4 @@
-# SMLP [1] Optimization Examples
+# SMLP Optimization Examples
 
 This tutorial contains three benchmark optimization problems and one industrial example demonstrating the capabilities of SMLP (Symbolic Machine Learning Prover) for solving constrained and multi-objective optimization tasks for **black-box functions**.<br>
 Black-box function optimization definition used in this document [2]:<br>
@@ -22,7 +22,7 @@ This tutorial focuses on optimization mode. In future it may be extended to othe
   3. Random Forest
   4. Extremely Randomized Trees
   3. Neural network model
-- Optimization: model and constraints are used to find objective function(s) minimum considering input constraints
+- Optimization: model and constraints are used to find objective function(s) maximum considering input constraints
 
 ## Overview
 
