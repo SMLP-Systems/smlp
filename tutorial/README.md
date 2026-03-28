@@ -8,7 +8,7 @@ Black-box function optimization definition used in this document [2]:<br>
 SMLP has been applied in industrial setting at Intel for analyzing and optimizing hardware designs at the analog level [1].
 This tutorial contains one of Intel examples in Signal Integrity domain (with mangled numerical values and objective function names).
 
-### In SMLP:
+### In [SMLP](https://github.com/SMLP-Systems/smlp/blob/master/README.md)
 - Structure of the objective function *f* is unknown
 - Constraint defining set is comprised of known functions, which are defined by Python expressions
 
@@ -56,7 +56,8 @@ f(x, y) = -(y + 47) * sin(√|x/2 + (y + 47)|) - x * sin(√|x - (y + 47)|)
 **Domain:** -512 ≤ x₁, x₂ ≤ 512
 
 **Expected Global Minimum:** f(x*) = -959.6407 at x* = (512, 404.2319)<br>
-**SMLP Results:**            f(x*) = -955.6113 at x* = (511.9, 405.3)
+**SMLP Results:**            f(x*) = -955.6113 at x* = (511.9, 405.3)<br>
+SMLP options used in this example can be found in: `examples/eggholder/smlp/run_eggholder`
 
 #### Characteristics
 - Highly multi-modal with many local minima
@@ -71,6 +72,7 @@ f(x, y) = -(y + 47) * sin(√|x/2 + (y + 47)|) - x * sin(√|x - (y + 47)|)
 - `eggholder_benchmark_expected.txt` - Benchmark data
 
 #### Usage
+
 ```bash
 # Generate dataset and vizualize
 ./examples/eggholder/smlp/eggholder_dataset.py
