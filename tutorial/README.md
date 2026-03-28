@@ -8,7 +8,7 @@ Black-box function optimization definition used in this document [2]:<br>
 SMLP has been applied in industrial setting at Intel for analyzing and optimizing hardware designs at the analog level [1].
 This tutorial contains one of Intel examples in Signal Integrity domain (with mangled numerical values and objective function names).
 
-### In SMLP:
+### In [SMLP](https://github.com/SMLP-Systems/smlp/blob/master/README.md)
 - Structure of the objective function *f* is unknown
 - Constraint defining set is comprised of known functions, which are defined by Python expressions
 
