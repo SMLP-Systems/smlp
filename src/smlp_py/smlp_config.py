@@ -2,7 +2,8 @@
 # This file is part of smlp.
 
 import os, argparse, json
-from smlp_py.smlp_utils import str_to_bool
+
+from .smlp_utils import str_to_bool
 
 class SmlpConfig:
     def __init__(self):
@@ -57,26 +58,37 @@ class SmlpConfig:
                     '[default: {}]'.format(str(self._DEF_LOAD_CONFIGURATION))}
         }
     
-    # Compute prefix report_name_prefix to be used in all report / log file names of an SMLP run; 
-    # as well as prefix model_name_prefix to be used in the names of all output files that are required 
-    # to save a trained model info and re-run the saved model on new data (without re-training).
-    # The argument model_name is used for loading a pre-trained model and saving a newly trained model.
-    # In the former use, full_path to the location of model files as well as the model name need to be
-    # passed to argument model_name, and in the latter case only the model name needs to be passed, and
-    # model files are saved in the output directory, along with all other logs / report files.
+    
+    # Compute two prefixes:
+    #   - report_name_prefix: used in all report and log file names for an SMLP run
+    #   - model_name_prefix: used for all files involved in saving a trained model
+    #     or loading a previously saved model.
+    #
+    # Using the same model_name_prefix is safe because the options -use_model
+    # (load an existing model) and -save_model (save a newly trained model)
+    # cannot both be True in the same run. An assertion ensures that this
+    # prohibited combination is caught if it occurs.
     def args_get_report_name_prefix(self, data_file_prefix:str, run_prefix:str, output_directory:str=None, 
-            new_data_file_prefix:str=None, model_name:str=None, doe_spec_file_prefix=None, text_file_prefix=None, 
-            wordvec_model=None):
+            new_data_file_prefix:str=None, model_name:str=None, save_model:bool=None, use_model:bool=None, 
+            doe_spec_file_prefix=None, text_file_prefix=None, wordvec_model=None):
+        
+        if use_model:
+            assert model_name is not None
+            # Prefix (path + model name) of a previously trained and saved model, used when loading an 
+            # existing model.
+            load_model_name_prefix = model_name
+        
         if not data_file_prefix is None:
             data_dir, data_name_prefix = os.path.split(data_file_prefix)
         else:
             data_dir, data_name_prefix = None, None
-        
-        # Define _model_dir and _model_name_prefix. 
+
+        # Compute model_dir and save_model_name_prefix. save_model_name_prefix is required when saving a 
+        # trained model and will be updated below so that its directory path matches the output directory.
         if not model_name is None:
-            model_dir, model_name_prefix = os.path.split(model_name)
+            model_dir, save_model_name_prefix = os.path.split(model_name)
         else:
-            model_dir, model_name_prefix = None, None
+            model_dir, save_model_name_prefix = None, None
 
         if not doe_spec_file_prefix is None:
             doe_spec_dir, doe_spec_name_prefix = os.path.split(doe_spec_file_prefix)
@@ -114,16 +126,12 @@ class SmlpConfig:
             assert model_name is not None
             input_data_name_prefix = None
 
-        # record model_name 
-        #model_name = model_name
-
-        # define model_name_prefix to be used as suffix in names of all files used to save the model related info
-        #run_prefix = run_prefix
+        # Update save_model_name_prefix so it becomes the prefix for all files generated when saving a trained model.
         if model_name is None:
             assert not (data_name_prefix is None and doe_spec_dir is None and text_name_prefix is None)
-            model_name_prefix = os.path.join(out_dir, run_prefix + '_' + input_data_name_prefix)
+            save_model_name_prefix = os.path.join(out_dir, run_prefix + '_' + input_data_name_prefix)
         else:
-            model_name_prefix = os.path.join(out_dir, model_name)
+            save_model_name_prefix = os.path.join(out_dir, model_name)
 
         # define _report_name_prefix to be used as a prefix in SMLP report filenames
         if input_data_name_prefix is None:
@@ -147,6 +155,11 @@ class SmlpConfig:
         else:
             _, wordvec_name = os.path.split(wordvec_model)
             wordvec_name_prefix = os.path.join(out_dir, wordvec_name)
+            
+        if use_model:
+            model_name_prefix = load_model_name_prefix
+        else:
+            model_name_prefix = save_model_name_prefix
         
         return report_name_prefix, model_name_prefix, wordvec_name_prefix
 
@@ -166,21 +179,25 @@ class SmlpConfig:
             else:
                 parser.add_argument('-'+v['abbr'], '--'+p, type=v['type'], help=v['help'])
 
-        # Initial parse
+        # Initial parse; required here to access args.load_configuration
         args = parser.parse_args(argv[1:])
 
-        # Handle config loading
+        # support for loading parameters from configuration file
         if args.load_configuration is not None:
             with open(args.load_configuration, 'r') as f:
                 parser.set_defaults(**json.load(f))
-            args = parser.parse_args(argv[1:])  # RE-parse with same argv (not sys.argv)
+            # Re-parse: CLI args will override config defaults
+            args = parser.parse_args(argv[1:])
 
+        # Args sanity check:
+        assert not (args.use_model and args.save_model), \
+            "Saving model should be disabled when a saved model is used"
+        
         # Compute and save report_file_prefix, model_file_prefix and wordvec_file_prefix as part of self
         self.report_file_prefix, self.model_file_prefix, self.wordvec_file_prefix = \
-            self.args_get_report_name_prefix(
-                args.labeled_data, args.log_files_prefix, args.output_directory, args.new_data,
-                args.model_name, args.doe_spec_file, args.text_data, args.wordvec_model
-            )
+            self.args_get_report_name_prefix(args.labeled_data, args.log_files_prefix, 
+                args.output_directory, args.new_data, args.model_name, args.save_model, 
+                args.use_model, args.doe_spec_file, args.text_data, args.wordvec_model)
         
         # Save tool configuration and model rerun configuration
         # Adapted code from https://micha-feigin.medium.com/on-using-config-files-with-pythons-argparse-8af09d0bdfb9
@@ -198,7 +215,7 @@ class SmlpConfig:
             with open(args_config_file, 'w') as f:
                 f.write(json.dumps(tmp_args, indent=4, sort_keys=True))
 
-        # Save model rerun config if requested
+        # Save model rerun config if requested, to be able to build model with same parameters for new data
         if args.save_model_rerun_configuration:
             if not vars(args)['save_model']:
                 return args

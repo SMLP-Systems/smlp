@@ -4,7 +4,9 @@
 import os
 #os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0" # edded because of warning: 
 os.unsetenv("TF_ENABLE_ONEDNN_OPTS")
+
 import tensorflow as tf
+
 from tensorflow import keras
 from keras.optimizers import Adam
 from keras.models import clone_model # for rounding model weights and biases
@@ -24,9 +26,9 @@ from contextlib import redirect_stdout
 from keras_tuner import Hyperband, BayesianOptimization, RandomSearch, Objective
 
 # SMLP
-from smlp_py.smlp_logs import *
-from smlp_py.smlp_plots import plot
-from smlp_py.smlp_utils import str_to_bool, str_to_str_list, str_to_str_list_list, str_to_float_list, str_to_int_list
+from .smlp_logs import *
+from .smlp_plots import plot
+from .smlp_utils import str_to_bool, str_to_str_list, str_to_str_list_list, str_to_float_list, str_to_int_list
 
 # Methods for training and predction, results reporting with Tensorflow/KERAS package.
 # Currently NN only (with sequential and functional APIs)

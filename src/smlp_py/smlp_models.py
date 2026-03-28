@@ -14,11 +14,11 @@ from pycaret.regression import load_model as caret_load_model
 
 from keras.models import load_model as keras_load_model
 
-from smlp_py.smlp_plots import evaluate_prediction
-from smlp_py.train_keras import ModelKeras 
-from smlp_py.train_caret import ModelCaret 
-from smlp_py.train_sklearn import ModelSklearn
-from smlp_py.smlp_utils import str_to_bool
+from .smlp_plots import evaluate_prediction
+from .train_keras import ModelKeras 
+from .train_caret import ModelCaret 
+from .train_sklearn import ModelSklearn
+from .smlp_utils import str_to_bool
 
 # Methods for model training, prediction, results reporting (including plots), exporting model formulae.
 # Currently supports multiple (but not all) training algorithms from Keras, Sklearm and Caret packages.
@@ -46,19 +46,23 @@ class SmlpModels:
 
         self._model_params_common_dict = {
             'model': {'abbr': 'model', 'type':str,
-                'help': 'Type of model to train (NN, Poly, ... [default: none]'},
+                'help': 'Type of model to train (e.g., NN, Poly). [default: none]'},
             'save_model': {'abbr':'save_model', 'default': self._DEF_SAVE_MODEL, 'type':str_to_bool,
-                'help': 'Should the trained models be saved for future use? ' +
-                    '[default: ' + str(self._DEF_SAVE_MODEL) + ']'},
+                'help': 'Whether to save the trained model for future use. If use_model is True, ' +
+                    'then save_model must be False. [default: ' + str(self._DEF_SAVE_MODEL) + ']'},
             'use_model': {'abbr':'use_model', 'default': self._DEF_USE_MODEL, 'type':str_to_bool,
-                'help': 'Should the saved models be reused (and training skipped)? ' +
+                'help': 'Whether to reuse a previously saved model (skipping training). ' +
+                    'If use_model is True, then save_model must be False. ' +
                     '[default: ' + str(self._DEF_USE_MODEL) + ']'},
             'model_name': {'abbr':'model_name', 'type':str,
-                'help': 'Name of saved model. If not specified, the name is defined as follows: ' +
-                    'filename_prefix + "_" + model_algo + "_model_complete" + model_format ' +
-                    'where filename_prefix is concatenation of the output directory and the prefix '
-                    'identifying the run, model_algo is the training algo name and model_format ' +
-                    'is .h5 for nn_keras and .pkl for models trained using sklearn and keras packages.'},
+                'help': 'Name of the saved model. ' +
+                    '- If use_model is True: model_name must include the full path to the directory ' +
+                    '  containing the saved model, plus the model name (e.g., /tmp/my_best_model). ' +
+                    '- If save_model is True: model_name is only the model’s base name (e.g., my_best_model). ' +
+                    '  It will be appended to the output directory to determine where the model files are ' +
+                    '  saved (e.g., output_dir/my_best_model). If model_name is not provided, it defaults to: ' +
+                    '  <prefix>_[<response_name>]_<model_algo>_model_complete<model_format> where model_format ' +
+                    '  is .h5 for nn_keras and .pkl for sklearn/keras models.'},
             'save_model_rerun_configuration': {'abbr':'save_model_config', 
                     'default': self._DEF_SAVE_MODEL_CONFIG, 'type':str_to_bool,
                 'help': 'Should a config file enabling to re-run a saved model be written out? ' +

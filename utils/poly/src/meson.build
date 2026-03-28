@@ -42,13 +42,15 @@ if flint_dep.found()
   all_deps += {'mpfr': dep}
   poly_deps += dep
   message('using Flint for Z and Q')
+  kay_deps = [flint_dep, dep]
 else
   gmpxx_dep = dependency('gmpxx', static: get_option('static'))
   all_deps += {'gmpxx': gmpxx_dep}
-  if gmpxx_dep.found() and cxx.check_header('gmpxx.h')
+  if gmpxx_dep.found() and cxx.check_header('gmpxx.h', dependencies: gmpxx_dep)
     config.set('KAY_USE_GMPXX', 1)
     poly_deps += gmpxx_dep
     message('using gmpxx for Z and Q')
+    kay_deps = [gmpxx_dep]
   else
     error('need either flint library or gmpxx headers')
   endif
@@ -83,7 +85,7 @@ dep_libs = {
   },
   'kay': {
     'libs_hdrs': { '': ['kay' / 'numbers.hh'] },
-    'extra': { 'required': true }
+    'extra': { 'required': true, 'dependencies': kay_deps }
   },
   'kjson': {
     'libs_hdrs': { 'kjson': ['kjson.h','kjson.hh'], },
@@ -269,9 +271,10 @@ configure_file(
 
 libsmlp_deps = poly_deps
 
-py3 = import('python').find_installation('python', modules: ['fractions'],
+py3 = import('python').find_installation(get_option('python-bin'),
+                                         modules: ['fractions'],
                                          disabler: true, required: false)
-py3_dep = py3.dependency(embed: true)
+py3_dep = py3.dependency(embed: true, required: false)
 all_deps += {'python3': py3_dep}
 libsmlp_deps += py3_dep
 boost_dep = dependency('boost',
@@ -282,9 +285,9 @@ libsmlp_deps += boost_dep
 if py3_dep.found() and boost_dep.found()
   have_smlp_py = true
   features += {'Python module "smlp"': true}
-  message('SMLP Python API enabled')
-  py3.install_sources('..'/'python'/'smlp'/'__init__.py',
-                      subdir: 'smlp')
+  message('SMLP Python ' + py3.language_version() + ' API enabled')
+  py3.install_sources('..'/'python'/'smlp'/'core'/'__init__.py',
+                      subdir: 'smlp'/'core')
   py3.extension_module('libsmlp', 'libsmlp.cc',
                        dependencies: libsmlp_deps,
                        override_options: 'cpp_std=c++20',
@@ -292,11 +295,11 @@ if py3_dep.found() and boost_dep.found()
                        install: true,
                        link_args: link_args_libsmlp_so,
                        link_with: libsmlp_static,
-                       subdir : 'smlp')
+                       subdir : 'smlp'/'core')
 else
   have_smlp_py = false
   features += {'Python module "smlp"': [false,'python3','boost']}
-  message('SMLP Python API disabled')
+  message('SMLP Python ' + py3.language_version() + ' API disabled')
 endif
 
 summary(all_deps, section: 'Dependencies', list_sep: ', ')

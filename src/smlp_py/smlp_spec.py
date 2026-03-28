@@ -5,7 +5,8 @@ import os
 import json
 from fractions import Fraction
 import numpy as np
-from smlp_py.smlp_utils import get_expression_variables, list_unique_unordered, np_JSONEncoder
+
+from .smlp_utils import get_expression_variables, list_unique_unordered, np_JSONEncoder
 
 
 # spec file API; in addition, gives access to query constraints' expressions and expressions of assertions, queries,

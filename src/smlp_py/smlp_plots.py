@@ -2,12 +2,10 @@
 # This file is part of smlp.
 
 import matplotlib
-import os
-if not os.environ.get("DISPLAY"):
-    matplotlib.use("Agg")  # Non-interactive backend
-else:
-    matplotlib.use("TkAgg") # Set the backend to 'TkAgg' before importing pyplot, to enable interactive plots
-    
+
+# matplotlib.use('TkAgg')  # Set the backend to 'TkAgg' before importing pyplot, to enable interactive plots
+# matplotlib.use('macosx')  # Set the backend to 'Cocoa' before importing pyplot, to enable interactive plots
+
 import matplotlib.pyplot as plt
 plt.rcdefaults()
 from matplotlib import cm
