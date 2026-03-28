@@ -1,4 +1,7 @@
 #!/usr/bin/env -S tcsh -f
+#
+# Test case details - see ../../../README.md
+#
 set script_path=`realpath $0 | xargs dirname`
 if($#argv > 0) then
     if("-clean" == "$argv[1]") then
