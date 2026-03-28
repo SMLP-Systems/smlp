@@ -2,7 +2,7 @@
 
 set -x
 
-SMLP="smlptech"
+SMLP="smlp"
 
 SMLP_DIR=$(pwd)
 
