@@ -1,6 +1,6 @@
 # SMLP -- Symbolic Machine Learning Prover
 
-<img src="./misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="800" height="500">
+<img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="800" height="500">
 
 #### Success story: used at Intel for optimization of circuit layouts and signal integrity
 
@@ -35,7 +35,7 @@ SMLP supports:
  - stability constraints
  - parameter optimization
 
-<img src="./misc/smlp_arch.png"  alt="SMLP Arch" class="center" width="800" height="500">
+<img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_arch.png"  alt="SMLP Arch" class="center" width="800" height="500">
 
 Papers:
 * SMLP: Symbolic Machine Learning Prover, (CAV'24) [[pdf]](https://link.springer.com/content/pdf/10.1007/978-3-031-65627-9_11.pdf) [[bib]](https://dblp.org/rec/conf/cav/BrausseKK24.html?view=bibtex)
@@ -210,7 +210,7 @@ tests/install/test_container_install mdmitry1/python311-dev
 
 
 
-## [Manual](./doc/smlp_manual.pdf)
+## [Manual](https://github.com/SMLP-Systems/smlp/blob/master/doc/smlp_manual.pdf)
 
   
 ### Comments/Feedback/Discussions: [[GitHub]](https://github.com/SMLP-Systems/smlp/) or [[Zulip Chat]](https://smlp.zulipchat.com)
