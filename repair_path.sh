@@ -2,7 +2,13 @@
 
 set -x
 
+# set script to fail if any of the command fails
+
+set -e 
+
 SMLP="smlp"
+
+PATH_SO="$SMLP/core"
 
 SMLP_DIR=$(pwd)
 
@@ -26,15 +32,16 @@ for FILE_WHL in $TMP_DIR/*; do
     mkdir "$based_name_no_ext"    
     unzip "$FILE_WHL" -d "$based_name_no_ext"
     
-    cd "$based_name_no_ext/$SMLP"
+    cd "$based_name_no_ext/$PATH_SO"
 
     for FILE_SO in ./*.so; do
         echo "FILE_SO: $FILE_SO"
         libpython_orig_path=$(otool -L "$FILE_SO" | grep libpython3.11.dylib | awk -F' ' '{print $1}')
         install_name_tool -change "$libpython_orig_path" "@rpath/libpython3.11.dylib" "$FILE_SO"
         codesign --force -s - "$FILE_SO"
-    done    
-    cd ../
+    done
+# hack based on cd "$based_name_no_ext/$PATH_SO" and PATH_SO="$SMLP/core"
+    cd ../..
     # in $based_name_no_ext
     zip -r "$FILE_WHL" ./*
     cp "$FILE_WHL" "$SMLP_DIR/dist"
