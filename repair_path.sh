@@ -40,8 +40,9 @@ for FILE_WHL in $TMP_DIR/*; do
         install_name_tool -change "$libpython_orig_path" "@rpath/libpython3.11.dylib" "$FILE_SO"
         codesign --force -s - "$FILE_SO"
     done
-# hack based on cd "$based_name_no_ext/$PATH_SO" and PATH_SO="$SMLP/core"
-    cd ../..
+    
+    cd  "$TMP_DIR/$based_name_no_ext"
+    
     # in $based_name_no_ext
     zip -r "$FILE_WHL" ./*
     cp "$FILE_WHL" "$SMLP_DIR/dist"
