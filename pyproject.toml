@@ -8,8 +8,14 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
+maintainers = [
+  {name = "Zurab Khasidashvili", email = "zurab.khasidashvili@gmail.com"},
+  {name = "Konstantin Korovin", email = "kostyakor@gmail.com"},
+  {name = "Franz Brauße", email = "fbrausse@paxle.org"},
+  {name = "Dmitry Messerman", email = "dmitry.messerman@gmail.com"}
+]
 name = "smlptech"
-version = "1.0.2"
+version = "1.1.1"
 description = "SMLP - The Symbolic Machine Learning Prover"
 readme = "README.md"
 requires-python = "==3.11.*"

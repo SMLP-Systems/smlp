@@ -1,4 +1,4 @@
-# SMLP [1] Optimization Examples
+# SMLP Optimization Examples
 
 This tutorial contains three benchmark optimization problems and one industrial example demonstrating the capabilities of SMLP (Symbolic Machine Learning Prover) for solving constrained and multi-objective optimization tasks for **black-box functions**.<br>
 Black-box function optimization definition used in this document [2]:<br>
@@ -8,7 +8,7 @@ Black-box function optimization definition used in this document [2]:<br>
 SMLP has been applied in industrial setting at Intel for analyzing and optimizing hardware designs at the analog level [1].
 This tutorial contains one of Intel examples in Signal Integrity domain (with mangled numerical values and objective function names).
 
-### In SMLP:
+### In [SMLP](https://github.com/SMLP-Systems/smlp/blob/master/README.md)
 - Structure of the objective function *f* is unknown
 - Constraint defining set is comprised of known functions, which are defined by Python expressions
 
@@ -22,7 +22,7 @@ This tutorial focuses on optimization mode. In future it may be extended to othe
   3. Random Forest
   4. Extremely Randomized Trees
   3. Neural network model
-- Optimization: model and constraints are used to find objective function(s) minimum considering input constraints
+- Optimization: model and constraints are used to find objective function(s) maximum considering input constraints
 
 ## Overview
 
@@ -51,10 +51,13 @@ The [Eggholder function](https://www.sfu.ca/~ssurjano/egg.html) is defined as:
 f(x, y) = -(y + 47) * sin(√|x/2 + (y + 47)|) - x * sin(√|x - (y + 47)|)
 ```
 
+![Eggholder function plot](examples/eggholder/smlp/media/eggholder_figure.png)<br>
+
 **Domain:** -512 ≤ x₁, x₂ ≤ 512
 
 **Expected Global Minimum:** f(x*) = -959.6407 at x* = (512, 404.2319)<br>
-**SMLP Results:**            f(x*) = -955.6113 at x* = (511.9, 405.3)
+**SMLP Results:**            f(x*) = -955.6113 at x* = (511.9, 405.3)<br>
+SMLP options used in this example can be found in: `examples/eggholder/smlp/run_eggholder`
 
 #### Characteristics
 - Highly multi-modal with many local minima
@@ -69,6 +72,7 @@ f(x, y) = -(y + 47) * sin(√|x/2 + (y + 47)|) - x * sin(√|x - (y + 47)|)
 - `eggholder_benchmark_expected.txt` - Benchmark data
 
 #### Usage
+
 ```bash
 # Generate dataset and vizualize
 ./examples/eggholder/smlp/eggholder_dataset.py
@@ -94,6 +98,8 @@ A classic textbook example of constrained optimization using Lagrange multiplier
 **Subject to:** x₁² + x₂² ≤ 1 (inside unit circle)
 
 **Geometric Interpretation:** Find the point on the unit circle closest to (2, 1)
+
+![Constrained DORA problem definition](examples/constraint_dora/smlp/media/problem.png)<br>
 
 #### Analytical Solution
 
@@ -180,6 +186,7 @@ Expected results reproduction:
 | 2.5 | 2.5 | 50 | 12.5 |
 | 5 | 3 | 136 | 4 |
 
+![BNH analytical and expected results comparison](examples/bnh/smlp/media/BNH.png)<br>
 
 [Reference: Test Case 2, Binh and Korn (1997)](https://web.archive.org/web/20190801183649/https://pdfs.semanticscholar.org/cf68/41a6848ca2023342519b0e0e536b88bdea1d.pdf)
 
@@ -196,24 +203,14 @@ In decision space:
 - Segment 2: x₁ ∈ [3, 5], x₂ = 3
 
 #### Files
-- `bnh_p1.json` through `bnh_p6.json` - Different objective weightings
+- `bnh.json` - SMLP configuration file
 - `bnh_dataset.py` - Dataset generator
 - `bnh_pareto_X1_expected.txt` - Expected Pareto X₁ values
 - `bnh_pareto_X2_expected.txt` - Expected Pareto X₂ values
 - `bnh_pareto_F1_expected.txt` - Expected Pareto F₁ values
 - `bnh_pareto_F2_expected.txt` - Expected Pareto F₂ values
 - `plot_results.py` - Visualization script for Pareto fronts
-
-#### Configuration Files
-
-Each configuration file (`bnh_p1.json` through `bnh_p6.json`) uses different objective weightings to explore the Pareto front:
-
-- `bnh_p1.json`: Minimize F₁ only
-- `bnh_p2.json`: Minimize 0.8F₁ + 0.2F₂
-- `bnh_p3.json`: Minimize 0.6F₁ + 0.4F₂
-- `bnh_p4.json`: Minimize 0.4F₁ + 0.6F₂
-- `bnh_p5.json`: Minimize 0.2F₁ + 0.8F₂
-- `bnh_p6.json`: Minimize F₂ only
+- `run_optimize.sh` - SMLP driver: Approximates Pareto front using the [weighted sum method](https://www.sciencedirect.com/topics/computer-science/weighted-sum-method) 
 
 #### Usage
 ```bash
@@ -233,12 +230,16 @@ Each configuration file (`bnh_p1.json` through `bnh_p6.json`) uses different obj
 
 #### Problem Definition
 
-Multi-Objective optimization problem with 64 objectives and 4 categorical parameters
+Multi-Objective optimization problem with 64 objectives and 4 categorical parameters.
+This is Intel I/0 test with lab data collected at Intel, the feature names and values are mangled. 
+The I/O system has two channels, two ranks, and 8 bytes. 
+Optimization objectives o1 and o2 stand for eye height and eye width.
+Total number of optimization objectives is `2*2*8*2=64`.
+The I/O system has four knobs of numeric type, for each a range of values (an interval) and grid of possible values within the interval is specified in the spec file. 
 
 #### Configuration File
 
 ../tests/bench/intel/specs/s2\_tx\_piv\_anonym.spec
-
 
 #### Input Dataset
 
@@ -276,6 +277,9 @@ Results will be shown on the screen and then saved to the png files:
 no_split_s2_tx_piv_anonym_optimization_results.png
 split_s2_tx_piv_anonym_optimization_results.png
 ```
+
+![NO\_SPLIT\_RESULT](examples/si/smlp/media/no_split_s2_tx_piv_anonym_optimization_results.png)<br>
+![SPLIT\_RESULT](examples/si/smlp/media/split_s2_tx_piv_anonym_optimization_results.png)<br>
 
 ### 5. Running all examples
 
