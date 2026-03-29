@@ -1,417 +1,204 @@
 #!/usr/bin/env python3
 """
-Complete End-to-End Example: SMLP Agent with RL Enhancement
+SMLP Agent RL Enhancement – Persistent Demo
+============================================
 
-This example demonstrates the entire workflow from initial setup
-through feedback collection to fine-tuning.
+Each run of this script:
+  1. Loads the example store from smlp_few_shot_examples.json
+     (includes the real SMLP prompts you provided)
+  2. Loads any feedback already collected from smlp_rl_feedback.jsonl
+  3. Runs 4 simulated interactions
+  4. Writes updated success_rates back into smlp_few_shot_examples.json
 
-Run this script to see the RL system in action!
+Run it multiple times:
+  python demo_rl_workflow.py
+
+After each run you will see the success_rate values in the JSON file change.
 """
 
 import json
-import time
+import textwrap
 from smlp_agent_rl import (
-    FeedbackCollector,
-    PromptOptimizer,
-    RLTrainer,
-    RewardModel
+    ExampleStore, FeedbackCollector, PromptOptimizer, RLTrainer
 )
 
-print("="*70)
-print("SMLP Agent - Reinforcement Learning Enhancement Demo")
-print("="*70)
-print()
+SEP  = "=" * 70
+THIN = "-" * 70
 
-# ============================================================================
-# PART 1: Initialize RL Components
-# ============================================================================
-print("PART 1: Initializing RL Components")
-print("-" * 70)
+STORE_FILE    = "./smlp_few_shot_examples.json"
+FEEDBACK_FILE = "./smlp_rl_feedback.jsonl"
+CHECKPOINT    = "./smlp_rl_checkpoints"
 
-feedback_collector = FeedbackCollector(storage_path="./demo_feedback.jsonl")
-prompt_optimizer = PromptOptimizer(
-    max_examples=100,
-    examples_per_prompt=5,
-    exploration_factor=0.5
+def bar(r, w=24):
+    f = int(round(r * w))
+    return f"[{'█'*f}{'░'*(w-f)}] {r:.3f}"
+
+def section(title):
+    print(f"\n{THIN}\n  {title}\n{THIN}")
+
+
+# ═══════════════════════════════════════════════════════════════════════
+print(SEP)
+print("  SMLP Agent – RL Enhancement Demo  (persistent across runs)")
+print(SEP)
+
+# ── 1. Load example store (the prompt container) ──────────────────────
+section("PART 1 · Loading Example Store")
+
+store = ExampleStore(STORE_FILE)
+store.print_summary()
+
+# ── 2. Wire up RL components, seeded from store ────────────────────────
+section("PART 2 · Initialising RL Components")
+
+feedback_collector = FeedbackCollector(storage_path=FEEDBACK_FILE)
+prompt_optimizer   = PromptOptimizer(
+    max_examples        = 100,
+    examples_per_prompt = 3,
+    exploration_factor  = 0.5,
+    example_store       = store          # ← seeded from JSON, writes back to it
 )
-rl_trainer = RLTrainer(feedback_collector, prompt_optimizer)
+rl_trainer = RLTrainer(
+    feedback_collector, prompt_optimizer,
+    fine_tune_threshold = 10
+)
 
-print("✓ FeedbackCollector initialized")
-print("✓ PromptOptimizer initialized")
-print("✓ RLTrainer initialized")
+# Load previous checkpoint so rewards accumulate across runs
+rl_trainer.load_checkpoint(CHECKPOINT)
+
+total_before = len(feedback_collector.feedback_buffer)
+print(f"\n  Feedback already in buffer : {total_before}")
+print(f"  Examples in pool           : {len(prompt_optimizer.example_pool)}")
+
+# ── 3. Show current prompt (uses real system_prompt from JSON) ─────────
+section("PART 3 · Current Prompt Sent to the LLM")
+prompt = rl_trainer.get_current_prompt("Train and optimize a DT model")
 print()
+for line in prompt.split("\n"):
+    print("  " + line)
 
-# ============================================================================
-# PART 2: Simulate User Interactions
-# ============================================================================
-print("PART 2: Simulating User Interactions")
-print("-" * 70)
+# ── 4. Simulate interactions (realistic SMLP corrections) ─────────────
+section("PART 4 · Simulating User Interactions This Run")
 
-# Sample interactions with the agent
-interactions = [
-    {
-        'query': 'run dataset analysis on sales data with neural network',
-        'generated': {
-            'analytics_mode': 'dataset',
-            'model_name': 'nn',
-            'data_file': 'sales.csv'
-        },
-        'corrected': {
-            'analytics_mode': 'dataset',
-            'model_name': 'nn',
-            'data_file': 'sales_data.csv',
-            'log_files_prefix': 'sales_analysis'
-        },
-        'success': True
-    },
-    {
-        'query': 'verify autonomous vehicle specification',
-        'generated': {
-            'analytics_mode': 'verify',
-            'spec_file': 'av_spec.py'
-        },
-        'corrected': {
-            'analytics_mode': 'verify',
-            'spec_file': 'av_spec.py',
-            'log_files_prefix': 'av_verification',
-            'model_name': 'dummy'
-        },
-        'success': True
-    },
-    {
-        'query': 'optimize hyperparameters for the model',
-        'generated': {
-            'analytics_mode': 'optimize'
-        },
-        'corrected': {
-            'analytics_mode': 'optimize',
-            'model_name': 'nn',
-            'log_files_prefix': 'hyperopt',
-            'optimization_iterations': '100'
-        },
-        'success': True
-    },
-    {
-        'query': 'explain model predictions on test data',
-        'generated': {
-            'analytics_mode': 'explain',
-            'model_file': 'model.pkl'
-        },
-        'corrected': {
-            'analytics_mode': 'explain',
-            'model_file': 'trained_model.pkl',
-            'data_file': 'test_data.csv',
-            'log_files_prefix': 'explanation'
-        },
-        'success': True
-    },
-    {
-        'query': 'run RAG analysis on documentation',
-        'generated': {
-            'analytics_mode': 'rag',
-            'rag_text': 'docs.pdf'
-        },
-        'corrected': {
-            'analytics_mode': 'rag',
-            'rag_text': '../docs/manual.pdf',
-            'questions': 'What are the main features?',
-            'rag_type': 'lc',
-            'rag_train': 'True',
-            'log_files_prefix': 'rag_analysis'
-        },
-        'success': True
-    }
+# These interactions mirror real SMLP usage based on your examples.
+# generated = what the LLM produced;  corrected = what the user fixed it to.
+THIS_RUN = [
+    (
+        "Train and lazy-optimize a DT model on '../regr_smlp/data/smlp_toy_basic.csv' "
+        "using spec '../regr_smlp/specs/smlp_toy_basic.spec', prefix 'run_a'. "
+        "Nested tree encoding, epsilon=0.1, disable plots.",
+        # generated – LLM got mode/data/spec right but missed tree_encoding + plots
+        {"mode": "optimize", "pareto": True, "model": "dt_sklearn",
+         "data": "../regr_smlp/data/smlp_toy_basic.csv",
+         "spec": "../regr_smlp/specs/smlp_toy_basic.spec",
+         "opt_strategy": "lazy", "epsilon": 0.1, "pref": "run_a"},
+        # corrected – user adds the two missing keys
+        {"mode": "optimize", "pareto": True, "model": "dt_sklearn",
+         "data": "../regr_smlp/data/smlp_toy_basic.csv",
+         "spec": "../regr_smlp/specs/smlp_toy_basic.spec",
+         "opt_strategy": "lazy", "tree_encoding": "nested",
+         "epsilon": 0.1, "pref": "run_a", "plots": False},
+        True,
+    ),
+    (
+        "Verify model 'modelABC' against spec '../regr_smlp/specs/my_spec.spec' "
+        "on data '../regr_smlp/data/validation.csv'. delta=0.02, radius=0.1, prefix 'vrun2'.",
+        # generated – mode/spec/data correct; delta key wrong name
+        {"mode": "verify", "model_name": "modelABC",
+         "spec": "../regr_smlp/specs/my_spec.spec",
+         "data": "../regr_smlp/data/validation.csv",
+         "delta_abs": 0.02, "rad_rel": 0.1, "pref": "vrun2"},
+        # corrected – delta_abs → delta_rel
+        {"mode": "verify", "model_name": "modelABC",
+         "spec": "../regr_smlp/specs/my_spec.spec",
+         "data": "../regr_smlp/data/validation.csv",
+         "delta_rel": 0.02, "rad_rel": 0.1, "pref": "vrun2"},
+        True,
+    ),
+    (
+        "Use the LC RAG model at /models/smlp_rag_v2 to answer "
+        "'How does SMLP handle categorical features?' "
+        "from PDF /docs/smlp_manual_v2.pdf. Use cosine index.",
+        # generated – all keys present but wrong rag_eval value
+        {"mode": "rag", "rag_type": "lc",
+         "rag_text": "/docs/smlp_manual_v2.pdf",
+         "rag_trained_model_path": "/models/smlp_rag_v2",
+         "questions": "How does SMLP handle categorical features?",
+         "index_backend": "cosine", "do_sample": False, "rag_eval": False},
+        # corrected
+        {"mode": "rag", "rag_type": "lc",
+         "rag_text": "/docs/smlp_manual_v2.pdf",
+         "rag_trained_model_path": "/models/smlp_rag_v2",
+         "questions": "How does SMLP handle categorical features?",
+         "index_backend": "cosine", "do_sample": False, "rag_eval": True},
+        True,
+    ),
+    (
+        "Eager pareto-optimize a DT model on '../regr_smlp/data/smlp_toy_num_resp_mult.csv', "
+        "responses y1,y2,y3, features x1,x2,x3. Spec '../regr_smlp/specs/mult.spec', "
+        "prefix 'p_opt', epsilon=0.03, delta_abs=0.005. Save as model_m3. Flat tree. No plots.",
+        # generated – near-perfect, only y3/x3 missing from resp/feat
+        {"mode": "optimize", "pareto": True, "model": "dt_sklearn",
+         "data": "../regr_smlp/data/smlp_toy_num_resp_mult.csv",
+         "spec": "../regr_smlp/specs/mult.spec",
+         "resp": "y1,y2", "feat": "x1,x2",
+         "opt_strategy": "eager", "tree_encoding": "flat",
+         "epsilon": 0.03, "delta_abs": 0.005,
+         "pref": "p_opt", "save_model": True, "model_name": "model_m3",
+         "plots": False},
+        # corrected
+        {"mode": "optimize", "pareto": True, "model": "dt_sklearn",
+         "data": "../regr_smlp/data/smlp_toy_num_resp_mult.csv",
+         "spec": "../regr_smlp/specs/mult.spec",
+         "resp": "y1,y2,y3", "feat": "x1,x2,x3",
+         "opt_strategy": "eager", "tree_encoding": "flat",
+         "epsilon": 0.03, "delta_abs": 0.005,
+         "pref": "p_opt", "save_model": True, "model_name": "model_m3",
+         "plots": False},
+        True,
+    ),
 ]
 
-print(f"Processing {len(interactions)} user interactions...\n")
+print(f"\n  {'#':<3}  {'Reward':<28}  {'Pool':>4}  Query (truncated)")
+print(f"  {'─'*3}  {'─'*28}  {'─'*4}  {'─'*38}")
 
-for i, interaction in enumerate(interactions, 1):
-    print(f"Interaction {i}:")
-    print(f"  Query: {interaction['query']}")
-    
-    # Process feedback
-    result = rl_trainer.process_feedback(
-        user_query=interaction['query'],
-        generated_command=interaction['generated'],
-        corrected_command=interaction['corrected'],
-        execution_success=interaction['success']
-    )
-    
-    print(f"  Reward: {result['feedback']['reward']:.3f}")
-    print(f"  Examples in pool: {result['stats']['num_examples_in_pool']}")
-    print()
-    
-    time.sleep(0.5)  # Simulate time between interactions
+rewards_this_run = []
+for i, (query, generated, corrected, success) in enumerate(THIS_RUN, 1):
+    result = rl_trainer.process_feedback(query, generated, corrected, success)
+    r      = result["feedback"]["reward"]
+    pool_n = result["stats"]["num_examples_in_pool"]
+    rewards_this_run.append(r)
+    flag = "  ← fine-tune!" if result["should_fine_tune"] else ""
+    print(f"  {i:<3}  {bar(r)}  {pool_n:>4}  {query[:38]}{flag}")
 
-# ============================================================================
-# PART 3: Analyze Training Progress
-# ============================================================================
-print("PART 3: Training Progress Analysis")
-print("-" * 70)
-
+# ── 5. Training stats across all runs ─────────────────────────────────
+section("PART 5 · Cumulative Training Stats (all runs combined)")
 stats = rl_trainer.get_training_stats()
+print(f"  Total feedback ever collected : {stats['total_feedback']}")
+print(f"  Overall average reward        : {stats['avg_reward']:.3f}")
+print(f"  Recent average reward         : {stats['recent_avg_reward']:.3f}")
+print(f"  Pool size                     : {stats['num_examples']}")
+print(f"  This run rewards              : "
+      f"{' | '.join(f'{r:.3f}' for r in rewards_this_run)}")
 
-print(f"Total Feedback Collected: {stats['total_feedback']}")
-print(f"Average Reward: {stats['avg_reward']:.3f}")
-print(f"Recent Average Reward: {stats['recent_avg_reward']:.3f}")
-print(f"Examples in Pool: {stats['num_examples']}")
-print(f"Total Selections: {stats['total_selections']}")
+# ── 6. Updated example store (success_rates changed) ──────────────────
+section("PART 6 · Example Store After This Run")
+store.print_summary()
+
+# ── 7. Evolved prompt ─────────────────────────────────────────────────
+section("PART 7 · Updated Prompt for Next LLM Call")
+new_prompt = rl_trainer.get_current_prompt("optimize a DT model")
 print()
+for line in new_prompt.split("\n"):
+    print("  " + line)
 
-# Show improvement
-if stats['total_feedback'] > 0:
-    improvement = stats['recent_avg_reward'] - stats['avg_reward']
-    print(f"Improvement Trend: {improvement:+.3f}")
-    if improvement > 0:
-        print("✓ System is improving!")
-    else:
-        print("⚠ System needs more training")
+# ── 8. Save checkpoint ────────────────────────────────────────────────
+section("PART 8 · Saving Checkpoint")
+rl_trainer.save_checkpoint(CHECKPOINT)
+print(f"  ✓ Feedback log  : {FEEDBACK_FILE}")
+print(f"  ✓ Example store : {STORE_FILE}  (success_rates updated in-place)")
+print(f"  ✓ Checkpoint    : {CHECKPOINT}/")
 print()
-
-# ============================================================================
-# PART 4: Examine Few-Shot Prompt
-# ============================================================================
-print("PART 4: Current Few-Shot Prompt")
-print("-" * 70)
-
-current_prompt = rl_trainer.get_current_prompt("run dataset analysis")
-print(current_prompt)
-print()
-
-# ============================================================================
-# PART 5: Example Pool Analysis
-# ============================================================================
-print("PART 5: Example Pool Analysis")
-print("-" * 70)
-
-pool = prompt_optimizer.example_pool
-print(f"Total Examples: {len(pool)}")
-print(f"Max Capacity: {prompt_optimizer.max_examples}")
-print()
-
-if pool:
-    # Sort by success rate
-    sorted_pool = sorted(pool, key=lambda x: x.success_rate, reverse=True)
-    
-    print("Top 3 Performing Examples:")
-    for i, example in enumerate(sorted_pool[:3], 1):
-        print(f"\n{i}. Success Rate: {example.success_rate:.3f}")
-        print(f"   Usage Count: {example.usage_count}")
-        print(f"   Query: {example.user_text[:60]}...")
-        print(f"   Command: {json.dumps(example.smlp_command)[:80]}...")
-print()
-
-# ============================================================================
-# PART 6: High-Quality Examples
-# ============================================================================
-print("PART 6: High-Quality Examples (Reward >= 0.8)")
-print("-" * 70)
-
-high_quality = feedback_collector.get_high_quality_examples(min_reward=0.8, n=10)
-
-print(f"Found {len(high_quality)} high-quality examples\n")
-
-for i, example in enumerate(high_quality[:3], 1):
-    print(f"Example {i}:")
-    print(f"  Query: {example.user_query}")
-    print(f"  Reward: {example.reward:.3f}")
-    print(f"  Corrected Command: {json.dumps(example.corrected_command, indent=2)}")
-    print()
-
-# ============================================================================
-# PART 7: UCB Selection Demonstration
-# ============================================================================
-print("PART 7: UCB Example Selection")
-print("-" * 70)
-
-print("Selecting examples for next prompt using UCB algorithm...")
-selected = prompt_optimizer.select_examples("run dataset analysis")
-
-print(f"Selected {len(selected)} examples:\n")
-
-for i, example in enumerate(selected, 1):
-    print(f"{i}. Success Rate: {example.success_rate:.3f}, "
-          f"Usage Count: {example.usage_count}")
-    print(f"   Query: {example.user_text[:60]}...")
-print()
-
-# ============================================================================
-# PART 8: Simulate More Learning
-# ============================================================================
-print("PART 8: Simulating Additional Learning")
-print("-" * 70)
-
-print("Adding 5 more interactions to demonstrate learning...\n")
-
-additional_interactions = [
-    {
-        'query': 'analyze customer churn data',
-        'generated': {
-            'analytics_mode': 'dataset',
-            'data_file': 'churn.csv'
-        },
-        'corrected': {
-            'analytics_mode': 'dataset',
-            'data_file': 'customer_churn.csv',
-            'model_name': 'nn',
-            'log_files_prefix': 'churn_analysis'
-        },
-        'success': True
-    },
-    {
-        'query': 'verify safety properties of the controller',
-        'generated': {
-            'analytics_mode': 'verify',
-            'spec_file': 'controller.py'
-        },
-        'corrected': {
-            'analytics_mode': 'verify',
-            'spec_file': 'controller_spec.py',
-            'model_name': 'dummy',
-            'log_files_prefix': 'safety_verification'
-        },
-        'success': True
-    },
-    {
-        'query': 'run sentiment analysis on reviews',
-        'generated': {
-            'analytics_mode': 'dataset',
-            'data_file': 'reviews.csv',
-            'model_name': 'nn'
-        },
-        'corrected': {
-            'analytics_mode': 'dataset',
-            'data_file': 'product_reviews.csv',
-            'model_name': 'nn',
-            'log_files_prefix': 'sentiment_analysis'
-        },
-        'success': True
-    },
-    {
-        'query': 'optimize neural network architecture',
-        'generated': {
-            'analytics_mode': 'optimize',
-            'model_name': 'nn'
-        },
-        'corrected': {
-            'analytics_mode': 'optimize',
-            'model_name': 'nn',
-            'optimization_iterations': '50',
-            'log_files_prefix': 'nn_optimization'
-        },
-        'success': True
-    },
-    {
-        'query': 'explain fraud detection model decisions',
-        'generated': {
-            'analytics_mode': 'explain'
-        },
-        'corrected': {
-            'analytics_mode': 'explain',
-            'model_file': 'fraud_model.pkl',
-            'data_file': 'transactions.csv',
-            'log_files_prefix': 'fraud_explanation'
-        },
-        'success': True
-    }
-]
-
-rewards_before = []
-rewards_after = []
-
-for interaction in additional_interactions:
-    result = rl_trainer.process_feedback(
-        user_query=interaction['query'],
-        generated_command=interaction['generated'],
-        corrected_command=interaction['corrected'],
-        execution_success=interaction['success']
-    )
-    rewards_after.append(result['feedback']['reward'])
-
-# Get updated stats
-new_stats = rl_trainer.get_training_stats()
-
-print(f"Updated Statistics:")
-print(f"  Total Feedback: {stats['total_feedback']} → {new_stats['total_feedback']}")
-print(f"  Avg Reward: {stats['avg_reward']:.3f} → {new_stats['avg_reward']:.3f}")
-print(f"  Recent Reward: {stats['recent_avg_reward']:.3f} → {new_stats['recent_avg_reward']:.3f}")
-print(f"  Pool Size: {stats['num_examples']} → {new_stats['num_examples']}")
-print()
-
-# ============================================================================
-# PART 9: Save Checkpoint
-# ============================================================================
-print("PART 9: Saving Checkpoint")
-print("-" * 70)
-
-rl_trainer.save_checkpoint("./demo_checkpoints")
-print("✓ Checkpoint saved to ./demo_checkpoints/")
-print()
-
-# ============================================================================
-# PART 10: Fine-Tuning Readiness Check
-# ============================================================================
-print("PART 10: Fine-Tuning Readiness Check")
-print("-" * 70)
-
-total_feedback = new_stats['total_feedback']
-avg_reward = new_stats['avg_reward']
-high_quality_count = len(feedback_collector.get_high_quality_examples(0.8))
-
-print(f"Total Feedback: {total_feedback} (threshold: 100)")
-print(f"Average Reward: {avg_reward:.3f} (threshold: 0.7)")
-print(f"High-Quality Examples: {high_quality_count} (minimum: 50)")
-print()
-
-if total_feedback >= 100 and avg_reward >= 0.7 and high_quality_count >= 50:
-    print("✓ Ready for fine-tuning!")
-    print("\nTo fine-tune the model, run:")
-    print("  from smlp_agent_rl_finetune import fine_tune_from_feedback")
-    print("  result = fine_tune_from_feedback(feedback_collector)")
-else:
-    print("⚠ Not ready for fine-tuning yet")
-    print(f"  Need {max(0, 100 - total_feedback)} more feedback instances")
-    print(f"  Need {max(0, 50 - high_quality_count)} more high-quality examples")
-
-print()
-
-# ============================================================================
-# PART 11: Demonstration Summary
-# ============================================================================
-print("="*70)
-print("DEMONSTRATION SUMMARY")
-print("="*70)
-
-print("""
-This demo showed the complete RL enhancement workflow:
-
-1. ✓ Initialized RL components (FeedbackCollector, PromptOptimizer, RLTrainer)
-2. ✓ Collected user feedback on generated commands
-3. ✓ Computed rewards based on corrections
-4. ✓ Updated example pool with high-quality examples
-5. ✓ Selected examples using UCB algorithm
-6. ✓ Generated optimized few-shot prompts
-7. ✓ Tracked training progress and statistics
-8. ✓ Saved checkpoints for persistence
-9. ✓ Evaluated fine-tuning readiness
-
-The system demonstrated continuous learning through:
-- Dynamic example selection
-- Reward-based optimization
-- Progressive improvement of prompts
-
-Next Steps:
-1. Integrate with your SMLP Agent
-2. Deploy with web UI for user feedback
-3. Monitor training statistics
-4. Fine-tune model when ready
-
-For integration, see: INTEGRATION_GUIDE.md
-For full documentation, see: SMLP_RL_README.md
-""")
-
-print("="*70)
-print("Demo complete! Files created:")
-print("  - demo_feedback.jsonl (feedback storage)")
-print("  - demo_checkpoints/ (RL checkpoints)")
-print("="*70)
+print("  Run this script again – the rewards will shift as the RL")
+print("  system accumulates feedback and re-ranks examples via UCB.")
+print(SEP)

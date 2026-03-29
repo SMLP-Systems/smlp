@@ -24,10 +24,10 @@ class SmlpConfig:
         self._DEF_LOAD_CONFIGURATION = None
         
         self.config_params_dict = {
-            'labeled_data': {'abbr':'data', 'default':self._DEF_LABELED_DATA, 'type':str, 
+            'labeled_data': {'abbr':'data', 'default':self._DEF_LABELED_DATA, 'type':str,
                 'help':'Path, possibly excluding the .csv, or including gz or bz2 suffix, to input ' +
                     ' training data file containing labels [default {}]'.format(str(self._DEF_LABELED_DATA))},
-            'text_data': {'abbr':'text', 'default':self._DEF_TEXT_DATA, 'type':str, 
+            'text_data': {'abbr':'text', 'default':self._DEF_TEXT_DATA, 'type':str,
                 'help':'Path to input training text data file for finetune and RAG modes. ' +
                     "In finetune mode, the expected structure varies by task: the text-generation task requires " +
                     "and the BERT-style QA requires 'question', 'context', 'answer' fields. " +
@@ -99,7 +99,7 @@ class SmlpConfig:
             text_dir, text_name_prefix = os.path.split(text_file_prefix)
         else:
             text_dir, text_name_prefix = None, None
-        
+
         out_dir = output_directory
         if out_dir is None:
             if not data_dir is None:
@@ -148,7 +148,7 @@ class SmlpConfig:
             new_data_file_prefix = new_data_file_prefix.removesuffix('.csv')
             _, new_data_fname = os.path.split(new_data_file_prefix)
             report_name_prefix = report_name_prefix + '_' + new_data_fname
-        
+
         # name of word vector embedding model -- user-trained or pre-trained
         if wordvec_model is None:
             wordvec_name_prefix = None
@@ -163,7 +163,7 @@ class SmlpConfig:
         
         return report_name_prefix, model_name_prefix, wordvec_name_prefix
 
-        
+
     # args parser to which some of the arguments are added explicitly in a regular way
     # and in addition it adds additional arguments from args_dict defined elsewhere;
     # As of now args_dict includes model training hyperparameters from ML packages
@@ -195,17 +195,11 @@ class SmlpConfig:
         
         # Compute and save report_file_prefix, model_file_prefix and wordvec_file_prefix as part of self
         self.report_file_prefix, self.model_file_prefix, self.wordvec_file_prefix = \
-            self.args_get_report_name_prefix(args.labeled_data, args.log_files_prefix, 
-                args.output_directory, args.new_data, args.model_name, args.save_model, 
+            self.args_get_report_name_prefix(args.labeled_data, args.log_files_prefix,
+                args.output_directory, args.new_data, args.model_name, args.save_model,
                 args.use_model, args.doe_spec_file, args.text_data, args.wordvec_model)
         
         # Save tool configuration and model rerun configuration
-        # Adapted code from https://micha-feigin.medium.com/on-using-config-files-with-pythons-argparse-8af09d0bdfb9
-        # TODO !!! this is not the right place to save configuration. This is better to do 
-        # within function args_dict_parse called above, but in current implementation we are forced
-        # to save configuration only after inst (paths definitions) has been instantiated, as we 
-        # need to compute file name for the dumped json file and for this we need function 
-        # inst.get_report_name_prefix() from inst to be available
         if args.save_configuration:
             args_config_file = self.report_file_prefix + '_args_config.json'
             tmp_args = vars(args).copy()
@@ -215,7 +209,7 @@ class SmlpConfig:
             with open(args_config_file, 'w') as f:
                 f.write(json.dumps(tmp_args, indent=4, sort_keys=True))
 
-        # Save model rerun config if requested, to be able to build model with same parameters for new data
+        # Save model rerun config, to be able to build model with same parameters for new data
         if args.save_model_rerun_configuration:
             if not vars(args)['save_model']:
                 return args

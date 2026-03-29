@@ -7,6 +7,11 @@ import datetime, json, traceback
 
 from smlp_agent import SmlpAgent, LLMInterpreter, SmlpSpecGenerator, SmlpExecutor
 
+RL_AGENT_FLOW = True
+if RL_AGENT_FLOW:
+    from smlp_agent_rl_integration import enhance_agent_with_rl
+    from api_smlp_agent_rl import setup_rl_endpoints
+
 app = FastAPI()
 
 
@@ -59,14 +64,19 @@ else:
     provider="openai"
     model_name="gpt-3.5-turbo"
 
-print(f"""Initializing SMLP Agent with provider {provider}, model {model_name}""", flush=True)
-agent = SmlpAgent(
-    llm_interpreter=LLMInterpreter(provider=provider, model_name=model_name),
-    spec_generator=SmlpSpecGenerator(),
-    executor=SmlpExecutor()
-)
-print(f"""SMLP Agent was initialized with provider {provider}, model {model_name}""", flush=True)
-      
+if not RL_AGENT_FLOW:
+    print(f"""Initializing SMLP Agent with provider {provider}, model {model_name}""", flush=True)
+    agent = SmlpAgent(
+        llm_interpreter=LLMInterpreter(provider=provider, model_name=model_name),
+        spec_generator=SmlpSpecGenerator(),
+        executor=SmlpExecutor()
+    )
+    print(f"""SMLP Agent was initialized with provider {provider}, model {model_name}""", flush=True)
+else:
+    # Change 1 line:
+    agent = enhance_agent_with_rl(SmlpAgent())  # Instead of: agent = SmlpAgent()
+    setup_rl_endpoints(app, agent)  # After creating FastAPI app
+
 # Input schema for natural language queries
 class TextQuery(BaseModel):
     query: str
