@@ -159,50 +159,39 @@ class SmlpConfig:
         if args.load_configuration is not None:
             with open(args.load_configuration, 'r') as f:
                 parser.set_defaults(**json.load(f))
-
-        # Reload arguments to override config file values with command line values
-        args = parser.parse_args()
+            # Re-parse: CLI args will override config defaults
+            args = parser.parse_args(argv[1:])
 
         # Args sanity check:
-        assert not (args.use_model and args.save_model), "Saving model should be disabled when a saved model is used"
+        assert not (args.use_model and args.save_model), \
+            "Saving model should be disabled when a saved model is used"
         
         # compute and save report_file_prefix and model_file_prefix as part of self
-        self.report_file_prefix, self.model_file_prefix = self.args_get_report_name_prefix(args.labeled_data, 
-            args.log_files_prefix, args.output_directory, args.new_data, args.model_name, args.save_model, 
-            args.use_model, args.doe_spec_file) 
+        self.report_file_prefix, self.model_file_prefix = self.args_get_report_name_prefix(args.labeled_data,
+            args.log_files_prefix, args.output_directory, args.new_data, args.model_name, args.save_model,
+            args.use_model, args.doe_spec_file)
         
         # Save tool configuration and model rerun configuration
-        # Adapted code from https://micha-feigin.medium.com/on-using-config-files-with-pythons-argparse-8af09d0bdfb9
-        # TODO !!! this is not the right place to save configuration. This is better to do 
-        # within function args_dict_parse called above, but in current implementation we are forced
-        # to save configuration only after inst (paths definitions) has been instantiated, as we 
-        # need to compute file name for the dumped json file and for this we need function 
-        # inst.get_report_name_prefix() from inst to be available
         if args.save_configuration:
-            #args_config_file = inst.get_report_name_prefix() + '_args_config.json'
             args_config_file = self.report_file_prefix + '_args_config.json'
             tmp_args = vars(args).copy()
-            del tmp_args['save_configuration']  # Do not dump value of conf_export flag
-            del tmp_args['load_configuration']  # Values already loaded
+            del tmp_args['save_configuration'] # Do not dump value of this option
+            del tmp_args['load_configuration'] # Values already loaded
             self.config = tmp_args
             with open(args_config_file, 'w') as f:
-                f.write(json.dumps(tmp_args,  indent=4, sort_keys=True))
-                f.close()
-                #json.dump(args, f, indent='\t', cls=np_JSONEncoder)
-        
-        # save configuration to be able to build model with same parameters for new data
+                f.write(json.dumps(tmp_args, indent=4, sort_keys=True))
+
+        # Save model rerun config, to be able to build model with same parameters for new data
         if args.save_model_rerun_configuration:
-            #model_rerum_config_file = inst.get_report_name_prefix() + '_rerun_model_config.json'
             if not vars(args)['save_model']:
                 return args
-            #model_rerum_config_file = self.report_file_prefix + '_rerun_model_config.json'
             model_args = vars(args).copy()
             # assign false to save_model since we are using an already saved model
-            model_args['save_model'] = 'false' 
+            model_args['save_model'] = 'false'
             # assign true to use_model since we want to use a saved model
-            model_args['use_model'] = 'true' 
+            model_args['use_model'] = 'true'
             # new data set must be provided, we are not using new data from config file
-            model_args['new_data'] = None 
+            model_args['new_data'] = None
             # training (labeled) data set from which model was built is not required
             model_args['labeled_data'] = None
             # the log file prefix used to create model is not needed
