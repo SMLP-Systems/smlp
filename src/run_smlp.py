@@ -8,16 +8,13 @@
 
 import sys, os
 
-def main(argv):
-    smlpInst = SmlpFlows(argv)
+def main(args = None):
+    smlpInst = SmlpFlows(args)
     smlpInst.smlp_flow()
-
-def main2():
-    main(sys.argv)
 
 if __name__ == '__main__':
     from smlp_py.smlp_flows import SmlpFlows
-    main(sys.argv)
+    main()
 else:
     from .smlp_py.smlp_flows import SmlpFlows
 

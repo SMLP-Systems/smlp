@@ -27,7 +27,7 @@ from .smlp_correlations import SmlpCorrelations
 # https://foqus.readthedocs.io/en/3.1.0/chapt_intro/index.html
 
 class SmlpFlows:
-    def __init__(self, argv):
+    def __init__(self, args = None):
         self._data_fname = None
                 
         # data and model class instances
@@ -71,7 +71,7 @@ class SmlpFlows:
                     self.optInst.opt_params_dict | \
                     self.solverInst.solver_params_dict #| \
                     
-        self.args = self.configInst.args_dict_parse(argv, args_dict)
+        self.args = self.configInst.args_dict_parse(args, args_dict)
         self.log_file = self.configInst.report_file_prefix + '.txt'
         self.trace_file = self.configInst.report_file_prefix + '_trace.csv'
         

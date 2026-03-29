@@ -143,8 +143,8 @@ class SmlpConfig:
     # As of now args_dict includes model training hyperparameters from ML packages
     # sklearm caret, keras -- model_params_dict = keras_dict | sklearn_dict | caret_dict, 
     # as well as data and logger related parameters: data_params_dict and logger_params_dict
-    def args_dict_parse(self, argv, args_dict):
-        parser = argparse.ArgumentParser(prog=argv[0])
+    def args_dict_parse(self, args, args_dict):
+        parser = argparse.ArgumentParser()
         
         for p, v in args_dict.items():
             if 'default' in v:
@@ -153,7 +153,7 @@ class SmlpConfig:
             else:
                 parser.add_argument('-'+v['abbr'], '--'+p, type=v['type'], help=v['help'])
 
-        args = parser.parse_args(argv[1:])
+        args = parser.parse_args(args)
 
         # support for loading parameters from configuration file
         if args.load_configuration is not None:

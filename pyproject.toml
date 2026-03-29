@@ -42,7 +42,7 @@ dependencies = [
 ]
 
 [project.scripts]
-smlp = "smlp.run_smlp:main2"
+smlp = "smlp.run_smlp:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
