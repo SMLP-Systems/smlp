@@ -15,7 +15,7 @@ maintainers = [
   {name = "Dmitry Messerman", email = "dmitry.messerman@gmail.com"}
 ]
 name = "smlptech"
-version = "1.1.3"
+version = "1.1.1"
 description = "SMLP - The Symbolic Machine Learning Prover"
 readme = "README.md"
 requires-python = "==3.11.*"
