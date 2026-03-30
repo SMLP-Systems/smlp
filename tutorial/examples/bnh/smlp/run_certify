@@ -1,4 +1,13 @@
 #!/usr/bin/env -S tcsh -f
+# Problem for function f₁(x) = 4x₁² + 4x₂²
+# Certify stability of analytical Pareto solution for x₁ = x₂ = 0.294118 and given absolute radius rad-abs
+# Expected result:
+# From inequality: f₁(x) - 0.692042 < 2
+# | x | < sqrt((2+0.692042)/8) = 0.580091
+# Pass/Fail absolute radius boundary point: 0.580091-0.294118 = 0.285973
+# Checking two values of rad-abs: 0.285 and 0.286
+# Expected result: 0.285 -> PASS, 0.286 -> FAIL
+# Reference: https://www.wolframalpha.com/input?i=8*x%5E2+-+0.692042+%3C+2
 set script_path=`realpath $0 | xargs dirname`
 set test=BNH
 set test_lc=`echo $test | tr '[A-Z]' '[a-z]'`
@@ -10,44 +19,56 @@ if($#argv > 0) then
         exit(0)
     endif
 endif
+set noglob
+set result=${test}_certify.txt
+\rm -f $result >& /dev/null
+echo '=============================================== PROBLEM ================================================' |& tee -a $result
+echo 'For function f₁(x) = 4x₁² + 4x₂²'                                                                         |& tee -a $result
+echo 'Certify stability of analytical Pareto solution for x₁ = x₂ = 0.294118 and given absolute radius rad-abs' |& tee -a $result
+echo '----------------------------------------------- Expected result: ---------------------------------------' |& tee -a $result
+echo 'From inequality: f₁(x) - 0.692042 < 2'                                                                    |& tee -a $result
+echo '| x | < sqrt((2+0.692042)/8) = 0.580091'                                                                  |& tee -a $result
+echo 'Pass/Fail absolute radius boundary point: 0.580091-0.294118 = 0.285973'                                   |& tee -a $result
+echo 'Checking two values of rad-abs: 0.285 and 0.286'                                                          |& tee -a $result
+echo 'Expected result: 0.285 -> PASS, 0.286 -> FAIL'                                                            |& tee -a $result
+echo '========================================================================================================' |& tee -a $result
+echo '=============================================== SMLP CERTIFY SOLUTIONS =================================' |& tee -a $result
 ${script_path}/bnh_dataset.py
 set csv=${test}.csv
-set json=${script_path}/${test_lc}_w.json
+set json_pass=${script_path}/${test_lc}_certify_pass.json
+set json_fail=${script_path}/${test_lc}_certify_fail.json
 gunzip -c $gzipped_dataset > $csv
-set noglob
-set e1="F1*F1<1e-10 and (F2-50)*(F2-50)<1e-10"
-set e2="(F1-0.692042)*(F1-0.692042)<1e-10 and (F2-44.290657)*(F2-44.290657)<1e-10"
-set e3="(F1-4.081633)*(F1-4.081633)<1e-10 and (F2-36.734694)*(F2-36.734694)<1e-10"
-set e4="(F1-14.876033)*(F1-14.876033)<1e-10 and (F2-26.446281)*(F2-26.446281)<1e-10"
-set e5="(F1-50.0)*(F1-50.0)<1e-10 and (F2-12.5)*(F2-12.5)<1e-10"
-set e6="(F1-136.0)*(F1-136.0)<1e-10 and (F2-4.0)*(F2-4.0)<1e-10"
-set exprs=("$e1" "$e2" "$e3" "$e4" "$e5" "$e6")
-smlp \
-    -data $csv \
-    -spec $json \
-    -out_dir ./ \
-    -pref $test \
-    -mode certify \
-    -quer_names query1,query2,query3,query4,query5,query6 \
-    -quer_exprs "$e1;$e2;$e3;$e4;$e5;$e6" \
-    -pareto f \
-    -resp F1,F2 \
-    -feat X1,X2 \
-    -model poly_sklearn \
-    -tree_encoding flat \
-    -compress_rules t \
-    -mrmr_pred 0 \
-    -epsilon 0.000005 \
-    -delta_rel 0.05 \
-    -save_model t \
-    -model_name $csv:r_model \
-    -save_model_config t \
-    -plots f \
-    -pred_plots f \
-    -resp_plots f \
-    -seed 10 \
-    -log_time f >& `realpath $0 | xargs basename`.log
-
-foreach p (`seq 1 6`)
-   echo $p $exprs[$p] `jq ".query${p}.witness_status" ${test}_${test}_certify_results.json`
+set e1 = "(F1-0.692042)*(F1-0.692042) < 4"
+set exprs=("$e1")
+foreach json ($json_pass $json_fail)
+    jq '[.variables[] | select(has("rad-abs")) | {label, "rad-abs"}]' $json | \
+        tr -d '\012 {}[]"' | sed -e 's/label://g' -e 's/,X2/; X2/' -e 's/:/=/g' -e 's/,/: /'g |& tee -a $result
+    echo "" |& tee -a $result
+    smlp \
+        -data $csv \
+        -spec $json \
+        -out_dir ./ \
+        -pref $test \
+        -mode certify \
+        -quer_names query1 \
+        -quer_exprs "$e1" \
+        -pareto f \
+        -resp F1,F2 \
+        -feat X1,X2 \
+        -model poly_sklearn \
+        -tree_encoding flat \
+        -compress_rules t \
+        -mrmr_pred 0 \
+        -epsilon 0.000005 \
+        -delta_rel 0.05 \
+        -save_model t \
+        -model_name $csv:r_model \
+        -save_model_config t \
+        -plots f \
+        -pred_plots f \
+        -resp_plots f \
+        -seed 10 \
+        -log_time f >& `realpath $0 | xargs basename`.log
+    echo "$exprs[1] `jq ".query1.witness_status" ${test}_${test}_certify_results.json`" |& tee -a  $result
 end
+echo '=================================================== DONE ===============================================' |& tee -a  $result
