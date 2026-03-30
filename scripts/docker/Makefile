@@ -9,7 +9,6 @@ WHEEL_SRC       := /app/smlp/dist/smlptech-1.2.0rc1-cp311-cp311-manylinux_2_24_x
 WHEEL_DST       := ../dist
 
 define copy_out
-	@mkdir -p $(WHEEL_DST)
 	@if [[ "$(IMAGE)" == smlp-wheel* ]]; then \
 		echo "Copying wheel from container image $(IMAGE)..."; \
 		mkdir -p $(WHEEL_DST); \
