@@ -8,7 +8,7 @@
 **[Combination of robustness and formal assurance of results validity](https://pure.manchester.ac.uk/ws/portalfiles/portal/294597658/fmcad_bkk_2020.pdf) is a distinctive strength of SMLP, not found in other optimization or model‑analysis tools.**
 
 <details>
- <summary> SMLP applications in Intel  </summary>
+ <summary> SMLP applications in Intel  </summary><br>
 
 SMLP has been successfully used at Intel to optimize package and board layouts under noisy, real‑world signal‑integrity data collected in the lab. 
 Because this data is inherently noisy—and because ML models are often intentionally approximate to avoid overfitting—robustness is essential when searching for reliable optimal solutions. 
