@@ -4,23 +4,25 @@
 
 <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="800" height="500">
 
-### Industry adoption: used at Intel for optimization of package/board layouts and signal integrity
-**[Combination of robustness and formal assurance of results validity](https://pure.manchester.ac.uk/ws/portalfiles/portal/294597658/fmcad_bkk_2020.pdf) is a distinctive strength of SMLP, not found in other optimization or model‑analysis tools.**
+### Industry adoption: used at Intel in production for optimization of package/board layouts and signal integrity
 
 <details>
- <summary> SMLP applications in Intel  </summary><br>
+<summary> SMLP applications in Intel and why stability is important  </summary><br>
 
 SMLP has been successfully used at Intel to optimize package and board layouts under noisy, real‑world signal‑integrity data collected in the lab. 
 Because this data is inherently noisy—and because ML models are often intentionally approximate to avoid overfitting—robustness is essential when searching for reliable optimal solutions. 
 SMLP addresses this through its notion of stability, ensuring that selected optima remain valid under data and model uncertainty.
-In most cases the stability radius is actually as large
+In most cases the stability radius (*) is actually as large
 as 10% of the value of the variable in the configuration.
 This is because the sampling error from analog equipment
 can be dependent on the intended value itself.
   
+ [(*)](https://ece.technion.ac.il/wp-content/uploads/2021/01/publication_617-1.pdf) The smallest perturbation 
+ (measured by a norm, e.g., Chebyshev) that makes an optimal solution either non-optimal or infeasible. 
 
+</details><br>
 
-</details>
+**[Combination of robustness and formal assurance of results validity](https://pure.manchester.ac.uk/ws/portalfiles/portal/294597658/fmcad_bkk_2020.pdf) is a distinctive strength of SMLP, not found in other optimization or model‑analysis tools.**
 
 SMLP modes:
 
