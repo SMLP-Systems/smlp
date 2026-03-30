@@ -5,10 +5,11 @@ DOCKERFILE      := Dockerfile.$(IMAGE)
 GIT_BRANCH      := $(shell git branch --show-current)
 SMLP_COMMIT     := $(shell git ls-remote https://github.com/SMLP-Systems/smlp.git refs/heads/$(GIT_BRANCH) | cut -f1)
 
-WHEEL_SRC       := /app/smlp/dist/smlptech-1.1.3-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+WHEEL_SRC       := /app/smlp/dist/smlptech-1.2.0rc1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
 WHEEL_DST       := ../dist
 
 define copy_out
+	@mkdir -p $(WHEEL_DST)
 	@if [[ "$(IMAGE)" == smlp-wheel* ]]; then \
 		echo "Copying wheel from container image $(IMAGE)..."; \
 		mkdir -p $(WHEEL_DST); \
