@@ -20,7 +20,7 @@ mathsat_src_dir=scripts/docker/external
 $(dirname $mathsat_src_dir)/run_mathsat_build
 \rm -rf $mathsat_dest_dir > /dev/null
 \mv $mathsat_src_dir $mathsat_dest_dir
-pip install -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple smlptech
+pip install -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple smlptech==1.2.0rc2
 sed -i.bak "s@../../src/run_smlp.py@smlp@" regr_smlp/code/smlp_regr.py
 cd regr_smlp/code
 smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test1 -mode train -resp y1 -feat x,p1,p2 -model dt_caret -save_model_config f -mrmr_pred 0 -plots t -seed 10 -log_time f
