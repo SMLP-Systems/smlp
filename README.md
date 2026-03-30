@@ -4,7 +4,7 @@
 
 <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="800" height="500">
 
-### Success story: used at Intel for optimization of package/board layouts and signal integrity
+### Industry adoption: used at Intel for optimization of package/board layouts and signal integrity
 **[Combination of robustness and formal assurance of results validity](https://pure.manchester.ac.uk/ws/portalfiles/portal/294597658/fmcad_bkk_2020.pdf) is a distinctive strength of SMLP, not found in other optimization or model‑analysis tools.**
 
 <details>
