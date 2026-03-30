@@ -1,5 +1,6 @@
 # SMLP -- Symbolic Machine Learning Prover
 
+**SMLP is a general purpose tool for verification and optimisation of systems modelled using machine learning.**
 **SMLP uses symbolic reasoning for ML model exploration and optimisation under verification and stability constraints**
 
 <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="800" height="500">
@@ -21,6 +22,7 @@ can be dependent on the intended value itself.
  (measured by a norm, e.g., Chebyshev) that makes an optimal solution either non-optimal or infeasible. 
 
 </details><br>
+
 
 **[Combination of robustness and formal assurance of results validity](https://pure.manchester.ac.uk/ws/portalfiles/portal/294597658/fmcad_bkk_2020.pdf) is a distinctive strength of SMLP, not found in other optimization or model‑analysis tools.**
 
