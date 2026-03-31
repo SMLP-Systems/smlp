@@ -41,7 +41,7 @@ def plot_geometry(ax):
     ax.set_ylabel("x₂", fontsize=13)
     ax.tick_params(labelsize=11)
     ax.set_title("Witness certification\n"
-                 r"$f_1(x)=4x_1^2+4x_2^2$,  query: $(f_1-0.692)^2<4$ and $x_1 ≥ 0$ and $x_2 ≥ 0$",
+                 r"$f_1(x)=4x_1^2+4x_2^2$,  query: $(f_1-0.692042)^2<4$ and $x_1 ≥ 0$ and $x_2 ≥ 0$",
                  fontsize=15, pad=10)
 
     # ── constraint boundary |x| = 0.580091 (quarter circle) ──────────────────
@@ -59,8 +59,8 @@ def plot_geometry(ax):
     # ── Witness point ────────────────────────────────────────────────────
     px = py = 0.294118
     ax.plot(px, py, "o", color=C_NAVYBLUE, ms=9, zorder=5)
-    ax.annotate("Witness point\n$x_1=x_2=0.2941$",
-                xy=(px, py), xytext=(px-0.05, py+0.02),
+    ax.annotate("   Witness point\n$x_1=x_2=0.294118$",
+                xy=(px, py), xytext=(px-0.07, py+0.02),
                 fontsize=14, color=C_NAVYBLUE)
 
     # ── PASS square: half-side = 0.285, full side = 0.570 ───────────────────
