@@ -1,6 +1,6 @@
 #!/usr/bin/env -S tcsh -f
 # Problem for function f₁(x) = 4x₁² + 4x₂²
-# Certify stability of analytical Pareto solution for x₁ = x₂ = 0.294118 and given absolute radius rad-abs
+# Certify stability of analytical Pareto solution for witness x₁ = x₂ = 0.294118 and given absolute radius rad-abs
 # Expected result:
 # From inequality: f₁(x) - 0.692042 < 2
 # | x | < sqrt((2+0.692042)/8) = 0.580091
@@ -16,23 +16,24 @@ if($#argv > 0) then
     if("-clean" == "$argv[1]") then
         \rm -f ${test}* *.log  >& /dev/null
         \rm -f $gzipped_dataset  >& /dev/null
+        \rm -f *png >& /dev/null
         exit(0)
     endif
 endif
 set noglob
 set result=${test}_certify.txt
 \rm -f $result >& /dev/null
-echo '=============================================== PROBLEM ================================================' |& tee -a $result
-echo 'For function f₁(x) = 4x₁² + 4x₂²'                                                                         |& tee -a $result
-echo 'Certify stability of analytical Pareto solution for x₁ = x₂ = 0.294118 and given absolute radius rad-abs' |& tee -a $result
-echo '----------------------------------------------- Expected result: ---------------------------------------' |& tee -a $result
-echo 'From inequality: f₁(x) - 0.692042 < 2'                                                                    |& tee -a $result
-echo '| x | < sqrt((2+0.692042)/8) = 0.580091'                                                                  |& tee -a $result
-echo 'Pass/Fail absolute radius boundary point: 0.580091-0.294118 = 0.285973'                                   |& tee -a $result
-echo 'Checking two values of rad-abs: 0.285 and 0.286'                                                          |& tee -a $result
-echo 'Expected result: 0.285 -> PASS, 0.286 -> FAIL'                                                            |& tee -a $result
-echo '========================================================================================================' |& tee -a $result
-echo '=============================================== SMLP CERTIFY SOLUTIONS =================================' |& tee -a $result
+echo '=============================================== PROBLEM ========================================================' |& tee -a $result
+echo 'For function f₁(x) = 4x₁² + 4x₂²'                                                                                 |& tee -a $result
+echo 'Certify stability of analytical Pareto solution for witness x₁ = x₂ = 0.294118 and given absolute radius rad-abs' |& tee -a $result
+echo '----------------------------------------------- Expected result: -----------------------------------------------' |& tee -a $result
+echo 'From inequality: f₁(x) - 0.692042 < 2'                                                                            |& tee -a $result
+echo '| x | < sqrt((2+0.692042)/8) = 0.580091'                                                                          |& tee -a $result
+echo 'Pass/Fail absolute radius boundary point: 0.580091-0.294118 = 0.285973'                                           |& tee -a $result
+echo 'Checking two values of rad-abs: 0.285 and 0.286'                                                                  |& tee -a $result
+echo 'Expected result: 0.285 -> PASS, 0.286 -> FAIL'                                                                    |& tee -a $result
+echo '================================================================================================================' |& tee -a $result
+echo '=============================================== SMLP CERTIFY SOLUTIONS =========================================' |& tee -a $result
 ${script_path}/bnh_dataset.py
 set csv=${test}.csv
 set json_pass=${script_path}/${test_lc}_certify_pass.json
@@ -71,4 +72,5 @@ foreach json ($json_pass $json_fail)
         -log_time f >& `realpath $0 | xargs basename`.log
     echo "$exprs[1] `jq ".query1.witness_status" ${test}_${test}_certify_results.json`" |& tee -a  $result
 end
-echo '=================================================== DONE ===============================================' |& tee -a  $result
+echo '=================================================== DONE =======================================================' |& tee -a  $result
+${script_path}/witness_certify_plot.py -timeout 5
