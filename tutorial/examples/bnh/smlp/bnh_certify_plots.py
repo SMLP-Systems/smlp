@@ -98,7 +98,7 @@ def plot_geometry(ax):
 
     handles = [
         Line2D([0], [0], color=C_BLUE, lw=1.5, ls="--",
-               label=f"|x|={R_constraint}  constraint boundary"),
+               label=f"|x|<sqrt((2+0.692042)/8)={R_constraint}  constraint boundary"),
         mpatches.Patch(facecolor=C_GREEN, alpha=0.35,
                        label=f"rad={R_pass}  PASS"),
         Line2D([0], [0], color=C_RED, lw=1.5, ls="--",
@@ -217,7 +217,7 @@ def build_pipeline_svg():
 
     # title
     svg += _text(cx, y0 + 16, "run_certify – script pipeline",
-                 size=15, color="#2C2C2A", weight="600")
+                 size=20, color="#2C2C2A", weight="600")
 
     # ── row 1: bnh_dataset.py ────────────────────────────────────────────
     svg += _box(cx - BW//2, y1, BW, BH,
@@ -298,7 +298,7 @@ def build_pipeline_svg():
     svg += _arrow(cx, mid_y, cx, y7 - 4, arrow_color)
     svg += _text(cx, y7 + 4,
                  "BNH_BNH_certify_results.json  →  .query1.witness_status  (jq)",
-                 size=10, color=line_color, style="italic")
+                 size=12, color=line_color, style="italic")
     svg += "</svg>\n"
     return svg
 
@@ -434,15 +434,16 @@ def plot_pipeline(ax):
 # Main
 # ════════════════════════════════════════════════════════════════════════════
 def main():
-    fig = plt.figure(figsize=(14, 9))
+    fig = plt.figure(figsize=(16, 10))
     ax1, ax2 = fig.subplots(1, 2)
+    ax1.set_position([0.1, 0, 0.8, 0]) # [left, bottom, width, height]
+    ax2.set_position([0.1, 0, 0.8, 0]) # [left, bottom, width, height]
 
     plot_geometry(ax1)
     plot_pipeline(ax2)
     fig.tight_layout()
 
-    fig.savefig("bnh_certify.png",
-                dpi=600, bbox_inches="tight")
+    fig.savefig("bnh_certify.png", dpi=600, bbox_inches="tight")
     print("Saved bnh_certify.png")
 
     svg_text = build_pipeline_svg()
@@ -458,6 +459,7 @@ def main():
         timer = fig.canvas.new_timer(interval=timeout*1000, callbacks=[(plt.close, [], {})])
         timer.start()
 
+    plt.tight_layout()
     plt.show()
 
 if __name__ == "__main__":
