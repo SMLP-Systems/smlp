@@ -1,9 +1,10 @@
 # SMLP -- Symbolic Machine Learning Prover
 
-**SMLP is a general purpose tool for verification and optimisation of systems modelled using machine learning.**
-**SMLP uses symbolic reasoning for ML model exploration and optimisation under verification and stability constraints**
+SMLP is a general purpose tool for verification and optimisation of systems modelled using machine learning. </br>
+SMLP uses symbolic reasoning for ML model exploration and optimisation under verification and stability constraints.
 
-<img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="800" height="500">
+<img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png" alt="SMLP Overview" class="center" width="750" height="500">
+
 
 ### Industry adoption: used at Intel in production for optimization of package/board layouts and signal integrity
 
@@ -24,7 +25,7 @@ can be dependent on the intended value itself.
 </details><br>
 
 
-**[Combination of robustness and formal assurance of results validity](https://pure.manchester.ac.uk/ws/portalfiles/portal/294597658/fmcad_bkk_2020.pdf) is a distinctive strength of SMLP, not found in other optimization or model‑analysis tools.**
+**[Combination of robustness and formal assurance of results validity](https://korovin.gitlab.io/pub/fmcad_bkk_2020.pdf) is a distinctive strength of SMLP, not found in other optimization or model‑analysis tools.**
 
 SMLP modes:
 
@@ -52,7 +53,9 @@ SMLP supports:
  - stability constraints
  - parameter optimization
 
+<p align="center">
 <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_arch.png"  alt="SMLP Arch" class="center" width="800" height="500">
+</p>
 
 Papers:
 * SMLP: Symbolic Machine Learning Prover, (CAV'24) [[pdf]](https://link.springer.com/content/pdf/10.1007/978-3-031-65627-9_11.pdf) [[bib]](https://dblp.org/rec/conf/cav/BrausseKK24.html?view=bibtex)
@@ -236,6 +239,9 @@ tests/install/test_container_install mdmitry1/python311-dev
 ### Coming soon:
 <details>
 <summary> NLP, LLM, Agentic</summary>
+
+Current development is in PR[#21](https://github.com/SMLP-Systems/smlp/pull/21)  </br>
+See [Extended Manual](https://github.com/SMLP-Systems/smlp/blob/master/doc/smlp_manual_extended.pdf) for details.
 
 NLP:
  - NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
