@@ -22,7 +22,7 @@ endif
 set examples = ( \
     ${script_path}/examples/constraint_dora/smlp/run_constraint_dora_poly \
     ${script_path}/examples/bnh/smlp/run_poly_pareto \
-    ${script_path}/examples/bnh/smlp/run_certify \
+    ${script_path}/examples/bnh/smlp/run_certify.sh \
     ${script_path}/examples/eggholder/smlp/run_eggholder \
     ${script_path}/examples/si/smlp/run_si_tests )
 foreach e ( $examples )

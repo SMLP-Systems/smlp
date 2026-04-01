@@ -11,16 +11,18 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.lines import Line2D
-from math import inf
+from math import inf, sqrt
 from sys import argv
 
 # ── shared palette ───────────────────────────────────────────────────────────
-C_BLUE      = "#378ADD"
-C_GREEN     = "#1D9E75"
-C_RED       = "#E24B4A"
-C_NAVYBLUE  = "#000080"
-C_GRAY      = "#888780"
-C_MAGENTA   = "#FF00FF"
+C_BLUE       = "#378ADD"
+C_GREEN      = "#1D9E75"
+C_LIGHTGREEN = "#90EE90"
+C_RED        = "#E24B4A"
+C_NAVYBLUE   = "#000080"
+C_GRAY       = "#888780"
+C_MAGENTA    = "#FF00FF"
+C_DARKGREEN  = "#006400"
 
 matplotlib.rcParams.update({
     "font.family": "DejaVu Sans",
@@ -40,28 +42,27 @@ def plot_geometry(ax):
     ax.set_xlabel("x₁", fontsize=13)
     ax.set_ylabel("x₂", fontsize=13)
     ax.tick_params(labelsize=11)
-    ax.set_title("Witness certification\n"
-                 r"$f_1(x)=4x_1^2+4x_2^2$,  SMLP query: $(f_1-0.692042)^2<4$ and 0 ≤ $x_1 ≤ 5$ and 0 ≤ $x_2 ≤ 3$",
+    ax.set_title("SMLP Witness certification\n"
+                 r"$f_1(x)=4x_1^2+4x_2^2$" + "\n" + r"query: y = $(f_1-0.692042)^2<4$ and 0 ≤ $x_1 ≤ 5$ and 0 ≤ $x_2 ≤ 3$",
                  fontsize=15, pad=10)
 
     # ── constraint boundary |x| = 0.580091 (quarter circle) ──────────────────
     R_constraint = 0.580091
 
-    wedge = mpatches.Wedge((0,0), R_constraint, 0, 90, facecolor='lightgreen', edgecolor='blue', linestyle='dashed')
+    wedge = mpatches.Wedge((0,0), R_constraint, 0, 90, facecolor=C_LIGHTGREEN, edgecolor=C_BLUE, linestyle='--')
     ax.add_patch(wedge)
+    ax.text(0.05, R_constraint - 0.05, "y=4", fontsize=12, color=C_BLUE, va="center")
 
-    ang = math.radians(48)
-    ax.annotate(f"|x| = {R_constraint}",
-                xy=(R_constraint * math.cos(ang), R_constraint * math.sin(ang)),
-                xytext=(0.3, 0.52), fontsize=13, color=C_BLUE,
-                arrowprops=dict(arrowstyle="->", color=C_BLUE, lw=1))
+    # ── Arc for y = 0 ────────────────────────────────────────────────────
+    x0 = 0.294118
+    px = py = x0
+    arc0 = mpatches.Arc((0,0), px*2*sqrt(2), py*2*sqrt(2), angle=0, theta1=0, theta2=90, color=C_DARKGREEN, linestyle='--')
+    ax.add_patch(arc0)
+    ax.text(0.05, py*sqrt(2) - 0.05, "y=0", fontsize=12, color=C_NAVYBLUE, va="center")
 
     # ── Witness point ────────────────────────────────────────────────────
-    px = py = 0.294118
+    px = py = x0
     ax.plot(px, py, "o", color=C_NAVYBLUE, ms=9, zorder=5)
-    ax.annotate("   Witness point\n$x_1=x_2=0.294118$",
-                xy=(px, py), xytext=(px-0.13, py+0.02),
-                fontsize=14, color=C_NAVYBLUE)
 
     # ── PASS square: half-side = 0.285, full side = 0.570 ───────────────────
     hs_pass = 0.285
@@ -71,8 +72,8 @@ def plot_geometry(ax):
     ax.add_patch(mpatches.Rectangle(
         (px - hs_pass, py - hs_pass), 2 * hs_pass, 2 * hs_pass,
         facecolor="none", edgecolor=C_GREEN, lw=1.8, zorder=3))
-    ax.text(px + hs_pass - 0.165, py + 0.125,
-            f"side={2*hs_pass:.3f}\n  PASS ✓  →", fontsize=12,
+    ax.text(px + hs_pass - 0.175, py + 0.14,
+            f"side={2*hs_pass:.3f}\n  PASS ✓ →", fontsize=12,
             color=C_GREEN, va="center")
 
     # ── FAIL square: half-side = 0.286, full side = 0.572 ───────────────────
@@ -93,7 +94,7 @@ def plot_geometry(ax):
 
     handles = [
         Line2D([0], [0], color=C_BLUE, lw=1.5, ls="--",
-               label=r"$|x|= √(x_1^2+x_2^2)$" + f"={R_constraint}, " + r"$(f_1-0.692042)^2=4$ - constraint boundary"),
+               label=r"$|x|= √(x_1^2+x_2^2)$" + f"={R_constraint}, y = 4 - constraint boundary"),
         mpatches.Patch(facecolor=C_GREEN, alpha=0.65,
                        label=f"SMLP query is TRUE"),
         mpatches.Patch(facecolor=C_MAGENTA, alpha=0.35,
@@ -101,7 +102,7 @@ def plot_geometry(ax):
         mpatches.Patch(facecolor="none", edgecolor=C_RED, lw=1.5,
                        linestyle="--", label=f"FAIL  square side=2*{hs_fail}={2*hs_fail:.3f}"),
         Line2D([0], [0], marker="o", color=C_NAVYBLUE, lw=0,
-               markersize=8, label="Witness (0.294118, 0.294118), " + r"$f_1-0.692042=0$"),
+               markersize=8, label=f"Witness point ({x0}, {x0}), y=0"),
     ]
     legend  = ax.legend(handles=handles, fontsize=11, loc="upper right", framealpha=0.85)
     ax.set_facecolor("#FAFAF8")

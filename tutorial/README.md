@@ -1,28 +1,36 @@
 # SMLP Optimization Examples
 
 This tutorial contains three benchmark optimization problems and one industrial example demonstrating the capabilities of SMLP (Symbolic Machine Learning Prover) for solving constrained and multi-objective optimization tasks for **black-box functions**.<br>
-Black-box function optimization definition used in this document [2]:<br>
+For one of the optimization examples tutorial demonstrates SMLP **result certification** - unique SMLP feature, which allows to validate solution robustness.SMLP addresses this through its notion of stability, ensuring that selected optima remain within stability region [3].  
+
+Black-box function optimization definition used in this document [2]:
 #### *Blackbox optimization (BBO) is the study of design and analysis of algorithms for optimization problems in which the structure of the objective function f and/or the constraints defining the set Ω is unknown, unexploitable or non-existant*<br>
 *In above definiton Ω is the feasible region : Ω → R* 
 
-SMLP has been applied in industrial setting at Intel for analyzing and optimizing hardware designs at the analog level [1].
+SMLP has been applied in industrial setting at Intel for analyzing and optimizing hardware designs at the analog level [1].<br>
 This tutorial contains one of Intel examples in Signal Integrity domain (with mangled numerical values and objective function names).
 
 ### In [SMLP](https://github.com/SMLP-Systems/smlp/blob/master/README.md)
 - Structure of the objective function *f* is unknown
 - Constraint defining set is comprised of known functions, which are defined by Python expressions
 
-**SMLP** supports multiple modes: optimization, synthesis, verification and more
-This tutorial focuses on optimization mode. In future it may be extended to other modes.
+**SMLP** supports multiple modes: optimization, synthesis, verification and more.<br>
+This tutorial focuses on optimization mode.<br>
+In future it may be extended to other modes.
 
 ### SMLP optimization flow is comprised of two stages:
-- Model build: input data is converted into one of supported model types:
-  1. Polynomial model
-  2. Decision Trees
-  3. Random Forest
-  4. Extremely Randomized Trees
-  3. Neural network model
-- Optimization: model and constraints are used to find objective function(s) maximum considering input constraints
+<details>
+<summary>Model build</summary>
+Input data is converted into one of supported model types<br>
+1. Polynomial model<br>
+2. Decision Trees<br>
+3. Random Forest<br>
+4. Extremely Randomized Trees<br>
+5. Neural network model<br>
+</details>
+<details>
+<summary>Optimization</summary> Model and constraints are used to find objective function(s) maximum considering input constraints
+</details>
 
 ## Overview
 
@@ -33,9 +41,10 @@ Examples in this tutorial showcase SMLP's ability to:
 - Generate Pareto fronts for multi-objective problems
 
 [1] [Franz Brauße, Zurab Khasidashvili, Konstantin Korovin. SMLP: Symbolic Machine Learning Prover](https://arxiv.org/pdf/2402.01415v1)<br>
-[2] [Stéphane Alarie et al. Two decades of blackbox optimization applications](https://optimization-online.org/wp-content/uploads/2020/10/8082.pdf)
+[2] [Stéphane Alarie et al. Two decades of blackbox optimization applications](https://optimization-online.org/wp-content/uploads/2020/10/8082.pdf)<br>
+[3] [Yonina C. Eldar and Amir Beck. A Minimax Chebyshev Estimator for Bounded Error Estimation](https://ece.technion.ac.il/wp-content/uploads/2021/01/publication_617-1.pdf)
 
-## Examples
+### Examples
 
 ### 1. Eggholder Function
 
@@ -220,9 +229,50 @@ In decision space:
 # Run optimization for each weighting and plot Pareto front
 ./examples/bnh/smlp/run_poly_pareto
 
-# Visualize Pareto front
+# Visualize Pareto front and compare simulation Pareto front to analytical
 ./examples/bnh/smlp/plot_results.py
+
+# Create analytical Pareto front
+./examples/bnh/smlp/pareto_analytical.py
 ```
+
+#### Pareto point robustness ceritification example
+
+Below we demonstrate SMLP robustness certification accuracy for the second Pareto front point of the function `f₁`.<br>
+We check (*certify*) stability of analytical Pareto solution (*witness*) `f₁(x₁,x₂) = 0.692042`<br>
+where  `x₁' = x₂' = 0.294118` within stability region.<br>
+Stability region is defined as a square with apothem `rad-abs`.<br>
+Assertion, chosen for this example:
+
+```
+y = (f₁(x₁,x₂) - 0.692042)² < 4
+```
+Analytical solution for this problem:<br>
+- assertion should pass for: `rad-abs < 0.285973`
+- assertion should fail for: `rad-abs ≥ 0.285973`
+
+**SMLP results:**
+
+![CERTIFY_RESULT](examples/bnh/smlp/media/witness_certify.png)<br>
+
+From this plot one can see that as expected:
+- <p style="color: green;">assertion passes for rad-abs=0.285</p>
+- <p style="color: red;">assertion fails for rad-abs=0.286</p>
+
+Above result clearly demonstrates high SMLP accuracy.
+
+#### Certification demo script usage - run SMLP and display results:
+
+```bash
+examples/bnh/smlp/run_certify.sh
+```
+
+#### Plot certification results:
+
+```bash
+examples/bnh/smlp/witness_certify_plot.py
+```
+
 
 ### 4. Intel Signal Integrity domain example
 
