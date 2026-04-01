@@ -241,7 +241,7 @@ tests/install/test_container_install mdmitry1/python311-dev
 <details>
 <summary> NLP, LLM, Agentic</summary>
 
-Current development is in PR#21  </br>
+Current development is in PR[#21](https://github.com/SMLP-Systems/smlp/pull/21)  </br>
 See [Extended Manual](https://github.com/SMLP-Systems/smlp/blob/master/doc/smlp_manual_extended.pdf) for deatils.
 
 NLP:
