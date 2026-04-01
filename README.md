@@ -3,9 +3,7 @@
 SMLP is a general purpose tool for verification and optimisation of systems modelled using machine learning. </br>
 SMLP uses symbolic reasoning for ML model exploration and optimisation under verification and stability constraints.
 
-<!--  <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="800" height="500"> -->
-
-   <img src="./misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="750" height="500"> 
+<img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png" alt="SMLP Overview" class="center" width="750" height="500">
 
 
 ### Industry adoption: used at Intel in production for optimization of package/board layouts and signal integrity
