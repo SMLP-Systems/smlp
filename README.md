@@ -5,9 +5,8 @@ SMLP uses symbolic reasoning for ML model exploration and optimisation under ver
 
 <!--  <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="800" height="500"> -->
 
-<p align="center">
    <img src="./misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="750" height="500"> 
-</p>
+
 
 ### Industry adoption: used at Intel in production for optimization of package/board layouts and signal integrity
 
