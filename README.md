@@ -240,8 +240,8 @@ tests/install/test_container_install mdmitry1/python311-dev
 <details>
 <summary> NLP, LLM, Agentic</summary>
 
-Current development is in PR[#21](https://github.com/SMLP-Systems/smlp/pull/21)  </br>
-See [Extended Manual](https://github.com/SMLP-Systems/smlp/blob/master/doc/smlp_manual_extended.pdf) for details.
+Current development is in PR [#21](https://github.com/SMLP-Systems/smlp/pull/21)  </br>
+See [Extended Manual](https://raw.githubusercontent.com/SMLP-Systems/smlp/nlp_text.rebased/doc/smlp_manual_extended.pdf) for details.
 
 NLP:
  - NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
