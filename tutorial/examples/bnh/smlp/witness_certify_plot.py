@@ -35,13 +35,13 @@ matplotlib.rcParams.update({
 # ════════════════════════════════════════════════════════════════════════════
 def plot_geometry(ax):
     ax.set_aspect("equal")
-    ax.set_xlim(-0.05, 0.85)
-    ax.set_ylim(-0.05, 0.85)
+    ax.set_xlim(-0.05, 1.05)
+    ax.set_ylim(-0.05, 1.05)
     ax.set_xlabel("x₁", fontsize=13)
     ax.set_ylabel("x₂", fontsize=13)
     ax.tick_params(labelsize=11)
     ax.set_title("Witness certification\n"
-                 r"$f_1(x)=4x_1^2+4x_2^2$,  query: $(f_1-0.692042)^2<4$ and $x_1 ≥ 0$ and $x_2 ≥ 0$",
+                 r"$f_1(x)=4x_1^2+4x_2^2$,  SMLP query: $(f_1-0.692042)^2<4$ and 0 ≤ $x_1 ≤ 5$ and 0 ≤ $x_2 ≤ 3$",
                  fontsize=15, pad=10)
 
     # ── constraint boundary |x| = 0.580091 (quarter circle) ──────────────────
@@ -53,14 +53,14 @@ def plot_geometry(ax):
     ang = math.radians(48)
     ax.annotate(f"|x| = {R_constraint}",
                 xy=(R_constraint * math.cos(ang), R_constraint * math.sin(ang)),
-                xytext=(0.62, 0.50), fontsize=12, color=C_BLUE,
+                xytext=(0.3, 0.52), fontsize=13, color=C_BLUE,
                 arrowprops=dict(arrowstyle="->", color=C_BLUE, lw=1))
 
     # ── Witness point ────────────────────────────────────────────────────
     px = py = 0.294118
     ax.plot(px, py, "o", color=C_NAVYBLUE, ms=9, zorder=5)
     ax.annotate("   Witness point\n$x_1=x_2=0.294118$",
-                xy=(px, py), xytext=(px-0.07, py+0.02),
+                xy=(px, py), xytext=(px-0.13, py+0.02),
                 fontsize=14, color=C_NAVYBLUE)
 
     # ── PASS square: half-side = 0.285, full side = 0.570 ───────────────────
@@ -71,7 +71,7 @@ def plot_geometry(ax):
     ax.add_patch(mpatches.Rectangle(
         (px - hs_pass, py - hs_pass), 2 * hs_pass, 2 * hs_pass,
         facecolor="none", edgecolor=C_GREEN, lw=1.8, zorder=3))
-    ax.text(px + hs_pass - 0.14, py + 0.11,
+    ax.text(px + hs_pass - 0.165, py + 0.125,
             f"side={2*hs_pass:.3f}\n  PASS ✓  →", fontsize=12,
             color=C_GREEN, va="center")
 
@@ -88,23 +88,28 @@ def plot_geometry(ax):
     bd = R_constraint - px
     ax.annotate("", xy=(px + hs_fail + 0.005, py), xytext=(px, py),
                 arrowprops=dict(arrowstyle="<->", color=C_RED, lw=1.5))
-    ax.text(px + hs_fail / 2 - 0.03, py - 0.05, f"rad-abs = {hs_fail}",
+    ax.text(px + hs_fail / 2 - 0.06, py - 0.05, f"rad-abs = {hs_fail}",
             fontsize=14, color=C_RED, ha="center")
 
     handles = [
         Line2D([0], [0], color=C_BLUE, lw=1.5, ls="--",
-               label=r"$|x|= √(x_1^2+x_2^2)$" + f"={R_constraint} - constraint boundary"),
+               label=r"$|x|= √(x_1^2+x_2^2)$" + f"={R_constraint}, " + r"$(f_1-0.692042)^2=4$ - constraint boundary"),
         mpatches.Patch(facecolor=C_GREEN, alpha=0.65,
-                       label=f"query == TRUE"),
+                       label=f"SMLP query is TRUE"),
         mpatches.Patch(facecolor=C_MAGENTA, alpha=0.35,
                        label=f"PASS square side=2*{hs_pass}={2*hs_pass:.3f}"),
         mpatches.Patch(facecolor="none", edgecolor=C_RED, lw=1.5,
                        linestyle="--", label=f"FAIL  square side=2*{hs_fail}={2*hs_fail:.3f}"),
         Line2D([0], [0], marker="o", color=C_NAVYBLUE, lw=0,
-               markersize=8, label="Witness (0.2941, 0.2941)"),
+               markersize=8, label="Witness (0.294118, 0.294118), " + r"$f_1-0.692042=0$"),
     ]
-    ax.legend(handles=handles, fontsize=11, loc="upper right", framealpha=0.85)
+    legend  = ax.legend(handles=handles, fontsize=11, loc="upper right", framealpha=0.85)
     ax.set_facecolor("#FAFAF8")
+    legend.get_texts()[0].set_color(C_BLUE)
+    legend.get_texts()[1].set_color(C_GREEN)
+    legend.get_texts()[2].set_color(C_MAGENTA)
+    legend.get_texts()[3].set_color(C_RED)
+    legend.get_texts()[4].set_color(C_NAVYBLUE)
 
 
 # ════════════════════════════════════════════════════════════════════════════
