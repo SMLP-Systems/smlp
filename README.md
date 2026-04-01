@@ -241,6 +241,9 @@ tests/install/test_container_install mdmitry1/python311-dev
 <details>
 <summary> NLP, LLM, Agentic</summary>
 
+Current development is in PR#21  </br>
+See [Extended Manual](https://github.com/SMLP-Systems/smlp/blob/master/doc/smlp_manual_extended.pdf) for deatils.
+
 NLP:
  - NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
  - NLP based root cause analysis: which words or collections of words are most correlative to classification decision (especially, for the positive class).
