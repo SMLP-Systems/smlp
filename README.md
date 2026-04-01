@@ -7,7 +7,7 @@ SMLP uses symbolic reasoning for ML model exploration and optimisation under ver
 
 <p align="center">
    <img src="./misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="750" height="500"> 
-</p align="center">
+</p>
 
 ### Industry adoption: used at Intel in production for optimization of package/board layouts and signal integrity
 
@@ -56,7 +56,9 @@ SMLP supports:
  - stability constraints
  - parameter optimization
 
+<p align="center">
 <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_arch.png"  alt="SMLP Arch" class="center" width="800" height="500">
+</p>
 
 Papers:
 * SMLP: Symbolic Machine Learning Prover, (CAV'24) [[pdf]](https://link.springer.com/content/pdf/10.1007/978-3-031-65627-9_11.pdf) [[bib]](https://dblp.org/rec/conf/cav/BrausseKK24.html?view=bibtex)
