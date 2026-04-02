@@ -44,7 +44,7 @@ Examples in this tutorial showcase SMLP's ability to:
 [2] [Stéphane Alarie et al. Two decades of blackbox optimization applications](https://optimization-online.org/wp-content/uploads/2020/10/8082.pdf)<br>
 [3] [Yonina C. Eldar and Amir Beck. A Minimax Chebyshev Estimator for Bounded Error Estimation](https://ece.technion.ac.il/wp-content/uploads/2021/01/publication_617-1.pdf)
 
-### Examples
+## Examples
 
 ### 1. Eggholder Function
 
@@ -224,7 +224,7 @@ In decision space:
 #### Usage
 ```bash
 # Generate dataset
-./examples/bnh/smlp/run_poly_pareto/bnh_dataset.py
+./examples/bnh/smlp/bnh_dataset.py
 
 # Run optimization for each weighting and plot Pareto front
 ./examples/bnh/smlp/run_poly_pareto
@@ -241,7 +241,7 @@ In decision space:
 Below we demonstrate SMLP robustness certification accuracy for the second Pareto front point of the function `f₁`.<br>
 We check (*certify*) stability of analytical Pareto solution (*witness*) `f₁(x₁,x₂) = 0.692042`<br>
 where  `x₁' = x₂' = 0.294118` within stability region.<br>
-Stability region is defined as a square with apothem `rad-abs`.<br>
+The stability region is defined as a square with apothem `rad-abs`.<br>
 Assertion, chosen for this example:
 
 ```

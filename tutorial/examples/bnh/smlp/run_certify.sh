@@ -11,7 +11,7 @@
 
 script_path="$(dirname "$(realpath "$0")")"
 test=BNH
-test_lc="${test,,}"
+test_lc="$(echo "$test" | tr '[:upper:]' '[:lower:]')"
 gzipped_dataset="${test_lc}.csv.gz"
 
 if [[ $# -gt 0 && "$1" == "-clean" ]]; then
@@ -52,7 +52,7 @@ e1="(F1-0.692042)*(F1-0.692042) < 4"
 log_file="$(basename "$0").log"
 
 for json in "$json_pass" "$json_fail"; do
-    jq '[.variables[] | select(has("rad-abs")) | {label, "rad-abs"}]' "$json" | \
+    jq '[.variables[] | select(has("rad-abs")) | {label: .label, "rad-abs": .["rad-abs"]}]' "$json" | \
         tr -d '\n {}[]"' | sed -e 's/label://g' -e 's/,X2/; X2/' -e 's/:/=/g' -e 's/,/: /g' | tee -a "$result"
     echo "" | tee -a "$result"
     smlp \
