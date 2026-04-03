@@ -1,12 +1,14 @@
 [build-system]
 requires = [
     "setuptools>=68",
-    "setuptools-scm>=8",
+    "setuptools_scm",
     "wheel",
     "meson",
     "ninja",
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
 
 [project]
 maintainers = [
