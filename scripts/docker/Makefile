@@ -4,8 +4,14 @@ DOCKERFILE      := Dockerfile.$(IMAGE)
 
 GIT_BRANCH      := $(shell git branch --show-current)
 SMLP_COMMIT     := $(shell git ls-remote https://github.com/SMLP-Systems/smlp.git refs/heads/$(GIT_BRANCH) | cut -f1)
-
+RELEASE_TYPE    ?=
 WHEEL_DST       := ../dist
+
+ifeq ($(RELEASE_TYPE),test)
+    RELEASE_BUILD_ARG := --build-arg RELEASE_TYPE=-test
+else
+    RELEASE_BUILD_ARG := --build-arg RELEASE_TYPE=
+endif
 
 define copy_out
 	@if [[ "$(IMAGE)" == smlp-wheel* ]]; then \
@@ -27,6 +33,7 @@ endef
 build: $(DOCKERFILE)
 	env DOCKER_BUILDKIT=1 docker build \
 		--build-arg GIT_BRANCH=$(GIT_BRANCH) \
+		$(RELEASE_BUILD_ARG) \
 		--progress=plain \
 		-f $(DOCKERFILE) \
 		-t $(IMAGE) \
@@ -37,6 +44,7 @@ rebuild_smlp: $(DOCKERFILE)
 	env DOCKER_BUILDKIT=1 docker build \
 		--build-arg CACHE_BUST_SMLP=$(SMLP_COMMIT) \
 		--build-arg GIT_BRANCH=$(GIT_BRANCH) \
+		$(RELEASE_BUILD_ARG) \
 		--progress=plain \
 		-f $(DOCKERFILE) \
 		-t $(IMAGE) \
@@ -47,6 +55,7 @@ clean_build: $(DOCKERFILE)
 	env DOCKER_BUILDKIT=1 docker build \
 		--no-cache \
 		--build-arg GIT_BRANCH=$(GIT_BRANCH) \
+		$(RELEASE_BUILD_ARG) \
 		--progress=plain \
 		-f $(DOCKERFILE) \
 		-t $(IMAGE) \

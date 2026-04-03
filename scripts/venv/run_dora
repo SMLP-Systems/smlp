@@ -1,9 +1,13 @@
 #!/usr/bin/bash
+script_path=$(realpath $0 | xargs dirname)
 smlp_venv_dir=smlp_package_venv
 \rm -rf $smlp_venv_dir > /dev/null
 if [[ $# -gt 0 ]]; then
    if [ "$1" == "-clean" ]; then
        exit 0
+   fi
+   if [ "$1" == "-test" ]; then
+       test=""
    fi
 fi
 python3.11 -m venv $smlp_venv_dir
@@ -20,7 +24,12 @@ mathsat_src_dir=scripts/docker/external
 $(dirname $mathsat_src_dir)/run_mathsat_build
 \rm -rf $mathsat_dest_dir > /dev/null
 \mv $mathsat_src_dir $mathsat_dest_dir
-pip install -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple smlptech==1.2.0rc3
+if [[ -v test ]]; then
+    pip install requests packaging
+    pip install -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple smlptech==$($script_path/../bin/smlp_versions.py -atl)
+else
+    pip install smlptech
+fi
 sed -i.bak "s@../../src/run_smlp.py@smlp@" regr_smlp/code/smlp_regr.py
 cd regr_smlp/code
 smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test1 -mode train -resp y1 -feat x,p1,p2 -model dt_caret -save_model_config f -mrmr_pred 0 -plots t -seed 10 -log_time f
