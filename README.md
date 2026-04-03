@@ -221,6 +221,14 @@ tests/install/test_container_install mdmitry1/python311-dev
    Installation instructions for Ubuntu-22.04 can be followed using `homebrew` in place of `apt`
 </details>
 
+<details>
+ <summary> Quickstart</summary>
+<p align="center">
+<img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/quickstart/misc/minimal_distance.png"  alt="Minimal Distance Problem" class="center" width="500" height="400">
+</p>
+   
+</details>
+
 ## [Tutorial](https://github.com/SMLP-Systems/smlp/tree/master/tutorial)
 
    - Black-box optimization Eggholder Function
