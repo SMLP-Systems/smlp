@@ -1,7 +1,7 @@
 [build-system]
 requires = [
     "setuptools>=68",
-    "setuptools-scm>=8"
+    "setuptools-scm>=8",
     "wheel",
     "meson",
     "ninja",
