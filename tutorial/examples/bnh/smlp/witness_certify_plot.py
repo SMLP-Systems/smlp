@@ -37,8 +37,8 @@ matplotlib.rcParams.update({
 # ════════════════════════════════════════════════════════════════════════════
 def plot_geometry(ax):
     ax.set_aspect("equal")
-    ax.set_xlim(-0.05, 1.05)
-    ax.set_ylim(-0.05, 1.05)
+    ax.set_xlim(0.0, 1.05)
+    ax.set_ylim(0.0, 1.05)
     ax.set_xlabel("x₁", fontsize=13)
     ax.set_ylabel("x₂", fontsize=13)
     ax.tick_params(labelsize=11)
@@ -52,6 +52,13 @@ def plot_geometry(ax):
     wedge = mpatches.Wedge((0,0), R_constraint, 0, 90, facecolor=C_LIGHTGREEN, edgecolor=C_BLUE, linestyle='--')
     ax.add_patch(wedge)
     ax.text(0.05, R_constraint - 0.05, "y=4", fontsize=12, color=C_BLUE, va="center")
+
+    # ── Arc for y = 9 ────────────────────────────────────────────────────
+    x0 = 0.427793
+    px = py = x0
+    arc0 = mpatches.Arc((0,0), px*2*sqrt(2), py*2*sqrt(2), angle=0, theta1=0, theta2=90, color=C_RED, linestyle='--')
+    ax.add_patch(arc0)
+    ax.text(0.05, py*sqrt(2) + 0.04, "y=5", fontsize=12, color=C_RED, va="center")
 
     # ── Arc for y = 0 ────────────────────────────────────────────────────
     x0 = 0.294118
@@ -72,7 +79,7 @@ def plot_geometry(ax):
     ax.add_patch(mpatches.Rectangle(
         (px - hs_pass, py - hs_pass), 2 * hs_pass, 2 * hs_pass,
         facecolor="none", edgecolor=C_GREEN, lw=1.8, zorder=3))
-    ax.text(px + hs_pass - 0.175, py + 0.14,
+    ax.text(px + hs_pass - 0.175, py + 0.19,
             f"side={2*hs_pass:.3f}\n  PASS ✓ →", fontsize=12,
             color=C_GREEN, va="center")
 
@@ -98,9 +105,9 @@ def plot_geometry(ax):
         mpatches.Patch(facecolor=C_GREEN, alpha=0.65,
                        label=f"SMLP query is TRUE"),
         mpatches.Patch(facecolor=C_MAGENTA, alpha=0.35,
-                       label=f"PASS square side=2*{hs_pass}={2*hs_pass:.3f}"),
+                       label=f"certify PASS square side=2*{hs_pass}={2*hs_pass:.3f}"),
         mpatches.Patch(facecolor="none", edgecolor=C_RED, lw=1.5,
-                       linestyle="--", label=f"FAIL  square side=2*{hs_fail}={2*hs_fail:.3f}"),
+                       linestyle="--", label=f"certify FAIL  square side=2*{hs_fail}={2*hs_fail:.3f}"),
         Line2D([0], [0], marker="o", color=C_NAVYBLUE, lw=0,
                markersize=8, label=f"Witness point ({x0}, {x0}), y=0"),
     ]

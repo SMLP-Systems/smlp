@@ -241,7 +241,7 @@ In decision space:
 Below we demonstrate SMLP robustness certification accuracy for the second Pareto front point of the function `f₁`.<br>
 We check (*certify*) stability of analytical Pareto solution (*witness*) `f₁(x₁,x₂) = 0.692042`<br>
 where  `x₁' = x₂' = 0.294118` within stability region.<br>
-The stability region is defined as a square with apothem `rad-abs`.<br>
+The stability region is defined as a square with [inradius](https://mathworld.wolfram.com/Inradius.html) `rad-abs`.<br>
 Assertion, chosen for this example:
 
 ```
@@ -253,7 +253,7 @@ Analytical solution for this problem:<br>
 
 **SMLP results:**
 
-![CERTIFY_RESULT](examples/bnh/smlp/media/witness_certify.png)<br>
+![CERTIFY_RESULT](examples/bnh/smlp/media/witness_certify_0.5x.png)<br>
 
 From this plot one can see that as expected:
 - <p style="color: green;">assertion passes for rad-abs=0.285</p>
