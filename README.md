@@ -241,7 +241,6 @@ f(x*) = 6 - 2√5 ≈ 1.527864`, where `x* = (2/√5,1/√5) ≈ (0.894427, 0.44
   SMLP results
   `f(x*) = 1.527865, x* = (2/√5,1/√5) ≈ (0.894531, 0.447004)`<br>
   are pretty close to analytical solution   
-</details>
 
 ## [Tutorial](https://github.com/SMLP-Systems/smlp/tree/master/tutorial)
 
