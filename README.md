@@ -1,13 +1,31 @@
-# SMLP -- Symbolic Machine Learning Prover
+# SMLP - Symbolic Machine Learning Prover
 
-<img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png"  alt="SMLP Overview" class="center" width="800" height="500">
-
-#### Success story: used at Intel for optimization of package/board layouts and signal integrity
-
-
-SMLP is a general purpose tool for verification and optimisation of systems modelled using machine learning.  
+SMLP is a general purpose tool for verification and optimisation of systems modelled using machine learning. </br>
 SMLP uses symbolic reasoning for ML model exploration and optimisation under verification and stability constraints.
 
+<img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png" alt="SMLP Overview" class="center" width="750" height="500">
+
+
+### Industry adoption: used at Intel in production for optimization of package/board layouts and signal integrity
+
+<details>
+<summary> SMLP applications in Intel and why stability is important  </summary><br>
+
+SMLP has been successfully used at Intel to optimize package and board layouts under noisy, real‑world signal‑integrity data collected in the lab. 
+Because this data is inherently noisy—and because ML models are often intentionally approximate to avoid overfitting—robustness is essential when searching for reliable optimal solutions. 
+SMLP addresses this through its notion of stability, ensuring that selected optima remain valid under data and model uncertainty.
+In most cases the stability radius (*) is actually as large
+as 10% of the value of the variable in the configuration.
+This is because the sampling error from analog equipment
+can be dependent on the intended value itself.
+  
+ [(*)](https://ece.technion.ac.il/wp-content/uploads/2021/01/publication_617-1.pdf) The smallest perturbation 
+ (measured by a norm, e.g., Chebyshev) that makes an optimal solution either non-optimal or infeasible. 
+
+</details><br>
+
+
+**[Combination of robustness and formal assurance of results validity](https://korovin.gitlab.io/pub/fmcad_bkk_2020.pdf) is a distinctive strength of SMLP, not found in other optimization or model‑analysis tools.**
 
 SMLP modes:
 
@@ -35,7 +53,9 @@ SMLP supports:
  - stability constraints
  - parameter optimization
 
+<p align="center">
 <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_arch.png"  alt="SMLP Arch" class="center" width="800" height="500">
+</p>
 
 Papers:
 * SMLP: Symbolic Machine Learning Prover, (CAV'24) [[pdf]](https://link.springer.com/content/pdf/10.1007/978-3-031-65627-9_11.pdf) [[bib]](https://dblp.org/rec/conf/cav/BrausseKK24.html?view=bibtex)
@@ -219,6 +239,9 @@ tests/install/test_container_install mdmitry1/python311-dev
 ### Coming soon:
 <details>
 <summary> NLP, LLM, Agentic</summary>
+
+Current development is in PR [#21](https://github.com/SMLP-Systems/smlp/pull/21)  </br>
+See [Extended Manual](https://raw.githubusercontent.com/SMLP-Systems/smlp/nlp_text.rebased/doc/smlp_manual_extended.pdf) for details.
 
 NLP:
  - NLP based text classification. Applicable to spam detection, sentiment analysis, and more.
