@@ -239,7 +239,7 @@ f(x*) = 6 - 2√5 ≈ 1.527864`, where `x* = (2/√5,1/√5) ≈ (0.894427, 0.44
     SMLP creates polynomial model and finds approximate solution<br>
   - Step 3: Comparison to expected SMLP results<br>
   SMLP results
-  `f(x*) = 1.527865, x* = (2/√5,1/√5) ≈ (0.894531, 0.447004)`<br>
+  `f(x*) = 1.527865, x* = (0.894531, 0.447004)`<br>
   are pretty close to analytical solution   
 
 Running the script:
