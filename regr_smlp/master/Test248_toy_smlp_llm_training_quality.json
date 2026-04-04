@@ -1,0 +1,20 @@
+{
+  "summary": {
+    "num_examples": 1,
+    "num_valid": 1,
+    "grounded_rate": 1.0,
+    "grounded_none_count": 0,
+    "hallucination_rate": 0.0,
+    "hallucination_none_count": 0,
+    "avg_score": 5.0
+  },
+  "details": [
+    {
+      "grounded": true,
+      "hallucination": false,
+      "score": 5,
+      "explanation": "The answer accurately reflects the development team mentioned in the provided context without any fabrication or hallucination.",
+      "confidence": "high"
+    }
+  ]
+}

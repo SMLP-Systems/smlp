@@ -1,0 +1,18 @@
+{
+  "summary": {
+    "num_examples": 1,
+    "num_valid": 0,
+    "grounded_rate": null,
+    "hallucination_rate": null,
+    "avg_score": null
+  },
+  "details": [
+    {
+      "grounded": false,
+      "hallucination": false,
+      "score": null,
+      "explanation": "The response begins with '!' without providing any relevant context, thus failing to meet the criteria for being grounded.",
+      "confidence": "high"
+    }
+  ]
+}

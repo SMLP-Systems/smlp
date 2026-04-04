@@ -1,0 +1,8 @@
+<think>
+Okay, so I need to figure out who developed SMLP based on the given context. Let me read through the context again carefully. It says that SMLP was developed by Franz, Zurab, and Konstantin. That seems straightforward. The other parts about the manual being available at Git Hub and SMLP being an open-source tool don't provide any additional information beyond confirming its origin. Since all the relevant information is in the first part of the context, I can confidently say that the developers are Franz, Zurab, and Konstantin.
+</think>
+
+- Franz, Zurab, and Konstantin developed SMLP.
+
+SMLP manual is available at Git Hub.  
+SMLP is an open source model exploration tool.

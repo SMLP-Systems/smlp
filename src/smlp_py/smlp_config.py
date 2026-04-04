@@ -10,9 +10,11 @@ class SmlpConfig:
         self.report_file_prefix = None
         self.model_file_prefix = None
         self.model_rerun_config = None
+        self.wordvec_file_prefix = None
         self.config = None
         
         self._DEF_LABELED_DATA = None
+        self._DEF_TEXT_DATA = None
         self._DEF_ANALYTICS_MODE = None #'train'
         self._DEF_SAVE_CONFIGURATION = False
         self._DEF_LOG_FILE_PREFIX = None
@@ -22,9 +24,15 @@ class SmlpConfig:
         self._DEF_LOAD_CONFIGURATION = None
         
         self.config_params_dict = {
-            'labeled_data': {'abbr':'data', 'default':self._DEF_LABELED_DATA, 'type':str, 
+            'labeled_data': {'abbr':'data', 'default':self._DEF_LABELED_DATA, 'type':str,
                 'help':'Path, possibly excluding the .csv, or including gz or bz2 suffix, to input ' +
                     ' training data file containing labels [default {}]'.format(str(self._DEF_LABELED_DATA))},
+            'text_data': {'abbr':'text', 'default':self._DEF_TEXT_DATA, 'type':str,
+                'help':'Path to input training text data file for finetune and RAG modes. ' +
+                    "In finetune mode, the expected structure varies by task: the text-generation task requires " +
+                    "and the BERT-style QA requires 'question', 'context', 'answer' fields. " +
+                    "In RAG mode: PDF for LangChain based RAG, and PDF/JSON/CSV for HuggingFace based RAG. " +
+                    '[default {}]'.format(str(self._DEF_TEXT_DATA))},
             'analytics_mode': {'abbr':'mode', 'default':self._DEF_ANALYTICS_MODE, 'type':str, 
                 'help':'What kind of analysis should be performed; the supported modes are: '+
                     '"train", "predict", "subgroups", "doe", "discretize", "optimize", "verify", "query", "optsyn" ' +
@@ -62,7 +70,7 @@ class SmlpConfig:
     # prohibited combination is caught if it occurs.
     def args_get_report_name_prefix(self, data_file_prefix:str, run_prefix:str, output_directory:str=None, 
             new_data_file_prefix:str=None, model_name:str=None, save_model:bool=None, use_model:bool=None, 
-            doe_spec_file_prefix=None):
+            doe_spec_file_prefix=None, text_file_prefix=None, wordvec_model=None):
         
         if use_model:
             assert model_name is not None
@@ -87,10 +95,17 @@ class SmlpConfig:
         else:
             doe_spec_dir, doe_spec_name_prefix = None, None
         
+        if not text_file_prefix is None:
+            text_dir, text_name_prefix = os.path.split(text_file_prefix)
+        else:
+            text_dir, text_name_prefix = None, None
+
         out_dir = output_directory
         if out_dir is None:
             if not data_dir is None:
                 out_dir = data_dir
+            elif not text_dir is None:
+                out_dir = text_dir
             elif not model_dir is None:
                 out_dir = model_dir
             elif not doe_spec_dir is None:
@@ -102,6 +117,9 @@ class SmlpConfig:
             input_data_name_prefix = data_name_prefix.removesuffix('.bz2')
             input_data_name_prefix = input_data_name_prefix.removesuffix('.gz')
             input_data_name_prefix = input_data_name_prefix.removesuffix('.csv')
+        elif text_name_prefix is not None:
+            input_data_name_prefix = text_name_prefix.removesuffix('.json').\
+                removesuffix('.jsonl').removesuffix('.txt').removesuffix('.pdf').removesuffix('.csv')
         elif doe_spec_name_prefix is not None:
             input_data_name_prefix = doe_spec_name_prefix.removesuffix('.csv')
         else:
@@ -110,7 +128,7 @@ class SmlpConfig:
 
         # Update save_model_name_prefix so it becomes the prefix for all files generated when saving a trained model.
         if model_name is None:
-            assert not (data_name_prefix is None and doe_spec_dir is None)
+            assert not (data_name_prefix is None and doe_spec_dir is None and text_name_prefix is None)
             save_model_name_prefix = os.path.join(out_dir, run_prefix + '_' + input_data_name_prefix)
         else:
             save_model_name_prefix = os.path.join(out_dir, model_name)
@@ -130,13 +148,21 @@ class SmlpConfig:
             new_data_file_prefix = new_data_file_prefix.removesuffix('.csv')
             _, new_data_fname = os.path.split(new_data_file_prefix)
             report_name_prefix = report_name_prefix + '_' + new_data_fname
+
+        # name of word vector embedding model -- user-trained or pre-trained
+        if wordvec_model is None:
+            wordvec_name_prefix = None
+        else:
+            _, wordvec_name = os.path.split(wordvec_model)
+            wordvec_name_prefix = os.path.join(out_dir, wordvec_name)
             
         if use_model:
             model_name_prefix = load_model_name_prefix
         else:
             model_name_prefix = save_model_name_prefix
         
-        return report_name_prefix, model_name_prefix
+        return report_name_prefix, model_name_prefix, wordvec_name_prefix
+
 
     # args parser to which some of the arguments are added explicitly in a regular way
     # and in addition it adds additional arguments from args_dict defined elsewhere;
@@ -153,6 +179,7 @@ class SmlpConfig:
             else:
                 parser.add_argument('-'+v['abbr'], '--'+p, type=v['type'], help=v['help'])
 
+        # Initial parse; required here to access args.load_configuration
         args = parser.parse_args(argv[1:])
 
         # support for loading parameters from configuration file
@@ -166,10 +193,11 @@ class SmlpConfig:
         assert not (args.use_model and args.save_model), \
             "Saving model should be disabled when a saved model is used"
         
-        # compute and save report_file_prefix and model_file_prefix as part of self
-        self.report_file_prefix, self.model_file_prefix = self.args_get_report_name_prefix(args.labeled_data,
-            args.log_files_prefix, args.output_directory, args.new_data, args.model_name, args.save_model,
-            args.use_model, args.doe_spec_file)
+        # Compute and save report_file_prefix, model_file_prefix and wordvec_file_prefix as part of self
+        self.report_file_prefix, self.model_file_prefix, self.wordvec_file_prefix = \
+            self.args_get_report_name_prefix(args.labeled_data, args.log_files_prefix,
+                args.output_directory, args.new_data, args.model_name, args.save_model,
+                args.use_model, args.doe_spec_file, args.text_data, args.wordvec_model)
         
         # Save tool configuration and model rerun configuration
         if args.save_configuration:
@@ -201,4 +229,3 @@ class SmlpConfig:
             self.model_rerun_config = model_args
         
         return args
-    

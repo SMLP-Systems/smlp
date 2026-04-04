@@ -1,0 +1,19 @@
+{
+  "summary": {
+    "num_examples": 1,
+    "num_valid": 0,
+    "grounded_rate": null,
+    "hallucination_rate": null,
+    "avg_score": null
+  },
+  "details": [
+    {
+      "grounded": null,
+      "hallucination": null,
+      "score": null,
+      "explanation": "Judge parsing failed: No valid JSON found in judge output. Output preview: Franz, Zurab, and Konstantin",
+      "raw_output": "Franz, Zurab, and Konstantin",
+      "confidence": "high"
+    }
+  ]
+}

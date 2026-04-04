@@ -1,0 +1,15 @@
+*.d
+*.ipynb*
+
+/regr_smlp/code/Test*.*
+/regr_smlp/code/test*.*
+/regr_smlp/code/__pycache__/
+/regr_smlp/code/all_log.txt
+/regr_smlp/code/logs.log
+
+# RL Agent runtime files
+src/smlp_last_run.log
+src/smlp_rl_feedback.jsonl
+src/demo_feedback.jsonl
+src/smlp_rl_checkpoints/
+src/demo_checkpoints/

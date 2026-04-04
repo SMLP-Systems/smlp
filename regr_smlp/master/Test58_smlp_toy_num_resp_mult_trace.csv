@@ -1,0 +1,65 @@
+stage,solver,p1,p2,x,y1,y2
+interface_consistency,sat,7,3,0
+model_consistency,sat,7,3,0,5,9
+synthesis_feasibility
+synthesis,synthesis_feasibility
+ca,sat,2,3,0,5,9
+ce,unsat
+single_objective_u0_l0_u_l, objv_y1 : 9.0 : 5.0 : inf : -inf
+objective_thresholds_u0_l0_u_l_T, 13.0 : 5.0 : inf : -inf : 9.0
+synthesis,objv_y1_9.0
+ca,sat,7,7,0,9,9
+ce,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : inf : 9.0 : 13.0
+synthesis,objv_y1_13.0
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 13.0 : 9.0 : 11.0
+synthesis,objv_y1_11.0
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 11.0 : 9.0 : 10.0
+synthesis,objv_y1_10.0
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 10.0 : 9.0 : 9.5
+synthesis,objv_y1_9.5
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 9.5 : 9.0 : 9.25
+synthesis,objv_y1_9.25
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 9.25 : 9.0 : 9.125
+synthesis,objv_y1_9.125
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 9.125 : 9.0 : 9.0625
+synthesis,objv_y1_9.0625
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 9.0625 : 9.0 : 9.03125
+synthesis,objv_y1_9.03125
+ca,unsat
+single_objective_u0_l0_u_l, objv_y2 : 9.0 : 5.0 : inf : -inf
+objective_thresholds_u0_l0_u_l_T, 13.0 : 5.0 : inf : -inf : 9.0
+synthesis,objv_y2_9.0
+ca,sat,7,3,0,5,9
+ce,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : inf : 9.0 : 13.0
+synthesis,objv_y2_13.0
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 13.0 : 9.0 : 11.0
+synthesis,objv_y2_11.0
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 11.0 : 9.0 : 10.0
+synthesis,objv_y2_10.0
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 10.0 : 9.0 : 9.5
+synthesis,objv_y2_9.5
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 9.5 : 9.0 : 9.25
+synthesis,objv_y2_9.25
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 9.25 : 9.0 : 9.125
+synthesis,objv_y2_9.125
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 9.125 : 9.0 : 9.0625
+synthesis,objv_y2_9.0625
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 21.0 : 5.0 : 9.0625 : 9.0 : 9.03125
+synthesis,objv_y2_9.03125
+ca,unsat

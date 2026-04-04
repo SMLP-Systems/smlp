@@ -1,0 +1,30 @@
+
+smlp_logger - INFO - Executing run_smlp.py script: Start
+
+smlp_logger - INFO - Running SMLP in mode "finetune": Start
+
+smlp_logger - INFO - Running fine-tuning.
+
+smlp_logger - INFO - Starting fine-tuning: model=bert-base-uncased, task=qa
+
+smlp_logger - INFO - Loading finetune dataset ../texts/finetune_qa_with_context.json
+
+smlp_logger - INFO - Dataset loaded.
+
+smlp_logger - INFO - Training started...
+
+smlp_logger - INFO - Training finished. Model saved to ./test253_model
+
+smlp_logger - INFO - Running model generation (inference).
+
+smlp_logger - INFO - Question: What is SMLP?
+
+smlp_logger - INFO - Context: SMLP is a tool for Machine Learning model exploration. The model exploration capabilities include configuration optimization, verification of assertions, configuration synthesis to satisfy configuratin constraints, querying the ML model, and root-cause analysis. NLP and LLM analysis capabilities are also supported.
+
+smlp_logger - INFO - Model Output: configuration synthesis
+
+smlp_logger - INFO - Saving generated text into ./Test253_finetune_qa_with_context_finetuned_generated.txt
+
+smlp_logger - INFO - Running SMLP in mode "finetune": End
+
+smlp_logger - INFO - Executing run_smlp.py script: End

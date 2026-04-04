@@ -1,0 +1,11 @@
+<think>
+Okay, so I need to figure out who developed the SMLP tool. The question is straightforward: "Who developed SMLP?" 
+
+Looking at the context provided, it says that SMLP was developed by Franz, Zurab, and Konstantin. That's pretty direct. There are other details about the paper being published in CAV 2025 and the manual being available on Git Hub, but those don't provide information about who developed the tool itself.
+
+I should focus only on the first part of the context because that's where the developers' names are listed. The other parts are probably additional information about the tool, like its publication details or availability, which might be useful for understanding how it's used or referenced elsewhere but don't affect the answer to who developed it.
+
+So, putting it all together, the developers are Franz, Zurab, and Konstantin. I don't need any other information from the context because that doesn't change the fact that those three are responsible for SMLP.
+</think>
+
+Franz, Zurab, and Konstantin developed SMLP.
