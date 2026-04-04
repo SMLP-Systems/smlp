@@ -242,6 +242,12 @@ f(x*) = 6 - 2√5 ≈ 1.527864`, where `x* = (2/√5,1/√5) ≈ (0.894427, 0.44
   `f(x*) = 1.527865, x* = (2/√5,1/√5) ≈ (0.894531, 0.447004)`<br>
   are pretty close to analytical solution   
 
+Running the script:
+```bash
+smlp_package_path=$(python3.11 -c 'import smlp; from os.path import dirname; print(dirname(smlp.__file__))')
+$smlp_package_path/quickstart/quickstart.sh
+```
+
 ## [Tutorial](https://github.com/SMLP-Systems/smlp/tree/master/tutorial)
 
    - Black-box optimization Eggholder Function

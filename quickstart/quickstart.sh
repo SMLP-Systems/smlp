@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
 script_path="$(dirname "$(realpath "$0")")"
 name=Constraint_dora
-log=${name}.log
-dataset=${name}.csv.gz
 if [[ $# -gt 0 ]]; then
     if [[ "-clean" == "$1" ]]; then
-        rm -f $dataset 2>/dev/null
-        rm -f ${name}* *.log 2>/dev/null
+        rm -rf ${name}_results_* 2>/dev/null
         exit 0
     fi
 fi
+results_dir=${name}_results_$(date +%s)
+rm -rf $results_dir  2>/dev/null
+mkdir -p $results_dir
+echo "Working directory: $(realpath $results_dir)"
+cd  $results_dir
+log=${name}.log
+dataset=${name}.csv.gz
 name_lc="$(echo "$name" | tr '[:upper:]' '[:lower:]')"
-"${script_path}/${name_lc}_dataset.py" -timeout 5 #Create dataset and visualize the problem
+"${script_path}/${name_lc}_dataset.py" #Create dataset and visualize the problem
 results=${name}_poly_optimization_results.txt
 rm -f "$results" 2>/dev/null
 smlp_args=(
