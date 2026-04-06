@@ -50,4 +50,4 @@ exclude = ["*"]
 # BOOST_CACHE_DIR  Where to cache compiled Boost (default: ~/.local/boost_py313).
 # BOOST_VERSION    Boost version to download (default: 1.83.0).
 # KAY_DIR          Path to an existing kay checkout.
-# SMLP_BRANCH      Git branch to use in the smlp repo (auto-detected if unset).
+# Z3_PREFIX        Path to existing installation of Z3.
