@@ -49,5 +49,6 @@ exclude = ["*"]
 #                  e.g.  export BOOST_ROOT=~/.local/boost_py313
 # BOOST_CACHE_DIR  Where to cache compiled Boost (default: ~/.local/boost_py313).
 # BOOST_VERSION    Boost version to download (default: 1.83.0).
+# GMP_ROOT         Path to prefix of an existing GMP installation.
 # KAY_DIR          Path to an existing kay checkout.
 # Z3_PREFIX        Path to existing installation of Z3.
