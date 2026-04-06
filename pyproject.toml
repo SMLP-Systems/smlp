@@ -40,7 +40,6 @@ dependencies = [
     "scikit-learn==1.4.2",
     "scipy",
     "seaborn",
-    "z3-solver==4.8.12",
     "tensorflow==2.15.1",
 ]
 
