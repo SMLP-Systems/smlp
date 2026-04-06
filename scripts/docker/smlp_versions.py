@@ -12,6 +12,13 @@ def add_arguments() -> ArgumentParser:
     p.add_argument('--latest',  '-l', default=None, action='store_true')
     return p
 
+def get_release_files(package: str, version: str, test_version: bool = False) -> list:
+    url = f"https://test.pypi.org/pypi/{package}/{version}/json" if test_version \
+                                                                else f"https://pypi.org/pypi/{package}/{version}/json" 
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.json()["urls"]  # list of file dicts
+
 def smlp_versions(args: Namespace) -> int:
     script_name = basename(realpath(argv[0]))
     try:
@@ -26,7 +33,8 @@ def smlp_versions(args: Namespace) -> int:
             print(selected_versions[-1])
         else:
             for v in selected_versions:
-                print(v)
+                if len(get_release_files("smlptech", v, args.test)) > 0:
+                    print(v)
 
     except Exception as err:
         print(f"\n{script_name}: ERROR: {err}\n")
