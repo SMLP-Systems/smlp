@@ -607,9 +607,7 @@ def _z3_prefix() -> tuple[Path,Path]:
 
     sys.exit(
         f"[smlp build] ERROR: libz3.so not found at {lib_dir}.\n"
-        "Install z3-solver with: python3.11 -m pip install --user z3-solver\n"
-        "Or set Z3_PREFIX to your z3 package directory, e.g.:\n"
-        "  export Z3_PREFIX=~/.local/lib/python3.11/site-packages/z3"
+        "Install z3 and set Z3_PREFIX to your z3 install prefix directory."
     )
 
 
