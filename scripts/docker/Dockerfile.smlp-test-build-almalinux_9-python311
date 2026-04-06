@@ -46,6 +46,7 @@ RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 && \
 # ---------------------------------------------------------------------------
 ARG CACHE_BUST_SMLP
 ARG GIT_BRANCH=master
+ARG RELEASE_TYPE
 RUN echo "Building image for branch: $GIT_BRANCH"
 COPY run_git_clone .
 RUN cd /app && ./run_git_clone $GIT_BRANCH
