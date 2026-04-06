@@ -42,9 +42,8 @@ GMP_ROOT         Point at an existing GMP prefix – skips all detection.
                  Source compilation is only attempted as a last resort.
 GMP_CACHE_DIR    Where to cache a source-compiled GMP (default: ~/.local/gmp).
 GMP_VERSION      GMP version to download if source build is needed (default: 6.3.0).
-Z3_PREFIX        Reuse an existing Z3 install prefix – skips pip z3-solver.
+Z3_PREFIX        Reuse an existing Z3 install prefix.
                  e.g.  export Z3_PREFIX=~/.local/z3
-Z3_VERSION       Z3 version to download binary for (default: 4.8.12).
 """
 
 import os
@@ -81,8 +80,6 @@ GMP_VERSION   = os.environ.get("GMP_VERSION", "6.3.0")
 GMP_CACHE_DIR = Path(
     os.environ.get("GMP_CACHE_DIR", Path.home() / ".local" / "gmp")
 ).expanduser()
-
-Z3_VERSION    = os.environ.get("Z3_VERSION", "4.8.12")
 
 # Root of this repository (where setup.py lives)
 REPO_ROOT = Path(__file__).parent.resolve()
