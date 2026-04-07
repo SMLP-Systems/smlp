@@ -265,7 +265,7 @@ $smlp_package_path/quickstart/quickstart.sh
    X1 - first controllable variable<br>
    X2 - second controlllable variable<br>
    Y1 - output function<br>
-   rad-abs: sensitivity radius. Zero radius means that solution sensitivity check is skipped
+   rad-abs: sensitivity radius. Zero radius means that solution sensitivity check is skipped<br>
    alpha - constraint depending on controllable variables<br>
    objective1 - optimization goal<br><br>
    <b>2. SMLP command line arguments</b><br><br>
