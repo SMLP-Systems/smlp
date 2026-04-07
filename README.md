@@ -249,7 +249,7 @@ $smlp_package_path/quickstart/quickstart.sh
 ```
 <details>
  <summary><b>Test case description</b></summary>
-   <b>1. <i>constraint_dora.json</i> - spec in json format</b><br><br>
+   <br><b>1. <i>constraint_dora.json</i> - spec in json format</b><br><br>
 {<br>
   "version": "1.2",<br>
   "variables": [
@@ -265,9 +265,10 @@ $smlp_package_path/quickstart/quickstart.sh
    X1 - first controllable variable<br>
    X2 - second controlllable variable<br>
    Y1 - output function<br>
+   rad-abs: sensitivity radius. Zero radius means that solution sensitivity check is skipped
    alpha - constraint depending on controllable variables<br>
    objective1 - optimization goal<br><br>
-   <b>2.SMLP command line arguments</b><br><br>
+   <b>2. SMLP command line arguments</b><br><br>
     -data ${name}.csv.gz   # input CSV dataset<br>
     -spec ${script_path}/${name_lc}.json  # JSON spec file<br>
     -pref ${name}          # output file prefix<br>
