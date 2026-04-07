@@ -247,6 +247,66 @@ Running the script:
 smlp_package_path=$(python3.11 -c 'import smlp; from os.path import dirname; print(dirname(smlp.__file__))')
 $smlp_package_path/quickstart/quickstart.sh
 ```
+<details>
+ <summary><b>Test case description</b></summary>
+   <b>1. <i>constraint_dora.json</i> - spec in json format</b><br><br>
+{<br>
+  "version": "1.2",<br>
+  "variables": [
+    {"label":"X1", "interface":"knob", "type":"real", "range":[-1.5,2.5], "rad-abs": 0.0},<br>
+    {"label":"X2", "interface":"knob", "type":"real", "range":[-1.5,2.0], "rad-abs": 0.0},<br>
+    {"label":"Y1", "interface":"output", "type":"real"}
+  ],<br>
+  "alpha": "X1*X1+X2*X2<=1",<br>
+  "objectives": {"objective1": "-Y1"}<br>
+}<br>
+<br>
+   <u>Legend:</u><br> 
+   X1 - first controllable variable<br>
+   X2 - second controlllable variable<br>
+   Y1 - output function<br>
+   alpha - constraint depending on controllable variables<br>
+   objective1 - optimization goal<br><br>
+   <b>2.SMLP command line arguments</b><br><br>
+    -data ${name}.csv.gz   # input CSV dataset<br>
+    -spec ${script_path}/${name_lc}.json  # JSON spec file<br>
+    -pref ${name}          # output file prefix<br>
+    -mode optimize         # operation mode<br>
+    -model poly_sklearn    # model type<br>
+    -epsilon 0.0000005     # convergence threshold<br>
+</details>
+
+### Problem modification in the user area
+
+- Step 1: Copy the problem to the current directory and enter problem work area<br>
+```bash
+smlp_package_path=$(python3.11 -c 'import smlp; from os.path import dirname; print(dirname(smlp.__file__))')
+\cp -rp $smlp_package_path/quickstart .
+cd quickstart
+```
+- Step 2: As an example, change constraint in order to get solution in rational numbers<br>
+  Let's change circle radius to 2/√5, so squared radius will be 4/5<br>
+  In order to do this, edit `constraint_dora.json` file and change right side of the inequality to be 4/5:<br>
+    `"alpha": "X1*X1+X2*X2<=4/5",`
+- Step 3: Run the script from current directory
+```bash
+./quickstart.sh
+```
+Expected result:
+```bash 
+Working directory: <current_directory_realpath>/quickstart/Constraint_dora_results_<timestamp>
+X1 = 0.800048828125
+X2 = 0.3999021053314209
+Y1 = 1.8000002980730385
+1,3c1,3
+< X1 = 0.800048828125
+< X2 = 0.3999021053314209
+< Y1 = 1.8000002980730385
+---
+> X1 = 0.89453125
+> X2 = 0.4470043182373047
+> Y1 = 1.5278653812779421
+```
 
 ## [Tutorial](https://github.com/SMLP-Systems/smlp/tree/master/tutorial)
 
