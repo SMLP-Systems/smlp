@@ -12,6 +12,7 @@ RUN zypper refresh && zypper install -y \
         glibc-locale-base \
         glibc-i18ndata \
         gzip \
+        hostname \
         tar \
         tcsh \
         timezone \
