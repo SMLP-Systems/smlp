@@ -42,10 +42,8 @@ GMP_ROOT         Point at an existing GMP prefix – skips all detection.
                  Source compilation is only attempted as a last resort.
 GMP_CACHE_DIR    Where to cache a source-compiled GMP (default: ~/.local/gmp).
 GMP_VERSION      GMP version to download if source build is needed (default: 6.3.0).
-Z3_PREFIX        Reuse an existing Z3 install prefix – skips pip z3-solver.
+Z3_PREFIX        Reuse an existing Z3 install prefix.
                  e.g.  export Z3_PREFIX=~/.local/z3
-Z3_VERSION       Z3 version to download binary for (default: 4.8.12).
-Z3_BIN_DIR       Path to directory containing z3 binary (default: ~/.local/z3/bin).
 """
 
 import os
@@ -81,11 +79,6 @@ Z3_DEFAULT_PREFIX = (
 GMP_VERSION   = os.environ.get("GMP_VERSION", "6.3.0")
 GMP_CACHE_DIR = Path(
     os.environ.get("GMP_CACHE_DIR", Path.home() / ".local" / "gmp")
-).expanduser()
-
-Z3_VERSION    = os.environ.get("Z3_VERSION", "4.8.12")
-Z3_BIN_DIR    = Path(
-    os.environ.get("Z3_BIN_DIR", Path.home() / ".local" / "z3" / "bin")
 ).expanduser()
 
 # Root of this repository (where setup.py lives)
@@ -286,11 +279,6 @@ def _add_z3_to_env(env: dict, z3_lib: Path) -> dict:
 
     existing_pkg = env.get("PKG_CONFIG_PATH", "")
     env["PKG_CONFIG_PATH"] = f"{z3_lib}:{existing_pkg}" if existing_pkg else str(z3_lib)
-
-    # Add z3 binary to PATH so meson can find the solver executable
-    z3_bin = z3_lib.parent / "bin"
-    existing_path = env.get("PATH", os.environ.get("PATH", ""))
-    env["PATH"] = f"{z3_bin}:{existing_path}" if existing_path else str(z3_bin)
 
     return env
 
@@ -556,72 +544,6 @@ def _gmp_prefix() -> Path:
 # Step 1b – Z3 (via pip z3-solver, no sudo)
 # ---------------------------------------------------------------------------
 
-# ---------------------------------------------------------------------------
-# Step 1d – Z3 binary (downloaded from GitHub releases)
-# ---------------------------------------------------------------------------
-
-def _z3_binary() -> Path:
-    """
-    Return the path to the z3 executable.
-
-    Search order:
-      1. Z3_BIN_DIR env var / constant   (~/.local/z3/bin/z3)
-      2. ~/.local/bin/z3                 (pip install --user z3-solver installs it here)
-      3. System z3 on PATH               (sudo apt install z3)
-      4. Download pre-built from GitHub  (no sudo fallback)
-    """
-    from shutil import which
-
-    # ── 1. Explicit Z3_BIN_DIR ────────────────────────────────────────────
-    if Z3_BIN_DIR.exists() and (Z3_BIN_DIR / "z3").exists():
-        print(f"[smlp build] Using z3 binary from Z3_BIN_DIR: {Z3_BIN_DIR / 'z3'}")
-        return Z3_BIN_DIR / "z3"
-
-    # ── 2. ~/.local/bin/z3 ───────────────────────────────────────────────
-    user_z3 = Path.home() / ".local" / "bin" / "z3"
-    if user_z3.exists():
-        print(f"[smlp build] Using user z3 binary: {user_z3}")
-        return user_z3
-
-    # ── 3. PATH ───────────────────────────────────────────────────────────
-    system_z3 = which("z3")
-    if system_z3:
-        print(f"[smlp build] Using system z3: {system_z3}")
-        return Path(system_z3)
-
-    # ── 4. Download pre-built binary from GitHub releases ─────────────────
-    import platform as _platform
-    machine = _platform.machine()
-    arch_map = {"x86_64": "x64", "aarch64": "arm64"}
-    arch = arch_map.get(machine, machine)
-    z3_release = f"z3-{Z3_VERSION}-{arch}-glibc-2.31"
-    url = (
-        f"https://github.com/Z3Prover/z3/releases/download/z3-{Z3_VERSION}/"
-        f"{z3_release}.zip"
-    )
-
-    tmp_dir = Z3_BIN_DIR.parent.parent / "_z3_build_tmp"
-    tmp_dir.mkdir(parents=True, exist_ok=True)
-    zip_path = tmp_dir / f"{z3_release}.zip"
-
-    print(f"[smlp build] Downloading z3 binary {Z3_VERSION} ...")
-    _download(url, zip_path)
-
-    import zipfile, shutil as _shutil
-    print(f"[smlp build] Extracting z3 binary ...")
-    with zipfile.ZipFile(zip_path) as zf:
-        zf.extractall(tmp_dir)
-
-    Z3_BIN_DIR.mkdir(parents=True, exist_ok=True)
-    src_bin = tmp_dir / z3_release / "bin" / "z3"
-    _shutil.copy2(src_bin, Z3_BIN_DIR / "z3")
-    (Z3_BIN_DIR / "z3").chmod(0o755)
-    _shutil.rmtree(tmp_dir, ignore_errors=True)
-
-    print(f"[smlp build] z3 binary installed at {Z3_BIN_DIR / 'z3'}")
-    return Z3_BIN_DIR / "z3"
-
-
 def _write_z3_pc(z3_lib: Path) -> Path:
     """
     Write a z3.pc pkg-config file into <z3_lib>/pkgconfig/.
@@ -673,7 +595,7 @@ def _z3_prefix() -> tuple[Path,Path]:
     """
     env_prefix = os.environ.get("Z3_PREFIX", f"/usr/lib/{platform.machine()}-{platform.system().lower()}-gnu")
     prefix = Path(env_prefix).expanduser() if env_prefix else Z3_DEFAULT_PREFIX
-    lib_dir = prefix
+    lib_dir = prefix/'lib'
 
     print(f"[smlp build] Looking for libz3.so in: {lib_dir}")
 
@@ -685,13 +607,11 @@ def _z3_prefix() -> tuple[Path,Path]:
 
     sys.exit(
         f"[smlp build] ERROR: libz3.so not found at {lib_dir}.\n"
-        "Install z3-solver with: python3.11 -m pip install --user z3-solver\n"
-        "Or set Z3_PREFIX to your z3 package directory, e.g.:\n"
-        "  export Z3_PREFIX=~/.local/lib/python3.11/site-packages/z3"
+        "Install z3 and set Z3_PREFIX to your z3 install prefix directory."
     )
 
 
-def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path, z3_bin: Path, z3_pc_dir: Path, build_tmp: Path, stub_dir: Path = None) -> Path:
+def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path, z3_pc_dir: Path, build_tmp: Path, stub_dir: Path = None) -> Path:
     """
     Write a Meson native file that points to the user-space Boost install.
     This is the most reliable way to pass non-standard library paths to Meson —
@@ -718,7 +638,6 @@ def _write_native_file(boost_prefix: Path, gmp_prefix: Path, z3_lib: Path, z3_bi
         f"python = '{sys.executable}'\n"
         f"python3 = '{sys.executable}'\n"
         f"pkg-config = 'pkg-config'\n"
-        f"z3 = '{z3_bin}'\n"
         "\n"
         "[built-in options]\n"
         f"pkg_config_path = ['{gmp_lib / 'pkgconfig'}', '{boost_lib / 'pkgconfig'}', '{z3_pc_dir}']\n"
@@ -776,7 +695,6 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
         shutil.rmtree(meson_build_dir)
 
     z3_lib, z3_pc_dir  = _z3_prefix()
-    z3_bin         = _z3_binary()
     gmp_prefix     = _gmp_prefix()
     _create_python_stub_lib(build_tmp)
     env = _boost_env(boost_prefix)
@@ -793,7 +711,7 @@ def _meson_build(poly_dir: Path, kay_dir: Path,
     rpath_flags = ":".join(f"-Wl,-rpath,{d}" for d in rpath_dirs)
     existing_ldflags = env.get("LDFLAGS", "")
     env["LDFLAGS"] = f"{rpath_flags} {existing_ldflags}".strip()
-    native_file = _write_native_file(boost_prefix, gmp_prefix, z3_lib, z3_bin, z3_pc_dir, build_tmp)
+    native_file = _write_native_file(boost_prefix, gmp_prefix, z3_lib, z3_pc_dir, build_tmp)
 
     meson_flags = [
         "--wipe",
