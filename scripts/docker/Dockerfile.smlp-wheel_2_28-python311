@@ -34,7 +34,7 @@ ENV PATH="/root/.local/bin:${PATH}"
 # 5. Clone smlp and optionaly switch to branch
 # ---------------------------------------------------------------------------
 # Point setup.py to the correct z3 location for this Python installation
-ENV Z3_PREFIX=/opt/python/cp311-cp311/lib/python3.11/site-packages/z3/lib
+ENV Z3_PREFIX=/opt/python/cp311-cp311/lib/python3.11/site-packages/z3
 
 WORKDIR /app
 COPY run_git_clone .
