@@ -19,12 +19,26 @@ ENV PIP=/opt/python/cp311-cp311/bin/pip
 # ---------------------------------------------------------------------------
 RUN /opt/python/cp311-cp311/bin/pip install --upgrade pip && \
     /opt/python/cp311-cp311/bin/pip install setuptools==71.1.0 setuptools-scm && \
-    /opt/python/cp311-cp311/bin/pip install meson ninja z3-solver==4.8.12 auditwheel patchelf && \
+    /opt/python/cp311-cp311/bin/pip install meson ninja auditwheel patchelf && \
     ln -sf /opt/python/cp311-cp311/bin/python3.11 /usr/local/bin/python3.11 && \
     ln -sf /opt/python/cp311-cp311/bin/pip /usr/local/bin/pip3.11 && \
     ln -sf /opt/python/cp311-cp311/bin/meson /usr/local/bin/meson && \
     ln -sf /opt/python/cp311-cp311/bin/ninja /usr/local/bin/ninja
 
+# ---------------------------------------------------------------------------
+# 3.1 Build Z3 from source (for bundling)
+# ---------------------------------------------------------------------------
+WORKDIR /tmp
+
+RUN git clone https://github.com/Z3Prover/z3.git && \
+    cd z3 && \
+    ${PYTHON} scripts/mk_make.py \
+        --prefix=/usr/local/z3 \
+        --optimize && \
+    cd build && \
+    make -j$(nproc) && \
+    make install
+    
 # ---------------------------------------------------------------------------
 # 4. Add ~/.local/bin to PATH
 # ---------------------------------------------------------------------------
@@ -34,7 +48,8 @@ ENV PATH="/root/.local/bin:${PATH}"
 # 5. Clone smlp and optionaly switch to branch
 # ---------------------------------------------------------------------------
 # Point setup.py to the correct z3 location for this Python installation
-ENV Z3_PREFIX=/opt/python/cp311-cp311/lib/python3.11/site-packages/z3
+ENV Z3_PREFIX=/usr/local/z3
+ENV LD_LIBRARY_PATH=/usr/local/z3/lib:${LD_LIBRARY_PATH}
 
 WORKDIR /app
 COPY run_git_clone .
