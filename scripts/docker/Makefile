@@ -4,17 +4,24 @@ DOCKERFILE      := Dockerfile.$(IMAGE)
 
 GIT_BRANCH      := $(shell git branch --show-current)
 SMLP_COMMIT     := $(shell git ls-remote https://github.com/SMLP-Systems/smlp.git refs/heads/$(GIT_BRANCH) | cut -f1)
-
-WHEEL_SRC       := /app/smlp/dist/smlptech-1.2.0rc1-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+RELEASE_TYPE    ?=
 WHEEL_DST       := ../dist
+
+ifeq ($(RELEASE_TYPE),test)
+    RELEASE_BUILD_ARG := --build-arg RELEASE_TYPE=-test
+else
+    RELEASE_BUILD_ARG := --build-arg RELEASE_TYPE=
+endif
 
 define copy_out
 	@if [[ "$(IMAGE)" == smlp-wheel* ]]; then \
 		echo "Copying wheel from container image $(IMAGE)..."; \
 		mkdir -p $(WHEEL_DST); \
 		docker create --name smlp_tmp $(IMAGE); \
-		docker cp smlp_tmp:$(WHEEL_SRC) $(WHEEL_DST); \
+		docker cp smlp_tmp:/app/smlp/dist/. /tmp/smlp_dist_tmp; \
 		docker rm smlp_tmp; \
+                mv /tmp/smlp_dist_tmp/smlptech-*manylinux*.whl $(WHEEL_DST)/ ; \
+                rm -rf /tmp/smlp_dist_tmp; \
 	else \
 		echo "Skipping copy_out: IMAGE=$(IMAGE) does not start with 'smlp-wheel'"; \
 	fi
@@ -26,6 +33,7 @@ endef
 build: $(DOCKERFILE)
 	env DOCKER_BUILDKIT=1 docker build \
 		--build-arg GIT_BRANCH=$(GIT_BRANCH) \
+		$(RELEASE_BUILD_ARG) \
 		--progress=plain \
 		-f $(DOCKERFILE) \
 		-t $(IMAGE) \
@@ -36,6 +44,7 @@ rebuild_smlp: $(DOCKERFILE)
 	env DOCKER_BUILDKIT=1 docker build \
 		--build-arg CACHE_BUST_SMLP=$(SMLP_COMMIT) \
 		--build-arg GIT_BRANCH=$(GIT_BRANCH) \
+		$(RELEASE_BUILD_ARG) \
 		--progress=plain \
 		-f $(DOCKERFILE) \
 		-t $(IMAGE) \
@@ -46,6 +55,7 @@ clean_build: $(DOCKERFILE)
 	env DOCKER_BUILDKIT=1 docker build \
 		--no-cache \
 		--build-arg GIT_BRANCH=$(GIT_BRANCH) \
+		$(RELEASE_BUILD_ARG) \
 		--progress=plain \
 		-f $(DOCKERFILE) \
 		-t $(IMAGE) \
