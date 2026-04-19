@@ -1,11 +1,14 @@
 [build-system]
 requires = [
     "setuptools>=68",
+    "setuptools_scm",
     "wheel",
     "meson",
     "ninja",
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
 
 [project]
 maintainers = [
@@ -15,7 +18,7 @@ maintainers = [
   {name = "Dmitry Messerman", email = "dmitry.messerman@gmail.com"}
 ]
 name = "smlptech"
-version = "1.1.1"
+dynamic = ["version"]
 description = "SMLP - The Symbolic Machine Learning Prover"
 readme = "README.md"
 requires-python = "==3.11.*"
