@@ -18,7 +18,7 @@ ENV PIP=/opt/python/cp311-cp311/bin/pip
 # 3. Python build tools
 # ---------------------------------------------------------------------------
 RUN /opt/python/cp311-cp311/bin/pip install --upgrade pip && \
-    /opt/python/cp311-cp311/bin/pip install setuptools==71.1.0 && \
+    /opt/python/cp311-cp311/bin/pip install setuptools==71.1.0 setuptools-scm && \
     /opt/python/cp311-cp311/bin/pip install meson ninja z3-solver==4.8.12 auditwheel patchelf && \
     ln -sf /opt/python/cp311-cp311/bin/python3.11 /usr/local/bin/python3.11 && \
     ln -sf /opt/python/cp311-cp311/bin/pip /usr/local/bin/pip3.11 && \
