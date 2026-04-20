@@ -19,8 +19,6 @@ ENV PIP=/opt/python/cp311-cp311/bin/pip
 # --------------------------------------------------------------------------
 RUN /opt/python/cp311-cp311/bin/pip install --upgrade pip && \
     /opt/python/cp311-cp311/bin/pip install \
-        setuptools==71.1.0 \
-        setuptools-scm \
         auditwheel \
         patchelf && \
     ln -sf /opt/python/cp311-cp311/bin/python3.11 /usr/local/bin/python3.11 && \
@@ -40,7 +38,6 @@ ENV LD_LIBRARY_PATH=${Z3_PREFIX}/lib:${LD_LIBRARY_PATH}
 # 3.1 Build Z3 from source (for bundling)
 # ---------------------------------------------------------------------------
 WORKDIR /tmp
-
 RUN git clone --branch ${Z3_VERSION} \
         https://github.com/Z3Prover/z3.git ${Z3_SRC_DIR} && \
     cd ${Z3_SRC_DIR} && \
@@ -51,7 +48,6 @@ RUN git clone --branch ${Z3_VERSION} \
     make -j$(nproc) && \
     make install && \
     rm -rf ${Z3_SRC_DIR}
-
 RUN ${Z3_PREFIX}/bin/z3 --version
 
 # ---------------------------------------------------------------------------
