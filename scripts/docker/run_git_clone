@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
+set -e
+
+GIT_REF="${1:-master}"
+
 git clone https://github.com/SMLP-Systems/smlp
-GIT_BRANCH=$1
 cd smlp
-if [ $(git branch -r --list origin/$GIT_BRANCH) ]; then
-    git switch $GIT_BRANCH
+
+git fetch --all --tags
+
+if git show-ref --verify --quiet "refs/remotes/origin/${GIT_REF}"; then
+    git switch "${GIT_REF}"
+elif git show-ref --verify --quiet "refs/tags/${GIT_REF}"; then
+    git switch --detach "refs/tags/${GIT_REF}"
+else
+    echo "ERROR: Git ref '${GIT_REF}' not found (neither branch nor tag)"
+    exit 1
 fi
