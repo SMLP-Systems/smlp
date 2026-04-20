@@ -39,7 +39,8 @@ RUN git clone --branch ${Z3_VERSION} https://github.com/Z3Prover/z3.git /z3 && \
         --optimize && \
     cd build && \
     make -j$(nproc) && \
-    make install
+    make install && \
+    rm -rf /z3
 
 RUN /usr/local/z3/bin/z3 --version
 
