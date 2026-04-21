@@ -21,14 +21,16 @@ smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test23 -mode p
 Running test 32 test type: unknown, description:  test reusing saved model by using configuration file
 smlp -model_name "../models/test20_model" -out_dir ./ -pref Test32 -config ../models/test20_model_rerun_model_config.json  -new_dat "../data/smlp_toy_num_resp_mult_pred_labeled.csv" 
 
-Running test 39 test type: doe, description:  doe test with four levels with latin_hypercube 
-smlp -doe_spec "../grids/doe_two_levels.csv" -out_dir ./ -pref Test39 -mode doe -doe_algo latin_hypercube -doe_prob_distr Exponential -doe_samples 30 -log_time f  
+Running test 40 test type: doe, description:  doe test with four levels with latin_hypercube_space_filling
+smlp -doe_spec "../grids/doe_two_levels.csv" -out_dir ./ -pref Test40 -mode doe -doe_algo latin_hypercube_sf -doe_samples 20 -log_time f  
 
 Running test 48 test type: discretization, description: tests discretization options
 smlp -data "../data/smlp_toy_mult_discr.csv" -out_dir ./ -pref Test48 -mode discretize -resp "PF,PF1" -discr_algo uniform -discr_bins 6 -discr_labels t -discr_type object -data_scaler none  -mrmr_pred 0 -plots f -seed 10 -log_time f -pos_val fail -neg_val pass  
 
-Running test 56 test type: discretization, description: tests discretization options
-smlp -data "../data/smlp_toy_mult_discr.csv" -out_dir ./ -pref Test56 -mode discretize -resp "PF,PF1" -discr_algo ranks -discr_bins 6 -discr_labels f -discr_type object -data_scaler none  -mrmr_pred 0 -plots f -seed 10 -log_time f -pos_val fail -neg_val pass  
+spec_fn smlp_toy_num_resp_mult.spec
+specs_path ../specs
+Running test 58 test type: optimize, description: basic dt_sklearn optimization test with numeric labels and integer grid as domain and without scaling objectives
+smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test58 -mode optimize -pareto f -opt_strategy lazy -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 -tree_encoding nested -compress_rules f  -spec ../specs/smlp_toy_num_resp_mult.spec -objv_names objv_y1,objv_y2 -objv_exprs "y1;y2" -epsilon 0.01 -delta_rel 0.01 -data_scaler none -save_model_config f -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
 
 spec_fn smlp_toy_num_resp_mult_y2_verify.spec
 specs_path ../specs
@@ -60,12 +62,12 @@ specs_path ../specs
 Running test 114 test type: optimize, description: smlp toy basic test for mode optimize from SMLP manual without specifying resp and feat in command line
 smlp -data "../data/smlp_toy_basic.csv" -out_dir ./ -pref Test114 -mode optimize -pareto t -opt_strategy lazy -model dt_sklearn -dt_sklearn_max_depth 15 -tree_encoding nested -compress_rules f -mrmr_pred 0 -epsilon 0.05 -delta_rel 0.01 -save_model f -plots f -pred_plots f -resp_plots f -seed 10 -log_time f -spec ../specs/smlp_toy_basic.spec  
 
-spec_fn smlp_toy_system_stable_constant_synth_feasible.spec
+spec_fn smlp_toy_system_stable_constant_synth_fail.spec
 specs_path ../specs
-Running test 121 test type: synthesize, description: synthesis test with constant knob and no inputs where synthesis is feasible
-smlp -data "../data/smlp_toy_basic.csv" -out_dir ./ -pref Test121 -mode synthesize -model system -resp y1,y2 -feat p1,p2 -save_model f -use_model f -mrmr_pred 0 -model_per_response t -spec ../specs/smlp_toy_system_stable_constant_synth_feasible.spec -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
+Running test 122 test type: optimize, description: optimization test with constant knob and no inputs where synthesis is not feasible because the assertion is not feasible but beta constraint is feasible therefore optimization is performed
+smlp -data "../data/smlp_toy_basic.csv" -out_dir ./ -pref Test122 -mode optimize -pareto f -opt_strategy lazy -model system -resp y1,y2 -feat p1,p2 -save_model f -use_model f -mrmr_pred 0 -model_per_response t -spec ../specs/smlp_toy_system_stable_constant_synth_fail.spec -epsilon 0.00000001 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
 
-spec_fn smlp_toy_witness_certify.spec
+spec_fn smlp_toy_system_stable_verify.spec
 specs_path ../specs
 Running test 140 test type: verify, description: verification example with knobs only and fictitious inputs that have no effect where proparty is valid without stability and fails with stabilityRunning test 3 test type: prediction, description: basic poly_sklearn prediction test on labeled and new data with numeric response in training/test data only
 smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test3 -mode predict -resp y1 -feat x,p1,p2 -model poly_sklearn -save_model_config f -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  -new_dat "../data/smlp_toy_num_resp_mult_pred_unlabeled.csv" 
@@ -84,133 +86,6 @@ smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test31 -mode s
 
 Running test 39 test type: doe, description:  doe test with four levels with latin_hypercube 
 smlp -doe_spec "../grids/doe_two_levels.csv" -out_dir ./ -pref Test39 -mode doe -doe_algo latin_hypercube -doe_prob_distr Exponential -doe_samples 30 -log_time f  
-
-Running test 47 test type: prediction, description: tests options -pos_val and -neg_val when re-using saved model
-smlp -model_name "../models/test47_model" -out_dir ./ -pref Test47 -mode predict -resp "PF,PF1" -model poly_sklearn -save_model f -use_model t -data_scaler none  -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f -pos_val fail -neg_val pass  -new_dat "../data/smlp_toy_pf_mult.csv" 
-
-Running test 53 test type: discretization, description: tests discretization options
-smlp -data "../data/smlp_toy_mult_discr.csv" -out_dir ./ -pref Test53 -mode discretize -resp "PF,PF1" -discr_algo ordinals -discr_bins 6 -discr_labels f -discr_type integer -data_scaler none  -mrmr_pred 0 -plots f -seed 10 -log_time f -pos_val fail -neg_val pass  
-
-spec_fn smlp_toy_num_resp_mult_y1_verify.spec
-specs_path ../specs
-Running test 64 test type: verify, description: basic dt_sklearn  assertion verification test on data with one numeric response
-smlp -model_name "../models/test63_model" -out_dir ./ -pref Test64 -mode verify -resp y1 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 -tree_encoding nested -compress_rules f  -save_model f -use_model t -spec ../specs/smlp_toy_num_resp_mult_y1_verify.spec -asrt_names asrt1,asrt2 -asrt_exprs "x/2+y1>4.3;(y1+p2)/2<6" -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f   
-
-spec_fn smlp_toy_num_resp_mult.spec
-specs_path ../specs
-Running test 79 test type: query, description: basic test in query mode to test stability (theta) and guard (eta) constraint generation
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test79 -mode query -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 -tree_encoding nested -compress_rules f -save_model f -use_model f  -mrmr_pred 2 -model_per_response t -spec ../specs/smlp_toy_num_resp_mult.spec -quer_names query1,query2,query3 -quer_exprs "(y2**3+p2)/2<6;y1>=9;y2<0"  -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-spec_fn smlp_toy_num_resp_mult_optsyn_vacuous.spec
-specs_path ../specs
-Running test 90 test type: optsyn, description: test to detect contradictory constraints in optsyn mode
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test90 -mode optsyn -opt_strategy lazy -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 -tree_encoding nested -compress_rules f -save_model f -use_model f  -mrmr_pred 2 -model_per_response t -spec ../specs/smlp_toy_num_resp_mult_optsyn_vacuous.spec -epsilon 0.1 -delta_rel 0.05 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-spec_fn smlp_toy_num_resp_mult_optsyn.spec
-specs_path ../specs
-Running test 98 test type: optsyn, description: basic test for et_caret in model exploration mode optsyn
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test98 -mode optsyn -opt_strategy lazy -resp y1,y2 -feat x,p1,p2 -model et_caret -save_model f -use_model f -tree_encoding nested -compress_rules f -mrmr_pred 2 -model_per_response t -spec ../specs/smlp_toy_num_resp_mult_optsyn.spec -epsilon 0.1 -delta_rel 0.05 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-spec_fn smlp_toy_basic.spec
-specs_path ../specs
-Running test 114 test type: optimize, description: smlp toy basic test for mode optimize from SMLP manual without specifying resp and feat in command line
-smlp -data "../data/smlp_toy_basic.csv" -out_dir ./ -pref Test114 -mode optimize -pareto t -opt_strategy lazy -model dt_sklearn -dt_sklearn_max_depth 15 -tree_encoding nested -compress_rules f -mrmr_pred 0 -epsilon 0.05 -delta_rel 0.01 -save_model f -plots f -pred_plots f -resp_plots f -seed 10 -log_time f -spec ../specs/smlp_toy_basic.spec  
-
-spec_fn smlp_toy_system_stable_constant_synth_fail.spec
-specs_path ../specs
-Running test 120 test type: synthesize, description: synthesis test with constant knob and no inputs where synthesis is not feasible because the assertion is not feasible
-smlp -data "../data/smlp_toy_basic.csv" -out_dir ./ -pref Test120 -mode synthesize -model system -resp y1,y2 -feat p1,p2 -save_model f -use_model f -mrmr_pred 0 -model_per_response t -spec ../specs/smlp_toy_system_stable_constant_synth_fail.spec -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-spec_fn smlp_toy_configuration_verify.spec
-specs_path ../specs
-Running test 129 test type: verify, description: verification example with demonstrating all basic result scenarious for assertions
-smlp -data "../data/smlp_toy_ctg_num_resp.csv" -out_dir ./ -pref Test129 -mode verify -resp y1,y2 -feat x,p1,p2 -model poly_sklearn -save_model f -use_model f -model_per_response f -spec ../specs/smlp_toy_configuration_verify.spec -asrt_names assert_stable_config,assert_grid_conflict,assert_unstable_config,assert_infeasible -asrt_exprs "y2<=90;y1>=9;y1>=(-10);y1>20" -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-Running test 149 test type: prediction, description: tests the mae loss function MeanAbsoluteError and sample weoghts
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test149 -mode predict -resp y2 -feat x,p1,p2 -model nn_keras -nnet_encoding nested -save_model_config f -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f -nn_keras_epochs 20 -nn_keras_seq_api f -nn_keras_loss mae -sw_coef 0.8  -new_dat "../data/smlp_toy_num_resp_mult_pred_labeled.csv" 
-
-spec_fn smlp_toy_num_resp_mult_verify.spec
-specs_path ../specs
-Running test 156 test type: verify, description: basic nn_keras assertion verification test that uses keras tuner for functional model training; adapts test 154 by consdering multiple responses
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test156 -mode verify -resp y1,y2 -feat x,p1,p2 -model nn_keras -nnet_encoding nested -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f -nn_keras_epochs 20 -nn_keras_seq_api f -nn_keras_tuner hyperband -nn_keras_layers_grid "2,2;3" -save_model_config f -spec ../specs/smlp_toy_num_resp_mult_verify.spec -asrt_names asrt1 -asrt_exprs "2*y2>1" -sw_coef 4 -sw_exp 5 -sw_int 0.5 -nn_keras_metrics rmse  
-Running test 2 test type: prediction, description: basic rf_sklearn prediction test on labeled and new data with numeric labels
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test2 -mode predict -resp y1 -feat x,p1,p2 -model rf_sklearn -rf_sklearn_max_depth 15 -save_model_config f -mrmr_pred 0 -plots f -seed 10 -log_time f  -new_dat "../data/smlp_toy_num_resp_mult_pred_labeled.csv" 
-
-Running test 12 test type: train, description: EV-SI real life dt_sklearn predict test on labeled and new data with numeric labels
-smlp -data "../data/smlp_toy_basic.csv" -out_dir ./ -pref Test12 -mode train -resp y1,y2 -feat x1,x2,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 -save_model_config f -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-Running test 19 test type: prediction, description: basic dt_sklearn prediction test using a model saved under a name specified through model_name  option on new data with numeric labels
-smlp -model_name "../models/test19_model" -out_dir ./ -pref Test19 -mode predict -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15  -save_model f -use_model t -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  -new_dat "../data/smlp_toy_num_resp_mult_pred_labeled.csv" 
-
-Running test 27 test type: prediction, description: checks nn_keras prediction with nn_keras_seq_api t
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test27 -mode predict -resp y2 -feat x,p1,p2 -model nn_keras -save_model_config f -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f -nn_keras_epochs 20 -nn_keras_seq_api t  -new_dat "../data/smlp_toy_num_resp_mult_pred_labeled.csv" 
-
-Running test 34 test type: doe, description:  doe test with four levels with full_factorial method
-smlp -doe_spec "../grids/doe_four_levels_real.csv" -out_dir ./ -pref Test34 -mode doe -doe_algo full_factorial -log_time f  
-
-Running test 42 test type: doe, description:  doe test with four levels with maximin_reconstruction
-smlp -doe_spec "../grids/doe_two_levels.csv" -out_dir ./ -pref Test42 -mode doe -doe_algo maximin_reconstruction -doe_samples 20 -log_time f  
-
-Running test 50 test type: discretization, description: tests discretization options
-smlp -data "../data/smlp_toy_mult_discr.csv" -out_dir ./ -pref Test50 -mode discretize -resp "PF,PF1" -discr_algo kmeans -discr_bins 6 -discr_labels t -discr_type ordered -data_scaler none  -mrmr_pred 0 -plots f -seed 10 -log_time f -pos_val fail -neg_val pass  
-
-spec_fn smlp_toy_num_resp_mult_y2_verify.spec
-specs_path ../specs
-Running test 59 test type: verify, description: basic nn_keras assertion verification test for functional nn_keras model
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test59 -mode verify -resp y2 -feat x,p1,p2 -model nn_keras -nnet_encoding nested -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f -nn_keras_epochs 20 -nn_keras_seq_api f  -save_model_config f -spec ../specs/smlp_toy_num_resp_mult_y2_verify.spec -asrt_names asrt1 -asrt_exprs "2*y2>1" -solver_path ../../../external/mathsat-5.6.8-linux-x86_64-reentrant/bin/mathsat  
-
-spec_fn smlp_toy_num_resp_mult_free_inps.spec
-specs_path ../specs
-Running test 81 test type: optimize, description: basic dt_sklearn single objective optimization test with numeric labels and integer grid as domain and with scaling objectives
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test81 -mode optimize -pareto f -opt_strategy lazy -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 -tree_encoding nested -compress_rules f  -spec ../specs/smlp_toy_num_resp_mult_free_inps.spec -data_scaler min_max -objv_names obj1 -objv_exprs "(y1+y2)/2" -epsilon 0.05 -delta_rel 0.01 -save_model_config f -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f -solver_path ../../../external/mathsat-5.6.8-linux-x86_64-reentrant/bin/mathsat  
-
-spec_fn smlp_toy_num_resp_mult_query.spec
-specs_path ../specs
-Running test 89 test type: query, description: basic test in query mode to test stability (theta) and guard (eta) constraint generation
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test89 -mode query -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 -tree_encoding nested -compress_rules f -save_model f -use_model f  -mrmr_pred 2 -model_per_response t -spec ../specs/smlp_toy_num_resp_mult_query.spec -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-spec_fn smlp_toy_num_resp_mult_query.spec
-specs_path ../specs
-Running test 97 test type: query, description: basic test for rf_sklearn in model exploration mode optsyn
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test97 -mode query -resp y1,y2 -feat x,p1,p2 -model et_sklearn -et_sklearn_bootstrap f -tree_encoding nested -compress_rules f -save_model f -use_model f  -mrmr_pred 2 -model_per_response t -spec ../specs/smlp_toy_num_resp_mult_query.spec -epsilon 0.1 -delta_rel 0.05 -solver_path ../../../external/mathsat-5.6.8-linux-x86_64-reentrant/bin/mathsat -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-spec_fn smlp_toy_num_resp_mult_beta_verify.spec
-specs_path ../specs
-Running test 107 test type: verify, description: test for verification mode to check that eta contraints are not contradictory and as otherwise verification problem is not well defined
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test107 -mode verify -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 -tree_encoding nested -compress_rules f -spec ../specs/smlp_toy_num_resp_mult_beta_verify.spec -asrt_names asrt_y1,asrt_y2 -asrt_expr "y1*2+x<=5 and y1<=10;-2*y2-1<10-p2" -save_model_config f -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-spec_fn smlp_toy_system.spec
-specs_path ../specs
-Running test 115 test type: certify, description: basic test in certify mode
-smlp -data "../data/smlp_toy_basic.csv" -out_dir ./ -pref Test115 -mode certify -resp y1,y2 -feat x1,x2,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 -tree_encoding nested -compress_rules f -save_model f -use_model f -mrmr_pred 2 -model_per_response t -spec ../specs/smlp_toy_system.spec -quer_names query1,query2 -quer_exprs "y1>0;y2<=0" -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-spec_fn smlp_toy_system_stable_constant_synth_feasible.spec
-specs_path ../specs
-Running test 125 test type: optsyn, description: optimized synthesis test with constant knob and no inputs where synthesis is feasible and optimization is performed
-smlp -data "../data/smlp_toy_basic.csv" -out_dir ./ -pref Test125 -mode optsyn -pareto t -opt_strategy lazy -model system -resp y1,y2 -feat p1,p2 -save_model f -use_model f -mrmr_pred 0 -model_per_response t -spec ../specs/smlp_toy_system_stable_constant_synth_feasible.spec -epsilon 0.00000001 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-spec_fn smlp_toy_system_stable_constant_synth_feasible.spec
-specs_path ../specs
-Running test 145 test type: optimize, description: optimization test with constant knob and no inputs where synthesis is feasible and optimization is performed
-smlp  -out_dir ./ -pref Test145 -mode optimize -pareto t -opt_strategy lazy -model system -resp y1,y2 -feat p1,p2 -save_model f -use_model f -mrmr_pred 0 -model_per_response t -spec ../specs/smlp_toy_system_stable_constant_synth_feasible.spec -doe_spec ../grids/doe_two_levels_opt.csv -doe_algo latin_hypercube -epsilon 0.00000001 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-Running test 151 test type: prediction, description: tests msle loss function MeanSquaredLogarithmicError and and sample weoghts
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test151 -mode predict -resp y2 -feat x,p1,p2 -model nn_keras -nnet_encoding nested -save_model_config f -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f -nn_keras_epochs 20 -nn_keras_seq_api f -nn_keras_loss msle -sw_coef 3 -sw_exp 10 -sw_int 0  -new_dat "../data/smlp_toy_num_resp_mult_pred_labeled.csv" 
-
-Running test 158 test type: prediction, description: tests the mape loss function and sample weights with model_per_response tRunning test 8 test type: prediction, description: basic nn_keras prediction test on labeled and new data with numeric labels and two responses
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test8 -mode predict -resp y1,y2 -feat x,p1,p2 -model nn_keras -save_model_config f -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -nn_keras_epochs 20 -nn_keras_seq_api f -log_time f  -new_dat "../data/smlp_toy_num_resp_mult_pred_labeled.csv" 
-
-Running test 14 test type: train, description: EV-SI real life poly_sklearn prediction test on labeled and new data with numeric labels
-smlp -data "../data/smlp_toy_basic.csv" -out_dir ./ -pref Test14 -mode train -resp y1,y2 -feat x1,x2,p1,p2 -model poly_sklearn -save_model_config f -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
-
-Running test 21 test type: prediction, description: test for illegal symbols in column names
-smlp -data "../data/smlp_toy_num_metasymbol_mult_reg.csv" -out_dir ./ -pref Test21 -mode predict -resp "PF ,|PF |" -model poly_sklearn -save_model t -use_model f -model_name test22_model -pred_plots t -resp_plots t -data_scaler none -mrmr_pred 0 -plots f -seed 10 -log_time f  -new_dat "../data/smlp_toy_num_metasymbol_mult_reg_pred_labeled.csv" 
-
-Running test 31 test type: subgroups, description: testing resp2b in subgroup discovery mode
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test31 -mode subgroups -psg_dim 3 -psg_top 10 -resp y1,y2 -resp2b "y1<6;y2>6" -feat x,p1,p2 -plots t -seed 10 -log_time f -save_config t  
-
-Running test 40 test type: doe, description:  doe test with four levels with latin_hypercube_space_filling
-smlp -doe_spec "../grids/doe_two_levels.csv" -out_dir ./ -pref Test40 -mode doe -doe_algo latin_hypercube_sf -doe_samples 20 -log_time f  
 
 Running test 47 test type: prediction, description: tests options -pos_val and -neg_val when re-using saved model
 smlp -model_name "../models/test47_model" -out_dir ./ -pref Test47 -mode predict -resp "PF,PF1" -model poly_sklearn -save_model f -use_model t -data_scaler none  -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f -pos_val fail -neg_val pass  -new_dat "../data/smlp_toy_pf_mult.csv" 
@@ -445,10 +320,10 @@ specs_path ../specs
 Running test 124 test type: optsyn, description: optimized synthesis test with constant knob and no inputs where synthesis is not feasible because while beta constraint is feasible the assertion is not feasible therefore optimization is not performed
 smlp -data "../data/smlp_toy_basic.csv" -out_dir ./ -pref Test124 -mode optsyn -pareto f -opt_strategy lazy -model system -resp y1,y2 -feat p1,p2 -save_model f -use_model f -mrmr_pred 0 -model_per_response t -spec ../specs/smlp_toy_system_stable_constant_synth_fail.spec -epsilon 0.00000001 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
 
+spec_fn smlp_toy_num_resp_mult.spec
 specs_path ../specs
-Running test 154 test type: verify, description: basic nn_keras assertion verification test that uses keras tuner for functional model training
-smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test154 -mode verify -resp y2 -feat x,p1,p2 -model nn_keras -nnet_encoding nested -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f -nn_keras_epochs 20 -nn_keras_seq_api f -nn_keras_tuner hyperband -nn_keras_layers_grid "2,2;3,3,3" -save_model_config f -spec ../specs/smlp_toy_num_resp_mult_y2_verify.spec -asrt_names asrt1 -asrt_exprs "2*y2>1" -sw_coef 4 -sw_exp 5 -sw_int 0.5  
-
+Running test 141 test type: optimize, description: basic test for compress_rules option for dt_sklearn in optimization mode
+smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test141 -mode optimize -opt_strategy lazy -pareto f  -resp y1,y2 -feat x,p1,p2 -model dt_sklearn -dt_sklearn_max_depth 15 -tree_encoding nested -compress_rules t  -spec ../specs/smlp_toy_num_resp_mult.spec -objv_names objv_y1,objv_y2 -objv_exprs "y1;y2" -epsilon 0.01 -delta_rel 0.01 -data_scaler none -save_model_config f -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f  
 
 Running test 149 test type: prediction, description: tests the mae loss function MeanAbsoluteError and sample weoghts
 smlp -data "../data/smlp_toy_num_resp_mult.csv" -out_dir ./ -pref Test149 -mode predict -resp y2 -feat x,p1,p2 -model nn_keras -nnet_encoding nested -save_model_config f -mrmr_pred 0 -plots f -pred_plots f -resp_plots f -seed 10 -log_time f -nn_keras_epochs 20 -nn_keras_seq_api f -nn_keras_loss mae -sw_coef 0.8  -new_dat "../data/smlp_toy_num_resp_mult_pred_labeled.csv" 
