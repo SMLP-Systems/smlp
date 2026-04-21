@@ -72,7 +72,7 @@ help:
 	@echo    "  rebuild_smlp SMLP_COMMIT=<tagname>  Force smlp clone (docker cache busted)"
 	@echo -e "                                          \033[1mif the only change versus previus build is the new tag pushed to remote\033[0m"
 	@echo    "  clean_build                         Full rebuild with --no-cache"
-	@echo    "  default image $(IMAGE)"
+	@echo    "  default image:                      $(IMAGE)"
 	@echo    "  help                                Show this message"
 	@echo    ""
 	@echo    "Example:"
