@@ -15,9 +15,14 @@ cd smlp
 if [[ -n "$GIT_BRANCH" ]]; then
     if [[ -z "$(git branch -r --list "origin/$GIT_BRANCH")" ]]; then
         echo "WARNING: Branch '$GIT_BRANCH' does not exist on remote." >&2
+        GIT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's,.*/,,')
+        echo "WARNING: Staying on default branch '$GIT_BRANCH'" >&2
     else
         git switch "$GIT_BRANCH"
     fi
+else
+   GIT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's,.*/,,')
+   echo "INFO: using default branch '$GIT_BRANCH'"
 fi
 
 # Inspect the last commit on the current branch
