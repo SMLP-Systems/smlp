@@ -20,6 +20,11 @@ maintainers = [
 name = "smlptech"
 dynamic = ["version"]
 description = "SMLP - The Symbolic Machine Learning Prover"
+license = "Apache-2.0"
+license-files = [
+	"LICENSE",
+	"AUTHORS",
+]
 readme = "README.md"
 requires-python = "==3.11.*"
 dependencies = [
@@ -37,6 +42,9 @@ dependencies = [
     "seaborn",
     "tensorflow==2.15.1",
 ]
+
+[project.urls]
+homepage = "https://github.com/SMLP-Systems/smlp"
 
 [project.scripts]
 smlp = "smlp.run_smlp:main2"
