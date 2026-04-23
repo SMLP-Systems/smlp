@@ -237,10 +237,9 @@ f(x*) = 6 - 2√5 ≈ 1.527864`, where `x* = (2/√5,1/√5) ≈ (0.894427, 0.44
   - Step 1: Create input dataset and visualize the problem<br>
   - Step 2: Run SMLP<br>
     SMLP creates polynomial model and finds approximate solution<br>
-  - Step 3: Comparison to expected SMLP results<br>
   SMLP results
   `f(x*) = 1.527865, x* = (0.894531, 0.447004)`<br>
-  are pretty close to analytical solution   
+  are within 0.05% accuracy for `f(x*)` and `x*`
 
 Running the script:
 ```bash
@@ -289,24 +288,19 @@ cd quickstart
   Let's change circle radius to 2/√5, so squared radius will be 4/5<br>
   In order to do this, edit `constraint_dora.json` file and change right side of the inequality to be 4/5:<br>
     `"alpha": "X1*X1+X2*X2<=4/5",`
+ [Analytical solution](https://www.wolframalpha.com/input?i=Minimize%3A+f%28x1%2C+x2%29+%3D+%28x1+-+2%29%5E2+%2B+%28x2+-+1%29%5E2+subject+to+x1%5E2+%2B+x2%5E2+-+4%2F5+%3C%3D+0) for modified problem:<br>
+ `
+f(x*) = 9/5 = 1.8`, where `x* = (4/5,2/5) = (0.8, 0.4)`
 - Step 3: Run the script from current directory
 ```bash
 ./quickstart.sh
 ```
-Expected result:
+Expected SMLP results are within 0.03% accuracy for `f(x*)` and `x*`:
 ```bash 
 Working directory: <current_directory_realpath>/quickstart/Constraint_dora_results_<timestamp>
 X1 = 0.800048828125
 X2 = 0.3999021053314209
 Y1 = 1.8000002980730385
-1,3c1,3
-< X1 = 0.800048828125
-< X2 = 0.3999021053314209
-< Y1 = 1.8000002980730385
----
-> X1 = 0.89453125
-> X2 = 0.4470043182373047
-> Y1 = 1.5278653812779421
 ```
 
 ## [Tutorial](https://github.com/SMLP-Systems/smlp/tree/master/tutorial)
