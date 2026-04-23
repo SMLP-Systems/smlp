@@ -247,33 +247,48 @@ smlp_package_path=$(python3.11 -c 'import smlp; from os.path import dirname; pri
 $smlp_package_path/quickstart/quickstart.sh
 ```
 <details>
- <summary><b>Test case description</b></summary>
-   <br><b>1. <i>constraint_dora.json</i> - spec in json format</b><br><br>
-{<br>
-  "version": "1.2",<br>
+ <summary>Test case description</summary><br>
+
+   **1.** *constraint_dora.json* - spec in json format<br>
+
+```
+{
+  "version": "1.2",
   "variables": [
-    {"label":"X1", "interface":"knob", "type":"real", "range":[-1.5,2.5], "rad-abs": 0.0},<br>
-    {"label":"X2", "interface":"knob", "type":"real", "range":[-1.5,2.0], "rad-abs": 0.0},<br>
+    {"label":"X1", "interface":"knob", "type":"real", "range":[-1.5,2.5], "rad-abs": 0.0},
+    {"label":"X2", "interface":"knob", "type":"real", "range":[-1.5,2.0], "rad-abs": 0.0},
     {"label":"Y1", "interface":"output", "type":"real"}
-  ],<br>
-  "alpha": "X1*X1+X2*X2<=1",<br>
-  "objectives": {"objective1": "-Y1"}<br>
-}<br>
-<br>
+  ],
+  "alpha": "X1*X1+X2*X2<=1",
+  "objectives": {"objective1": "-Y1"}
+}
+```
+
    <u>Legend:</u><br> 
-   X1 - first controllable variable<br>
-   X2 - second controlllable variable<br>
-   Y1 - output function<br>
-   rad-abs: sensitivity radius. Zero radius means that solution sensitivity check is skipped<br>
-   alpha - constraint depending on controllable variables<br>
-   objective1 - optimization goal<br><br>
-   <b>2. SMLP command line arguments</b><br><br>
-    -data ${name}.csv.gz   # input CSV dataset<br>
+
+```
+   X1 - first controllable variable
+   X2 - second controlllable variable
+   Y1 - output function
+   rad-abs - sensitivity radius. 
+             Zero radius means that solution sensitivity check is skipped
+   alpha - constraint depending on controllable variables
+   objective1 - optimization goal
+```
+
+<br>
+
+   **2.** SMLP command line arguments<br>
+
+   ```
+    -data ${name}.csv.gz                  # input CSV dataset<br>
     -spec ${script_path}/${name_lc}.json  # JSON spec file<br>
-    -pref ${name}          # output file prefix<br>
-    -mode optimize         # operation mode<br>
-    -model poly_sklearn    # model type<br>
-    -epsilon 0.0000005     # convergence threshold<br>
+    -pref ${name}                         # output file prefix<br>
+    -mode optimize                        # operation mode<br>
+    -model poly_sklearn                   # model type<br>
+    -epsilon 0.0000005                    # convergence threshold<br>
+```
+
 </details>
 
 ### Problem modification in the user area
