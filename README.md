@@ -223,95 +223,99 @@ tests/install/test_container_install mdmitry1/python311-dev
 
 ## Quickstart
 
-### Problem: find minimal distance between point (2,1) and unit circle<br>
+### Problem: find minimal distance between point (2,1) and unit circle
  
- <p align="left">
-<img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/smlp_quickstart/misc/minimal_distance.png"  alt="Minimal Distance Problem" class="center" width="500" height="400"></p>
+<p align="left">
+<img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/smlp_quickstart/misc/minimal_distance.png"  alt="Minimal Distance Problem" class="center" width="500" height="400">
+</p>
  
- Analytical solution for this problem:<br>
- `
-f(x*) = 6 - 2√5 ≈ 1.527864`, where `x* = (2/√5,1/√5) ≈ (0.894427, 0.447214)`
- <br><br>
- Solution: see `bash` script [quickstart.sh](https://raw.githubusercontent.com/SMLP-Systems/smlp/smlp_quickstart/quickstart/quickstart.sh)<br><br>
- The script has 2 steps<br>
-  - Step 1: Create input dataset and visualize the problem<br>
-  - Step 2: Run SMLP<br>
-    SMLP creates polynomial model and finds approximate solution<br>
-  SMLP results
-  `f(x*) = 1.527865, x* = (0.894531, 0.447004)`<br>
-  are within 0.05% accuracy for `f(x*)` and `x*`
+ Analytical solution for this problem:
+ `f(x*) = 6 - 2√5 ≈ 1.527864`, where `x* = (2/√5,1/√5) ≈ (0.894427, 0.447214)`
+
+ Solution: see `bash` script [quickstart.sh](https://raw.githubusercontent.com/SMLP-Systems/smlp/smlp_quickstart/quickstart/quickstart.sh)
+
+ The script has 2 steps
+  - Step 1: Create input dataset and visualize the problem
+  - Step 2: Run SMLP
+
+    SMLP creates polynomial model and finds approximate solution.
+  
+    SMLP results
+    `f(x*) = 1.527865, x* = (0.894531, 0.447004)`
+    are within 0.05% accuracy for `f(x*)` and `x*`.
 
 Running the script:
 ```bash
 smlp_package_path=$(python3.11 -c 'import smlp; from os.path import dirname; print(dirname(smlp.__file__))')
 $smlp_package_path/quickstart/quickstart.sh
 ```
-<br>
 
 <details>
- <summary>Test case description</summary><br>
+<summary>Test case description</summary>
 
-   **1.** *constraint_dora.json* - spec in json format<br>
+1. `constraint_dora.json` - spec in json format
 
-```
-{
-  "version": "1.2",
-  "variables": [
-    {"label":"X1", "interface":"knob", "type":"real", "range":[-1.5,2.5], "rad-abs": 0.0},
-    {"label":"X2", "interface":"knob", "type":"real", "range":[-1.5,2.0], "rad-abs": 0.0},
-    {"label":"Y1", "interface":"output", "type":"real"}
-  ],
-  "alpha": "X1*X1+X2*X2<=1",
-  "objectives": {"objective1": "-Y1"}
-}
-```
+   ```json
+   {
+     "version": "1.2",
+     "variables": [
+   	{"label":"X1", "interface":"knob", "type":"real", "range":[-1.5,2.5], "rad-abs": 0.0},
+   	{"label":"X2", "interface":"knob", "type":"real", "range":[-1.5,2.0], "rad-abs": 0.0},
+   	{"label":"Y1", "interface":"output", "type":"real"}
+     ],
+     "alpha": "X1*X1+X2*X2<=1",
+     "objectives": {"objective1": "-Y1"}
+   }
+   ```
 
-   <u>Legend:</u><br> 
-
-```
-   X1 - first controllable variable
-   X2 - second controlllable variable
-   Y1 - output function
-   rad-abs - sensitivity radius. 
-             Zero radius means that solution sensitivity check is skipped
-   alpha - constraint depending on controllable variables
-   objective1 - optimization goal
-```
-
-<br>
-
-   **2.** SMLP command line arguments<br>
+   Legend:
 
    ```
-    -data ${name}.csv.gz                  # input CSV dataset
-    -spec ${script_path}/${name_lc}.json  # JSON spec file
-    -pref ${name}                         # output file prefix
-    -mode optimize                        # operation mode
-    -model poly_sklearn                   # model type
-    -epsilon 0.0000005                    # convergence threshold
-```
+	   X1 - first controllable variable
+	   X2 - second controlllable variable
+	   Y1 - output function
+	   rad-abs - sensitivity radius. 
+				 Zero radius means that solution sensitivity check is skipped
+	   alpha - constraint depending on controllable variables
+	   objective1 - optimization goal
+   ```
+
+2. SMLP command line arguments
+
+   ```
+   -data ${name}.csv.gz                  # input CSV dataset
+   -spec ${script_path}/${name_lc}.json  # JSON spec file
+   -pref ${name}                         # output file prefix
+   -mode optimize                        # operation mode
+   -model poly_sklearn                   # model type
+   -epsilon 0.0000005                    # convergence threshold
+   ```
 
 </details>
 
 ### Problem modification in the user area
 
-- Step 1: Copy the problem to the current directory and enter problem work area<br>
-```bash
-smlp_package_path=$(python3.11 -c 'import smlp; from os.path import dirname; print(dirname(smlp.__file__))')
-\cp -rp $smlp_package_path/quickstart .
-cd quickstart
-```
-- Step 2: As an example, change constraint in order to get solution in rational numbers<br>
-  Let's change circle radius to 2/√5, so squared radius will be 4/5<br>
-  In order to do this, edit `constraint_dora.json` file and change right side of the inequality to be 4/5:<br>
-    `"alpha": "X1*X1+X2*X2<=4/5",`<br><br>
- [Analytical solution](https://www.wolframalpha.com/input?i=Minimize%3A+f%28x1%2C+x2%29+%3D+%28x1+-+2%29%5E2+%2B+%28x2+-+1%29%5E2+subject+to+x1%5E2+%2B+x2%5E2+-+4%2F5+%3C%3D+0) for modified problem:<br>
- `
-f(x*) = 9/5 = 1.8`, where `x* = (4/5,2/5) = (0.8, 0.4)`<br><br>
+- Step 1: Copy the problem to the current directory and enter problem work area
+  ```bash
+  smlp_package_path=$(python3.11 -c 'import smlp; from os.path import dirname; print(dirname(smlp.__file__))')
+  \cp -rp $smlp_package_path/quickstart .
+  cd quickstart
+  ```
+- Step 2: As an example, change constraint in order to get solution in rational numbers.
+  Let's change circle radius to 2/√5, so squared radius will be 4/5.
+  In order to do this, edit `constraint_dora.json` file and change right side of the inequality to be 4/5:
+
+  ```json
+  "alpha": "X1*X1+X2*X2<=4/5",
+  ```
+
+  [Analytical solution](https://www.wolframalpha.com/input?i=Minimize%3A+f%28x1%2C+x2%29+%3D+%28x1+-+2%29%5E2+%2B+%28x2+-+1%29%5E2+subject+to+x1%5E2+%2B+x2%5E2+-+4%2F5+%3C%3D+0) for modified problem:
+  `f(x*) = 9/5 = 1.8`, where `x* = (4/5,2/5) = (0.8, 0.4)`
 - Step 3: Run the script from current directory
-```bash
-./quickstart.sh
-```
+  ```bash
+  ./quickstart.sh
+  ```
+
 Expected SMLP results are within 0.03% accuracy for `f(x*)` and `x*`:
 ```bash 
 Working directory: <current_directory_realpath>/quickstart/Constraint_dora_results_<timestamp>
