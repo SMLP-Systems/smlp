@@ -233,7 +233,7 @@ tests/install/test_container_install mdmitry1/python311-dev
 f(x*) = 6 - 2√5 ≈ 1.527864`, where `x* = (2/√5,1/√5) ≈ (0.894427, 0.447214)`
  <br><br>
  Solution: see `bash` script [quickstart.sh](https://raw.githubusercontent.com/SMLP-Systems/smlp/smlp_quickstart/quickstart/quickstart.sh)<br><br>
- The script has 3 steps<br>
+ The script has 2 steps<br>
   - Step 1: Create input dataset and visualize the problem<br>
   - Step 2: Run SMLP<br>
     SMLP creates polynomial model and finds approximate solution<br>
