@@ -287,10 +287,10 @@ cd quickstart
 - Step 2: As an example, change constraint in order to get solution in rational numbers<br>
   Let's change circle radius to 2/√5, so squared radius will be 4/5<br>
   In order to do this, edit `constraint_dora.json` file and change right side of the inequality to be 4/5:<br>
-    `"alpha": "X1*X1+X2*X2<=4/5",`
+    `"alpha": "X1*X1+X2*X2<=4/5",`<br><br>
  [Analytical solution](https://www.wolframalpha.com/input?i=Minimize%3A+f%28x1%2C+x2%29+%3D+%28x1+-+2%29%5E2+%2B+%28x2+-+1%29%5E2+subject+to+x1%5E2+%2B+x2%5E2+-+4%2F5+%3C%3D+0) for modified problem:<br>
  `
-f(x*) = 9/5 = 1.8`, where `x* = (4/5,2/5) = (0.8, 0.4)`
+f(x*) = 9/5 = 1.8`, where `x* = (4/5,2/5) = (0.8, 0.4)`<br><br>
 - Step 3: Run the script from current directory
 ```bash
 ./quickstart.sh
