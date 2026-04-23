@@ -283,12 +283,12 @@ $smlp_package_path/quickstart/quickstart.sh
    **2.** SMLP command line arguments<br>
 
    ```
-    -data ${name}.csv.gz                  # input CSV dataset<br>
-    -spec ${script_path}/${name_lc}.json  # JSON spec file<br>
-    -pref ${name}                         # output file prefix<br>
-    -mode optimize                        # operation mode<br>
-    -model poly_sklearn                   # model type<br>
-    -epsilon 0.0000005                    # convergence threshold<br>
+    -data ${name}.csv.gz                  # input CSV dataset
+    -spec ${script_path}/${name_lc}.json  # JSON spec file
+    -pref ${name}                         # output file prefix
+    -mode optimize                        # operation mode
+    -model poly_sklearn                   # model type
+    -epsilon 0.0000005                    # convergence threshold
 ```
 
 </details>
