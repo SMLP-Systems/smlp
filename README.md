@@ -246,6 +246,8 @@ Running the script:
 smlp_package_path=$(python3.11 -c 'import smlp; from os.path import dirname; print(dirname(smlp.__file__))')
 $smlp_package_path/quickstart/quickstart.sh
 ```
+<br>
+
 <details>
  <summary>Test case description</summary><br>
 
