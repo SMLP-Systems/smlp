@@ -27,12 +27,12 @@ can be dependent on the intended value itself.
 
 **[Combination of robustness and formal assurance of results validity](https://korovin.gitlab.io/pub/fmcad_bkk_2020.pdf) is a distinctive strength of SMLP, not found in other optimization or model‑analysis tools.**
 
-SMLP modes:
+SMLP exploration modes:
 
-- optmization 
+- optimization 
 - verification
 - synthesis
-- exploration 
+- query
 - root cause analysis
 
 
