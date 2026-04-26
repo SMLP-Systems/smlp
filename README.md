@@ -260,7 +260,7 @@ X1,X2,Y1
 <details>
 
 <summary>
-- Step 2: Create specification file `constraint_dora.json` where we specify types and ranges of variables and 
+Step 2: Create specification file `constraint_dora.json` where we specify types and ranges of variables and 
 that the solution should be constrained to the unit circle.
 </summary>
 
@@ -297,7 +297,7 @@ Note since SMLP by default maximizes the objective function so we use `-Y1` as t
 
 <details>
 <summary>
- - Step 3: Run SMLP on data file and specification file
+Step 3: Run SMLP on data file and specification file:
 
 </summary>
 
@@ -318,9 +318,9 @@ SMLP command line arguments:<br>
 
 
 3 graphs will pop-up which show quality of the generated model, (these need to be closed to proceed). <br>
-The results can be found in `results` folder.  <br>
+The results can be found in `results/` folder.  <br>
 
-Inside `results/Constraint_dora_Constraint_dora_optimization_results.csv` is the generated solution:
+`results/Constraint_dora_Constraint_dora_optimization_results.csv` contains the generated solution:
 
 ```
 X1 = 0.89453125
