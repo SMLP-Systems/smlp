@@ -223,7 +223,7 @@ tests/install/test_container_install mdmitry1/python311-dev
 
 ## Quickstart
 
-**Problem:** find minimal distance between point (2,1) and unit circle<br>
+###  Problem: find minimal distance between point (2,1) and unit circle<br>
  
  <p align="left">
 <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/minimal_distance.png"  alt="Minimal Distance Problem" class="center" width="500" height="400"></p>
