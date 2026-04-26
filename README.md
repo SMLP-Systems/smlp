@@ -242,8 +242,8 @@ Let's treat this problem as black-box function optimization.
 <details>
 
 <summary> Step 1: Generate samples of the distance function from the point (2,1) (for simplicity we use square of the distance as this does not change the optimum point):
-
 </summary>
+
 Run:  './constraint_dora_dataset.py'  This should generate `Constraint_dora.csv.gz` <br>
 Inside `Constraint_dora.csv` we have:
 
