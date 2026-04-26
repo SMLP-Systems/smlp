@@ -343,9 +343,9 @@ Steps 1 - 3 are wrapped in a script: `./quickstart.sh`
 <summary> Step 4: As an example, let's modify the problem in order to get solution in rational numbers.</summary>
 <br>
   Let's change circle radius to 2/√5, so squared radius will be 4/5.<br>
-  In order to do this, edit specification file `constraint_dora.json`  and change the right side of the inequality in the constraint to be 4/5:<br>
+  In order to do this, edit specification file `constraint_dora.json`  and change the right side of the inequality in the constraint to be 4/5:
+  
     `"beta": "X1*X1+X2*X2<=4/5,"`
-    <br>
  
   Run the script from current directory 
 
