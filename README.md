@@ -239,8 +239,6 @@ Download and unzip `quickstart.zip` (or if you cloned smlp cd to quickstart)
 
 Let's treat this problem as black-box function optimization.
 
-- Step 1: Generate samples the distance function from the point (2,1) (for simplicity we use square of the distance as this does not change the optimum point):
-
 <details>
 
 <summary> Step 1: Generate samples of the distance function from the point (2,1) (for simplicity we use square of the distance as this does not change the optimum point):
