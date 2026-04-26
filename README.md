@@ -350,7 +350,7 @@ Steps 1 - 3 are wrapped in a script: `./quickstart.sh`
  
  `f(x*) = 9/5 = 1.8`, where `x* = (4/5,2/5) = (0.8, 0.4)`<br><br>
 
-- Step 5: Run the script from current directory 
+  Run the script from current directory 
 
 ```bash
 ./quickstart.sh
