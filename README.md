@@ -261,8 +261,7 @@ X1,X2,Y1
 <details>
 
 <summary>
-Step 2: Create specification file (or use provided `constraint_dora.json`) where we specify types and ranges of variables and 
-that the solution should be constrained to the unit circle.
+Step 2: Create specification file (or use provided `constraint_dora.json`) where we specify types and ranges of variables and that the solution should be constrained to the unit circle:
 </summary>
 
 
@@ -329,7 +328,7 @@ X2 = 0.4470043182373047
 Y1 = 1.5278653812777188
 ```
 
-Which corresponds to the analytical solution (`constraint_dora_poly_optimization_results_expected.txt`) with the specified precision:
+Solution found by SMLP corresponds to the analytical solution (`constraint_dora_poly_optimization_results_expected.txt`) with the specified precision:
 
 ```
 X1 = 0.89453125
@@ -342,10 +341,11 @@ Steps 1 - 3 are wrapped in a script: `./quickstart.sh`
 
 <details>
 <summary> Step 4: As an example, let's modify the problem in order to get solution in rational numbers.</summary>
-
-  Let's change circle radius to 2/√5, so squared radius will be 4/5<br>
+<br>
+  Let's change circle radius to 2/√5, so squared radius will be 4/5.<br>
   In order to do this, edit specification file `constraint_dora.json`  and change the right side of the inequality in the constraint to be 4/5:<br>
-    `"beta": "X1*X1+X2*X2<=4/5",`<br><br>
+    `"beta": "X1*X1+X2*X2<=4/5,"`
+    <br>
     
  [Analytical solution](https://www.wolframalpha.com/input?i=Minimize%3A+f%28x1%2C+x2%29+%3D+%28x1+-+2%29%5E2+%2B+%28x2+-+1%29%5E2+subject+to+x1%5E2+%2B+x2%5E2+-+4%2F5+%3C%3D+0) for modified problem:<br>
  
