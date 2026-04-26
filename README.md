@@ -366,7 +366,6 @@ X2 = 0.3999021053314209
 Y1 = 1.8000002980730385
 ```
 
-   <br> 
  [Analytical solution](https://www.wolframalpha.com/input?i=Minimize%3A+f%28x1%2C+x2%29+%3D+%28x1+-+2%29%5E2+%2B+%28x2+-+1%29%5E2+subject+to+x1%5E2+%2B+x2%5E2+-+4%2F5+%3C%3D+0) for this modified problem:<br>
  
  `f(x*) = 9/5 = 1.8`, where `x* = (4/5,2/5) = (0.8, 0.4)`
