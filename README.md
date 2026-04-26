@@ -233,7 +233,7 @@ tests/install/test_container_install mdmitry1/python311-dev
 f(x*) = 6 - 2√5 ≈ 1.527864`, where `x* = (2/√5,1/√5) ≈ (0.894427, 0.447214)`
  <br><br>
 
-Let's try SMLP on this problem.
+Let's solve this problem using SMLP.
 
 Download and unzip `quickstart.zip` (or if you cloned smlp cd to quickstart)
 
