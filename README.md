@@ -322,8 +322,8 @@ SMLP command line arguments:<br>
 ```
 
 
-3 graphs will pop-up which show quality of the generated model in train/validate/test data set split, (these need to be closed to proceed). <br>
-The results can be found in `results/` folder.  <br>
+3 graphs will pop-up which show quality of the generated model in train/validation/test dataset split, (these need to be closed to proceed). <br>
+The generated results can be found in `results/` folder.  <br>
 
 `results/Constraint_dora_Constraint_dora_optimization_results.csv` contains the generated solution:
 
