@@ -235,7 +235,8 @@ f(x*) = 6 - 2√5 ≈ 1.527864`, where `x* = (2/√5,1/√5) ≈ (0.894427, 0.44
 
 Let's solve this problem using SMLP.
 
-Download and unzip `quickstart.zip` (or if you cloned smlp cd to quickstart)
+Download and unzip [quickstart.zip](https://raw.githubusercontent.com/SMLP-Systems/smlp/misc/quickstart.zip)
+(or if you cloned smlp cd to quickstart)
 
 Let's treat this problem as black-box function optimization.
 
