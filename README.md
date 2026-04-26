@@ -292,7 +292,7 @@ that the solution should be constrained to the unit circle.
    objective1 - optimization goal
 ```
 
-Note since SMLP by default maximizes the objective function so we use `-Y1` as the objective function.
+Note SMLP by default maximizes the objective function so we use `-Y1` as the objective function.
 
 </details>
 
