@@ -298,7 +298,9 @@ Note since SMLP by default maximizes the objective function so we use `-Y1` as t
 <details>
 <summary>
  - Step 3: Run SMLP on data file and specification file
+
 </summary>
+
 ```
 smlp -data Constraint_dora.csv.gz -spec ./constraint_dora.json -pref results/Constraint_dora -mode optimize -model poly_sklearn -epsilon 0.0000005
 ```
