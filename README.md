@@ -228,10 +228,10 @@ tests/install/test_container_install mdmitry1/python311-dev
  <p align="left">
 <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/minimal_distance.png"  alt="Minimal Distance Problem" class="center" width="500" height="400"></p>
  
- Analytical solution for this problem:<br>
+ Analytical solution for this problem is:<br>
  `
 f(x*) = 6 - 2√5 ≈ 1.527864`, where `x* = (2/√5,1/√5) ≈ (0.894427, 0.447214)`
- <br><br>
+ <br>
 
 Let's solve this problem using SMLP.
 
