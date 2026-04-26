@@ -281,9 +281,6 @@ that the solution should be constrained to the unit circle.
   }
 }
 ```
-
-```
-
    <u>Legend:</u><br> 
 
 ```
