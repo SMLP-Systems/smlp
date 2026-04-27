@@ -45,8 +45,22 @@ class SmlpModels:
         self._DEF_PREDICTION_PLOTS = True
 
         self._model_params_common_dict = {
-            'model': {'abbr': 'model', 'type':str,
-                'help': 'Type of model to train (e.g., NN, Poly). [default: none]'},
+            'model': {'abbr': 'model', 'type': str,
+                'help': (
+                    'Type of model to use. Supported values:\n' +
+                    '  -dt_caret        Decision tree (caret backend)\n' +
+                    '  -dt_sklearn      Decision tree (scikit-learn)\n' +
+                    '  -et_caret        Extra-trees ensemble (caret backend)\n' +
+                    '  -et_sklearn      Extra-trees ensemble (scikit-learn)\n' +
+                    '  -rf_caret        Random forest (caret backend)\n' +
+                    '  -rf_sklearn      Random forest (scikit-learn)\n' +
+                    '  -poly_sklearn    Polynomial regression (scikit-learn)\n' +
+                    '  -nn_keras        Neural network (Keras)\n' +
+                    '  -system          No model is trained; responses are computed from\n' +
+                    '                   system expressions defined in the spec file.\n' +
+                    '[default: none]'
+                )
+            },
             'save_model': {'abbr':'save_model', 'default': self._DEF_SAVE_MODEL, 'type':str_to_bool,
                 'help': 'Whether to save the trained model for future use. If use_model is True, ' +
                     'then save_model must be False. [default: ' + str(self._DEF_SAVE_MODEL) + ']'},
