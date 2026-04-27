@@ -59,7 +59,7 @@ No `sudo` required for the installation itself.
 python3.11 -m venv ~/.venv
 export PATH=~/.venv/bin:$PATH
 source ~/.venv/bin/activate
-pip3.11 install --ignore-installed smlptech
+pip3.11 install smlptech
 ```
 
 To make the virtual environment available in every new shell session, add the following line to `~/.bashrc`:
