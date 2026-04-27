@@ -86,13 +86,13 @@ ENV LC_ALL=en_US.UTF-8
 ENV PATH=/home/${USERNAME}/.venv/bin:${PATH} 
 
 # 9. ─── Optional: install MathSAT ───────────────────────────────────────────────────────────────────────────────────
+ARG GIT_BRANCH=master
 RUN wget https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/$GIT_BRANCH/scripts/docker/run_mathsat_build
 RUN chmod +x run_mathsat_build
 RUN ./run_mathsat_build && rm -rf /tmp/mathsat*
 
 # 10. ── For SMLP developers: clone smlp (ARG busts the cache to always get latest) ───────────────────────────────────
 ARG CACHE_BUST_SMLP
-ARG GIT_BRANCH=master
 ARG RELEASE_TYPE
 RUN echo "Building image for branch: $GIT_BRANCH"
 COPY run_git_clone .
