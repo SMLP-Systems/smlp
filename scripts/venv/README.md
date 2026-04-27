@@ -1,4 +1,4 @@
-# SMLP Installation for Ubuntu 24.04
+# SMLP Installation Guide for Ubuntu 24.04
 
 This guide describes how to install [smlptech](https://pypi.org/project/smlptech/) on Ubuntu 24.04.
 
@@ -136,13 +136,13 @@ In order to use virtual display:
 
 ## Step 7 (Optional) — MathSAT
 
-MathSAT is an Microsoft® SMT solver optionally used by SMLP.
-**Licensing limitations**
+MathSAT is a Satisfiability Modulo Theories (SMT) solver developed as a joint project between Fondazione Bruno Kessler (FBK) and the University of Trento (DISI) in Italy. It is optionally used by SMLP.
+
+⚠️ **Licensing limitations**
 
 Please, read [MathSat5 license terms](https://mathsat.fbk.eu/download.html) before using MathSat
 
 - *MathSAT5 is available for research and evaluation purposes only.* **It can not be used in a commercial environment, particularly as part of a commercial product, without written permission.** *MathSAT5 is provided as is, without any warranty.*
-
 
 To install MathSat:
 ```bash
