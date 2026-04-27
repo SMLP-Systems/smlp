@@ -1979,7 +1979,7 @@ class ModelTerms(ScalerTerms):
         theta_form = self.smlp_true
         radii_dict_local = radii_dict.copy() 
         knobs = radii_dict_local.keys()
-        
+
         # use inputs in theta computation, by setting radii to 0, and use delta if specified (not None)
         if not universal and delta_rel is not None:
             for cex_var in cex.keys():
@@ -2302,10 +2302,14 @@ class ModelTerms(ScalerTerms):
         
         if syst_expr_dict is not None:
             self._smlp_terms_logger.info('Building system terms: Start')
+            syst_feat = set()
             for resp, syst_expr in syst_expr_dict.items():
                 feat = self.get_expression_variables(syst_expr)
-                if set(feat) != set(model_features_dict[resp]):
+                syst_feat = syst_feat | set(feat)
+                if not set(feat).issubset(set(model_features_dict[resp])):
                     raise Exception('System and model features do not match for response ' + str(resp))
+            if syst_feat != set(model_features_dict[resp]):
+                raise Exception('System and model features do not match')
             
             system_term_dict = dict([(resp_name, self.ast_expr_to_term(resp_expr)) \
                 for resp_name, resp_expr in syst_expr_dict.items()])
