@@ -148,7 +148,7 @@ To install MathSat:
 ```bash
 wget https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/master/scripts/docker/run_mathsat_build
 chmod +x run_mathsat_build
-./run_mathsat_build
+./run_mathsat_build && && rm -rf /tmp/mathsat*
 ```
 
 ---
