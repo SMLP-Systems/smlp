@@ -1,4 +1,4 @@
-# SMLP Installation on Ubuntu 24.04 with Python 3.11
+# SMLP Installation for Ubuntu 24.04
 
 This guide describes how to install [smlptech](https://pypi.org/project/smlptech/) on Ubuntu 24.04.
 Python 3.11 is required. Since Ubuntu 24.04 ships Python 3.12 by default, Python 3.11
@@ -93,20 +93,15 @@ Run the following checks to confirm the installation is working:
 # Confirm smlp is importable and print its version
 python3.11 -c "import smlp; from importlib.metadata import version; print('smlp version:', version('smlptech'))"
 
-# Confirm Tk is available (required for GUI components)
+# Confirm Tk is available (required for GUI components and PNG files generation in non-GUI environment)
 python3.11 -c "import tkinter; print('tkinter Tcl/Tk:', tkinter.TclVersion)"
-
-# Confirm sudo works
-sudo --non-interactive whoami
 ```
 
-All three commands should complete without errors.
+Both commands should complete without errors.
 
 ---
 
-## Step 5 (Optional) — UTF-8 locale
-
-Required if you encounter encoding issues:
+## Step 5 (Optional) — UTF-8 locale. This step is recommended if you encounter encoding issues
 
 ```bash
 sudo locale-gen en_US.UTF-8
@@ -124,7 +119,7 @@ export LC_ALL=en_US.UTF-8
 
 ## Step 6 (Optional) — Virtual display
 
-A virtual display is needed to run SMLP tools in non-GUI (headless) environments,
+A virtual display is needed to run SMLP tools in non-GUI environment,
 for example on servers or in CI pipelines. `xvfb` was installed in Step 1.
 
 Download and run the `open_virtual_display` helper script before launching
@@ -135,12 +130,24 @@ wget https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/master/scrip
 chmod +x open_virtual_display
 ```
 
+In order to use virtual display:
+```bash
+./open_virtual_display && export DISPLAY=:99
+```
+
 ---
 
 ## Step 7 (Optional) — MathSAT
 
-MathSAT is an SMT solver used by some SMLP components. To install it:
+MathSAT is an Microsoft® SMT solver optionally used by SMLP.
+**Licensing limitations**
 
+Please, read [MathSat5 license terms](https://mathsat.fbk.eu/download.html) before using MathSat
+
+- *MathSAT5 is available for research and evaluation purposes only.* **It can not be used in a commercial environment, particularly as part of a commercial product, without written permission.** *MathSAT5 is provided as is, without any warranty.*
+
+
+To install MathSat:
 ```bash
 wget https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/master/scripts/docker/run_mathsat_build
 chmod +x run_mathsat_build
