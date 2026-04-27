@@ -1,8 +1,6 @@
 # SMLP Installation for Ubuntu 24.04
 
 This guide describes how to install [smlptech](https://pypi.org/project/smlptech/) on Ubuntu 24.04.
-Python 3.11 is required. Since Ubuntu 24.04 ships Python 3.12 by default, Python 3.11
-is installed from the [deadsnakes PPA](https://launchpad.net/~deadsnakes/+archive/ubuntu/ppa).
 
 ---
 
@@ -35,8 +33,6 @@ sudo apt-get install -y \
 
 ## Step 2 — Install Python 3.11 with Tk support
 
-Ubuntu 24.04 does not ship Python 3.11 in its standard repositories.
-Add the deadsnakes PPA and install:
 
 ```bash
 sudo add-apt-repository ppa:deadsnakes/ppa
@@ -48,9 +44,10 @@ python3.11 -m ensurepip
 
 ## Step 3 — Install smlptech
 
-Two installation modes are supported. Choose one.
+Two installation modes are supported: virtual environment and system.
+Virtual environment mode is recommended in case of any dependency conflicts with previously installed Python 3.11 packages.
 
-### Option A — User mode (virtual environment, recommended)
+### Option A — Virtual environment mode
 
 Installs smlptech into an isolated virtual environment under `~/.venv`.
 No `sudo` required for the installation itself.
@@ -120,7 +117,7 @@ export LC_ALL=en_US.UTF-8
 ## Step 6 (Optional) — Virtual display
 
 A virtual display is needed to run SMLP tools in non-GUI environment,
-for example on servers or in CI pipelines. `xvfb` was installed in Step 1.
+for example on servers or in CI pipelines.
 
 Download and run the `open_virtual_display` helper script before launching
 any SMLP tool that opens a GUI window:
