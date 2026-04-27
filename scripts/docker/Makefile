@@ -5,6 +5,7 @@ DOCKERFILE      := Dockerfile.$(IMAGE)
 GIT_BRANCH      := $(shell git branch --show-current)
 SMLP_COMMIT     := $(shell git ls-remote https://github.com/SMLP-Systems/smlp.git refs/heads/$(GIT_BRANCH) | cut -f1)
 RELEASE_TYPE    ?=
+INSTALL_MODE    ?=
 WHEEL_DST       := ../dist
 
 ifeq ($(RELEASE_TYPE),test)
@@ -13,17 +14,25 @@ else
     RELEASE_BUILD_ARG := --build-arg RELEASE_TYPE=
 endif
 
+ifeq ($(INSTALL_MODE),system)
+    INSTALL_MODE_ARG := --build-arg INSTALL_MODE=system
+    IMAGE_TAG        := $(IMAGE)-system
+else
+    INSTALL_MODE_ARG := --build-arg INSTALL_MODE=venv
+    IMAGE_TAG        := $(IMAGE)
+endif
+
 define copy_out
-	@if [[ "$(IMAGE)" == smlp-wheel* ]]; then \
-		echo "Copying wheel from container image $(IMAGE)..."; \
+	@if [[ "$(IMAGE_TAG)" == smlp-wheel* ]]; then \
+		echo "Copying wheel from container IMAGE_TAG $(IMAGE_TAG)..."; \
 		mkdir -p $(WHEEL_DST); \
-		docker create --name smlp_tmp $(IMAGE); \
+		docker create --name smlp_tmp $(IMAGE_TAG); \
 		docker cp smlp_tmp:/app/smlp/dist/. /tmp/smlp_dist_tmp; \
 		docker rm smlp_tmp; \
                 mv /tmp/smlp_dist_tmp/smlptech-*manylinux*.whl $(WHEEL_DST)/ ; \
                 rm -rf /tmp/smlp_dist_tmp; \
 	else \
-		echo "Skipping copy_out: IMAGE=$(IMAGE) does not start with 'smlp-wheel'"; \
+		echo "Skipping copy_out: IMAGE_TAG=$(IMAGE_TAG) does not start with 'smlp-wheel'"; \
 	fi
 endef
 
@@ -34,9 +43,10 @@ build: $(DOCKERFILE)
 	env DOCKER_BUILDKIT=1 docker build \
 		--build-arg GIT_BRANCH=$(GIT_BRANCH) \
 		$(RELEASE_BUILD_ARG) \
+		$(INSTALL_MODE_ARG) \
 		--progress=plain \
 		-f $(DOCKERFILE) \
-		-t $(IMAGE) \
+		-t $(IMAGE_TAG) \
 		.
 	$(copy_out)
 
@@ -45,9 +55,10 @@ rebuild_smlp: $(DOCKERFILE)
 		--build-arg CACHE_BUST_SMLP=$(SMLP_COMMIT) \
 		--build-arg GIT_BRANCH=$(GIT_BRANCH) \
 		$(RELEASE_BUILD_ARG) \
+		$(INSTALL_MODE_ARG) \
 		--progress=plain \
 		-f $(DOCKERFILE) \
-		-t $(IMAGE) \
+		-t $(IMAGE_TAG) \
 		.
 	$(copy_out)
 
@@ -56,25 +67,28 @@ clean_build: $(DOCKERFILE)
 		--no-cache \
 		--build-arg GIT_BRANCH=$(GIT_BRANCH) \
 		$(RELEASE_BUILD_ARG) \
+		$(INSTALL_MODE_ARG) \
 		--progress=plain \
 		-f $(DOCKERFILE) \
-		-t $(IMAGE) \
+		-t $(IMAGE_TAG) \
 		.
 	$(copy_out)
 
 help:
 	@echo    ""
-	@echo    "Usage: make [target] [IMAGE=<image_name>] [SMLP_COMMIT=<tagname>"]
+	@echo    "Usage: make [target] [IMAGE_TAG=<IMAGE_TAG_name>] [SMLP_COMMIT=<tagname>"] [INSTALL_MODE=system]
 	@echo    ""
 	@echo    "Targets:"
-	@echo    "  build                               Normal build using Dockerfile.<IMAGE>  (default target)"
+	@echo    "  build                               Normal build using Dockerfile.<IMAGE_TAG>  (default target)"
 	@echo    "  rebuild_smlp                        Force smlp clone (docker cache busted)"
 	@echo    "  rebuild_smlp SMLP_COMMIT=<tagname>  Force smlp clone (docker cache busted)"
 	@echo -e "                                          \033[1mif the only change versus previous build is the new tag pushed to remote\033[0m"
 	@echo    "  clean_build                         Full rebuild with --no-cache"
-	@echo    "  default image:                      $(IMAGE)"
+	@echo    "  default IMAGE_TAG:                  $(IMAGE_TAG)"
+	@echo    "  INSTALL_MODE=system:                smlptech package installation for ubuntu_24.04 will be done using sudo"
+	@echo    "                                      by default virtual environment will be used for ubuntu_24.04"
 	@echo    "  help                                Show this message"
 	@echo    ""
 	@echo    "Example:"
-	@echo    "  make build IMAGE=python311-dev"
+	@echo    "  make build IMAGE_TAG=python311-dev"
 	@echo    ""
