@@ -53,7 +53,7 @@ COPY run_git_clone .
 RUN ./run_git_clone $GIT_BRANCH
 
 # 5. ── MathSAT ───────────────────────────────────────────────────────────────────────────────────────────────
-RUN https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/$GIT_BRANCH/scripts/docker/run_mathsat_build
+RUN wget https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/$GIT_BRANCH/scripts/docker/run_mathsat_build
 RUN chmod +x run_mathsat_build
 RUN ./run_mathsat_build && rm -rf /tmp/mathsat*
 
