@@ -6,7 +6,7 @@ SMLP uses symbolic reasoning for ML model exploration and optimisation under ver
 <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png" alt="SMLP Overview" class="center" width="750" height="500">
 
 
-### Industry adoption: used at Intel in production for optimization of package/board layouts and signal integrity
+**Industry adoption:** SMLP is used at **Intel** in production for optimization of package/board layouts and signal integrity
 
 <details>
 <summary> SMLP applications in Intel and why stability is important  </summary><br>
@@ -223,35 +223,52 @@ tests/install/test_container_install mdmitry1/python311-dev
 
 ## Quickstart
 
-### Problem: find minimal distance between point (2,1) and unit circle<br>
+###  Problem: find minimal distance between point (2,1) and unit circle<br>
  
  <p align="left">
 <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/minimal_distance.png"  alt="Minimal Distance Problem" class="center" width="500" height="400"></p>
  
- Analytical solution for this problem:<br>
+ Analytical solution for this problem is:<br>
  `
 f(x*) = 6 - 2√5 ≈ 1.527864`, where `x* = (2/√5,1/√5) ≈ (0.894427, 0.447214)`
- <br><br>
- Solution: see `bash` script [quickstart.sh](https://raw.githubusercontent.com/SMLP-Systems/smlp/master/quickstart/quickstart.sh)<br><br>
- The script has 2 steps<br>
-  - Step 1: Create input dataset and visualize the problem<br>
-  - Step 2: Run SMLP<br>
-    SMLP creates polynomial model and finds approximate solution<br>
-  SMLP results
-  `f(x*) = 1.527865, x* = (0.894531, 0.447004)`<br>
-  are within 0.05% accuracy for `f(x*)` and `x*`
+ <br>
 
-Running the script:
-```bash
-smlp_package_path=$(python3.11 -c 'import smlp; from os.path import dirname; print(dirname(smlp.__file__))')
-$smlp_package_path/quickstart/quickstart.sh
-```
-<br>
+Let's solve this problem using SMLP.
+
+Download and unzip [quickstart.zip](https://raw.githubusercontent.com/SMLP-Systems/smlp/smlp-quickstart-v2/misc/quickstart.zip)
+(or if you cloned smlp cd to quickstart)
+
+Let's treat this problem as black-box function optimization.
 
 <details>
- <summary>Test case description</summary><br>
 
-   **1.** *constraint_dora.json* - spec in json format<br>
+<summary> Step 1: Generate samples of the distance function from the point (2,1) (for simplicity we use square of the distance as this does not change the optimum point):
+</summary>
+
+Run:
+
+```
+./constraint_dora_dataset.py
+```
+
+This should generate `Constraint_dora.csv.gz`, inside `Constraint_dora.csv` we have:
+
+```
+X1,X2,Y1
+-1.5,-1.5,18.5
+-1.495995995995996,-1.5,18.471988004020037
+-1.491991991991992,-1.5,18.4440080721362
+-1.487987987987988,-1.5,18.41606020434849
+......
+```
+</details>
+
+<details>
+
+<summary>
+Step 2: Create specification file (or use provided `constraint_dora.json`) where we specify types and ranges of variables and that the solution should be constrained to the unit circle:
+</summary>
+
 
 ```
 {
@@ -261,11 +278,12 @@ $smlp_package_path/quickstart/quickstart.sh
     {"label":"X2", "interface":"knob", "type":"real", "range":[-1.5,2.0], "rad-abs": 0.0},
     {"label":"Y1", "interface":"output", "type":"real"}
   ],
-  "alpha": "X1*X1+X2*X2<=1",
-  "objectives": {"objective1": "-Y1"}
+  "beta": "X1*X1+X2*X2<=1",
+  "objectives": {
+    "objective1": "-Y1"
+  }
 }
 ```
-
    <u>Legend:</u><br> 
 
 ```
@@ -274,13 +292,25 @@ $smlp_package_path/quickstart/quickstart.sh
    Y1 - output function
    rad-abs - sensitivity radius. 
              Zero radius means that solution sensitivity check is skipped
-   alpha - constraint depending on controllable variables
+   beta - constraint depending on controllable variables
    objective1 - optimization goal
 ```
 
-<br>
+Note SMLP by default maximizes the objective function so we use `-Y1` as the objective function.
 
-   **2.** SMLP command line arguments<br>
+</details>
+
+<details>
+<summary>
+Step 3: Run SMLP on data file and specification file:
+
+</summary>
+
+```
+smlp -data Constraint_dora.csv.gz -spec ./constraint_dora.json -pref results/Constraint_dora -mode optimize -model poly_sklearn -epsilon 0.0000005
+```
+
+SMLP command line arguments:<br>
 
    ```
     -data ${name}.csv.gz                  # input CSV dataset
@@ -291,27 +321,43 @@ $smlp_package_path/quickstart/quickstart.sh
     -epsilon 0.0000005                    # convergence threshold
 ```
 
+
+3 graphs will pop-up which show quality of the generated model in train/validation/test dataset split, (these need to be closed to proceed). <br>
+The generated results can be found in `results/` folder.  <br>
+
+`results/Constraint_dora_Constraint_dora_optimization_results.csv` contains the generated solution:
+
+```
+X1 = 0.89453125
+X2 = 0.4470043182373047
+Y1 = 1.5278653812777188
+```
+
+Solution found by SMLP corresponds to the analytical solution (`constraint_dora_poly_optimization_results_expected.txt`) with the specified precision:
+
+```
+X1 = 0.89453125
+X2 = 0.4470043182373047
+Y1 = 1.5278653812779421
+```
 </details>
 
-### Problem modification in the user area
+Steps 1 - 3 are wrapped in a script: `./quickstart.sh`
 
-- Step 1: Copy the problem to the current directory and enter problem work area<br>
-```bash
-smlp_package_path=$(python3.11 -c 'import smlp; from os.path import dirname; print(dirname(smlp.__file__))')
-\cp -rp $smlp_package_path/quickstart .
-cd quickstart
-```
-- Step 2: As an example, change constraint in order to get solution in rational numbers<br>
-  Let's change circle radius to 2/√5, so squared radius will be 4/5<br>
-  In order to do this, edit `constraint_dora.json` file and change right side of the inequality to be 4/5:<br>
-    `"alpha": "X1*X1+X2*X2<=4/5",`<br><br>
- [Analytical solution](https://www.wolframalpha.com/input?i=Minimize%3A+f%28x1%2C+x2%29+%3D+%28x1+-+2%29%5E2+%2B+%28x2+-+1%29%5E2+subject+to+x1%5E2+%2B+x2%5E2+-+4%2F5+%3C%3D+0) for modified problem:<br>
- `
-f(x*) = 9/5 = 1.8`, where `x* = (4/5,2/5) = (0.8, 0.4)`<br><br>
-- Step 3: Run the script from current directory
+<details>
+<summary> Step 4: As an example, let's modify the problem in order to get solution in rational numbers.</summary>
+<br>
+  Let's change circle radius to 2/√5, so squared radius will be 4/5.<br>
+  In order to do this, edit specification file `constraint_dora.json`  and change the right side of the inequality in the constraint to be 4/5:
+  
+    `"beta": "X1*X1+X2*X2<=4/5,"`
+ 
+  Run the script from current directory 
+
 ```bash
 ./quickstart.sh
 ```
+
 Expected SMLP results are within 0.03% accuracy for `f(x*)` and `x*`:
 ```bash 
 Working directory: <current_directory_realpath>/quickstart/Constraint_dora_results_<timestamp>
@@ -319,6 +365,13 @@ X1 = 0.800048828125
 X2 = 0.3999021053314209
 Y1 = 1.8000002980730385
 ```
+
+ [Analytical solution](https://www.wolframalpha.com/input?i=Minimize%3A+f%28x1%2C+x2%29+%3D+%28x1+-+2%29%5E2+%2B+%28x2+-+1%29%5E2+subject+to+x1%5E2+%2B+x2%5E2+-+4%2F5+%3C%3D+0) for this modified problem:<br>
+ 
+ `f(x*) = 9/5 = 1.8`, where `x* = (4/5,2/5) = (0.8, 0.4)`
+
+</details>
+
 
 ## [Tutorial](https://github.com/SMLP-Systems/smlp/tree/master/tutorial)
 
