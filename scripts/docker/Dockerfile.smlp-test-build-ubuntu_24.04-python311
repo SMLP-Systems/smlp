@@ -1,6 +1,6 @@
 FROM ubuntu:24.04
 
-# ── install mode ───────────────────────────────────────────────────────────────
+# ── Install mode ───────────────────────────────────────────────────────────────
 # INSTALL_MODE=venv   (default) : install into a per-user virtual environment
 # INSTALL_MODE=system           : install system-wide via: sudo pip3.11 install
 ARG INSTALL_MODE=venv
@@ -44,20 +44,7 @@ RUN groupadd --gid "${USER_GID}" "${USERNAME}" \
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
-# 4. Clone smlp (ARG busts the cache to always get latest) ────────────────────────────────────────────────────
-ARG CACHE_BUST_SMLP
-ARG GIT_BRANCH=master
-ARG RELEASE_TYPE
-RUN echo "Building image for branch: $GIT_BRANCH"
-COPY run_git_clone .
-RUN ./run_git_clone $GIT_BRANCH
-
-# 5. ── MathSAT ───────────────────────────────────────────────────────────────────────────────────────────────
-RUN wget https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/$GIT_BRANCH/scripts/docker/run_mathsat_build
-RUN chmod +x run_mathsat_build
-RUN ./run_mathsat_build && rm -rf /tmp/mathsat*
-
-# 6. ── Install smlptech  ─────────────────────────────────────────────────────────────────────────────────────
+# 4. ── Install smlptech  ──────────────────────────────────────────────────────────
 COPY run_pip_install  .
 COPY smlp_versions.py .
 RUN if [ "$INSTALL_MODE" = "venv" ]; then \
@@ -72,7 +59,7 @@ RUN if [ "$INSTALL_MODE" = "venv" ]; then \
         echo "ERROR: unknown INSTALL_MODE=$INSTALL_MODE (expected: venv | system)" >&2; exit 1; \
     fi
 
-# 7. ── Write validate.sh — python path depends on install mode ───────────────────
+# 5. ── Write validate.sh — python path depends on install mode ───────────────────
 RUN if [ "${INSTALL_MODE}" = "venv" ]; then \
         PYTHON=".venv/bin/python3.11"; \
     else \
@@ -85,17 +72,31 @@ RUN if [ "${INSTALL_MODE}" = "venv" ]; then \
  && printf 'sudo --non-interactive whoami\n' >> validate.sh \
  && chmod +x validate.sh
 
-# ── Validate at build time ────────────────────────────────────────────────────
+# 6. ─── Validate installation ──────────────────────────────────────────────────────────────
 RUN ./validate.sh
 
-# ── Install UTF-8 fonts ────────────────────────────────────────────────────
+# 7. ─── Optional: install helper script for virtual display in order to enable non-GUI mode 
+COPY open_virtual_display .
+
+# 8. ─── Optional: install UTF-8 fonts ──────────────────────────────────────────────────────
 RUN sudo locale-gen en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 ENV PATH=/home/${USERNAME}/.venv/bin:${PATH} 
 
-# ── Virtual display ──────────────────────────────────────────────────────────
-COPY open_virtual_display .
-# ── Default command ───────────────────────────────────────────────────────────
+# 9. ─── Optional: install MathSAT ───────────────────────────────────────────────────────────────────────────────────
+RUN wget https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/$GIT_BRANCH/scripts/docker/run_mathsat_build
+RUN chmod +x run_mathsat_build
+RUN ./run_mathsat_build && rm -rf /tmp/mathsat*
+
+# 10. ── For SMLP developers: clone smlp (ARG busts the cache to always get latest) ───────────────────────────────────
+ARG CACHE_BUST_SMLP
+ARG GIT_BRANCH=master
+ARG RELEASE_TYPE
+RUN echo "Building image for branch: $GIT_BRANCH"
+COPY run_git_clone .
+RUN ./run_git_clone $GIT_BRANCH
+
+# ── Default command ──────────────────────────────────────────────────────────────────────────────────────────
 CMD ["bash"]
