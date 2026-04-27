@@ -292,7 +292,7 @@ Step 2: Create specification file (or use provided `constraint_dora.json`) where
    Y1 - output function
    rad-abs - sensitivity radius. 
              Zero radius means that solution sensitivity check is skipped
-   alpha - constraint depending on controllable variables
+   beta - constraint depending on controllable variables
    objective1 - optimization goal
 ```
 
