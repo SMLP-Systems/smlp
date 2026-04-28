@@ -127,7 +127,7 @@ chmod +x open_virtual_display
 
 In order to use virtual display:
 ```bash
-./open_virtual_display && export DISPLAY=:99
+export DISPLAY= && ./open_virtual_display && export DISPLAY=:99
 ```
 
 ---
