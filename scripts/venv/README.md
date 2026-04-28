@@ -35,7 +35,7 @@ sudo apt-get install -y \
 
 
 ```bash
-sudo add-apt-repository ppa:deadsnakes/ppa
+sudo add-apt-repository -y ppa:deadsnakes/ppa
 sudo apt-get update
 sudo apt-get install -y python3.11 python3.11-venv python3.11-tk
 ```
@@ -100,14 +100,7 @@ Both commands should complete without errors.
 
 ```bash
 sudo locale-gen en_US.UTF-8
-```
-
-Add to `~/.bashrc` or `/etc/environment`:
-
-```bash
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US:en
-export LC_ALL=en_US.UTF-8
+sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LANGUAGE=en_US:en
 ```
 
 ---
@@ -142,11 +135,11 @@ Please, read [MathSat5 license terms](https://mathsat.fbk.eu/download.html) befo
 
 - *MathSAT5 is available for research and evaluation purposes only.* **It can not be used in a commercial environment, particularly as part of a commercial product, without written permission.** *MathSAT5 is provided as is, without any warranty.*
 
-To install MathSat:
+To install MathSat and validate installation:
 ```bash
 wget https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/master/scripts/docker/run_mathsat_build
 chmod +x run_mathsat_build
-./run_mathsat_build && rm -rf /tmp/mathsat*
+./run_mathsat_build && rm -rf /tmp/mathsat* && external/mathsat-5.6.8-linux-x86_64-reentrant/bin/mathsat -version
 ```
 
 ---

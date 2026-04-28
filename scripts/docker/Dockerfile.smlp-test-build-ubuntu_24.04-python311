@@ -79,17 +79,15 @@ RUN ./validate.sh
 COPY open_virtual_display .
 
 # 8. ─── Optional: install UTF-8 fonts ──────────────────────────────────────────────────────
-RUN sudo locale-gen en_US.UTF-8
-ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US:en
-ENV LC_ALL=en_US.UTF-8
+RUN sudo locale-gen en_US.UTF-8 && \
+    sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LANGUAGE=en_US:en
 ENV PATH=/home/${USERNAME}/.venv/bin:${PATH} 
 
 # 9. ─── Optional: install MathSAT ───────────────────────────────────────────────────────────────────────────────────
 ARG GIT_BRANCH=master
 RUN wget https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/$GIT_BRANCH/scripts/docker/run_mathsat_build
 RUN chmod +x run_mathsat_build
-RUN ./run_mathsat_build && rm -rf /tmp/mathsat*
+RUN ./run_mathsat_build && rm -rf /tmp/mathsat* && external/mathsat-5.6.8-linux-x86_64-reentrant/bin/mathsat -version
 
 # 10. ── For SMLP developers: clone smlp (ARG busts the cache to always get latest) ───────────────────────────────────
 ARG CACHE_BUST_SMLP
