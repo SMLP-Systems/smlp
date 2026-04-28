@@ -38,7 +38,6 @@ sudo apt-get install -y \
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt-get update
 sudo apt-get install -y python3.11 python3.11-venv python3.11-tk
-python3.11 -m ensurepip
 ```
 ---
 
@@ -70,9 +69,8 @@ export PATH=~/.venv/bin:$PATH
 Installs smlptech system-wide using `sudo`. This mirrors a typical end-user installation on their own machine.
 
 ```bash
-
+sudo python3.11 -m ensurepip
 sudo pip3.11 install --ignore-installed smlptech
-
 ```
 
 > **Note:** `--ignore-installed` is required because Ubuntu ships some of
