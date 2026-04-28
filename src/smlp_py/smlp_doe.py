@@ -434,7 +434,12 @@ class SmlpDoepy:
             raise Exception('Unsupported DOE algorithm ' + str(doe_algo))
          
         self._doepy_logger.info('DOE table with ' + str(doe_out_df.shape[0]) + ' entries has been generated')
-        doe_out_df.to_csv(self.get_doe_results_file_name(report_file_prefix), index=False)
+        assert report_file_prefix is not None
+        
+        # report_file_prefix can be passed as "" to indicate that the doe file should not be printed out.
+        # This is the case for model refinement flow where generated DOE is used to augment the training data.
+        if report_file_prefix != "":
+            doe_out_df.to_csv(self.get_doe_results_file_name(report_file_prefix), index=False)
         return doe_out_df
 
         
