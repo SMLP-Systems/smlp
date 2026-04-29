@@ -166,6 +166,11 @@ class SmlpConfig:
         assert not (args.use_model and args.save_model), \
             "Saving model should be disabled when a saved model is used"
         
+        if args.model == 'system':
+            args.prediction_plots = False
+            args.response_plots = False
+            args.interactive_plots = False
+                
         # compute and save report_file_prefix and model_file_prefix as part of self
         self.report_file_prefix, self.model_file_prefix = self.args_get_report_name_prefix(args.labeled_data,
             args.log_files_prefix, args.output_directory, args.new_data, args.model_name, args.save_model,
