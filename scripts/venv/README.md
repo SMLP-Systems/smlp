@@ -144,16 +144,6 @@ chmod +x run_mathsat_build
 
 ---
 
-## Step 8 (For SMLP developers) — Clone the smlp repository
-
-```bash
-# Replace `master` by development branch name, if needed
-GIT_BRANCH=master
-git clone --branch $GIT_BRANCH https://github.com/SMLP-Systems/smlp.git
-```
-
----
-
 ## Summary
 
 | Step | Description | Required |
@@ -165,4 +155,3 @@ git clone --branch $GIT_BRANCH https://github.com/SMLP-Systems/smlp.git
 | 5 | UTF-8 locale | Optional |
 | 6 | Virtual display (`xvfb`) | Optional |
 | 7 | MathSAT SMT solver | Optional |
-| 8 | Clone smlp repository | Developers only |
