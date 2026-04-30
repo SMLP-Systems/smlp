@@ -7,7 +7,7 @@ DOCKERFILE      := Dockerfile.$(IMAGE)
 
 build: $(DOCKERFILE)
 	env DOCKER_BUILDKIT=1 docker build --progress=plain -f $(DOCKERFILE) -t $(IMAGE)  . && \
-	docker run --rm -it readme_venv ./z3_version.py
+	docker run --rm -it $(IMAGE) ./z3_version.py
 
 help:
 	@echo    ""
