@@ -54,7 +54,7 @@ smlp -h
   - Windows: RealVNC®
   - Ubuntu 24.04: remmina
 
-[RealVNC® installation instructions](./RealVNC.md)
+[RealVNC® installation instructions](https://github.com/SMLP-Systems/smlp/blob/master/doc/RealVNC.md)
 
 - Remmina installation command
 
