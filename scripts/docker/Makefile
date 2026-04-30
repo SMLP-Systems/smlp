@@ -92,5 +92,5 @@ help:
 	@echo    "  help                                Show this message"
 	@echo    ""
 	@echo    "Example:"
-	@echo    "  make build IMAGE_TAG=python311-dev"
+	@echo    "  make build IMAGE=python311-dev"
 	@echo    ""
