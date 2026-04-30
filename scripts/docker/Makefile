@@ -76,7 +76,7 @@ clean_build: $(DOCKERFILE)
 
 help:
 	@echo    ""
-	@echo    "Usage: make [target] [IMAGE_TAG=<IMAGE_TAG_name>] [RELEASE_TYPE=test] [SMLP_COMMIT=<tagname>"] [INSTALL_MODE=system]
+	@echo    "Usage: make [target] [IMAGE=<IMAGE_name>] [RELEASE_TYPE=test] [SMLP_COMMIT=<tagname>"] [INSTALL_MODE=system]
 	@echo    ""
 	@echo    "Targets:"
 	@echo    "  build                               Normal build using Dockerfile.<IMAGE_TAG>  (default target)"
@@ -84,7 +84,7 @@ help:
 	@echo    "  rebuild_smlp SMLP_COMMIT=<tagname>  Force smlp clone (docker cache busted)"
 	@echo -e "                                          \033[1mif the only change versus previous build is the new tag pushed to remote\033[0m"
 	@echo    "  clean_build                         Full rebuild with --no-cache"
-	@echo    "  default IMAGE_TAG:                  $(IMAGE_TAG)"
+	@echo    "  default IMAGE:                      $(IMAGE)"
 	@echo    "  RELEASE_TYPE=test                   the latest version installed on https://test.pypi.org/project/smlptech/#history will be used"
 	@echo    "                                      by default version installed on https://pypi.org/project/smlptech/#history will be used"
 	@echo    "  INSTALL_MODE=system:                smlptech package installation for ubuntu_24.04 will be done using sudo"
