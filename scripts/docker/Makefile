@@ -1,6 +1,6 @@
 SHELL           := /bin/bash
 IMAGE           ?= smlp-wheel_2_28-python311
-IMAGES          := $(shell ls  Dockerfile.* | cut -d. -f2)
+IMAGES          := $(shell ls  Dockerfile.* | cut -d. -f2-)
 DOCKERFILE      := Dockerfile.$(IMAGE)
 
 GIT_BRANCH      := $(shell git branch --show-current)
