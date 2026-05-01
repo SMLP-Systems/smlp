@@ -77,10 +77,10 @@ clean_build: $(DOCKERFILE)
 
 help:
 	@echo    ""
-	@echo    "Usage: make [target] [IMAGE=<IMAGE_name>] [RELEASE_TYPE=test] [SMLP_COMMIT=<tagname>"] [INSTALL_MODE=system]
+	@echo    "Usage: make [target] [IMAGE=<image_name>] [RELEASE_TYPE=test] [SMLP_COMMIT=<tagname>"] [INSTALL_MODE=system]
 	@echo    ""
 	@echo    "Targets:"
-	@echo    "  build                               Normal build using Dockerfile.<image>  (default target)"
+	@echo    "  build                               Normal build using Dockerfile.<image_name>  (default target)"
 	@echo    "  supported images:                   $(IMAGES)"
 	@echo    "  rebuild_smlp                        Force smlp clone (docker cache busted)"
 	@echo    "  rebuild_smlp SMLP_COMMIT=<tagname>  Force smlp clone (docker cache busted)"
