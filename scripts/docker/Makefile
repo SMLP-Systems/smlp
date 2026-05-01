@@ -1,5 +1,6 @@
 SHELL           := /bin/bash
 IMAGE           ?= smlp-wheel_2_28-python311
+IMAGES          := $(shell ls  Dockerfile.* | cut -d. -f2)
 DOCKERFILE      := Dockerfile.$(IMAGE)
 
 GIT_BRANCH      := $(shell git branch --show-current)
@@ -84,6 +85,7 @@ help:
 	@echo    "  rebuild_smlp SMLP_COMMIT=<tagname>  Force smlp clone (docker cache busted)"
 	@echo -e "                                          \033[1mif the only change versus previous build is the new tag pushed to remote\033[0m"
 	@echo    "  clean_build                         Full rebuild with --no-cache"
+	@echo    "  supported images:                   $(IMAGES)"
 	@echo    "  default IMAGE:                      $(IMAGE)"
 	@echo    "  RELEASE_TYPE=test                   the latest version installed on https://test.pypi.org/project/smlptech/#history will be used"
 	@echo    "                                      by default version installed on https://pypi.org/project/smlptech/#history will be used"
