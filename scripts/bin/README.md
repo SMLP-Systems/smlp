@@ -15,10 +15,10 @@ All `enter*` commands mentioned below create `$HOME/shared` directory and mount 
 
 | Repository | Tag | Image Index Digest |
 |--------------------------------------------------|-------|-------------|
-| mdmitry1/smlp-test-build-almalinux\_9-python311   | latest | sha256:dc809076e0ea |
-| mdmitry1/smlp-test-build-opensuse\_15.5-python311 | latest | sha256:f0c8ff135d72 |
-| mdmitry1/smlp-test-build-ubuntu\_22.04-python311  | latest | sha256:00dc5082903e |
-| mdmitry1/python311-dev                            | latest | sha256:cb0b0faac22f |
+| mdmitry1/smlp-test-build-almalinux\_9-python311   | latest | sha256:a06cdf5fe23e |
+| mdmitry1/smlp-test-build-opensuse\_15.5-python311 | latest | sha256:42693e6e9eaa |
+| mdmitry1/smlp-test-build-ubuntu\_22.04-python311  | latest | sha256:15f41fd25dfa |
+| mdmitry1/python311-dev                            | latest | sha256:53f8f6f4455a |
 
 GUI and data sharing is supported for container `mdmitry1/python311-dev:latest` only.
 Virtual display is supported for all containers.
