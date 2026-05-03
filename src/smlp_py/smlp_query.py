@@ -157,12 +157,12 @@ class SmlpQuery:
         #res = solver.check()
         return res
 
-    
-    
-    # TODO: what about eta-interval and eta_global constraints, as well as eta-grid constraints for
-    # integer control (knob) variables? Looks like they should be used as constrints -- look for a cex
-    # to a candidate only under these (and other). Grid constraints for continuous variable should not 
-    # be used
+
+    # Eta constraints (eta ranges, eta grid, and eta global constraints) are not used here because
+    # the witness cond assigns constant values to knobs that already satisfy all eta constraints.
+    # In some modes, this holds by construction due to how the witness is generated; in other modes,
+    # it holds because feasibility with respect to eta constraints has already been checked for the
+    # witness and the corresponding query.
     #   ! ( theta x y -> alpha y -> beta y /\ obj y >= T ) =
     #   ! ( ! theta x y \/ ! alpha y \/ beta y /\ obj y >= T ) =
     #   theta x y /\ alpha y /\ ! ( beta y /\ obj y >= T) 
