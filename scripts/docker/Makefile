@@ -1,6 +1,8 @@
 SHELL           := /bin/bash
 IMAGE           ?= smlp-wheel_2_28-python311
-IMAGES          := $(shell ls  Dockerfile.* | cut -d. -f2-)
+IMAGES          := $(shell ls  Dockerfile.* | cut -d. -f2- | sort -r)
+space           := $(subst x, ,x)
+IMAGES_DISPLAY  := $(subst $(space),\n                                        ,$(IMAGES))
 DOCKERFILE      := Dockerfile.$(IMAGE)
 
 GIT_BRANCH      := $(shell git branch --show-current)
@@ -80,18 +82,17 @@ help:
 	@echo    "Usage: make [target] [IMAGE=<image_name>] [RELEASE_TYPE=test] [SMLP_COMMIT=<tagname>"] [INSTALL_MODE=system]
 	@echo    ""
 	@echo    "Targets:"
-	@echo    "  build                               Normal build using Dockerfile.<image_name>  (default target)"
-	@echo    "  supported images:                   $(IMAGES)"
-	@echo    "  rebuild_smlp                        Force smlp clone (docker cache busted)"
-	@echo    "  rebuild_smlp SMLP_COMMIT=<tagname>  Force smlp clone (docker cache busted)"
-	@echo -e "                                          \033[1mif the only change versus previous build is the new tag pushed to remote\033[0m"
-	@echo    "  clean_build                         Full rebuild with --no-cache"
-	@echo    "  default image:                      $(IMAGE)"
-	@echo    "  RELEASE_TYPE=test                   the latest version installed on https://test.pypi.org/project/smlptech/#history will be used"
-	@echo    "                                      by default version installed on https://pypi.org/project/smlptech/#history will be used"
-	@echo    "  INSTALL_MODE=system:                smlptech package installation for ubuntu_24.04 will be done using sudo"
-	@echo    "                                      by default virtual environment will be used for ubuntu_24.04"
-	@echo    "  help                                Show this message"
+	@echo    "  build :                               Incremental build using Dockerfile.<image_name> (default target). Docker cache is used"
+	@echo -e "    supported images:                   $(IMAGES_DISPLAY)"
+	@echo    "    default image:                      $(IMAGE)"
+	@echo    "  rebuild_smlp :                        Force smlp clone after commit pushed to remote branch"
+	@echo -e "  rebuild_smlp SMLP_COMMIT=<tagname> :  Force smlp clone after commit or \033[1mtag pushed to remote branch\033[0m"
+	@echo    "  clean_build :                         Full rebuild. Docker cache is ignored"
+	@echo    "  RELEASE_TYPE=test  :                  the latest version installed on https://test.pypi.org/project/smlptech/#history will be used"
+	@echo    "                                        by default version installed on https://pypi.org/project/smlptech/#history will be used"
+	@echo    "  INSTALL_MODE=system :                 smlptech package installation for ubuntu_24.04 will be done using sudo"
+	@echo    "                                        by default virtual environment will be used for ubuntu_24.04"
+	@echo    "  help :                                Show this message"
 	@echo    ""
 	@echo    "Example:"
 	@echo    "  make build IMAGE=python311-dev"
