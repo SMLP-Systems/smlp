@@ -63,7 +63,7 @@ export PATH=~/.venv/bin:$PATH
 
 ---
 
-## Step 4 (Recommended) Validate the installation
+## Step 4 — (Recommended) Validate the installation
 
 Run the following checks to confirm the installation is working:
 
@@ -79,7 +79,7 @@ Both commands should complete without errors.
 
 ---
 
-## Step 5 (Optional) — Install MathSAT
+## Step 5 — (Optional) Install MathSAT
 
 MathSAT is a Satisfiability Modulo Theories (SMT) solver developed as a joint project between Fondazione Bruno Kessler (FBK) and the University of Trento (DISI) in Italy. It is optionally used by SMLP.
 
