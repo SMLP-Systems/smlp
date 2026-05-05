@@ -149,7 +149,7 @@ Recommended VNC client:
 - Ubuntu: `remmina`
 - Windows: RealVNC®
   
-  Details - see [RealVNC® installation instructions](doc/RealVNC.md)
+  Details - see [RealVNC® installation instructions](https://github.com/SMLP-Systems/smlp/blob/master/doc/RealVNC.md)
 
 </details>
 
