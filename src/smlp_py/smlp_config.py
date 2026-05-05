@@ -5,6 +5,56 @@ import os, argparse, json
 
 from .smlp_utils import str_to_bool
 
+class _ConciseHelpFormatter(argparse.HelpFormatter):
+    """Custom formatter for setting argparse formatter_class. Identical to the
+    default formatter, except that the metavar is not repeated for every
+    possible Optional. E.g., instead of
+
+      -f FILE, --file FILE    Some text describing this option.
+
+    this class will print
+
+      -f, --file FILE         Some text describing this option.
+
+    thereby reducing clutter in the generated help message.
+
+    It will also keep paragraphs in the description and epilog, that is,
+    separations of text by two line breaks instead of replacing them with
+    a single space.
+    """
+
+    def _split_lines(self, text, width):
+        r = []
+        for par in text.split('\n\n'):
+            r.extend(super()._split_lines(par, width))
+            r.append('')
+        return r
+
+    def _fill_text(self, text, width, indent):
+        return '\n\n'.join(
+            super()._fill_text(par, width, indent)
+            for par in text.split('\n\n')
+        )
+
+    def _format_action_invocation(self, action):
+        if not action.option_strings:
+            metavar, = self._metavar_formatter(action, action.dest)(1)
+            return metavar
+        else:
+            # if the Optional doesn't take a value, format is:
+            #    -s, --long
+            if action.nargs == 0:
+                parts = action.option_strings
+            # if the Optional takes a value, format is:
+            #    -s, --long ARGS
+            else:
+                default = action.dest.upper()
+                args_string = self._format_args(action, default)
+                parts = list(action.option_strings)
+                parts[-1] += ' ' + args_string
+            return ', '.join(parts)
+
+
 class SmlpConfig:
     def __init__(self):
         self.report_file_prefix = None
@@ -144,7 +194,15 @@ class SmlpConfig:
     # sklearm caret, keras -- model_params_dict = keras_dict | sklearn_dict | caret_dict, 
     # as well as data and logger related parameters: data_params_dict and logger_params_dict
     def args_dict_parse(self, argv, args_dict):
-        parser = argparse.ArgumentParser(prog=argv[0])
+        parser = argparse.ArgumentParser(
+            prog=argv[0],
+            formatter_class=(
+                lambda prog: _ConciseHelpFormatter(
+                    prog,
+                #    max_help_position=24,
+                )
+            ),
+        )
         
         for p, v in args_dict.items():
             if 'default' in v:
