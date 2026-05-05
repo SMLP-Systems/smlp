@@ -17,17 +17,19 @@ This guide describes how to install [smlptech](https://pypi.org/project/smlptech
 ```bash
 sudo apt-get update
 sudo apt-get install -y \
-    git \
     jq \
     libgomp1 \
-    locales \
     tcsh \
-    tzdata \
-    vim \
     wget \
-    x11-xserver-utils \
-    xvfb
 ```
+
+| Dependency | Used by | Mandatory
+|---|---|---|
+| jq | Quickstart and Tutorial | No
+| **libgomp1** | **SMLP** | **Yes**
+| tcsh | Tutorial | No
+| wget | Mathsat installation | No
+
 
 ---
 
@@ -41,12 +43,7 @@ sudo apt-get install -y python3.11 python3.11-venv python3.11-tk
 ```
 ---
 
-## Step 3 — Install smlptech
-
-Two installation modes are supported: virtual environment and system.
-Virtual environment mode is recommended in case of any dependency conflicts with previously installed Python 3.11 packages.
-
-### Option A — Virtual environment mode
+## Step 3 — Install smlptech in virtual environment
 
 Installs smlptech into an isolated virtual environment under `~/.venv`.
 No `sudo` required for the installation itself.
@@ -64,23 +61,9 @@ To make the virtual environment available in every new shell session, add the fo
 export PATH=~/.venv/bin:$PATH
 ```
 
-### Option B — System mode
-
-Installs smlptech system-wide using `sudo`. This mirrors a typical end-user installation on their own machine.
-
-```bash
-sudo python3.11 -m ensurepip
-sudo pip3.11 install --ignore-installed smlptech
-```
-
-> **Note:** `--ignore-installed` is required because Ubuntu ships some of
-> smlptech's dependencies (e.g. `blinker`) as apt-managed packages without
-> pip `RECORD` files. Without this flag, pip will fail trying to uninstall them.
-
-
 ---
 
-## Step 4 — Validate the installation
+## Step 4 (Recommended) Validate the installation
 
 Run the following checks to confirm the installation is working:
 
@@ -96,36 +79,7 @@ Both commands should complete without errors.
 
 ---
 
-## Step 5 (Optional) — UTF-8 locale. This step is recommended if you encounter encoding issues
-
-```bash
-sudo locale-gen en_US.UTF-8
-sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LANGUAGE=en_US:en
-```
-
----
-
-## Step 6 (Optional) — Virtual display
-
-A virtual display is needed to run SMLP tools in non-GUI environment,
-for example on servers or in CI pipelines.
-
-Download and run the `open_virtual_display` helper script before launching
-any SMLP tool that opens a GUI window:
-
-```bash
-wget https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/master/scripts/docker/open_virtual_display
-chmod +x open_virtual_display
-```
-
-In order to use virtual display:
-```bash
-export DISPLAY= && ./open_virtual_display && export DISPLAY=:99
-```
-
----
-
-## Step 7 (Optional) — MathSAT
+## Step 5 (Optional) — Install MathSAT
 
 MathSAT is a Satisfiability Modulo Theories (SMT) solver developed as a joint project between Fondazione Bruno Kessler (FBK) and the University of Trento (DISI) in Italy. It is optionally used by SMLP.
 
@@ -136,6 +90,7 @@ Please, read [MathSat5 license terms](https://mathsat.fbk.eu/download.html) befo
 - *MathSAT5 is available for research and evaluation purposes only.* **It can not be used in a commercial environment, particularly as part of a commercial product, without written permission.** *MathSAT5 is provided as is, without any warranty.*
 
 To install MathSat and validate installation:
+
 ```bash
 wget https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/master/scripts/docker/run_mathsat_build
 chmod +x run_mathsat_build
@@ -150,8 +105,6 @@ chmod +x run_mathsat_build
 |------|-------------|----------|
 | 1 | System dependencies | Yes |
 | 2 | Python 3.11 + Tk via deadsnakes PPA | Yes |
-| 3 | Install smlptech (venv or system mode) | Yes |
-| 4 | Validate installation | Yes |
-| 5 | UTF-8 locale | Optional |
-| 6 | Virtual display (`xvfb`) | Optional |
-| 7 | MathSAT SMT solver | Optional |
+| 3 | Install smlptech | Yes |
+| 4 | Validate installation | No |
+| 5 | MathSAT SMT solver | Optional |
