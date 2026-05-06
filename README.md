@@ -252,13 +252,13 @@ Starting VNC server within container:
 ./start_vnc
 ```
 
-Recommended VNC client: 
+Recommended VNC clients: 
 
 - Ubuntu: `remmina`
 - Windows: RealVNC®
   
 <details>
- <summary> RealVNC® installation instructions for Windows </summary>
+ <summary style="padding-left: 1.7em;"> RealVNC® installation instructions for Windows </summary>
 
 ## Step 1:
 
@@ -316,7 +316,7 @@ netsh interface portproxy show all
 
 WSL2's IP address may change after restart. In this case, **Step 3** should be repeated after the reboot
 
-</details>
+</details><br>
 
 </details>
 
