@@ -43,7 +43,7 @@ endef
 .DEFAULT_GOAL := build
 
 build: $(DOCKERFILE)
-	env DOCKER_BUILDKIT=1 docker build \
+	env DOCKER_BUILDKIT=1 docker build --network=host \
 		--build-arg GIT_BRANCH=$(GIT_BRANCH) \
 		$(RELEASE_BUILD_ARG) \
 		$(INSTALL_MODE_ARG) \
@@ -54,7 +54,7 @@ build: $(DOCKERFILE)
 	$(copy_out)
 
 rebuild_smlp: $(DOCKERFILE)
-	env DOCKER_BUILDKIT=1 docker build \
+	env DOCKER_BUILDKIT=1 docker build --network=host \
 		--build-arg CACHE_BUST_SMLP=$(SMLP_COMMIT) \
 		--build-arg GIT_BRANCH=$(GIT_BRANCH) \
 		$(RELEASE_BUILD_ARG) \
@@ -66,7 +66,7 @@ rebuild_smlp: $(DOCKERFILE)
 	$(copy_out)
 
 clean_build: $(DOCKERFILE)
-	env DOCKER_BUILDKIT=1 docker build \
+	env DOCKER_BUILDKIT=1 docker build --network=host \
 		--no-cache \
 		--build-arg GIT_BRANCH=$(GIT_BRANCH) \
 		$(RELEASE_BUILD_ARG) \
