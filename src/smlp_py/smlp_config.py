@@ -10,9 +10,9 @@ from .smlp_utils import str_to_bool
 
 class _ConciseHelpFormatter(argparse.HelpFormatter):
     """
-    Hybrid formatter:
-      - Multiline help (with explicit newlines) is preserved verbatim
-      - Single-paragraph help is wrapped normally (HelpFormatter behavior)
+    Hybrid formatter _ConciseHelpFormatter:
+      - Help strings containing explicit newline characters (`\n`) are preserved verbatim
+      - Help strings without explicit newlines are wrapped normally (HelpFormatter behavior)
       - Option invocations are concise (-s, --long ARG)
         E.g., instead of
           -f FILE, --file FILE    Some text describing this option.
@@ -28,6 +28,12 @@ class _ConciseHelpFormatter(argparse.HelpFormatter):
 
         # Otherwise, let argparse wrap normally
         return super()._split_lines(text, width)
+
+    def _fill_text(self, text, width, indent):
+        return '\n\n'.join(
+            super()._fill_text(par, width, indent)
+            for par in text.split('\n\n')
+        )
 
     def _format_action_invocation(self, action):
         if not action.option_strings:
@@ -66,7 +72,7 @@ class SmlpConfig:
         self.modes_data_dict = {
             'analytics_mode': {'abbr':'mode', 'default':self._DEF_ANALYTICS_MODE, 'type':str,
                 'help': '''\
-                    What kind of analysis should be performed. Supported modes
+                      What kind of analysis should be performed. Supported modes [default: {}]:
                       train         Train a model specified using option -model
                       predict       Load or train a model and run prediction
                       optimize      Run optimization over model or system outputs
@@ -76,7 +82,6 @@ class SmlpConfig:
                       subgroups     Discover data subgroups as feature-range tuples
                       doe           Perform design-of-experiments analysis
                       discretize    Discretize continuous features or responses
-                    [default: {}]
                 '''.format(str(self._DEF_ANALYTICS_MODE))},
             'labeled_data': {'abbr':'data', 'default':self._DEF_LABELED_DATA, 'type':str, 
                 'help':'Path, possibly excluding the .csv, or including gz or bz2 suffix, to input ' +
@@ -199,7 +204,7 @@ class SmlpConfig:
     # sklearm caret, keras -- model_params_dict = keras_dict | sklearn_dict | caret_dict, 
     # as well as data and logger related parameters: data_params_dict and logger_params_dict
     def args_dict_parse(self, argv, args_dict):
-        parser = argparse.ArgumentParser(formatter_class=_ConciseHelpFormatter)
+        parser = argparse.ArgumentParser(prog=argv[0], formatter_class=_ConciseHelpFormatter)
         
         for p, v in args_dict.items():
             if 'default' in v:

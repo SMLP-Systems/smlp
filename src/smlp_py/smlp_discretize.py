@@ -57,8 +57,7 @@ class SmlpDiscretize:
         self.discr_params_dict = {
             'discretization_algo': {'abbr':'discr_algo', 'default':self._DEF_DISCRETIZATION_ALGO, 'type':str,
                 'help': '''\
-                    Discretization algorithm to use.
-                      The possible options are:
+                      Discretization algorithm to use. The possible options are [default: {}]:
                       uniform     Constructs constant-width bins.
                       quantile    Uses quantile values to create bins with approximately equal
                                   numbers of samples in each feature.
@@ -70,7 +69,6 @@ class SmlpDiscretize:
                                   values for that feature.
                       ranks       Converts feature values into ranks, as used in Spearman’s
                                   rank correlation.
-                      [default: {}]
                     '''.format(str(self._DEF_DISCRETIZATION_ALGO))},
             'discretization_bins': {'abbr':'discr_bins', 'default':self._DEF_DISCRETIZATION_BINS, 'type':int,
                 'help':'Number of required bins in a discretization algorithm ' + 
@@ -81,8 +79,8 @@ class SmlpDiscretize:
                     '[default {}]'.format(str(self._DEF_DISCRETIZATION_LABELS))},
             'discretization_type': {'abbr':'discr_type', 'default':self._DEF_DISCRETIZATION_TYPE, 'type':str,
                 'help': '''\
-                    The type of the categorical feature resulting from discretization.
-                      Possible values are:
+                      The type of the categorical feature resulting from discretization.
+                      Possible values are [default: {}]:
                       object      The feature will be of type "object", with string values.
                       category    The feature will be of pandas type "category", with unordered
                                   levels. These correspond to factors in statistics.
@@ -90,7 +88,6 @@ class SmlpDiscretize:
                                   levels. These correspond to ordered factors in statistics.
                       integer     The feature will be of type int. Its values will be the bin
                                   numbers obtained when enumerating bins from left to right.
-                      [default: {}]
                     '''.format(str(self._DEF_DISCRETIZATION_TYPE))},
         }
         

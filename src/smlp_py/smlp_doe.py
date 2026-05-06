@@ -61,17 +61,17 @@ class SmlpDoepy:
                 'help':'Number of samples (experiments) to be generated [default: {}]'.format(str(None))},
             'doe_design_resolution':{'abbr':'doe_resolution', 'default':None, 'type':int,
                 'help': '''\
-                    Desired design resolution.
-                      The resolution of a design is defined as the length of the shortest
-                      word in the defining relation. The resolution describes the level of
-                      confounding between factors and interaction effects, where higher
-                      resolution indicates a lower degree of confounding.
-                      For example, consider the 2^4−1 design defined by:
+                     Desired design resolution [default: Half of features count in doe_factor_level_ranges]:
+                     The resolution of a design is defined as the length of the shortest
+                     word in the defining relation. The resolution describes the level of
+                     confounding between factors and interaction effects, where higher
+                     resolution indicates a lower degree of confounding.
+                     For example, consider the 2^4−1 design defined by:
                         gen = "a b c ab"
-                      The factor "d" is defined by "ab" with defining relation I = "abd",
-                      where I is the unit vector. In this example, the shortest word is
-                      "abd", meaning this is a resolution III design. In practice, 
-                      resolution III, IV, and V designs are most commonly applied:
+                     The factor "d" is defined by "ab" with defining relation I = "abd",
+                     where I is the unit vector. In this example, the shortest word is
+                     "abd", meaning this is a resolution III design. In practice,
+                     resolution III, IV, and V designs are most commonly applied:
                         III:
                           Main effects may be confounded with two-factor interactions.
                         IV:
@@ -82,7 +82,6 @@ class SmlpDoepy:
                           Two-factor interactions are unconfounded with up to three-factor
                           interactions. Three-factor interactions may be confounded with
                           each other.
-                      [default: Half of the total feature count in doe_factor_level_ranges]
                     '''
             },
             'doe_spec_file': {'abbr':'doe_spec', 'type':str,
@@ -101,9 +100,9 @@ class SmlpDoepy:
                     'values: "orthogonal" or "o", and "rotatable" or "r" [default {}]'.format(str(self.BOX_WILSON_ALPHA))},
             'doe_central_composite_face': {'abbr':'doe_cc_face', 'default':self.BOX_WILSON_FACE, 'type':str,
                 'help': '''\
-                    The relation between the star points and the corner (factorial) points.
-                      There are three options for this input:
-                      "circumscribed" or "ccc":
+                     The relation between the star points and the corner (factorial) points [default: {}].
+                     There are three options for this input:
+                     "circumscribed" or "ccc":
                         This is the original form of the central composite design.
                         The star points are at some distance "alpha" from the center,
                         based on the desired design properties. The star points establish
@@ -112,20 +111,19 @@ class SmlpDoepy:
                         and require five levels for each factor. Augmenting an existing
                         factorial or resolution V fractional factorial design with star
                         points can produce this design.
-                      "inscribed" or "cci":
+                     "inscribed" or "cci":
                         For situations in which the specified factor limits are true
                         constraints, the CCI design uses the factor settings as the star
                         points and creates a factorial or fractional factorial design
                         within those limits. In other words, a CCI design is a scaled-down
                         CCC design, with each factor level of the CCC design divided by 
                         "alpha". This design also requires five levels for each factor.
-                      "faced" or "ccf":
+                     "faced" or "ccf":
                         In this design, the star points are located at the center of each
                         face of the factorial space, so "alpha" = 1. This variety requires
                         three levels for each factor. Augmenting an existing factorial or 
                         resolution V design with appropriate star points can also produce
                         this design.
-                      [default: {}]
                     '''.format(str(self.BOX_WILSON_CENTER))
               }
         }

@@ -47,7 +47,7 @@ class SmlpModels:
         self._model_params_common_dict = {
             'model': {'abbr': 'model', 'type': str,
                 'help': '''\
-                    Type of model to use. Supported values:
+                      Type of model to use. Supported values [default: none]:
                       dt_caret        Decision tree (caret backend)
                       dt_sklearn      Decision tree (scikit-learn)
                       et_caret        Extra-trees ensemble (caret backend)
@@ -57,7 +57,6 @@ class SmlpModels:
                       poly_sklearn    Polynomial regression (scikit-learn)
                       nn_keras        Neural network (Keras)
                       system          No model is trained; system expressions are defined in the spec file.
-                    [default: none]
                 '''
             },
             'save_model': {'abbr':'save_model', 'default': self._DEF_SAVE_MODEL, 'type':str_to_bool,
@@ -69,15 +68,15 @@ class SmlpModels:
                     '[default: ' + str(self._DEF_USE_MODEL) + ']'},
             'model_name': {'abbr':'model_name', 'type':str,
                 'help': '''\
-                    Name of the saved model.
-                      If use_model is True:
+                     Name of the saved model.
+                     If use_model is True:
                         model_name must include the full path to the directory containing
                         the saved model, plus the model name (e.g., /tmp/my_best_model).
-                      If save_model is True:
+                     If save_model is True:
                         model_name is only the model’s base name (e.g., my_best_model).
                         It will be appended to the output directory to determine where
                         the model files are saved (e.g., output_dir/my_best_model).
-                      If model_name is not provided, it defaults to:
+                     If model_name is not provided, it defaults to:
                         <prefix>_[<response_name>]_ <model_algo>_model_complete<model_format>
                         where model_format is:
                           .h5   for nn_keras
