@@ -48,26 +48,15 @@ class SmlpModels:
             'model': {'abbr': 'model', 'type': str,
                 'help': '''\
                     Type of model to use. Supported values:
-
-                      -dt_caret        Decision tree (caret backend)
-
-                      -dt_sklearn      Decision tree (scikit-learn)
-
-                      -et_caret        Extra-trees ensemble (caret backend)
-
-                      -et_sklearn      Extra-trees ensemble (scikit-learn)
-
-                      -rf_caret        Random forest (caret backend)
-
-                      -rf_sklearn      Random forest (scikit-learn)
-
-                      -poly_sklearn    Polynomial regression (scikit-learn)
-
-                      -nn_keras        Neural network (Keras)
-
-                      -system          No model is trained; responses are computed from
-                                       system expressions defined in the spec file.
-
+                      dt_caret        Decision tree (caret backend)
+                      dt_sklearn      Decision tree (scikit-learn)
+                      et_caret        Extra-trees ensemble (caret backend)
+                      et_sklearn      Extra-trees ensemble (scikit-learn)
+                      rf_caret        Random forest (caret backend)
+                      rf_sklearn      Random forest (scikit-learn)
+                      poly_sklearn    Polynomial regression (scikit-learn)
+                      nn_keras        Neural network (Keras)
+                      system          No model is trained; system expressions are defined in the spec file.
                     [default: none]
                 '''
             },
@@ -79,14 +68,22 @@ class SmlpModels:
                     'If use_model is True, then save_model must be False. ' +
                     '[default: ' + str(self._DEF_USE_MODEL) + ']'},
             'model_name': {'abbr':'model_name', 'type':str,
-                'help': 'Name of the saved model. ' +
-                    '- If use_model is True: model_name must include the full path to the directory ' +
-                    '  containing the saved model, plus the model name (e.g., /tmp/my_best_model). ' +
-                    '- If save_model is True: model_name is only the model’s base name (e.g., my_best_model). ' +
-                    '  It will be appended to the output directory to determine where the model files are ' +
-                    '  saved (e.g., output_dir/my_best_model). If model_name is not provided, it defaults to: ' +
-                    '  <prefix>_[<response_name>]_<model_algo>_model_complete<model_format> where model_format ' +
-                    '  is .h5 for nn_keras and .pkl for sklearn/keras models.'},
+                'help': '''\
+                    Name of the saved model.
+                      If use_model is True:
+                        model_name must include the full path to the directory containing
+                        the saved model, plus the model name (e.g., /tmp/my_best_model).
+                      If save_model is True:
+                        model_name is only the model’s base name (e.g., my_best_model).
+                        It will be appended to the output directory to determine where
+                        the model files are saved (e.g., output_dir/my_best_model).
+                      If model_name is not provided, it defaults to:
+                        <prefix>_[<response_name>]_ <model_algo>_model_complete<model_format>
+                        where model_format is:
+                          .h5   for nn_keras
+                          .pkl  for sklearn / keras models.
+                    '''
+                },
             'save_model_rerun_configuration': {'abbr':'save_model_config', 
                     'default': self._DEF_SAVE_MODEL_CONFIG, 'type':str_to_bool,
                 'help': 'Should a config file enabling to re-run a saved model be written out? ' +

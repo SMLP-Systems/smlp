@@ -1,40 +1,33 @@
 # SPDX-License-Identifier: Apache-2.0
 # This file is part of smlp.
 
-import os, argparse, json
+import os, json
+import argparse
+import textwrap
 
 from .smlp_utils import str_to_bool
 
+
 class _ConciseHelpFormatter(argparse.HelpFormatter):
-    """Custom formatter for setting argparse formatter_class. Identical to the
-    default formatter, except that the metavar is not repeated for every
-    possible Optional. E.g., instead of
-
-      -f FILE, --file FILE    Some text describing this option.
-
-    this class will print
-
-      -f, --file FILE         Some text describing this option.
-
-    thereby reducing clutter in the generated help message.
-
-    It will also keep paragraphs in the description and epilog, that is,
-    separations of text by two line breaks instead of replacing them with
-    a single space.
+    """
+    Hybrid formatter:
+      - Multiline help (with explicit newlines) is preserved verbatim
+      - Single-paragraph help is wrapped normally (HelpFormatter behavior)
+      - Option invocations are concise (-s, --long ARG)
+        E.g., instead of
+          -f FILE, --file FILE    Some text describing this option.
+        this class will print
+          -f, --file FILE         Some text describing this option.
     """
 
     def _split_lines(self, text, width):
-        r = []
-        for par in text.split('\n\n'):
-            r.extend(super()._split_lines(par, width))
-            r.append('')
-        return r
+        # If the author provided explicit newlines, preserve them
+        if '\n' in text:
+            text = textwrap.dedent(text).strip('\n')
+            return text.splitlines()
 
-    def _fill_text(self, text, width, indent):
-        return '\n\n'.join(
-            super()._fill_text(par, width, indent)
-            for par in text.split('\n\n')
-        )
+        # Otherwise, let argparse wrap normally
+        return super()._split_lines(text, width)
 
     def _format_action_invocation(self, action):
         if not action.option_strings:
@@ -54,7 +47,6 @@ class _ConciseHelpFormatter(argparse.HelpFormatter):
                 parts[-1] += ' ' + args_string
             return ', '.join(parts)
 
-
 class SmlpConfig:
     def __init__(self):
         self.report_file_prefix = None
@@ -71,14 +63,27 @@ class SmlpConfig:
         self._DEF_SEED = None
         self._DEF_LOAD_CONFIGURATION = None
         
-        self.config_params_dict = {
+        self.modes_data_dict = {
+            'analytics_mode': {'abbr':'mode', 'default':self._DEF_ANALYTICS_MODE, 'type':str,
+                'help': '''\
+                    What kind of analysis should be performed. Supported modes
+                      train         Train a model specified using option -model
+                      predict       Load or train a model and run prediction
+                      optimize      Run optimization over model or system outputs
+                      verify        Verify properties of trained models or systems
+                      query         Answer logical or numerical queries over models
+                      optsyn        Perform optimization that satisfies assertions
+                      subgroups     Discover data subgroups as feature-range tuples
+                      doe           Perform design-of-experiments analysis
+                      discretize    Discretize continuous features or responses
+                    [default: {}]
+                '''.format(str(self._DEF_ANALYTICS_MODE))},
             'labeled_data': {'abbr':'data', 'default':self._DEF_LABELED_DATA, 'type':str, 
                 'help':'Path, possibly excluding the .csv, or including gz or bz2 suffix, to input ' +
-                    ' training data file containing labels [default {}]'.format(str(self._DEF_LABELED_DATA))},
-            'analytics_mode': {'abbr':'mode', 'default':self._DEF_ANALYTICS_MODE, 'type':str, 
-                'help':'What kind of analysis should be performed; the supported modes are: '+
-                    '"train", "predict", "subgroups", "doe", "discretize", "optimize", "verify", "query", "optsyn" ' +
-                    '[default: {}]'.format(str(self._DEF_ANALYTICS_MODE))},
+                    ' training data file containing labels [default {}]'.format(str(self._DEF_LABELED_DATA))}
+        }
+
+        self.config_params_dict = {
             'interactive_plots': {'abbr':'plots', 'default':self._DEF_INTERACTIVE_PLOTS, 'type':str_to_bool, 
                 'help':'Should plots be displayed interactively (or only saved)?'+
                     '[default: {}]'.format(str(self._DEF_INTERACTIVE_PLOTS))},
@@ -194,15 +199,7 @@ class SmlpConfig:
     # sklearm caret, keras -- model_params_dict = keras_dict | sklearn_dict | caret_dict, 
     # as well as data and logger related parameters: data_params_dict and logger_params_dict
     def args_dict_parse(self, argv, args_dict):
-        parser = argparse.ArgumentParser(
-            prog=argv[0],
-            formatter_class=(
-                lambda prog: _ConciseHelpFormatter(
-                    prog,
-                #    max_help_position=24,
-                )
-            ),
-        )
+        parser = argparse.ArgumentParser(formatter_class=_ConciseHelpFormatter)
         
         for p, v in args_dict.items():
             if 'default' in v:
