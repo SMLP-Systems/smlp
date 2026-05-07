@@ -86,16 +86,16 @@ Papers:
 </details>
 
 <details>
- <summary> Ubuntu 24.04 </summary><br>
+ <summary> Ubuntu 24.04 </summary>
  
 
-# SMLP Installation Guide for Ubuntu 24.04
+#### SMLP Installation Guide for Ubuntu 24.04
 
 This guide describes how to install [smlptech](https://pypi.org/project/smlptech/) on Ubuntu 24.04.
 
 ---
 
-## Prerequisites
+#### Prerequisites
 
 - Ubuntu 24.04
 - `sudo` access
@@ -103,7 +103,7 @@ This guide describes how to install [smlptech](https://pypi.org/project/smlptech
 
 ---
 
-## Step 1 — Install system dependencies
+#### Step 1 — Install system dependencies
 
 ```bash
 sudo apt-get update
@@ -124,7 +124,7 @@ sudo apt-get install -y \
 
 ---
 
-## Step 2 — Install Python 3.11 with Tk support
+#### Step 2 — Install Python 3.11 with Tk support
 
 
 ```bash
@@ -134,7 +134,7 @@ sudo apt-get install -y python3.11 python3.11-venv python3.11-tk
 ```
 ---
 
-## Step 3 — Install smlptech in virtual environment
+#### Step 3 — Install smlptech in virtual environment
 
 Installs smlptech into an isolated virtual environment under `~/.venv`.
 No `sudo` required for the installation itself.
@@ -154,7 +154,7 @@ export PATH=~/.venv/bin:$PATH
 
 ---
 
-## Step 4 — (Recommended) Validate the installation
+#### Step 4 — (Recommended) Validate the installation
 
 Run the following checks to confirm the installation is working:
 
@@ -170,7 +170,7 @@ Both commands should complete without errors.
 
 ---
 
-## Step 5 — (Optional) Install MathSAT
+#### Step 5 — (Optional) Install MathSAT
 
 MathSAT is a Satisfiability Modulo Theories (SMT) solver developed as a joint project between Fondazione Bruno Kessler (FBK) and the University of Trento (DISI) in Italy. It is optionally used by SMLP.
 
@@ -190,7 +190,7 @@ chmod +x run_mathsat_build
 
 ---
 
-## Summary
+#### Summary
 
 | Step | Description | Required |
 |------|-------------|----------|
@@ -260,17 +260,17 @@ Recommended VNC clients:
 <details>
  <summary style="padding-left: 1.7em;"> RealVNC® installation instructions for Windows </summary>
 
-## Step 1:
+#### Step 1:
 
 Download [RealVNC®](https://www.realvnc.com/en/connect/download/viewer)
 
-## Step 2:
+#### Step 2:
 
 Install RealVNC
 
-## Step 3: Forward Port 5900 from Windows to WSL2
+#### Step 3: Forward Port 5900 from Windows to WSL2
 
-### Step 3.1 - in WSL2 window
+#### Step 3.1 - in WSL2 window
 
 Get your WSL2 IP address from running below command:
 
@@ -278,11 +278,11 @@ Get your WSL2 IP address from running below command:
 hostname -I
 ```
 
-### Step 3.2
+#### Step 3.2
 
 Open Command Prompt and choose **Run as administrator** option
 
-### Step 3.3 - in Windows Command Prompt Window
+#### Step 3.3 - in Windows Command Prompt Window
 
 Use the **first IP** in the output (e.g., `172.31.26.155`). All the rest should be ignored
 Run the following in **powershell**, replacing `<WSL2_IP>` with your IP:
@@ -303,7 +303,7 @@ Verify the proxy is set:
 netsh interface portproxy show all
 ```
 
-## Step 4: Connect with VNC 
+#### Step 4: Connect with VNC 
 
 **Connection should be performed after running** `./start_vnc` **command within Docker container**
 
@@ -312,7 +312,7 @@ netsh interface portproxy show all
 2. In VNC connect to: `locahost:5900` 
 - Ignore non-secure connection warning
 
-## Updating the Port Proxy After WSL2 Restart
+#### Updating the Port Proxy After WSL2 Restart
 
 WSL2's IP address may change after restart. In this case, **Step 3** should be repeated after the reboot
 
