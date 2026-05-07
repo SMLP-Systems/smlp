@@ -86,16 +86,16 @@ Papers:
 </details>
 
 <details>
- <summary> Ubuntu 24.04 </summary><br>
+ <summary> Ubuntu 24.04 </summary>
  
 
-# SMLP Installation Guide for Ubuntu 24.04
+#### SMLP Installation Guide for Ubuntu 24.04
 
 This guide describes how to install [smlptech](https://pypi.org/project/smlptech/) on Ubuntu 24.04.
 
 ---
 
-## Prerequisites
+#### Prerequisites
 
 - Ubuntu 24.04
 - `sudo` access
@@ -103,7 +103,7 @@ This guide describes how to install [smlptech](https://pypi.org/project/smlptech
 
 ---
 
-## Step 1 — Install system dependencies
+#### Step 1 — Install system dependencies
 
 ```bash
 sudo apt-get update
@@ -124,7 +124,7 @@ sudo apt-get install -y \
 
 ---
 
-## Step 2 — Install Python 3.11 with Tk support
+#### Step 2 — Install Python 3.11 with Tk support
 
 
 ```bash
@@ -134,7 +134,7 @@ sudo apt-get install -y python3.11 python3.11-venv python3.11-tk
 ```
 ---
 
-## Step 3 — Install smlptech in virtual environment
+#### Step 3 — Install smlptech in virtual environment
 
 Installs smlptech into an isolated virtual environment under `~/.venv`.
 No `sudo` required for the installation itself.
@@ -154,7 +154,7 @@ export PATH=~/.venv/bin:$PATH
 
 ---
 
-## Step 4 — (Recommended) Validate the installation
+#### Step 4 — (Recommended) Validate the installation
 
 Run the following checks to confirm the installation is working:
 
@@ -170,7 +170,7 @@ Both commands should complete without errors.
 
 ---
 
-## Step 5 — (Optional) Install MathSAT
+#### Step 5 — (Optional) Install MathSAT
 
 MathSAT is a Satisfiability Modulo Theories (SMT) solver developed as a joint project between Fondazione Bruno Kessler (FBK) and the University of Trento (DISI) in Italy. It is optionally used by SMLP.
 
@@ -190,7 +190,7 @@ chmod +x run_mathsat_build
 
 ---
 
-## Summary
+#### Summary
 
 | Step | Description | Required |
 |------|-------------|----------|
