@@ -126,6 +126,9 @@ class SmlpDoepy:
                         this design.
                     '''.format(str(self.BOX_WILSON_CENTER))
               }
+            'doe_prob_distribution': {'abbr':'doe_prob_distr', 'default':self.LATIN_HYPERCUBE_PROB_DISTR, 'type':str,
+                'help':'Analytical probability distribution to be applied over the randomized sampling. Takes strings: ' +
+                    '"Normal", "Poisson", "Exponential", "Beta", "Gamma" [default {}]'.format(str(self.LATIN_HYPERCUBE_PROB_DISTR))}
         }
     '''
     usage of textwrap.dedent() to format text in argparse help messages is suggested here; does not work in 
