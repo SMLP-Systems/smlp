@@ -89,7 +89,7 @@ Papers:
  <summary> Ubuntu 24.04 </summary>
  
 
-### SMLP Installation Guide for Ubuntu 24.04
+#### SMLP Installation Guide for Ubuntu 24.04
 
 This guide describes how to install [smlptech](https://pypi.org/project/smlptech/) on Ubuntu 24.04.
 
