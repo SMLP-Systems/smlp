@@ -15,7 +15,7 @@ from pathlib import Path
 files_to_ignore_from_diff = ['Test41_doe_two_levels_doe.csv', 'Test42_doe_two_levels_doe.csv']
 
 def _cwd_rel(path):
-	return Path(path).relative_to(Path('.').absolute(), walk_up=True)
+    return Path(os.path.relpath(path))
 
 def _filter_out(lst, item, n):
 	i = 0
@@ -179,7 +179,7 @@ class CmdTestCase:
 		projdir = pytestconfig.rootdir
 		regrdir = projdir/'regr_smlp'
 		extdir  = projdir/'..'/'external'
-		exepath = projdir/'src'/'run_smlp.py'
+		exepath = 'smlp'
 		args    = self._construct_args(regrdir, extdir, tmp_path)
 
 		print(f'Test {self.nr} using tmp-path: {tmp_path}', file=sys.stderr)

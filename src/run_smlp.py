@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.11
 #
 # This file is part of smlprover.
 # It is a top level script to run smlprover (SMLP)
