@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
-          fetch-tags: true    # for setuptools_scm to work
+          fetch-depth: 0    # for setuptools_scm to work
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v3.4.1
