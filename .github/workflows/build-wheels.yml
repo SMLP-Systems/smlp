@@ -19,7 +19,15 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v3.4.1
-        # env:
+        env:
+          CIBW_SKIP: cp*-musllinux_*
+          CIBW_BEFORE_ALL: >
+            source {package}/.github/workflows/install-gmp.sh install &&
+            source {package}/.github/workflows/install-z3.sh install &&
+            export GMP_ROOT=$gmp_R &&
+            export Z3_PREFIX=$z3_R &&
+            export LD_LIBRARY_PATH=$z3_R/lib:$gmp_R/lib &&
+            :
         #   CIBW_SOME_OPTION: value
         #   ...
         # with:
