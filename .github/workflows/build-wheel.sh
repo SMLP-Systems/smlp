@@ -2,7 +2,7 @@
 
 set -e -x
 
-loc=${BASH_SOURCE[0]}
+loc=$(dirname "${BASH_SOURCE[0]}")
 project=$1
 ghos=$2
 
