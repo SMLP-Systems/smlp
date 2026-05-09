@@ -12,11 +12,9 @@ dnf -y install \
 
 . /opt/rh/gcc-toolset-13/enable
 
-ls "$loc"
+source $loc/install-gmp.sh $loc install
 
-source $loc/install-gmp.sh install
-
-source $loc/install-z3.sh install
+source $loc/install-z3.sh $loc install
 
 export GMP_ROOT=$gmp_R
 export Z3_PREFIX=$z3_R

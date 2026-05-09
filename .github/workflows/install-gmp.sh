@@ -41,7 +41,7 @@ run() {
 
 	# configure
 	[[ -f $W/.configure ]] || {
-		[ -d $P -a -f Makefile ] || ./configure --enable-cxx --prefix=$R
+		[ -d $P -a -f Makefile ] || ./configure --enable-cxx --prefix=$R --host=x86_64-pc-linux-gnu
 		touch $W/.configure
 	}
 
@@ -52,4 +52,4 @@ run() {
 	}
 }
 
-if [ $# -eq 1 ]; then run $1; fi
+if [ $# -eq 2 ]; then run $2; fi
