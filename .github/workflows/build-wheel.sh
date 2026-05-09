@@ -2,10 +2,10 @@
 
 set -e -x
 
-loc=$(dirname "${BASH_SOURCE[0]}")
-project=$1
-os=$2
-tgt=$3
+loc=$(dirname "${BASH_SOURCE[0]}")	# directory of this script
+project=$1				# project source directory
+os=$2					# Github runner OS identifier
+tgt=$3					# prefix to install packages to
 
 case "$os" in
 ubuntu-*)

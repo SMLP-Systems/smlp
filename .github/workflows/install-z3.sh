@@ -51,6 +51,7 @@ run() {
 
 	# build/install
 	[[ -f $W/.$T ]] || {
+		sed -i 's/@//' $B/Makefile	# want to see commands
 		env LIBRARY_PATH=$gmp_R/lib make -C $B -j`nproc` $T
 		touch $W/.$T
 	}
