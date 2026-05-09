@@ -10,7 +10,7 @@ jobs:
       matrix:
         # macos-15-intel is an Intel runner, macos-14 is Apple silicon
         #os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, windows-11-arm, macos-15-intel, macos-14]
-        os: [ubuntu-24.04]
+        os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v6
@@ -22,10 +22,11 @@ jobs:
         env:
           CIBW_SKIP: cp*-musllinux_*
           CIBW_BEFORE_ALL: >
-            source {package}/.github/workflows/build-wheel.sh {project} ${{ matrix.os }} &&
+            source {package}/.github/workflows/build-wheel.sh {project} ${{ matrix.os }} /tmp/prefix &&
             :
-        #   CIBW_SOME_OPTION: value
-        #   ...
+          GMP_ROOT: /tmp/prefix
+          Z3_PREFIX: /tmp/prefix
+          LD_LIBRARY_PATH: /tmp/prefix/lib
         # with:
         #   package-dir: .
         #   output-dir: wheelhouse
