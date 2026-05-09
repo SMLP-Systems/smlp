@@ -22,6 +22,7 @@ jobs:
         env:
           CIBW_SKIP: cp*-musllinux_*
           CIBW_BEFORE_ALL: >
+            dnf install wget &&
             source {package}/.github/workflows/install-gmp.sh install &&
             source {package}/.github/workflows/install-z3.sh install &&
             export GMP_ROOT=$gmp_R &&
