@@ -2,8 +2,8 @@
 
 set -e -x
 
-loc=$(dirname "$(realpath "$0")")
 project=$1
+loc="$project"/.github/workflows
 ghos=$2
 
 dnf -y install \
