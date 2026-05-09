@@ -24,9 +24,10 @@ jobs:
           CIBW_BEFORE_ALL: >
             source {package}/.github/workflows/build-wheel.sh {project} ${{ matrix.os }} /tmp/prefix &&
             :
-          GMP_ROOT: /tmp/prefix
-          Z3_PREFIX: /tmp/prefix
-          LD_LIBRARY_PATH: /tmp/prefix/lib
+          CIBW_ENVIRONMENT: >
+            GMP_ROOT=/tmp/prefix
+            Z3_PREFIX=/tmp/prefix
+            LD_LIBRARY_PATH=/tmp/prefix/lib
         # with:
         #   package-dir: .
         #   output-dir: wheelhouse

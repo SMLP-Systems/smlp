@@ -21,6 +21,8 @@ ubuntu-*)
 
 	source $loc/install-z3.sh install
 
+	find $R
+
 	export GMP_ROOT=$gmp_R
 	export Z3_PREFIX=$z3_R
 	export LD_LIBRARY_PATH=$z3_R/lib:$gmp_R/lib
