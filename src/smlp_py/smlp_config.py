@@ -199,6 +199,11 @@ class SmlpConfig:
                 args.output_directory, args.new_data, args.model_name, args.save_model,
                 args.use_model, args.doe_spec_file, args.text_data, args.wordvec_model)
         
+        if args.model == 'system':
+            args.prediction_plots = False
+            args.response_plots = False
+            args.interactive_plots = False
+        
         # Save tool configuration and model rerun configuration
         if args.save_configuration:
             args_config_file = self.report_file_prefix + '_args_config.json'
