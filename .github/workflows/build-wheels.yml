@@ -22,7 +22,7 @@ jobs:
         env:
           CIBW_SKIP: cp*-musllinux_*
           CIBW_BEFORE_ALL: >
-            source {package}/.github/workflows/build-wheel.sh {project} {{matrix.os}} &&
+            source {package}/.github/workflows/build-wheel.sh {project} {matrix.os} &&
             :
         #   CIBW_SOME_OPTION: value
         #   ...
