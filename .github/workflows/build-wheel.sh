@@ -2,8 +2,8 @@
 
 set -e -x
 
+loc=${BASH_SOURCE[0]}
 project=$1
-loc="$project"/.github/workflows
 ghos=$2
 
 dnf -y install \
@@ -12,9 +12,9 @@ dnf -y install \
 
 . /opt/rh/gcc-toolset-13/enable
 
-source $loc/install-gmp.sh $loc install
+source $loc/install-gmp.sh install
 
-source $loc/install-z3.sh $loc install
+source $loc/install-z3.sh install
 
 export GMP_ROOT=$gmp_R
 export Z3_PREFIX=$z3_R

@@ -27,7 +27,7 @@ run() {
 
 	# get
 	[[ -f $W/.get ]] || {
-		wget -O $F https://gmplib.org/download/gmp/$F
+		wget -O $F https://ftp.gnu.org/gnu/gmp/$F
 		touch $W/.get
 	}
 
@@ -52,4 +52,4 @@ run() {
 	}
 }
 
-if [ $# -eq 2 ]; then run $2; fi
+if [ $# -eq 1 ]; then run $1; fi

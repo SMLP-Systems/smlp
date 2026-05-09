@@ -2,7 +2,7 @@
 
 set -e -x
 
-source $1/install-gmp.sh $1
+source "$(dirname "${BASH_SOURCE[0]}")"/install-gmp.sh
 
 P=z3
 
@@ -56,4 +56,4 @@ run() {
 	}
 }
 
-if [ $# -eq 2 ]; then run $2; fi
+if [ $# -eq 1 ]; then run $1; fi
