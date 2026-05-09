@@ -2,7 +2,7 @@
 
 set -e -x
 
-loc=$(dirname "$0")
+loc=$(dirname "$(realpath "$0")")
 project=$1
 ghos=$2
 
@@ -11,6 +11,8 @@ dnf -y install \
 	gcc-toolset-13
 
 . /opt/rh/gcc-toolset-13/enable
+
+ls "$loc"
 
 source $loc/install-gmp.sh install
 
