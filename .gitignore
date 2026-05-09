@@ -13,3 +13,8 @@ src/smlp_rl_feedback.jsonl
 src/demo_feedback.jsonl
 src/smlp_rl_checkpoints/
 src/demo_checkpoints/
+
+# Local-only model artifacts (do not commit)
+regr_smlp/finetune_models/
+regr_smlp/llm_models/
+regr_smlp/rag_models/
