@@ -21,12 +21,16 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v3.4.1
         env:
+          # see <https://cibuildwheel.pypa.io/en/stable/options/#build-skip>
           CIBW_BUILD: cp311-*
           CIBW_SKIP: cp*-musllinux_*
+          # pin manylinux version
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          # install dependencies (GMP, Z3) to /tmp/prefix
           CIBW_BEFORE_ALL: >
             source {package}/.github/workflows/install-deps.sh {project} ${{ matrix.os }} /tmp/prefix &&
             :
+          # use installed dependencies in setup.py
           CIBW_ENVIRONMENT: >
             GMP_ROOT=/tmp/prefix
             Z3_PREFIX=/tmp/prefix
