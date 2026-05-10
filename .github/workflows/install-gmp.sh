@@ -41,7 +41,7 @@ run() {
 
 	# configure
 	[[ -f $W/.configure ]] || {
-		[ -d $P -a -f Makefile ] || ./configure --enable-cxx --prefix=$R --host=x86_64-pc-linux-gnu
+		[ -d $P -a -f Makefile ] || ./configure --enable-cxx --prefix=$R --host=$HOST
 		touch $W/.configure
 	}
 

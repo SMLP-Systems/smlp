@@ -16,6 +16,7 @@ ubuntu-*)
 	source /opt/rh/gcc-toolset-13/enable
 
 	export R=$tgt
+	export HOST=$(uname -m)-pc-linux-gnu
 
 	source $loc/install-gmp.sh install
 
