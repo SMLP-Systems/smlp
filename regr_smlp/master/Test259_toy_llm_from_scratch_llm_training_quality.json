@@ -1,0 +1,41 @@
+{
+  "summary": {
+    "num_examples": 4,
+    "num_valid": 4,
+    "grounded_rate": 0.25,
+    "grounded_none_count": 0,
+    "hallucination_rate": 0.75,
+    "hallucination_none_count": 0,
+    "avg_score": 2.0
+  },
+  "details": [
+    {
+      "grounded": false,
+      "hallucination": true,
+      "score": 1,
+      "explanation": "The model has introduced new elements and altered the original context significantly without providing any justification or support within the given context.",
+      "confidence": "high"
+    },
+    {
+      "grounded": true,
+      "hallucination": false,
+      "score": 5,
+      "explanation": "The model answer faithfully stays within the context provided, stating that 'the king had a brave knight' without any fabricated information.",
+      "confidence": "high"
+    },
+    {
+      "grounded": false,
+      "hallucination": true,
+      "score": 1,
+      "explanation": "The answer does not support any part of the given context and contains fabricated information.",
+      "confidence": "high"
+    },
+    {
+      "grounded": false,
+      "hallucination": true,
+      "score": 1,
+      "explanation": "The model answer does not provide any support from the given context 'The people loved the knight.' Instead, it generates random filler words and phrases without referencing the original statement.",
+      "confidence": "high"
+    }
+  ]
+}

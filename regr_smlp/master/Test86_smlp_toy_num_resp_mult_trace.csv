@@ -1,0 +1,54 @@
+stage,solver,p1,p2,x,y1,y2
+interface_consistency,sat,4,3,10
+model_consistency,sat,4,3,10,5,9
+synthesis_feasibility
+synthesis,synthesis_feasibility
+ca,sat,4,3,10,5,9
+ce,unsat
+single_objective_u0_l0_u_l, obj1_scaled : 1 : 0 : inf : -inf
+objective_thresholds_u0_l0_u_l_T, 2 : 0 : inf : -inf : 1
+synthesis,obj1_scaled_1
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 2 : -2 : 1 : -inf : 0
+synthesis,obj1_scaled_0
+ca,sat,4,3,10,5,9
+ce,unsat
+objective_thresholds_u0_l0_u_l_T, 2 : -2 : 1 : 0 : 0.5
+synthesis,obj1_scaled_0.5
+ca,sat,4,3,10,5,9
+ce,unsat
+objective_thresholds_u0_l0_u_l_T, 2 : -2 : 1 : 0.5 : 0.75
+synthesis,obj1_scaled_0.75
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 2 : -2 : 0.75 : 0.5 : 0.625
+synthesis,obj1_scaled_0.625
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 2 : -2 : 0.625 : 0.5 : 0.5625
+synthesis,obj1_scaled_0.5625
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 2 : -2 : 0.5625 : 0.5 : 0.53125
+synthesis,obj1_scaled_0.53125
+ca,unsat
+single_objective_u0_l0_u_l, objv2_scaled : 1 : 0 : inf : -inf
+objective_thresholds_u0_l0_u_l_T, 2 : 0 : inf : -inf : 1
+synthesis,objv2_scaled_1
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 2 : -2 : 1 : -inf : 0
+synthesis,objv2_scaled_0
+ca,sat,4,3,10,5,9
+ce,unsat
+objective_thresholds_u0_l0_u_l_T, 2 : -2 : 1 : 0 : 0.5
+synthesis,objv2_scaled_0.5
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 2 : -2 : 0.5 : 0 : 0.25
+synthesis,objv2_scaled_0.25
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 2 : -2 : 0.25 : 0 : 0.125
+synthesis,objv2_scaled_0.125
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 2 : -2 : 0.125 : 0 : 0.0625
+synthesis,objv2_scaled_0.0625
+ca,unsat
+objective_thresholds_u0_l0_u_l_T, 2 : -2 : 0.0625 : 0 : 0.03125
+synthesis,objv2_scaled_0.03125
+ca,unsat

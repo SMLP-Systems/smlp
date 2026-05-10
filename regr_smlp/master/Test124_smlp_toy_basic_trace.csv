@@ -1,0 +1,8 @@
+stage,solver,p1,p2,y1,y2
+interface_consistency,sat,0,0
+model_consistency,sat,0,0,0,0
+synthesis_feasibility
+synthesis,synthesis_feasibility
+ca,sat,0,0,0,0
+ce,sat,1/5,0,1/5,0
+ca,unsat

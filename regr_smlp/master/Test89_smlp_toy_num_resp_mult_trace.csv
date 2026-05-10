@@ -1,0 +1,10 @@
+stage,solver,p1,p2,x,y1,y2
+interface_consistency,sat,7,3
+model_consistency,sat,2,7,5,5
+query,query1
+ca,unsat
+query,query2
+ca,sat,7,452984835/67108864,9,9
+ce,unsat
+query,query3
+ca,unsat

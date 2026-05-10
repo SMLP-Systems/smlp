@@ -84,7 +84,7 @@ smlp_logger - INFO - Preparing new data for modeling: end
 
 smlp_logger - INFO - LOAD TRAINED MODEL
 
-smlp_logger - INFO - Seving model rerun configuration in file ./../models/Test8_smlp_toy_num_resp_mult_rerun_model_config.json
+smlp_logger - INFO - Seving model rerun configuration in file ../models/Test8_smlp_toy_num_resp_mult_rerun_model_config.json
 
 smlp_logger - INFO - PREDICT ON NEW DATA
 
@@ -100,9 +100,9 @@ smlp_logger - INFO - Saving predictions summary into file:
 smlp_logger - INFO - Saving prediction precisions into file: 
 ./Test16_Test8_smlp_toy_num_resp_mult_smlp_toy_num_resp_mult_pred_labeled_new_prediction_precisions.csv
 
-smlp_logger - INFO - Prediction on new data --  msqe: 8.026
+smlp_logger - INFO - Prediction on new data --  msqe: 7.974
 
-smlp_logger - INFO - Prediction on new data --  r2_score: -1.032
+smlp_logger - INFO - Prediction on new data --  r2_score: -1.018
 
 smlp_logger - INFO - Reporting prediction results: end
 
