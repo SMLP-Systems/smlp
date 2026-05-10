@@ -13,19 +13,13 @@ ubuntu-*)
 		wget \
 		gcc-toolset-13
 
-	. /opt/rh/gcc-toolset-13/enable
+	source /opt/rh/gcc-toolset-13/enable
 
 	export R=$tgt
 
 	source $loc/install-gmp.sh install
 
 	source $loc/install-z3.sh install
-
-	find $R
-
-	export GMP_ROOT=$gmp_R
-	export Z3_PREFIX=$z3_R
-	export LD_LIBRARY_PATH=$z3_R/lib:$gmp_R/lib
 
 	;;
 *)
