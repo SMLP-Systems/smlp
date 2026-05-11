@@ -23,6 +23,16 @@ ubuntu-*)
 	source $loc/install-z3.sh install
 
 	;;
+macos-26*)
+	export CC=gcc-13
+	export CXX=g++-13
+	export R=$tgt
+
+	source $loc/install-gmp.sh install
+
+	source $loc/install-z3.sh install
+
+	;;
 *)
 	echo "error: OS unknown: $os" >&2
 	exit 1
