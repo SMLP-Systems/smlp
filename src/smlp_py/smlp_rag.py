@@ -7,9 +7,35 @@ import json
 import gc
 import psutil
 import os
-        
-    
-    
+
+#------------
+import mlflow    
+print('imported mlflow')
+import tempfile
+import shutil
+'''
+Use MLflow Model Registry (later)
+Promote RAG artifacts to:
+models:/smlp-rag-toy/Production
+
+Store embedding model hash/version
+Prevent silent incompatibility
+
+Add a validation guard
+Ensure loaded embeddings match config
+
+Unify path semantics
+Abstract:
+get_rag_artifact_handle() -> Path | run_id
+
+Recommended next step
+If you want, next we can:
+
+wrap this behind a RagArtifactStore interface,
+or promote RAG runs to MLflow Model Registry,
+or extend the same pattern to fine‑tuning artifacts.
+'''
+#--------
 import traceback
 import random
 from pathlib import Path
@@ -64,8 +90,7 @@ random.seed(42)
 np.random.seed(42)
 torch.manual_seed(42)
 
-# TODO !!!!!!!!!! issues:
-# PDF parsing might need improvement -- say currently several paragraps in toy_smlp.pdf are collapsed as one passage
+# TODO PDF parsing might need improvement -- say currently several paragraps in toy_smlp.pdf are collapsed as one passage
 
 
 '''
@@ -551,6 +576,68 @@ class LangChainRag(BaseRAG):
         self._raglc_logger.info(f"Loaded model artifacts config {config}")
         return vector_store, config
 
+    def save_lc_rag_artifacts_mlflow(
+            self,
+            rag_base_model_name: str,
+            rag_embedding_model: str,
+            vector_store,
+            rag_prompt_type: str,
+            rag_top_k_passages: int,
+            rag_base_url: str,
+            experiment_name: str = "smlp-rag",
+    ):
+        """
+        Save RAG artifacts (FAISS + config) to MLflow.
+        """
+
+        mlflow.set_experiment(experiment_name)
+
+        with mlflow.start_run() as run:
+            run_id = run.info.run_id
+            self._raglc_logger.info(f"Saving RAG artifacts to MLflow run {run_id}")
+
+            # --- Save FAISS index into a temp dir ---
+            with tempfile.TemporaryDirectory() as tmpdir:
+                faiss_dir = os.path.join(tmpdir, "faiss_index")
+                vector_store.save_local(faiss_dir)
+
+                mlflow.log_artifacts(faiss_dir, artifact_path="rag/faiss_index")
+
+                # --- Save config ---
+                config = {
+                    "rag_prompt_type": rag_prompt_type,
+                    "rag_retriever_top_k": rag_top_k_passages,
+                    "rag_embedding_model": rag_embedding_model,
+                    "rag_base_url": rag_base_url,
+                    "rag_base_model_name": rag_base_model_name,
+                }
+
+                config_path = os.path.join(tmpdir, "rag_config.json")
+                with open(config_path, "w") as f:
+                    json.dump(config, f, indent=2)
+
+                mlflow.log_artifact(config_path, artifact_path="rag")
+
+            # --- Log params (for search/comparison) ---
+            mlflow.log_params({
+                "rag_prompt_type": rag_prompt_type,
+                "rag_retriever_top_k": rag_top_k_passages,
+                "rag_embedding_model": rag_embedding_model,
+                "rag_base_model_name": rag_base_model_name,
+            })
+
+            # --- Optional tags ---
+            mlflow.set_tags({
+                "smlp_mode": "rag",
+                "artifact_type": "langchain-faiss",
+            })
+
+            self._raglc_logger.info(
+                f"RAG artifacts logged under mlflow run_id={run_id}"
+            )
+
+            return run_id
+    
     def validate_lc_rag_config(self, saved_config, runtime_config):
         """
         Validate critical LangChain RAG parameters between saved config and current runtime config.
@@ -585,10 +672,56 @@ class LangChainRag(BaseRAG):
                     f"  Runtime: {runtime_val}\n"
                     f"This is generally safe, but review if behavior seems unexpected."
                 )
+    
+    def load_lc_rag_artifacts_mlflow(
+        self,
+        run_id: str,
+        rag_embedding_model: str,
+        rag_base_url: str,
+    ):
+        """
+        Load RAG artifacts (FAISS + config) from MLflow.
+        """
 
+        self._raglc_logger.info(f"Loading RAG artifacts from MLflow run {run_id}")
+
+        client = mlflow.tracking.MlflowClient()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            rag_artifact_path = client.download_artifacts(
+                run_id,
+                path="rag",
+                dst_path=tmpdir,
+            )
+
+            # --- Load FAISS ---
+            embeddings = OllamaEmbeddings(
+                model=rag_embedding_model,
+                base_url=rag_base_url,
+            )
+
+            faiss_path = os.path.join(rag_artifact_path, "faiss_index")
+            self._raglc_logger.info(f"Loading FAISS index from {faiss_path}")
+
+            vector_store = FAISS.load_local(
+                faiss_path,
+                embeddings=embeddings,
+                allow_dangerous_deserialization=True,
+            )
+
+            # --- Load config ---
+            config_path = os.path.join(rag_artifact_path, "rag_config.json")
+            with open(config_path) as f:
+                config = json.load(f)
+
+            self._raglc_logger.info(f"Loaded RAG config: {config}")
+
+            return vector_store, config
+    
     def run(self, rag_questions, rag_text=None, rag_base_model_name:str=None, rag_trained_model_path:str=None, 
             rag_top_k_passages=None, rag_base_url:str=None, rag_embedding_model=None, rag_prompt_type=None, 
             rag_train=True, rag_eval=True):
+        model_store = "mlflow"
         if rag_train:
             self._raglc_logger.info("Starting RAG training")
             #print(f"Converting: {rag_text}")
@@ -607,17 +740,35 @@ class LangChainRag(BaseRAG):
             retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": rag_top_k_passages})
             rag_chain = self.create_rag_chain(retriever, rag_base_model_name, rag_base_url, rag_prompt_type)
 
-            if rag_trained_model_path:
-                self._raglc_logger.info("Saving RAG artifacts in directory: " + str(rag_trained_model_path))
-                self.save_lc_rag_artifacts(rag_base_model_name, rag_trained_model_path, rag_embedding_model, 
-                    vector_store, rag_prompt_type, rag_top_k_passages, rag_base_url)
+            if model_store == "mlflow":
+                run_id = self.save_lc_rag_artifacts_mlflow(
+                        rag_base_model_name,
+                        rag_embedding_model,
+                        vector_store,
+                        rag_prompt_type,
+                        rag_top_k_passages,
+                        rag_base_url,
+                    )
+            else:
+                if rag_trained_model_path:
+                    self._raglc_logger.info("Saving RAG artifacts in directory: " + str(rag_trained_model_path))
+                    self.save_lc_rag_artifacts(rag_base_model_name, rag_trained_model_path, rag_embedding_model, 
+                        vector_store, rag_prompt_type, rag_top_k_passages, rag_base_url)
         else:
             # Load pre-built index + config
             if not rag_trained_model_path:
                 raise ValueError("rag_trained_model_path must be specified if rag_train is False")
 
-            self._raglc_logger.info(f"Loading RAG artifacts from: {rag_trained_model_path}")
-            vector_store, saved_config = self.load_lc_rag_artifacts(rag_embedding_model, rag_trained_model_path, rag_base_url)
+            if model_store == "mlflow":
+                self._raglc_logger.info(f"Loading RAG artifacts with run-ID: {run_id}")
+                vector_store, saved_config = self/load_lc_rag_artifacts_mlflow(
+                        run_id,
+                        rag_embedding_model,
+                        rag_base_url,
+                    )
+            else:
+                self._raglc_logger.info(f"Loading RAG artifacts from: {rag_trained_model_path}")
+                vector_store, saved_config = self.load_lc_rag_artifacts(rag_embedding_model, rag_trained_model_path, rag_base_url)
 
             # Validate critical params
             runtime_config = {
@@ -674,6 +825,67 @@ class LangChainRag(BaseRAG):
         gc.collect()
 
         self._raglc_logger.info("Memory cleanup complete")
+        
+    def test_rag_disk_vs_mlflow_equivalence(tmp_path):
+        rag_questions = ["What is SMLP used for?"]
+        rag_embedding_model = "nomic-embed-text"
+        rag_base_model_name = "llama3"
+        rag_base_url = "http://localhost:11434"
+        rag_prompt_type = "document-focused"
+        rag_top_k_passages = 3
+
+        # --- Build RAG once ---
+        vector_store = build_rag_vector_store(...)  # your existing builder
+
+        # --- Save + load from disk ---
+        disk_path = tmp_path / "rag_disk"
+        save_lc_rag_artifacts(
+            rag_base_model_name,
+            str(disk_path),
+            rag_embedding_model,
+            vector_store,
+            rag_prompt_type,
+            rag_top_k_passages,
+            rag_base_url,
+        )
+
+        vs_disk, cfg_disk = load_lc_rag_artifacts(
+            rag_embedding_model,
+            str(disk_path),
+            rag_base_url,
+        )
+
+        # --- Save + load from MLflow ---
+        run_id = save_lc_rag_artifacts_mlflow(
+            rag_base_model_name,
+            rag_embedding_model,
+            vector_store,
+            rag_prompt_type,
+            rag_top_k_passages,
+            rag_base_url,
+        )
+
+        vs_mlflow, cfg_mlflow = load_lc_rag_artifacts_mlflow(
+            run_id,
+            rag_embedding_model,
+            rag_base_url,
+        )
+
+        # --- Retrieval equivalence ---
+        docs_disk = vs_disk.similarity_search(rag_questions[0], k=rag_top_k_passages)
+        docs_mlflow = vs_mlflow.similarity_search(rag_questions[0], k=rag_top_k_passages)
+
+        assert [d.page_content for d in docs_disk] == \
+               [d.page_content for d in docs_mlflow]
+
+        # --- Config equivalence ---
+        assert cfg_disk == cfg_mlflow
+        
+        # --- only if answers are deterministic ---
+        answer_disk = rag_chain(vs_disk).invoke(rag_questions[0])
+        answer_mlflow = rag_chain(vs_mlflow).invoke(rag_questions[0])
+
+        assert answer_disk == answer_mlflow
 
 # Seq2SeqTrainer is designed for encoder-decoder models (which RAG uses under the hood: BERT + BART)
 # Note: HuggingFace RagModel is calling CosineRetriever.__call__() method with a prefix keyword argument.
