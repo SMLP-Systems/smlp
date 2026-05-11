@@ -996,8 +996,12 @@ class SubgroupDiscovery:
         cls_reg_mode = get_response_type(resps_df, resp_names[0])
         assert cls_reg_mode == CLASSIFICATION or cls_reg_mode == REGRESSION
         if cls_reg_mode == CLASSIFICATION:
-            pos_value = STAT_POSITIVE_VALUE; neg_value = STAT_NEGATIVE_VALUE
+            pos_value = STAT_POSITIVE_VALUE
+            neg_value = STAT_NEGATIVE_VALUE
         else:
+            # According to the description of positive_value and negative_value options,
+            # only values 0 1n 1 are allowed for them. This assertion checks that this
+            # is the case (so they were specified correctly and their values did not change).
             assert {pos_value, neg_value} == {STAT_POSITIVE_VALUE, STAT_NEGATIVE_VALUE}
         
         results_dict = {}
