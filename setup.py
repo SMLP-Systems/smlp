@@ -597,16 +597,16 @@ def _z3_prefix() -> tuple[Path,Path]:
     prefix = Path(env_prefix).expanduser() if env_prefix else Z3_DEFAULT_PREFIX
     lib_dir = prefix/'lib'
 
-    print(f"[smlp build] Looking for libz3.so in: {lib_dir}")
+    print(f"[smlp build] Looking for libz3.{{so,dylib}} in: {lib_dir}")
 
-    found = list(lib_dir.rglob("libz3.so")) if lib_dir.exists() else []
+    found = list(lib_dir.rglob("libz3.so")) + list(lib_dir.rglob("libz3.dylib")) if lib_dir.exists() else []
     if found:
         print(f"[smlp build] Using z3 lib dir: {lib_dir}")
         z3_pc_dir = _write_z3_pc(lib_dir)
         return lib_dir, z3_pc_dir
 
     sys.exit(
-        f"[smlp build] ERROR: libz3.so not found at {lib_dir}.\n"
+        f"[smlp build] ERROR: either of libz3.{{so,dylib}} not found at {lib_dir}.\n"
         "Install z3 and set Z3_PREFIX to your z3 install prefix directory."
     )
 
