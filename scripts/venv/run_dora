@@ -9,6 +9,9 @@ if [[ $# -gt 0 ]]; then
    if [ "$1" == "-test" ]; then
        test=""
    fi
+   if [ "$1" == "-wheel" ]; then
+       wheel=$(realpath "$2")
+   fi
 fi
 python3.11 -m venv $smlp_venv_dir
 cd $smlp_venv_dir
@@ -27,6 +30,8 @@ $(dirname $mathsat_src_dir)/run_mathsat_build
 if [[ -v test ]]; then
     pip install requests packaging
     pip install -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple smlptech==$($script_path/../bin/smlp_versions.py -atl)
+elif [[ -v wheel ]]; then
+    pip install $wheel
 else
     pip install smlptech
 fi
