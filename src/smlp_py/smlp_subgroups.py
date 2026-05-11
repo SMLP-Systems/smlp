@@ -998,11 +998,12 @@ class SubgroupDiscovery:
         if cls_reg_mode == CLASSIFICATION:
             pos_value = STAT_POSITIVE_VALUE
             neg_value = STAT_NEGATIVE_VALUE
-        else:
-            # According to the description of positive_value and negative_value options,
-            # only values 0 1n 1 are allowed for them. This assertion checks that this
-            # is the case (so they were specified correctly and their values did not change).
-            assert {pos_value, neg_value} == {STAT_POSITIVE_VALUE, STAT_NEGATIVE_VALUE}
+        
+        # According to the description of positive_value and negative_value options in regression
+        # mode, only values 0 1n 1 are allowed for them. This assertion checks that this is indeed
+        # the case (so they were specified correctly and their values did not change). In case of
+        # classification, the assertion holds due to updating pos_value and neg_value above.
+        assert {pos_value, neg_value} == {STAT_POSITIVE_VALUE, STAT_NEGATIVE_VALUE}
         
         results_dict = {}
         fs_ranking_df = None
