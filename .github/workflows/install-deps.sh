@@ -27,6 +27,7 @@ macos-26*)
 	export CC=gcc-13
 	export CXX=g++-13
 	export R=$tgt
+	#export HOST=aarch64-apple-darwin25.3.0
 
 	source $loc/install-gmp.sh install
 
