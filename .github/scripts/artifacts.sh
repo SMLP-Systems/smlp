@@ -10,13 +10,14 @@ fi
 
 L="${1}"
 counter=0
-gh run list --repo SMLP-Systems/smlp --limit $L --json databaseId,displayTitle \
+gh run list --repo SMLP-Systems/smlp --limit $L --json databaseId,displayTitle,headBranch \
   | jq -c '.[]' \
   | while read -r run; do
       id=$(echo "$run" | jq -r '.databaseId')
       title=$(echo "$run" | jq -r '.displayTitle')
+      branch=$(echo "$run" | jq -r '.headBranch')
       counter=$((counter + 1))
-      echo "=== $counter. Run $id: $title ==="
+      echo "=== $counter. Run $id [$branch]: $title ==="
       attempt_count=$(gh api "repos/SMLP-Systems/smlp/actions/runs/$id" --jq '.run_attempt')
       for i in $(seq 1 $attempt_count); do
           attempt_data=$(gh api "repos/SMLP-Systems/smlp/actions/runs/$id/attempts/$i" \
