@@ -14,6 +14,28 @@ eval ${P}_R=${R:-\$`echo ${P}_S`/prefix}		# install prefix
 #eval ${P}_LDFLAGS=-L\$`echo ${P}_R`/lib
 eval ${P}_PKG_CONFIG_PATH=\$`echo ${P}_R`/lib/pkgconfig
 
+get() {
+	wget -O $F https://ftpmirror.gnu.org/gnu/gmp/$F
+}
+
+unpack() {
+	tar xfJ $F
+}
+
+configure() {
+	cd $S && ./configure \
+		--enable-cxx \
+		--prefix=$R \
+		--host=$HOST \
+		CC=$CC \
+		CXX=$CXX \
+	&& cd $W
+}
+
+install() {
+	make -C $S -j`nproc` install
+}
+
 run() {
 	eval local V=\${${P}_V}
 	eval local F=\${${P}_F}
@@ -25,38 +47,17 @@ run() {
 	mkdir -p $W
 	cd $W
 
-	# get
-	if ! [ -f $W/.get ]; then
-		rm -f $W/.{unpack,configure,$T}
-		wget -O $F https://ftpmirror.gnu.org/gnu/gmp/$F
-		touch $W/.get
-	fi
-
-	# unpack
-	if ! [ -f $W/.unpack ]; then
-		rm -f $W/.{configure,$T}
-		tar xfJ $F
-		touch $W/.unpack
-	fi
-
-	# configure
-	if ! [ -f $W/.configure ]; then
-		rm -f $W/.$T
-		cd $S && ./configure \
-			--enable-cxx \
-			--prefix=$R \
-			--host=$HOST \
-			CC=$CC \
-			CXX=$CXX \
-		&& cd $W
-		touch $W/.configure
-	fi
-
-	# build/install
-	if ! [ -f $W/.$T ]; then
-		make -j`nproc` $T
-		touch $W/.$T
-	fi
+	local stages=( get unpack configure $T )
+	local i f
+	for i in `seq 1 ${#stages[@]}`; do
+		local stage=${stages[i-1]}
+		[[ -f $W/.$stage ]] && continue
+		for f in $(echo ${stages[*]} | cut -d' ' -f$i-); do
+			rm -f $W/.$f
+		done
+		$stage
+		touch $W/.$stage
+	done
 }
 
 if [ $# -eq 1 ]; then run $1; fi

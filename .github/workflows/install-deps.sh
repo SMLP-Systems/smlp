@@ -24,6 +24,8 @@ ubuntu-*)
 
 	source $loc/install-z3.sh install
 
+	find $tgt
+
 	;;
 macos-26*)
 	export CC=gcc-13
