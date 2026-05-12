@@ -31,9 +31,8 @@ jobs:
           # pin manylinux version
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
           # install dependencies (GMP, Z3) to /tmp/prefix
-          CIBW_BEFORE_ALL: >
-            source {package}/.github/workflows/install-deps.sh {project} ${{ matrix.os }} /tmp/prefix &&
-            :
+          CIBW_BEFORE_ALL: |
+            {package}/.github/workflows/install-deps.sh {project} ${{ matrix.os }} /tmp/prefix
           # use installed dependencies in setup.py
           CIBW_ENVIRONMENT: >
             GMP_ROOT=/tmp/prefix

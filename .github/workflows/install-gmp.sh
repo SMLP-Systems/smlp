@@ -26,30 +26,37 @@ run() {
 	cd $W
 
 	# get
-	[[ -f $W/.get ]] || {
+	if ! [ -f $W/.get ]; then
+		rm -f $W/.{unpack,configure,$T}
 		wget -O $F https://ftpmirror.gnu.org/gnu/gmp/$F
 		touch $W/.get
-	}
+	fi
 
 	# unpack
-	[[ -f $W/.unpack ]] || {
+	if ! [ -f $W/.unpack ]; then
+		rm -f $W/.{configure,$T}
 		tar xfJ $F
 		touch $W/.unpack
-	}
-
-	cd $S
+	fi
 
 	# configure
-	[[ -f $W/.configure ]] || {
-		[ -d $P -a -f Makefile ] || ./configure --enable-cxx --prefix=$R --host=$HOST CC=$CC CXX=$CXX
+	if ! [ -f $W/.configure ]; then
+		rm -f $W/.$T
+		cd $S && ./configure \
+			--enable-cxx \
+			--prefix=$R \
+			--host=$HOST \
+			CC=$CC \
+			CXX=$CXX \
+		&& cd $W
 		touch $W/.configure
-	}
+	fi
 
 	# build/install
-	[[ -f $W/.$T ]] || {
+	if ! [ -f $W/.$T ]; then
 		make -j`nproc` $T
 		touch $W/.$T
-	}
+	fi
 }
 
 if [ $# -eq 1 ]; then run $1; fi

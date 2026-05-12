@@ -15,7 +15,7 @@ eval ${P}_R=${R:-\$`echo ${P}_S`/prefix}			# install prefix
 export PYTHON=python3.11
 export CPPFLAGS+=" -I$gmp_R/include"
 export LDFLAGS+=" -L$gmp_R/lib -Wl,-rpath,$gmp_R/lib"
-export PKG_CONFIG_PATH=$gmp_PKG_CONFIG_PATH:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH=$gmp_PKG_CONFIG_PATH${PKG_CONFIG_PATH:+:}$PKG_CONFIG_PATH
 
 run() {
 	eval local V=\${${P}_V}
@@ -30,31 +30,36 @@ run() {
 	cd $W
 
 	# get
-	[[ -f $W/.get ]] || {
+	if ! [ -f $W/.get ]; then
+		rm -f $W/.{unpack,configure,$T}
 		wget -O $F https://github.com/Z3Prover/z3/archive/refs/tags/$P-$V.tar.gz
 		touch $W/.get
-	}
+	fi
 
 	# unpack
-	[[ -f $W/.unpack ]] || {
+	if ! [ -f $W/.unpack ]; then
+		rm -f $W/.{configure,$T}
 		tar xfz $F
 		touch $W/.unpack
-	}
-
-	cd $S
+	fi
 
 	# configure
-	[[ -f $W/.configure ]] || {
-		[ -d $P -a -f $B/Makefile ] || ./configure --gmp --build=$B --prefix=$R
+	if ! [ -f $W/.configure ]; then
+		rm -f $W/.$T
+		cd $S && ./configure \
+			--gmp \
+			--build=$B \
+			--prefix=$R \
+		&& cd $W
 		touch $W/.configure
-	}
+	fi
 
 	# build/install
-	[[ -f $W/.$T ]] || {
-		sed -i.bak 's/@//' $B/Makefile	# want to see commands
-		env LIBRARY_PATH=$gmp_R/lib make -C $B -j`nproc` $T
+	if ! [ -f $W/.$T ]; then
+		sed -i.bak 's/@//' $S/$B/Makefile	# want to see commands
+		env LIBRARY_PATH=$gmp_R/lib make -C $S/$B -j`nproc` $T
 		touch $W/.$T
-	}
+	fi
 }
 
 if [ $# -eq 1 ]; then run $1; fi
