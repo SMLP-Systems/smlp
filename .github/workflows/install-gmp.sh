@@ -27,7 +27,7 @@ run() {
 
 	# get
 	[[ -f $W/.get ]] || {
-		wget -O $F https://ftp.gnu.org/gnu/gmp/$F
+		wget -O $F https://ftpmirror.gnu.org/gnu/gmp/$F
 		touch $W/.get
 	}
 
