@@ -222,12 +222,12 @@ def _boost_prefix() -> Path:
         print(f"using python : {py_ver} : {sys.executable} : {py_inc} : ;",
               file=f)
 
-        cxx = os.environ.get('CXX')
+        cxx = os.environ.get('CXX', '')
         cxx_opts = ''
         for k,v in {
             'cflags': os.environ.get('CFLAGS', '') + ' ' + os.environ.get('CXXFLAGS', ''),
-            'compileflags': os.environ.get('CPPFLAGS'),
-            'linkflags': os.environ.get('LDFLAGS'),
+            'compileflags': os.environ.get('CPPFLAGS', ''),
+            'linkflags': os.environ.get('LDFLAGS', ''),
         }.items():
             v = v.strip()
             if v:
