@@ -48,6 +48,7 @@ Z3_PREFIX        Reuse an existing Z3 install prefix.
 
 import os
 import platform
+import shlex
 import shutil
 import subprocess
 import sys
@@ -216,11 +217,24 @@ def _boost_prefix() -> Path:
     # where libpython.so does not exist).
     user_config = src / "user-config.jam"
     with open(user_config, 'w') as f:
+        # For docs on the built-in tools specified below and the syntax, see
+        # <https://www.boost.org/doc/libs/latest/tools/build/doc/html/index.html#b2.reference.tools>
         print(f"using python : {py_ver} : {sys.executable} : {py_inc} : ;",
               file=f)
+
         cxx = os.environ.get('CXX')
-        if cxx:
-            print(f'using cc : : {cxx} : ;', file=f)
+        cxx_opts = ''
+        for k,v in {
+            'cflags': os.environ.get('CFLAGS', '') + ' ' + os.environ.get('CXXFLAGS', ''),
+            'compileflags': os.environ.get('CPPFLAGS'),
+            'linkflags': os.environ.get('LDFLAGS'),
+        }.items():
+            v = v.strip()
+            if v:
+                cxx_opts += f' <{k}>{shlex.quote(v)}'
+        cxx_opts = cxx_opts.strip()
+        if cxx or cxx_opts:
+            print(f'using cc : : {cxx} : {cxx_opts} ;', file=f)
 
     _run(
         ["./b2", "install",
