@@ -15,6 +15,7 @@ ubuntu-*)
 		wget \
 		gcc-toolset-13
 
+	echo "source /opt/rh/gcc-toolset-13/enable" >> $HOME/.bashrc
 	source /opt/rh/gcc-toolset-13/enable
 
 	export R=$tgt

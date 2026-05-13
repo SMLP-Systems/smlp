@@ -38,8 +38,6 @@ jobs:
             GMP_ROOT=/tmp/prefix
             Z3_PREFIX=/tmp/prefix
             LD_LIBRARY_PATH=/tmp/prefix/lib
-          CIBW_BEFORE_BUILD_LINUX: >
-            echo "source /opt/rh/gcc-toolset-13/enable" >> $HOME/.bashrc
         # with:
         #   package-dir: .
         #   output-dir: wheelhouse
