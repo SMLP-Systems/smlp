@@ -23,13 +23,14 @@ unpack() {
 }
 
 configure() {
-	cd $S && ./configure \
+	cd $S
+	./configure \
 		--enable-cxx \
 		--prefix=$R \
 		--host=$HOST \
 		CC=$CC \
 		CXX=$CXX \
-	&& cd $W
+	&& :
 }
 
 install() {
@@ -45,7 +46,6 @@ run() {
 	local T=$1
 
 	mkdir -p $W
-	cd $W
 
 	local stages=( get unpack configure $T )
 	local i f
@@ -55,6 +55,7 @@ run() {
 		for f in $(echo ${stages[*]} | cut -d' ' -f$i-); do
 			rm -f $W/.$f
 		done
+		cd $W
 		$stage
 		touch $W/.$stage
 	done
