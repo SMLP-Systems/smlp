@@ -215,9 +215,12 @@ def _boost_prefix() -> Path:
     # to use and disables linking against libpython (required for manylinux
     # where libpython.so does not exist).
     user_config = src / "user-config.jam"
-    user_config.write_text(
-        f"using python : {py_ver} : {sys.executable} : {py_inc} : ;\n"
-    )
+    with open(user_config, 'w') as f:
+        print(f"using python : {py_ver} : {sys.executable} : {py_inc} : ;",
+              file=f)
+        cxx = os.environ.get('CXX')
+        if cxx:
+            print(f'using cc : : {cxx} : ;', file=f)
 
     _run(
         ["./b2", "install",
