@@ -6,7 +6,7 @@ SMLP uses symbolic reasoning for ML model exploration and optimisation under ver
 <img src="https://raw.githubusercontent.com/SMLP-Systems/smlp/master/misc/smlp_overview.png" alt="SMLP Overview" class="center" width="750" height="500">
 
 
-**Industry adoption:** SMLP is used at **Intel** in production for optimization of package/board layouts and signal integrity
+**Industry adoption:** SMLP is used at **Intel** for optimization of package/board layouts and signal integrity
 
 <details>
 <summary> SMLP applications in Intel and why stability is important  </summary><br>
@@ -433,22 +433,23 @@ Step 3: Run SMLP on data file and specification file:
 </summary>
 
 ```
-smlp -data Constraint_dora.csv.gz -spec ./constraint_dora.json -pref results/Constraint_dora -mode optimize -model poly_sklearn -epsilon 0.0000005
+smlp -data ./Constraint_dora.csv.gz -spec ./constraint_dora.json -pref Constraint_dora -out_dir results -mode optimize -model poly_sklearn -epsilon 0.0000005
 ```
 
 SMLP command line arguments:<br>
 
    ```
-    -data ${name}.csv.gz                  # input CSV dataset
-    -spec ${script_path}/${name_lc}.json  # JSON spec file
-    -pref ${name}                         # output file prefix
+    -data ./Constraint_dora.csv.gz        # input CSV dataset
+    -spec ./constraint_dora.json.json     # JSON spec file
+    -pref Constraint_dora                 # output file prefix
+    -out_dir results                      # output directory
     -mode optimize                        # operation mode
     -model poly_sklearn                   # model type
     -epsilon 0.0000005                    # convergence threshold
 ```
 
 
-3 graphs will pop-up which show quality of the generated model in train/validation/test dataset split, (these need to be closed to proceed). <br>
+3 graphs will pop-up which show quality of the generated model on train/test/train+test datasets, (these need to be closed to proceed). <br>
 The generated results can be found in `results/` folder.  <br>
 
 `results/Constraint_dora_Constraint_dora_optimization_results.csv` contains the generated solution:
