@@ -28,7 +28,7 @@ $(dirname $mathsat_src_dir)/run_mathsat_build
 \rm -rf $mathsat_dest_dir > /dev/null
 \mv $mathsat_src_dir $mathsat_dest_dir
 if [[ -v test ]]; then
-    pip install requests packaging
+    pip install packaging
     pip install -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple smlptech==$($script_path/../bin/smlp_versions.py -atl)
 elif [[ -v wheel ]]; then
     pip install $wheel
