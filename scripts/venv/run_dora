@@ -28,7 +28,7 @@ $(dirname $mathsat_src_dir)/run_mathsat_build
 \rm -rf $mathsat_dest_dir > /dev/null
 \mv $mathsat_src_dir $mathsat_dest_dir
 if [[ -v test ]]; then
-    pip install packaging
+    pip install requests packaging
     pip install -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple smlptech==$($script_path/../bin/smlp_versions.py -atl)
 elif [[ -v wheel ]]; then
     pip install $wheel
@@ -40,7 +40,7 @@ if [[ "$smlptech_version" == *"+g"* ]]; then
     commit="${smlptech_version##*+g}"
 else
     tag=v"$smlptech_version"
-    pip install requests beautifulsoup4
+    pip install beautifulsoup4
     smlp_release_info=$(git rev-parse --show-toplevel)/scripts/github/smlp_release_info.py
     commit=$($smlp_release_info v"$smlptech_version" | grep "Commit Hash" | awk '{print $NF}')
 fi
