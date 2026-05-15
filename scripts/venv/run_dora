@@ -42,7 +42,7 @@ else
     tag=v"$smlptech_version"
     pip install beautifulsoup4
     smlp_release_info=$(git rev-parse --show-toplevel)/scripts/github/smlp_release_info.py
-    commit=$($smlp_release_info v"$smlptech_version" | grep "Commit Hash" | awk '{print $NF}')
+    commit=$($smlp_release_info $tag | grep "Commit Hash" | awk '{print $NF}')
 fi
 if [[ -v tag ]]; then
     echo "Tag: $tag"
