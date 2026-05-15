@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-pip install requests packaging
+pip3.11 install --ignore-installed requests packaging
 if [ "$1" == "-test" ]; then
     test=""
     version=$(./smlp_versions.py -atl)
@@ -9,7 +9,7 @@ else
     echo "Building image from the latest prod version $version"
 fi
 if [[ -v test ]]; then
-    pip install -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple smlptech==$version
+    pip3.11 install --ignore-installed -i https://test.pypi.org/simple --extra-index-url https://pypi.org/simple smlptech==$version
 else
-    pip install smlptech
+    pip3.11 install --ignore-installed smlptech
 fi

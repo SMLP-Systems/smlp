@@ -88,9 +88,117 @@ Papers:
 <details>
  <summary> Ubuntu 24.04 </summary>
  
-  * `cd scripts/venv/`
-  
-  * Follow: [[SMLP Installation Guide for Ubuntu-24.04]](https://github.com/SMLP-Systems/smlp/blob/master/scripts/venv/README.md)
+
+#### SMLP Installation Guide for Ubuntu 24.04
+
+This guide describes how to install [smlptech](https://pypi.org/project/smlptech/) on Ubuntu 24.04.
+
+---
+
+#### Prerequisites
+
+- Ubuntu 24.04
+- `sudo` access
+- Internet access (for apt, pip, and wget)
+
+---
+
+#### Step 1 — Install system dependencies
+
+```bash
+sudo apt-get update
+sudo apt-get install -y \
+    jq \
+    libgomp1 \
+    tcsh \
+    wget \
+```
+
+| Dependency | Used by | Mandatory
+|---|---|---|
+| jq | Quickstart and Tutorial | No
+| **libgomp1** | **SMLP** | **Yes**
+| tcsh | Tutorial | No
+| wget | Mathsat installation | No
+
+
+---
+
+#### Step 2 — Install Python 3.11 with Tk support
+
+
+```bash
+sudo add-apt-repository -y ppa:deadsnakes/ppa
+sudo apt-get update
+sudo apt-get install -y python3.11 python3.11-venv python3.11-tk
+```
+---
+
+#### Step 3 — Install smlptech in virtual environment
+
+Installs smlptech into an isolated virtual environment under `~/.venv`.
+No `sudo` required for the installation itself.
+
+```bash
+python3.11 -m venv ~/.venv
+export PATH=~/.venv/bin:$PATH
+source ~/.venv/bin/activate
+pip3.11 install smlptech
+```
+
+To make the virtual environment available in every new shell session, add the following line to `~/.bashrc`:
+
+```bash
+export PATH=~/.venv/bin:$PATH
+```
+
+---
+
+#### Step 4 — (Recommended) Validate the installation
+
+Run the following checks to confirm the installation is working:
+
+```bash
+# Confirm smlp is importable and print its version
+python3.11 -c "import smlp; from importlib.metadata import version; print('smlp version:', version('smlptech'))"
+
+# Confirm Tk is available (required for GUI components and PNG files generation in non-GUI environment)
+python3.11 -c "import tkinter; print('tkinter Tcl/Tk:', tkinter.TclVersion)"
+```
+
+Both commands should complete without errors.
+
+---
+
+#### Step 5 — (Optional) Install MathSAT
+
+MathSAT is a Satisfiability Modulo Theories (SMT) solver developed as a joint project between Fondazione Bruno Kessler (FBK) and the University of Trento (DISI) in Italy. It is optionally used by SMLP.
+
+⚠️ **Licensing limitations**
+
+Please, read [MathSat5 license terms](https://mathsat.fbk.eu/download.html) before using MathSat
+
+- *MathSAT5 is available for research and evaluation purposes only.* **It can not be used in a commercial environment, particularly as part of a commercial product, without written permission.** *MathSAT5 is provided as is, without any warranty.*
+
+To install MathSat and validate installation:
+
+```bash
+wget https://raw.githubusercontent.com/SMLP-Systems/smlp/refs/heads/master/scripts/docker/run_mathsat_build
+chmod +x run_mathsat_build
+./run_mathsat_build && rm -rf /tmp/mathsat* && external/mathsat-5.6.8-linux-x86_64-reentrant/bin/mathsat -version
+```
+
+---
+
+#### Summary
+
+| Step | Description | Required |
+|------|-------------|----------|
+| 1 | System dependencies | Yes |
+| 2 | Python 3.11 + Tk via deadsnakes PPA | Yes |
+| 3 | Install smlptech | Yes |
+| 4 | Validate installation | No |
+| 5 | MathSAT SMT solver | Optional |
 
 </details>
 
@@ -144,12 +252,71 @@ Starting VNC server within container:
 ./start_vnc
 ```
 
-Recommended VNC client: 
+Recommended VNC clients: 
 
 - Ubuntu: `remmina`
 - Windows: RealVNC®
   
-  Details - see [RealVNC® installation instructions](doc/RealVNC.md)
+<details>
+ <summary style="padding-left: 1.7em;"> RealVNC® installation instructions for Windows </summary>
+
+#### Step 1:
+
+Download [RealVNC®](https://www.realvnc.com/en/connect/download/viewer)
+
+#### Step 2:
+
+Install RealVNC
+
+#### Step 3: Forward Port 5900 from Windows to WSL2
+
+#### Step 3.1 - in WSL2 window
+
+Get your WSL2 IP address from running below command:
+
+```bash
+hostname -I
+```
+
+#### Step 3.2
+
+Open Command Prompt and choose **Run as administrator** option
+
+#### Step 3.3 - in Windows Command Prompt Window
+
+Use the **first IP** in the output (e.g., `172.31.26.155`). All the rest should be ignored
+Run the following in **powershell**, replacing `<WSL2_IP>` with your IP:
+
+```powershell
+netsh interface portproxy add v4tov4 listenport=5900 listenaddress=0.0.0.0 connectport=5900 connectaddress=<WSL2_IP>
+```
+
+Allow the port through Windows Firewall:
+
+```powershell
+New-NetFirewallRule -DisplayName "WSL2 VNC" -Direction Inbound -Protocol TCP -LocalPort 5900 -Action Allow
+```
+
+Verify the proxy is set:
+
+```powershell
+netsh interface portproxy show all
+```
+
+#### Step 4: Connect with VNC 
+
+**Connection should be performed after running** `./start_vnc` **command within Docker container**
+
+1. Launch VNC
+   Signing in VNC is optional
+2. In VNC connect to: `locahost:5900` 
+- Ignore non-secure connection warning
+
+#### Updating the Port Proxy After WSL2 Restart
+
+WSL2's IP address may change after restart. In this case, **Step 3** should be repeated after the reboot
+
+</details><br>
 
 </details>
 
@@ -178,47 +345,6 @@ Dependencies: `WSL2` with `WSLG` enabled
 tests/install/test_container_install mdmitry1/python311-dev
 ```
 
-</details>
-
-
-### Sources
-<details>
- <summary> Installation on a stock Ubuntu-22.04 </summary>
- 
-``` 
-	sudo apt install \
-		python3-pip ninja-build z3 libz3-dev libboost-python-dev texlive \
-		pkg-config libgmp-dev libpython3-all-dev python-is-python3
-	# get a recent version of the meson configure tool
-	pip install --user meson
-
-	# obtain sources
-	git clone https://github.com/fbrausse/kay.git
-	git clone https://github.com/smlp-systems/smlp.git
-	cd smlp/utils/poly
-
-	# workaround <https://bugs.launchpad.net/ubuntu/+source/swig/+bug/1746755>
-	echo 'export PYTHONPATH=$HOME/.local/lib/python3/dist-packages:$PYTHONPATH' >> ~/.profile
-	# get $HOME/.local/bin into PATH and get PYTHONPATH
-	mkdir -p $HOME/.local/bin
-	source ~/.profile
-
-	# setup, build & install libsmlp
-	meson setup -Dkay-prefix=$HOME/kay --prefix $HOME/.local build
-	ninja -C build install
-
-	# tensorflow-2.16 has a change leading to the error:
-	# 'The filepath provided must end in .keras (Keras model format).'
-	pip install --user \
-		pandas tensorflow==2.15.1 scikit-learn pycaret seaborn \
-		mrmr-selection jenkspy pysubgroup pyDOE doepy
-```                
-
- </details>
-
-<details>
- <summary> MacOS </summary>
-   Installation instructions for Ubuntu-22.04 can be followed using `homebrew` in place of `apt`
 </details>
 
 ## Quickstart
