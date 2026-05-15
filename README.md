@@ -25,7 +25,7 @@ can be dependent on the intended value itself.
 </details><br>
 
 
-**[Combination of robustness and formal assurance of results validity](https://korovin.gitlab.io/pub/fmcad_bkk_2020.pdf) is a distinctive strength of SMLP, not found in other optimization or model‑analysis tools.**
+**[Combination of robustness and formal assurance of results validity](https://korovin.gitlab.io/pub/fmcad_bkk_2020.pdf)** is a distinctive strength of SMLP, not found in other optimization or model‑analysis tools.
 
 SMLP exploration modes:
 
