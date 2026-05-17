@@ -4,9 +4,10 @@
 from fractions import Fraction
 import json
 
-import smlp
-from smlp_py.smlp_terms import ModelTerms, SmlpTerms
-from smlp_py.smlp_utils import np_JSONEncoder #, str_to_bool
+from smlp import core
+
+from .smlp_terms import ModelTerms, SmlpTerms
+from .smlp_utils import np_JSONEncoder #, str_to_bool
 
 
 class SmlpQuery:
@@ -99,7 +100,7 @@ class SmlpQuery:
     def find_candidate(self, solver):
         #res = solver.check()
         res = self._modelTermsInst.smlp_solver_check(solver, 'ca', self._lemma_precision)
-        if self._modelTermsInst.solver_status_unknown(res): # isinstance(res, smlp.unknown):
+        if self._modelTermsInst.solver_status_unknown(res): # isinstance(res, core.unknown):
             return None
         else:
             return res
@@ -143,8 +144,8 @@ class SmlpQuery:
     # Enhancement !!! instead of using witn_form, bind inputs and knobs to their values by directly 
     # applying solver.add(var == val) or directly substituting these values in other formulas --
     # just for small potential speedup.
-    def check_concrete_witness_consistency(self, domain:smlp.domain, model_full_term_dict:dict, 
-            alpha:smlp.form2, eta:smlp.form2, query:smlp.form2, witn_form:smlp.form2, solver_logic:str):
+    def check_concrete_witness_consistency(self, domain:core.domain, model_full_term_dict:dict, 
+            alpha:core.form2, eta:core.form2, query:core.form2, witn_form:core.form2, solver_logic:str):
         solver = self._modelTermsInst.create_model_exploration_instance_from_smlp_components(
             domain, model_full_term_dict, True, solver_logic)
         solver.add(alpha)
@@ -156,25 +157,24 @@ class SmlpQuery:
         #res = solver.check()
         return res
 
-    
-    
-    # TODO: what about eta-interval and eta_global constraints, as well as eta-grid constraints for
-    # integer control (knob) variables? Looks like they should be used as constrints -- look for a cex
-    # to a candidate only under these (and other). Grid constraints for continuous variable should not 
-    # be used
+
+    # Eta constraints (eta ranges, eta grid, and eta global constraints) are not used here because
+    # the witness cond assigns constant values to knobs that already satisfy all eta constraints.
+    # In some modes, this holds by construction due to how the witness is generated; in other modes,
+    # it holds because feasibility with respect to eta constraints has already been checked for the
+    # witness and the corresponding query.
     #   ! ( theta x y -> alpha y -> beta y /\ obj y >= T ) =
     #   ! ( ! theta x y \/ ! alpha y \/ beta y /\ obj y >= T ) =
     #   theta x y /\ alpha y /\ ! ( beta y /\ obj y >= T) 
-    def find_candidate_counter_example(self, universal, domain:smlp.domain, cand:dict, query:smlp.form2, 
-            model_full_term_dict:dict, alpha:smlp.form2, theta_radii_dict:dict, solver_logic:str):
+    def find_candidate_counter_example(self, universal, resp_names, domain:core.domain, cand:dict, query:core.form2,
+            model_full_term_dict:dict, alpha:core.form2, theta_radii_dict:dict, solver_logic:str):
         solver = self._modelTermsInst.create_model_exploration_instance_from_smlp_components(
             domain, model_full_term_dict, False, solver_logic)
-        theta = self._modelTermsInst.compute_stability_formula_theta(cand, None, theta_radii_dict, universal) 
+        theta = self._modelTermsInst.compute_stability_formula_theta(cand, None, theta_radii_dict, resp_names, universal)
         solver.add(theta)
         solver.add(alpha)
         solver.add(self._smlpTermsInst.smlp_not(query))
         return self._modelTermsInst.smlp_solver_check(solver, 'ce', self._lemma_precision)
-        #return solver.check()
     
     # Enhancement !!!: at least add here the delta condition
     def generalize_counter_example(self, coex):
@@ -183,8 +183,9 @@ class SmlpQuery:
     # This function is called from validate_witness() on already built model terms and formulas for constraints.
     # It checks stability of witness given as witn_dict, which in case universal == True is a value assignements to knobs,
     # and in case universal = False is a value assignement to both knobs as well as inputs. 
-    def validate_witness_smt(self, universal:bool, model_full_term_dict:dict, quer_name:str, quer_expr:str, quer:smlp.form2, witn_dict:dict,
-            domain:smlp.domain, eta:smlp.form2, alpha:smlp.form2, theta_radii_dict:dict, #beta:smlp.form2, 
+    def validate_witness_smt(self, universal:bool, resp_names:list[str], model_full_term_dict:dict,
+            quer_name:str, quer_expr:str, quer:core.form2, witn_dict:dict,
+            domain:core.domain, eta:core.form2, alpha:core.form2, theta_radii_dict:dict, #beta:core.form2, 
             delta:float, solver_logic:str, witn:bool, sat_approx:bool, sat_precision:int):
         if universal:
             self._query_logger.info('Verifying assertion {} <-> {}'.format(str(quer_name), str(quer_expr)))
@@ -201,17 +202,17 @@ class SmlpQuery:
         candidate_solver.add(quer)
         
         for var,val in witn_dict.items():
-            #candidate_solver.add(smlp.Var(var) == smlp.Cnst(val))
-            candidate_solver.add(self._smlpTermsInst.smlp_eq(smlp.Var(var), smlp.Cnst(val)))
+            #candidate_solver.add(core.Var(var) == core.Cnst(val))
+            candidate_solver.add(self._smlpTermsInst.smlp_eq(core.Var(var), core.Cnst(val)))
         
         candidate_check_res = self._modelTermsInst.smlp_solver_check(candidate_solver, 'ca')
-        if self._modelTermsInst.solver_status_sat(candidate_check_res): #isinstance(candidate_check_res, smlp.sat):
+        if self._modelTermsInst.solver_status_sat(candidate_check_res): #isinstance(candidate_check_res, core.sat):
             cond_feasible = True
             if universal:
                 self._query_logger.info('The configuration is consistent with assertion ' + str(quer_name))
             else:
                 self._query_logger.info('Witness to query ' + str(quer_name) + ' is a valid witness; checking its stability')
-        elif self._modelTermsInst.solver_status_unsat(candidate_check_res): #isinstance(candidate_check_res, smlp.unsat):
+        elif self._modelTermsInst.solver_status_unsat(candidate_check_res): #isinstance(candidate_check_res, core.unsat):
             cond_feasible = False
             if universal:
                 # Assertion cannot be satisfied (is constant False) given the knob configuration and the constraints.
@@ -237,9 +238,9 @@ class SmlpQuery:
 
         # checking stability of a valid witness to the query
         witn_term_dict = self._smlpTermsInst.witness_const_to_term(witn_dict)
-        ce = self.find_candidate_counter_example(universal, domain, witn_term_dict, quer, model_full_term_dict, alpha, 
+        ce = self.find_candidate_counter_example(universal, resp_names, domain, witn_term_dict, quer, model_full_term_dict, alpha,
             theta_radii_dict, solver_logic)
-        if self._modelTermsInst.solver_status_sat(ce): #isinstance(ce, smlp.sat):
+        if self._modelTermsInst.solver_status_sat(ce): #isinstance(ce, core.sat):
             if universal:
                 self._query_logger.info('Completed with result: FAIL')
                 #self._query_logger.info('Assertion ' +  str(quer_name) + ' fails (for stability radii ' + str(theta_radii_dict))
@@ -250,7 +251,7 @@ class SmlpQuery:
             else:
                 self._query_logger.info('Witness to query ' + str(quer_name) + ' is not stable for radii ' + str(theta_radii_dict))
                 return 'witness, not stable'
-        elif self._modelTermsInst.solver_status_unsat(ce): #isinstance(ce, smlp.unsat):
+        elif self._modelTermsInst.solver_status_unsat(ce): #isinstance(ce, core.unsat):
             if universal:
                 self._query_logger.info('Completed with result: PASS')
                 #self._query_logger.info('Assertion ' +  str(quer_name) + ' passes (for stability radii ' + str(theta_radii_dict))
@@ -269,7 +270,7 @@ class SmlpQuery:
             alph_expr:str, beta_expr:str, eta_expr:str, theta_radii_dict:dict, solver_logic:str, vacuity:bool, 
             data_scaler:str, scale_feat:bool, scale_resp:bool, float_approx=True, float_precision=64, 
             data_bounds_json_path=None, bounds_factor=None, T_resp_bounds_csv_path=None):
-         
+
         if universal:
             CONSISTENCY = 'configuration_consistent'
             query_status_dict = {
@@ -327,7 +328,7 @@ class SmlpQuery:
         witn_count = len(witn_dict.keys())
         if witn_count != len(quer_exprs):
             raise Exception('The number of queries does not match the number of witnesses')
-        # TODO !!!! do we need this way of defining queries as smlp.true?
+        # TODO !!!! do we need this way of defining queries as core.true?
         
         # drop fron witn_dict assignments to variables that do not occur in the model
         witn_dict_filtered = {}
@@ -383,7 +384,7 @@ class SmlpQuery:
             for quer_name, quer_expr in zip(quer_names, quer_exprs)])
         # sanity check -- queries must be formulas (not terms)
         for i, form in enumerate(quer_forms_dict.values()):
-            if not isinstance(form, smlp.libsmlp.form2):
+            if not isinstance(form, core.libsmlp.form2):
                 raise Exception('Quesry ' + str(quer_exprs[i]) + ' must be a formula (not a term)')
 
         # instance consistency and feasibility checks (are the assumptions contradictory?)
@@ -399,13 +400,13 @@ class SmlpQuery:
                     self._query_logger.info('Certifying consistency of witness for query ' + str(quer_name) + ':\n   ' + str(witn_form))
                 witn_status = self.check_concrete_witness_consistency(domain, model_full_term_dict, 
                     alpha, eta, None, witn_form, solver_logic)
-                if self._modelTermsInst.solver_status_sat(witn_status): #isinstance(witn_status, smlp.sat):
+                if self._modelTermsInst.solver_status_sat(witn_status): #isinstance(witn_status, core.sat):
                     if universal:
                         self._query_logger.info('Input, knob and configuration constraints are consistent')
                     else:
                         self._query_logger.info('Input, knob and concrete witness constraints are consistent')
                     mode_status_dict[quer_name][CONSISTENCY] = 'true'
-                elif self._modelTermsInst.solver_status_unsat(witn_status): #isinstance(witn_status, smlp.unsat):
+                elif self._modelTermsInst.solver_status_unsat(witn_status): #isinstance(witn_status, core.unsat):
                     if universal:
                         self._query_logger.info('Input, knob and configuration constraints are inconsistent')
                     else:
@@ -428,7 +429,7 @@ class SmlpQuery:
             witn_form = witn_form_dict[quer_name]
             if mode_status_dict[quer_name][CONSISTENCY] != 'false':    
                 witn_i_dict = witn_dict[quer_name]
-                witness_status_str = self.validate_witness_smt(universal, model_full_term_dict, quer_name, quer_expr_dict[quer_name], quer_form,
+                witness_status_str = self.validate_witness_smt(universal, resp_names, model_full_term_dict, quer_name, quer_expr_dict[quer_name], quer_form,
                     witn_i_dict, domain, eta, alpha, theta_radii_dict, delta, solver_logic, True, float_approx, float_precision)
                 
                 if universal:
@@ -499,8 +500,8 @@ class SmlpQuery:
         
 
     # Enhancement !!!: implement timeout ? UNKNOWN return value
-    def query_condition(self, universal, model_full_term_dict:dict, quer_name:str, quer_expr:str, quer:smlp.form2, 
-            domain:smlp.domain, eta:smlp.form2, alpha:smlp.form2, theta_radii_dict:dict, #beta:smlp.form2, 
+    def query_condition(self, universal, resp_names:list[str], model_full_term_dict:dict, quer_name:str, quer_expr:str, quer:core.form2,
+            domain:core.domain, eta:core.form2, alpha:core.form2, theta_radii_dict:dict, #beta:core.form2, 
             delta:dict, solver_logic:str, witn:bool, sat_approx:bool, sat_precision:int):
         # feasibility (existence) of at least one candidate
         feasible = None
@@ -528,7 +529,7 @@ class SmlpQuery:
             
             ca = self.find_candidate(candidate_solver)
             
-            if self._modelTermsInst.solver_status_sat(ca): # isinstance(ca, smlp.sat):
+            if self._modelTermsInst.solver_status_sat(ca): # isinstance(ca, core.sat):
                 print('candidate found -- checking stability', flush=True)
                 ca_model = self._modelTermsInst.get_solver_model(ca) #ca.model
                 if use_approxiamted_fractions:
@@ -541,12 +542,12 @@ class SmlpQuery:
                         approx_ca_models[h] = 0
                 feasible = True
                 if use_approxiamted_fractions:
-                    ce = self.find_candidate_counter_example(universal, domain, ca_model_approx, quer, model_full_term_dict, alpha, 
+                    ce = self.find_candidate_counter_example(universal, resp_names, domain, ca_model_approx, quer, model_full_term_dict, alpha,
                         theta_radii_dict, solver_logic)
                 else:
-                    ce = self.find_candidate_counter_example(universal, domain, ca_model, quer, model_full_term_dict, alpha, 
+                    ce = self.find_candidate_counter_example(universal, resp_names, domain, ca_model, quer, model_full_term_dict, alpha,
                         theta_radii_dict, solver_logic)
-                if self._modelTermsInst.solver_status_sat(ce): #isinstance(ce, smlp.sat):
+                if self._modelTermsInst.solver_status_sat(ce): #isinstance(ce, core.sat):
                     print('candidate not stable -- continue search', flush=True)
                     ce_model = self._modelTermsInst.get_solver_model(ce) #ce.model
                     cem = ce_model.copy()
@@ -565,10 +566,10 @@ class SmlpQuery:
                         lemma = self.generalize_counter_example(ce_model_approx)
                     else:
                         lemma = self.generalize_counter_example(cem)
-                    theta = self._modelTermsInst.compute_stability_formula_theta(lemma, delta, theta_radii_dict, universal)
+                    theta = self._modelTermsInst.compute_stability_formula_theta(lemma, delta, theta_radii_dict, resp_names, universal)
                     candidate_solver.add(self._smlpTermsInst.smlp_not(theta))
                     continue
-                elif self._modelTermsInst.solver_status_unsat(ce): #isinstance(ce, smlp.unsat):
+                elif self._modelTermsInst.solver_status_unsat(ce): #isinstance(ce, core.unsat):
                     self._query_logger.info('Query completed with result: STABLE_SAT (satisfiable)')
                     if witn: # export witness (use numbers as values, not terms)
                         ca_model = self._modelTermsInst.get_solver_model(ca) # ca.model
@@ -580,12 +581,12 @@ class SmlpQuery:
                         return {'query_status':'STABLE_SAT', 'witness':witness_vals_dict, 'feasible':feasible}
                     else:
                         return {'query_status':'STABLE_SAT', 'witness':ca_model, 'feasible':feasible}
-            elif self._modelTermsInst.solver_status_unsat(ca): #isinstance(ca, smlp.unsat):
+            elif self._modelTermsInst.solver_status_unsat(ca): #isinstance(ca, core.unsat):
                 self._query_logger.info('Query completed with result: UNSAT (unsatisfiable)')
                 if feasible is None:
                     feasible = False
                 return {'query_status':'UNSAT', 'witness':None, 'feasible':feasible}
-            elif self._modelTermsInst.solver_status_unknown(ca): #isinstance(ca, smlp.unknown):
+            elif self._modelTermsInst.solver_status_unknown(ca): #isinstance(ca, core.unknown):
                 self._opt_logger.info('Completed with result: {}'.format('UNKNOWN'))
                 return {'query_status':'UNKNOWN', 'witness':None, 'feasible':feasible}
                 #raise Exception('UNKNOWN return value in candidate search is currently not supported for queries')
@@ -594,13 +595,13 @@ class SmlpQuery:
         
     
     # iterate over all queries using query_condition()        
-    def query_conditions(self, universal:bool, model_full_term_dict:dict, quer_names:str, quer_exprs:str, quer_forms_dict:dict, 
-            domain:smlp.domain, eta:smlp.form2, alpha:smlp.form2, theta_radii_dict:dict,
+    def query_conditions(self, universal:bool, resp_names:list[str], model_full_term_dict:dict, quer_names:str, quer_exprs:str, quer_forms_dict:dict,
+            domain:core.domain, eta:core.form2, alpha:core.form2, theta_radii_dict:dict,
             delta:dict, solver_logic, witn:bool, sat_approx:bool, sat_precision:int):
         assert list(quer_forms_dict.keys()) == quer_names
         quer_res_dict = {}
         for i, (quer_name, quer_form) in enumerate(quer_forms_dict.items()):
-            quer_res_dict[quer_name] = self.query_condition(universal, model_full_term_dict, quer_name, quer_exprs[i], 
+            quer_res_dict[quer_name] = self.query_condition(universal, resp_names, model_full_term_dict, quer_name, quer_exprs[i],
                 quer_form, domain, eta, alpha, theta_radii_dict, delta, solver_logic, witn, sat_approx, sat_precision)
         return quer_res_dict
     
@@ -641,7 +642,7 @@ class SmlpQuery:
             syst_expr_dict, algo, model, model_features_dict, feat_names, resp_names, #delta, None,
             alph_expr, beta_expr, eta_expr, data_scaler, scale_feat, scale_resp, #scale_objv, 
             float_approx, float_precision, data_bounds_json_path)
-        
+
         mode_status_dict['interface_consistent'] = str(interface_consistent).lower()
         mode_status_dict['model_consistent'] == str(model_consistent).lower()
         if not interface_consistent or not model_consistent:
@@ -658,11 +659,11 @@ class SmlpQuery:
         quer_forms_dict = dict([(quer_name, self._smlpTermsInst.ast_expr_to_term(quer_expr)) \
                 for quer_name, quer_expr in zip(quer_names, quer_exprs)])
         for i, form in enumerate(quer_forms_dict.values()):
-            if not isinstance(form, smlp.libsmlp.form2):
+            if not isinstance(form, core.libsmlp.form2):
                 raise Exception('Query ' + str(quer_exprs[i]) + ' must be a formula (not a term)')
         # execute queries
         quer_res_dict = self.query_conditions(
-            False, model_full_term_dict, quer_names, quer_exprs, quer_forms_dict, domain, 
+            False, resp_names, model_full_term_dict, quer_names, quer_exprs, quer_forms_dict, domain,
             eta, alpha, theta_radii_dict, delta, solver_logic, True, float_approx, float_precision)
         
         # adjust key names in the reusts
@@ -731,12 +732,12 @@ class SmlpQuery:
             synth_cond_list = asrt_exprs if beta_expr is None else [beta_expr] + asrt_exprs
             synthesis_expr = ' and '.join(synth_cond_list)
         else:
-            asrt_conj = smlp.true
+            asrt_conj = core.true
             synthesis_expr = beta_expr
-        beta = self._smlpTermsInst.smlp_and(beta, asrt_conj) if beta != smlp.true else asrt_conj
+        beta = self._smlpTermsInst.smlp_and(beta, asrt_conj) if beta != core.true else asrt_conj
         
         # perform / attempt synthesis 
-        quer_res = self.query_condition(True, model_full_term_dict, 'synthesis_feasibility', synthesis_expr, beta, 
+        quer_res = self.query_condition(True, resp_names, model_full_term_dict, 'synthesis_feasibility', synthesis_expr, beta,
             domain, eta, alpha, theta_radii_dict, delta, solver_logic, True, float_approx, float_precision)
         
         # update mode_status_dict based on 'synthesis_feasibility' query results returned by query_condition()
