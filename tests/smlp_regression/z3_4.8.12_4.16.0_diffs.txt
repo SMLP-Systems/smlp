@@ -1,0 +1,537 @@
+Test129_smlp_toy_ctg_num_resp_verify_results.json
+18,19c18,19
+< 			"x": 0.0,
+< 			"p1": 6.5,
+---
+> 			"x": 1.0,
+> 			"p1": 7.5,
+21,22c21,22
+< 			"y1": -55.31019385295555,
+< 			"y2": 47.018415653762816
+---
+> 			"y1": -61.895667856765954,
+> 			"y2": 58.90071698134544
+30c30
+< 			"x": 0.0,
+---
+> 			"x": 1.0,
+33,34c33,34
+< 			"y1": -69.87311352942962,
+< 			"y2": 61.9213002933148
+---
+> 			"y1": -61.895667856765954,
+> 			"y2": 58.90071698134544
+Test230_smlp_toy_monotone_basic_trace.csv
+6c6
+< ca,sat,1/20,1,0,1,0
+---
+> ca,sat,1/20,0,0,0,0
+Test58_smlp_toy_num_resp_mult_optimization_progress.json
+4,6c4,6
+< 			"value_in_config": 9.0,
+< 			"threshold_scaled": 1.0,
+< 			"threshold": 9.0,
+---
+> 			"value_in_config": 5.0,
+> 			"threshold_scaled": 0.0,
+> 			"threshold": 5.0,
+21c21
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 2.0
+24c24
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 3.0
+27c27
+< 			"value_in_config": 9.0
+---
+> 			"value_in_config": 5.0
+Test58_smlp_toy_num_resp_mult_optimization_results.json
+4c4
+< 		"p1": 2.0,
+---
+> 		"p1": 7.0,
+7c7
+< 		"y2": 5.0,
+---
+> 		"y2": 9.0,
+Test58_smlp_toy_num_resp_mult.txt
+231,232c231,232
+<     Scaled to [0,1]: {'objv_y1': '1.000000', 'objv_y2': '1.000000'}
+<     Original  scale: {'objv_y1': '9.000000', 'objv_y2': '9.000000'}
+---
+>     Scaled to [0,1]: {'objv_y1': '0.000000', 'objv_y2': '1.000000'}
+>     Original  scale: {'objv_y1': '5.000000', 'objv_y2': '9.000000'}
+Test63_smlp_toy_num_resp_mult_verify_results.json
+13,14c13,14
+< 			"p1": 7.0,
+< 			"p2": 6.750000044703484,
+---
+> 			"p1": 1.0,
+> 			"p2": 7.0,
+Test64_test63_model_verify_results.json
+13,14c13,14
+< 			"p1": 7.0,
+< 			"p2": 6.750000044703484,
+---
+> 			"p1": 1.0,
+> 			"p2": 7.0,
+Test80_smlp_toy_num_resp_mult_optimization_progress.json
+4,6c4,6
+< 			"value_in_config": 5.0,
+< 			"threshold_scaled": 0.0,
+< 			"threshold": 5.0,
+---
+> 			"value_in_config": 9.0,
+> 			"threshold_scaled": 1.0,
+> 			"threshold": 9.0,
+14c14
+< 			"value_in_config": 2.0
+---
+> 			"value_in_config": 4.0
+20c20
+< 			"value_in_config": 5.0
+---
+> 			"value_in_config": 9.0
+23c23
+< 			"value_in_config": 5.0
+---
+> 			"value_in_config": 9.0
+Test80_smlp_toy_num_resp_mult_optimization_results.json
+4c4
+< 		"p1": 4.0,
+---
+> 		"p1": 7.0,
+Test80_smlp_toy_num_resp_mult.txt
+243,244c243,244
+<     Scaled to [0,1]: {'obj1': '0.000000'}
+<     Original  scale: {'obj1': '5.000000'}
+---
+>     Scaled to [0,1]: {'obj1': '1.000000'}
+>     Original  scale: {'obj1': '9.000000'}
+Test83_smlp_toy_num_resp_mult_optimization_progress.json
+63c63
+< 			"value_in_config": 11.666666681567827
+---
+> 			"value_in_config": 0.0
+66c66
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 4.0
+101c101
+< 			"value_in_config": 11.666666681567827
+---
+> 			"value_in_config": 0.0
+104c104
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 4.0
+139c139
+< 			"value_in_config": 11.666666681567827
+---
+> 			"value_in_config": 0.0
+142c142
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 4.0
+201c201
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 4.0
+236c236
+< 			"value_in_config": 0.0
+---
+> 			"value_in_config": 11.020833348234495
+239c239
+< 			"value_in_config": 4.0
+---
+> 			"value_in_config": 7.0
+274c274
+< 			"value_in_config": 0.0
+---
+> 			"value_in_config": 11.020833348234495
+277c277
+< 			"value_in_config": 4.0
+---
+> 			"value_in_config": 7.0
+333c333
+< 			"value_in_config": 0.0
+---
+> 			"value_in_config": 11.020833348234495
+336c336
+< 			"value_in_config": 4.0
+---
+> 			"value_in_config": 7.0
+Test83_smlp_toy_num_resp_mult_optimization_results.json
+24c24
+< 		"value_in_config": 0.0
+---
+> 		"value_in_config": 11.020833348234495
+27c27
+< 		"value_in_config": 4.0
+---
+> 		"value_in_config": 7.0
+Test88_smlp_toy_num_resp_mult_optimization_progress.json
+63c63
+< 			"value_in_config": 11.666666681567827
+---
+> 			"value_in_config": 0.0
+66c66
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 4.0
+101c101
+< 			"value_in_config": 11.666666681567827
+---
+> 			"value_in_config": 0.0
+104c104
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 4.0
+139c139
+< 			"value_in_config": 11.666666681567827
+---
+> 			"value_in_config": 0.0
+142c142
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 4.0
+201c201
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 4.0
+236c236
+< 			"value_in_config": 0.0
+---
+> 			"value_in_config": 11.020833348234495
+239c239
+< 			"value_in_config": 4.0
+---
+> 			"value_in_config": 7.0
+274c274
+< 			"value_in_config": 0.0
+---
+> 			"value_in_config": 11.020833348234495
+277c277
+< 			"value_in_config": 4.0
+---
+> 			"value_in_config": 7.0
+333c333
+< 			"value_in_config": 0.0
+---
+> 			"value_in_config": 11.020833348234495
+336c336
+< 			"value_in_config": 4.0
+---
+> 			"value_in_config": 7.0
+Test88_smlp_toy_num_resp_mult_optimization_results.json
+24c24
+< 		"value_in_config": 0.0
+---
+> 		"value_in_config": 11.020833348234495
+27c27
+< 		"value_in_config": 4.0
+---
+> 		"value_in_config": 7.0
+Test94_smlp_toy_num_resp_mult_optimization_progress.json
+4,6c4,6
+< 			"value_in_config": 7.380000000000001,
+< 			"threshold_scaled": 0.5950000000000002,
+< 			"threshold": 7.380000000000001,
+---
+> 			"value_in_config": 7.92,
+> 			"threshold_scaled": 0.73,
+> 			"threshold": 7.92,
+11,13c11,13
+< 			"value_in_config": 6.28,
+< 			"threshold_scaled": 0.32000000000000006,
+< 			"threshold": 6.28,
+---
+> 			"value_in_config": 7.48,
+> 			"threshold_scaled": 0.6200000000000001,
+> 			"threshold": 7.48,
+21c21
+< 			"value_in_config": 2.0
+---
+> 			"value_in_config": 4.0
+24c24
+< 			"value_in_config": 3.5
+---
+> 			"value_in_config": 4.75
+27c27
+< 			"value_in_config": 6.28
+---
+> 			"value_in_config": 7.48
+30c30
+< 			"value_in_config": 8.48
+---
+> 			"value_in_config": 8.36
+35c35
+< 			"value_in_config": 7.76,
+---
+> 			"value_in_config": 7.92,
+42c42
+< 			"value_in_config": 7.04,
+---
+> 			"value_in_config": 7.48,
+52c52
+< 			"value_in_config": 2.0
+---
+> 			"value_in_config": 4.0
+55c55
+< 			"value_in_config": 4.0
+---
+> 			"value_in_config": 4.75
+58c58
+< 			"value_in_config": 7.04
+---
+> 			"value_in_config": 7.48
+61c61
+< 			"value_in_config": 8.48
+---
+> 			"value_in_config": 8.36
+Test94_smlp_toy_num_resp_mult_optimization_results.csv
+2,3d1
+< vacuity,2.0,3.5,10.0,6.28,8.48,7.380000000000001,6.28
+< "iter(0, 2)",2.0,4.0,10.0,7.04,8.48,7.76,7.04
+Test94_smlp_toy_num_resp_mult.txt
+269,270c269,270
+<     Scaled to [0,1]: {'objv1': '0.595000', 'objv2': '0.320000'}
+<     Original  scale: {'objv1': '7.380000', 'objv2': '6.280000'}
+---
+>     Scaled to [0,1]: {'objv1': '0.730000', 'objv2': '0.620000'}
+>     Original  scale: {'objv1': '7.920000', 'objv2': '7.480000'}
+Test96_smlp_toy_num_resp_mult_optimization_progress.json
+4,6c4,6
+< 			"value_in_config": 5.3,
+< 			"threshold_scaled": 0.07499999999999996,
+< 			"threshold": 5.3,
+---
+> 			"value_in_config": 5.720000000000001,
+> 			"threshold_scaled": 0.18000000000000016,
+> 			"threshold": 5.720000000000001,
+11,13c11,13
+< 			"value_in_config": 5.6,
+< 			"threshold_scaled": 0.1499999999999999,
+< 			"threshold": 5.6,
+---
+> 			"value_in_config": 6.44,
+> 			"threshold_scaled": 0.3600000000000001,
+> 			"threshold": 6.44,
+21c21
+< 			"value_in_config": 2.0
+---
+> 			"value_in_config": 4.0
+24c24
+< 			"value_in_config": 3.5
+---
+> 			"value_in_config": 4.0
+27c27
+< 			"value_in_config": 5.6
+---
+> 			"value_in_config": 6.44
+35c35
+< 			"value_in_config": 5.66,
+---
+> 			"value_in_config": 5.720000000000001,
+42c42
+< 			"value_in_config": 6.32,
+---
+> 			"value_in_config": 6.44,
+52c52
+< 			"value_in_config": 2.0
+---
+> 			"value_in_config": 4.0
+58c58
+< 			"value_in_config": 6.32
+---
+> 			"value_in_config": 6.44
+66c66
+< 			"value_in_config": 5.66,
+---
+> 			"value_in_config": 5.720000000000001,
+73c73
+< 			"value_in_config": 6.32,
+---
+> 			"value_in_config": 6.44,
+83c83
+< 			"value_in_config": 2.0
+---
+> 			"value_in_config": 4.0
+89c89
+< 			"value_in_config": 6.32
+---
+> 			"value_in_config": 6.44
+95c95
+< 			"value_in_config": 0.165
+---
+> 			"value_in_config": 0.18
+118c118
+< 			"value_in_config": 5.66,
+---
+> 			"value_in_config": 5.720000000000001,
+125c125
+< 			"value_in_config": 6.32,
+---
+> 			"value_in_config": 6.44,
+135c135
+< 			"value_in_config": 2.0
+---
+> 			"value_in_config": 4.0
+141c141
+< 			"value_in_config": 6.32
+---
+> 			"value_in_config": 6.44
+149c149
+< 			"value_in_config": 5.66,
+---
+> 			"value_in_config": 5.720000000000001,
+156c156
+< 			"value_in_config": 6.32,
+---
+> 			"value_in_config": 6.44,
+166c166
+< 			"value_in_config": 2.0
+---
+> 			"value_in_config": 4.0
+172c172
+< 			"value_in_config": 6.32
+---
+> 			"value_in_config": 6.44
+180c180
+< 			"value_in_config": 5.66,
+---
+> 			"value_in_config": 5.720000000000001,
+187c187
+< 			"value_in_config": 6.32,
+---
+> 			"value_in_config": 6.44,
+197c197
+< 			"value_in_config": 2.0
+---
+> 			"value_in_config": 4.0
+203c203
+< 			"value_in_config": 6.32
+---
+> 			"value_in_config": 6.44
+209c209
+< 			"value_in_config": 0.33
+---
+> 			"value_in_config": 0.36
+232c232
+< 			"value_in_config": 5.66,
+---
+> 			"value_in_config": 5.720000000000001,
+239c239
+< 			"value_in_config": 6.32,
+---
+> 			"value_in_config": 6.44,
+249c249
+< 			"value_in_config": 2.0
+---
+> 			"value_in_config": 4.0
+255c255
+< 			"value_in_config": 6.32
+---
+> 			"value_in_config": 6.44
+261c261
+< 			"value_in_config": 0.33
+---
+> 			"value_in_config": 0.36
+Test96_smlp_toy_num_resp_mult_optimization_results.csv
+2,3c2
+< vacuity,2.0,3.5,10.0,5.6,5.0,5.3,5.6
+< final,2.0,4.0,10.0,6.32,5.0,5.66,6.32
+---
+> final,4.0,4.0,10.0,6.44,5.0,5.720000000000001,6.44
+Test96_smlp_toy_num_resp_mult_optimization_results.json
+3c3
+< 		"value_in_config": 5.66,
+---
+> 		"value_in_config": 5.720000000000001,
+10c10
+< 		"value_in_config": 6.32,
+---
+> 		"value_in_config": 6.44,
+20c20
+< 		"value_in_config": 2.0
+---
+> 		"value_in_config": 4.0
+26c26
+< 		"value_in_config": 6.32
+---
+> 		"value_in_config": 6.44
+32c32
+< 		"value_in_config": 0.33
+---
+> 		"value_in_config": 0.36
+Test96_smlp_toy_num_resp_mult.txt
+293,294c293,294
+<     Scaled to [0,1]: {'objv1': '0.075000', 'objv2': '0.150000'}
+<     Original  scale: {'objv1': '5.300000', 'objv2': '5.600000'}
+---
+>     Scaled to [0,1]: {'objv1': '0.180000', 'objv2': '0.360000'}
+>     Original  scale: {'objv1': '5.720000', 'objv2': '6.440000'}
+Test99_smlp_toy_num_resp_mult_optimization_progress.json
+63c63
+< 			"value_in_config": 11.666666681567827
+---
+> 			"value_in_config": 0.0
+66c66
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 4.0
+101c101
+< 			"value_in_config": 11.666666681567827
+---
+> 			"value_in_config": 0.0
+104c104
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 4.0
+139c139
+< 			"value_in_config": 11.666666681567827
+---
+> 			"value_in_config": 0.0
+142c142
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 4.0
+201c201
+< 			"value_in_config": 7.0
+---
+> 			"value_in_config": 4.0
+236c236
+< 			"value_in_config": 0.0
+---
+> 			"value_in_config": 11.020833348234495
+239c239
+< 			"value_in_config": 4.0
+---
+> 			"value_in_config": 7.0
+274c274
+< 			"value_in_config": 0.0
+---
+> 			"value_in_config": 11.020833348234495
+277c277
+< 			"value_in_config": 4.0
+---
+> 			"value_in_config": 7.0
+333c333
+< 			"value_in_config": 0.0
+---
+> 			"value_in_config": 11.020833348234495
+336c336
+< 			"value_in_config": 4.0
+---
+> 			"value_in_config": 7.0
+Test99_smlp_toy_num_resp_mult_optimization_results.json
+24c24
+< 		"value_in_config": 0.0
+---
+> 		"value_in_config": 11.020833348234495
+27c27
+< 		"value_in_config": 4.0
+---
+> 		"value_in_config": 7.0
