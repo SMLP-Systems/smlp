@@ -24,10 +24,17 @@ except ImportError as exc:
     HAS_TK = False
     TK_IMPORT_ERROR = exc
 
+# MascOS Docker switch to Agg
+
+HAS_TK = False
+
 # Configure the backend before importing pyplot or seaborn. Use TkAgg when Tk
 # is present because this script embeds the figure in a Tk window; otherwise
 # fall back to Agg so pyenv/macOS Python builds without _tkinter can still save
 # and open the PNG.
+
+print("HAS_TK:", HAS_TK)
+
 if HAS_TK:
     matplotlib.use("TkAgg")
 else:
