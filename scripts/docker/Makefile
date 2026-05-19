@@ -94,7 +94,7 @@ help:
 	@echo    "  RELEASE_TYPE=test  :                  The latest version installed on https://test.pypi.org/project/smlptech/#history will be used"
 	@echo    "                                          By default version installed on https://pypi.org/project/smlptech/#history will be used"
 	@echo    "  INSTALL_MODE=system :                 Package installation for ubuntu_24.04 will be done using sudo"
-	@echo    "  INSTALL_MODE=mac :                    Image with be built for Mac Apple silicon"
+	@echo -e "  INSTALL_MODE=mac :                    Image with be built for Mac Apple silicon. \033[1mSupported only for IMAGE=python311-dev\033[0m"
 	@echo    "                                          By default package installation for ubuntu_24.04 will be done for Intel/AMD silicon in virtual environment"
 	@echo    "  help :                                Show this message"
 	@echo    ""
