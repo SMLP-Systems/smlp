@@ -206,7 +206,7 @@ if not HAS_TK:
     elif IS_MACOS and timeout != inf:
         print("Skipping macOS Preview auto-open because -timeout was requested.")
     else:
-        print(f"Tk viewer unavailable: {TK_IMPORT_ERROR}")
+        print(f"Skipping results preview: Tk viewer unavailable")
     exit(0)
 
 root = tk.Tk()
