@@ -16,4 +16,3 @@ scikit-learn==1.4.2
 scipy
 seaborn
 tensorflow==2.15.1
-z3-solver==4.8.12
