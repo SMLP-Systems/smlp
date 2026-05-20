@@ -21,7 +21,7 @@ ifeq ($(INSTALL_MODE),system)
     INSTALL_MODE_ARG := --build-arg INSTALL_MODE=system
     IMAGE_TAG        := $(IMAGE)-system
 else ifeq ($(INSTALL_MODE),mac)
-    INSTALL_MODE_ARG := --platform linux/arm64
+    INSTALL_MODE_ARG := --platform linux/arm64 --load
     IMAGE_TAG        := $(IMAGE)-mac
 else
     INSTALL_MODE_ARG := --build-arg INSTALL_MODE=venv
