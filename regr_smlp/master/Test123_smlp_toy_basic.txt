@@ -704,6 +704,10 @@ smlp_logger - INFO - Pareto optimization: End
 
 smlp_logger - WARNING - factor p2 contains duplicate elements in the DOE spec; they will be dropped
 
+smlp_logger - INFO - Latin Hypercube: 2 factors, 100 samples, distribution=Uniform, seed=10
+
+smlp_logger - INFO - Generated 100 LHS samples.
+
 smlp_logger - INFO - DOE table with 100 entries has been generated
 
 smlp_logger - INFO - Reporting prediction results: start
