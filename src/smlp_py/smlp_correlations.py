@@ -1,21 +1,25 @@
 # SPDX-License-Identifier: Apache-2.0
 # This file is part of smlp.
 
+
 # This module is experiemnal
 import pandas as pd
 import numpy as np
-#from scipy.stats import chi2_contingency
-from scipy.stats._stats import _kendall_dis
-from sklearn.metrics import mutual_info_score, normalized_mutual_info_score, adjusted_mutual_info_score
-from sklearn.feature_selection import mutual_info_classif
 import scipy
-from concurrent.futures import ProcessPoolExecutor, as_completed
+#from scipy.stats import chi2_contingency
 
-from .smlp_utils import (pd_series_is_numeric, pd_series_is_categorical, pd_series_is_int, pd_series_is_binary_int, \
-                         pd_series_is_binary_categorical, pd_series_is_binary_numeric, pd_df_split_numeric_categorical, \
-                         pd_series_is_object, pd_series_is_category, \
-                         pd_df_convert_numeric_to_categorical, pd_series_is_ordered_category, pd_df_is_empty, \
-                         cast_type, cast_series_type, str_to_bool, str_to_str_list)
+from scipy.stats._stats import _kendall_dis
+from sklearn.metrics import (mutual_info_score, normalized_mutual_info_score, 
+                             adjusted_mutual_info_score)
+from sklearn.feature_selection import mutual_info_classif
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from .smlp_utils import (
+    pd_series_is_numeric, pd_series_is_categorical, pd_series_is_int, 
+    pd_series_is_binary_int, pd_series_is_binary_categorical, 
+    pd_series_is_binary_numeric, pd_df_split_numeric_categorical,
+    pd_series_is_object, pd_series_is_category, pd_df_convert_numeric_to_categorical, 
+    pd_series_is_ordered_category, pd_df_is_empty, 
+    cast_type, cast_series_type, str_to_bool, str_to_str_list, list_unique_ordered)
 from .smlp_discretize import SmlpDiscretize
 from .smlp_mrmr import SmlpMrmr
 
@@ -130,7 +134,6 @@ class SmlpCorrelations:
             SPEARMAN_SOMERSD: SPEARMAN_SOMERSD_CODE,
             KENDALL_SOMERSD: KENDALL_SOMERSD_CODE,
             FREQUENCY_SOMERSD: FREQUENCY_SOMERSD_CODE,
-            SOMERSD_CRAMERSV: SOMERSD_CRAMERSV_CODE,
             PEARSON_CINDEX: PEARSON_CINDEX_CODE,
             SPEARMAN_CINDEX: SPEARMAN_CINDEX_CODE,
             KENDALL_CINDEX: KENDALL_CINDEX_CODE,
@@ -315,7 +318,7 @@ class SmlpCorrelations:
         # old feat_type_is_ordered = feat_type == "ordered"
         resp_type_is_numeric = resp_type == "numeric"
         resp_type_is_ordered = resp_type == "ordered"
-        feat_type_is_numeric = feat_type in ['int16', 'int32', 'int64', 'float32', 'float64']
+        feat_type_is_numeric = feat_type in ['int8', 'int16', 'int32', 'int64', 'float32', 'float64']
         feat_type_is_ordered = feat_type in ['object', 'category']
         
         if (feat_type_is_numeric and resp_type_is_numeric):
@@ -381,7 +384,7 @@ class SmlpCorrelations:
               )
 
         size = x.size
-        perm = np.argsort(y)  # sort on y and convert y to dense ranks
+        perm = np.argsort(y, kind='mergesort')  # sort on y and convert y to dense ranks
         x, y = x[perm], y[perm]
         y = np.r_[True, y[1:] != y[:-1]].cumsum(dtype=np.intp)
 
@@ -604,6 +607,7 @@ class SmlpCorrelations:
         else:
             raise ValueError("Implementation error in response type in function mim_correlation_type")
 
+        
         return method_name
 
     def correlate_feat_resp(self, feat, resp, corr_method):
@@ -626,7 +630,7 @@ class SmlpCorrelations:
         elif corr_method == CINDEX:
             corr = self.concordance_correlation_coefficient(feat, resp)
         else:
-            raise Exception('Uexpected correlation ' + str(corr_method) + ' in function correlate_feat_resp')
+            raise Exception(f'Uexpected correlation {str(corr_method)} in function correlate_feat_resp')
         return corr
     
     
@@ -679,6 +683,8 @@ class SmlpCorrelations:
         
         if feat_type == "integer":
             raise Exception("Implementation error in function compute_feature_supertype")
+            
+        
         return feat_type
     
     # compute correlation between feature feat and response resp using MRMR package.
@@ -734,7 +740,7 @@ class SmlpCorrelations:
             discretization_labels:bool, discretization_type:str): #, discret_algo:str        
         colnms = df_feat.columns.tolist()
         if df_feat.shape[1] == 0: # there are no features, only the response
-            assert False  # TODO 
+            #assert False  # TODO 
             return pd.DataFrame(colnms)
 
         # resp_type is defined in ensemble_features_single_response() and can be numeric, factor or ordered 
@@ -775,7 +781,7 @@ class SmlpCorrelations:
                  unique_feat_types.append('ordered')
             else:
                 raise Exception('Unexpected response type in ensemble_features_single_response')
-        unique_feat_types = list(set(unique_feat_types))
+        unique_feat_types = list_unique_ordered(unique_feat_types) # reproducibility bug fix list(set(unique_feat_types))
             
         method_name = self.mim_correlation_type(resp_type, unique_feat_types, estimator, is_bin_resp)
         
@@ -783,6 +789,7 @@ class SmlpCorrelations:
         resp_orig = resp
         # TODO !!!!!! casting is not required 
         #resp = cast_series_type(resp, resp_type)
+        
         def corr_mi_cor(feat):
             nm = feat.name
             feat_type = feat.dtype.name
@@ -1174,12 +1181,16 @@ class SmlpCorrelations:
         feat_cnt = min(labeled_features_mrmr.shape[1], mrmr_feat_count);
         if feat_cnt <= 1:
             if feat_cnt == 0:
-                self._corr_logger.info("Skipping MRMR-classic feature selection since mrmr_feat_count == 0; performing importance ranking.")
+                self._corr_logger.info("Skipping MRMR-classic feature selection since "
+                                       "mrmr_feat_count == 0; performing importance ranking.")
             else:
-                self._corr_logger.info("Skipping MRMR-classic feature selection as there are only " + str(feat_cnt) + 
-       " features to select from")
-                mrmr_incr_feat_num = mrmr_tbl_num = None
-                mrmr_incr_feat_ord = mrmr_tbl_ord = None
+                self._corr_logger.info("Skipping MRMR-classic feature selection as there "
+                                       f"are only {str(feat_cnt)} features to select from")
+            
+            mrmr_incr_feat_num = [] 
+            mrmr_tbl_num = None
+            mrmr_incr_feat_ord = [] 
+            mrmr_tbl_ord = None
         else:
             cond_adapt_types = resp.nunique() <= 2
 
@@ -1228,7 +1239,8 @@ class SmlpCorrelations:
                     if for_prediction:
                         self._corr_logger.info(mrmr_tbl_num)
                 elif num_labeled_features_mrmr.shape[1] == 1:
-                    self._corr_logger.info("Skipping MRMR-classic feature selection for numeric features as there is only one feature to select from")
+                    self._corr_logger.info("Skipping MRMR-classic feature selection for numeric "
+                       "features as there is only one feature to select from")
                     mrmr_incr_feat_num = num_labeled_features_mrmr.columns.tolist()
                 del num_labeled_features_mrmr 
 
@@ -1238,7 +1250,8 @@ class SmlpCorrelations:
                     if for_prediction:
                         self._corr_logger.info(mrmr_tbl_ord)
                 elif len(ctg_labeled_features_mrmr) == 1:
-                    self._corr_logger.info("Skipping MRMR-classic feature selection for categorical features as there is only one feature to select from")
+                    self._corr_logger.info("Skipping MRMR-classic feature selection for categorical "
+                       "features as there is only one feature to select from")
                     mrmr_incr_feat_ord = colnames(ctg_labeled_features_mrmr)
                 del ctg_labeled_features_mrmr
             else: # not cond_adapt_types -- response has more than two values
@@ -1344,7 +1357,8 @@ class SmlpCorrelations:
 
         # Discretize numeric features if needed
         if discretize_num_feat:
-            self._corr_logger.info('Discretizing numeric features for feature selection using method ' + str(discretization_algo))
+            self._corr_logger.info('Discretizing numeric features for feature selection '
+                f'using method {str(discretization_algo)}')
             feat_df = self._instDiscret.smlp_discretize_df(feat_df, algo=discretization_algo, 
                 bins=discretization_bins, labels=discretization_labels, result_type=discretization_type)
 
@@ -1352,6 +1366,14 @@ class SmlpCorrelations:
         # TODO !!! just use compute_feature_supertype(), no need to compute feat_type twice
         is_numeric_feat = all(feat_df.apply(lambda col: pd_series_is_numeric(col)))
         is_factor_feat = all(feat_df.apply(lambda col: pd_series_is_categorical(col)))
+        ''' TODO more efficient than the above
+        from pandas.api.types import is_numeric_dtype, is_object_dtype, is_categorical_dtype
+
+        is_factor_feat = all(is_object_dtype(column.dtype) or is_categorical_dtype(column.dtype)(dtype) ]
+            for dtype in feat_df.dtypes)
+        is_numeric_feat = all(is_numeric_dtype(dtype) for dtype in feat_df.dtypes)
+        '''
+        
         if is_factor_feat:
             is_factor_feat = all(feat_df.apply(lambda col: not pd_series_is_ordered_category(col)))
             is_ordered_feat = all(feat_df.apply(lambda col: pd_series_is_ordered_category(col)))
@@ -1441,7 +1463,7 @@ class SmlpCorrelations:
                 elif check_colnames and colnms[i] == colnms[j]:
                     raise Exception("Implementation error in function drop_identical_features")
 
-        unique_indices_to_remove = list(set(indices_to_remove))
+        unique_indices_to_remove = list(dict.fromkeys(indices_to_remove))
         if unique_indices_to_remove:
             if log:
                 self._corr_logger.info(f"Dropping {len(unique_indices_to_remove)} features identical to another feature\n")
@@ -1518,7 +1540,8 @@ class SmlpCorrelations:
                 fs_summary_df = fs_summary_df.sort_values(by='ranking', ascending=False)
 
         if log:
-            self._corr_logger.info('Ensemble feature selection (with all scores individually scaled to [0.1]):\n'+str(fs_summary_df))
+            self._corr_logger.info('Ensemble feature selection (with all scores individually '
+                f"scaled to [0.1]):\n{str(fs_summary_df)}")
 
         return fs_summary_df
 
@@ -1544,30 +1567,33 @@ class SmlpCorrelations:
             fs_summary_df, mode, for_prediction, discretization_algo, discretization_bins, discretization_labels, discretization_type, 
             discretize_numeric_features, mutual_information_method, corr_and_mi, non_range_feat)
         
-        # gard coded: drop identical columns in ensemble summary tables in function fs_ensemble_summary
+        # hard coded: drop identical columns in ensemble summary tables in function fs_ensemble_summary
         fs_summary_df = self.fs_ensemble_summary(fs_summary_df, False, True)
 
         return fs_summary_df, mrmr_incr_feat
         
         
-    # generates feature ranking fro individual responses and then combines into joint ranking of features based on the 
-    # mean ranking score of ranking scores fro individual responses (per features). The jpint ramking is reported into
-    # file with suffix "_features_summary.csv".
-    def smlp_correlate(self, X:pd.DataFrame, y:pd.DataFrame, feat_names:list[str], resp_names:list[str], feat_names_dict:dict, 
-            discretization_algo:str, discretization_bins, discretization_labels, discretization_type, 
-            discretize_numeric_features, continuous_estimators, mutual_information_method, corr_and_mi:bool, mrmr_feat_count:int):
+    # Generates feature ranking for individual responses and then combines into joint ranking of 
+    # features based on the mean ranking score of ranking scores for individual responses (per feature).
+    # The joint ranking is reported into file with suffix "_features_summary.csv".
+    def smlp_correlate(self, X:pd.DataFrame, y:pd.DataFrame, feat_names:list[str], resp_names:list[str], 
+            feat_names_dict:dict,  discretization_algo:str, discretization_bins, discretization_labels, 
+            discretization_type, discretize_numeric_features, continuous_estimators, 
+            mutual_information_method, corr_and_mi:bool, mrmr_feat_count:int) -> None:
         mode = "features" # TODO !!!
         
         assert set(feat_names) == set(X.columns.tolist())
         assert set(resp_names) == set(y.columns.tolist())
         
         fs_summary_df = pd.DataFrame({'important_features': X.columns.tolist()})
-        resp_ranking_cols = []                              
+        resp_ranking_cols = []                      
         for resp_name in y.columns.tolist():
-            fs_summary_df_curr, mrmr_incr_feat_curr = self.ensemble_features_single_response(X, y[resp_name], feat_names, feat_names_dict, mode,
-                discretization_algo, discretization_bins, discretization_labels, discretization_type, discretize_numeric_features, mutual_information_method,
+            fs_summary_df_curr, mrmr_incr_feat_curr = self.ensemble_features_single_response(
+                X, y[resp_name], feat_names, feat_names_dict, mode,
+                discretization_algo, discretization_bins, discretization_labels,
+                discretization_type, discretize_numeric_features, mutual_information_method,
                 corr_and_mi, mrmr_feat_count, continuous_estimators)
-            #fs_summary_df_curr.to_csv(self.report_file_prefix + '_' + resp_name + '_features_summary.csv', index=False)
+            
             for col in fs_summary_df_curr.columns:
                 if col != 'important_features':
                     fs_summary_df_curr.rename(columns={col: col + '_' + resp_name}, inplace=True)
@@ -1577,11 +1603,13 @@ class SmlpCorrelations:
         
         # Calculate the mean of the specified columns
         fs_summary_df.insert(1, 'ranking', fs_summary_df[resp_ranking_cols].mean(axis=1))
+        
         # Sort the DataFrame in descending order with respect to the new column
         fs_summary_df = fs_summary_df.sort_values(by='ranking', ascending=False)
         
         fs_summary_df.to_csv(self.report_file_prefix + '_features_summary.csv', index=False)
-        self._corr_logger.info('Ensemble feature selection for multiple responses (with all scores individually scaled to [0.1]):\n'+str(fs_summary_df))
+        self._corr_logger.info('Ensemble feature selection for multiple responses '
+            f'(with all scores individually scaled to [0.1]):\n{str(fs_summary_df)}')
                 
         
                 

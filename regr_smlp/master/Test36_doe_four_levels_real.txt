@@ -9,6 +9,8 @@ smlp_logger - WARNING - factor b contains more than two levels in the DOE spec; 
 
 smlp_logger - WARNING - factor c contains more than two levels in the DOE spec; only min / max values will be used
 
+smlp_logger - WARNING - random_seed is None - DOE will NOT be deterministic!
+
 smlp_logger - INFO - DOE table with 125 entries has been generated
 
 smlp_logger - INFO - Running SMLP in mode "doe": End
